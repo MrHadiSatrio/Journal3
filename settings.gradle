@@ -1,0 +1,4 @@
+rootProject.name = "Journal3"
+include ':app-android-journal3'
+include ':app-kmm-journal3'
+include ':lib-kmm-foundation'

@@ -1,0 +1,8 @@
+#!/bin/sh
+
+# Make local scripts executable
+chmod -R +x scripts
+
+# Install Git Hooks
+git config core.hooksPath scripts/hooks
+
