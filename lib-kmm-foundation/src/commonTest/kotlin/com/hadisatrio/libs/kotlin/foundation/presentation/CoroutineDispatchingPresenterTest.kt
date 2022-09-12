@@ -15,19 +15,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.hadisatrio.libs.android.foundation.os
+package com.hadisatrio.libs.kotlin.foundation.presentation
 
-import android.os.Handler
-import android.os.Looper
-import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
+import io.mockk.mockk
+import io.mockk.verify
+import kotlinx.coroutines.test.TestScope
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlin.test.Test
 
-class MainThreadEnforcingPresenter<T>(
-    private val origin: Presenter<T>
-) : Presenter<T> {
+class CoroutineDispatchingPresenterTest {
 
-    private val mainHandler: Handler by lazy { Handler(Looper.getMainLooper()) }
+    @Test
+    fun `Forwards the call to origin within a launched coroutine`() {
+        val origin = mockk<Presenter<String>>(relaxed = true)
 
-    override fun present(thing: T) {
-        mainHandler.post { origin.present(thing) }
+        CoroutineDispatchingPresenter(
+            coroutineScope = TestScope(),
+            coroutineDispatcher = UnconfinedTestDispatcher(),
+            origin = origin
+        ).present("Foo")
+
+        verify(exactly = 1) { origin.present("Foo") }
     }
 }

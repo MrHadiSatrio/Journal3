@@ -15,17 +15,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.hadisatrio.libs.kotlin.foundation
+package com.hadisatrio.libs.android.foundation.widget
 
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
+import com.hadisatrio.libs.kotlin.foundation.event.Event
+import com.hadisatrio.libs.kotlin.foundation.event.EventSource
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOn
 
-class BackgroundExecutingUseCase(
-    private val coroutineScope: CoroutineScope,
-    private val origin: UseCase
-) : UseCase {
+class CoroutineDispatchingEventSource(
+    private val coroutineDispatcher: CoroutineDispatcher,
+    private val origin: EventSource
+) : EventSource {
 
-    override fun invoke() {
-        coroutineScope.launch { origin() }
+    override fun events(): Flow<Event> {
+        return origin.events().flowOn(coroutineDispatcher)
     }
 }

@@ -25,8 +25,6 @@ import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
 import io.mockk.mockk
 import io.mockk.spyk
 import io.mockk.verify
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlin.test.Test
 
 class CachingStoriesPresenterTest {
@@ -35,13 +33,9 @@ class CachingStoriesPresenterTest {
     fun `Forwards cached stories to the origin`() {
         val story = spyk(FakeStory(uuid4(), mutableListOf()))
         val stories = FakeStories(story)
-        val origin = mockk<Presenter<Stories>>()
+        val origin = mockk<Presenter<Stories>>(relaxed = true)
 
-        val presenter = CachingStoriesPresenter(
-            scope = CoroutineScope(UnconfinedTestDispatcher()),
-            origin = origin
-        )
-        presenter.present(stories)
+        CachingStoriesPresenter(origin = origin).present(stories)
 
         verify {
             origin.present(

@@ -23,11 +23,11 @@ import com.hadisatrio.apps.kotlin.journal3.story.Stories
 import com.hadisatrio.apps.kotlin.journal3.story.filesystem.FilesystemStories
 import com.hadisatrio.libs.android.foundation.activity.CurrentActivity
 import com.hadisatrio.libs.android.foundation.modal.AlertDialogModalPresenter
-import com.hadisatrio.libs.android.foundation.os.MainThreadEnforcingPresenter
 import com.hadisatrio.libs.android.foundation.os.SystemLog
 import com.hadisatrio.libs.kotlin.foundation.event.EventHub
 import com.hadisatrio.libs.kotlin.foundation.event.EventSink
 import com.hadisatrio.libs.kotlin.foundation.modal.Modal
+import com.hadisatrio.libs.kotlin.foundation.presentation.CoroutineDispatchingPresenter
 import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -42,8 +42,10 @@ class Journal3 : Application() {
     }
 
     val modalPresenter: Presenter<Modal> by lazy {
-        MainThreadEnforcingPresenter(
-            AlertDialogModalPresenter(currentActivity, globalEventSource)
+        CoroutineDispatchingPresenter(
+            coroutineScope = globalCoroutineScope,
+            coroutineDispatcher = Dispatchers.Main,
+            origin = AlertDialogModalPresenter(currentActivity, globalEventSource)
         )
     }
 

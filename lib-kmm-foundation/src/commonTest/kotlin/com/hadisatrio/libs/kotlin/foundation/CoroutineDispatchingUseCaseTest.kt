@@ -15,19 +15,27 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.hadisatrio.libs.android.foundation.widget
+package com.hadisatrio.libs.kotlin.foundation
 
-import com.hadisatrio.libs.kotlin.foundation.event.Event
-import com.hadisatrio.libs.kotlin.foundation.event.EventSource
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOn
+import io.mockk.mockk
+import io.mockk.verify
+import kotlinx.coroutines.test.TestScope
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlin.test.Test
 
-class MainThreadEnforcingEventSource(
-    private val origin: EventSource
-) : EventSource {
+class CoroutineDispatchingUseCaseTest {
 
-    override fun events(): Flow<Event> {
-        return origin.events().flowOn(Dispatchers.Main)
+    @Test
+    fun `Forwards the call to origin within a launched coroutine`() {
+        val origin = mockk<UseCase>(relaxed = true)
+
+        val useCase = CoroutineDispatchingUseCase(
+            coroutineScope = TestScope(),
+            coroutineDispatcher = UnconfinedTestDispatcher(),
+            origin = origin
+        )
+        useCase()
+
+        verify(exactly = 1) { origin.invoke() }
     }
 }

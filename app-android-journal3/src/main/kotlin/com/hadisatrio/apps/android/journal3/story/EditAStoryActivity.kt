@@ -25,19 +25,18 @@ import com.hadisatrio.apps.android.journal3.Journal3.Companion.journal3Applicati
 import com.hadisatrio.apps.android.journal3.R
 import com.hadisatrio.apps.android.journal3.id.BundledTargetId
 import com.hadisatrio.apps.kotlin.journal3.story.EditAStoryUseCase
-import com.hadisatrio.libs.android.foundation.os.MainThreadEnforcingPresenter
 import com.hadisatrio.libs.android.foundation.widget.BackButtonCancellationEventSource
+import com.hadisatrio.libs.android.foundation.widget.CoroutineDispatchingEventSource
 import com.hadisatrio.libs.android.foundation.widget.EditTextInputEventSource
-import com.hadisatrio.libs.android.foundation.widget.MainThreadEnforcingEventSource
 import com.hadisatrio.libs.android.foundation.widget.TextViewStringPresenter
 import com.hadisatrio.libs.android.foundation.widget.ViewClickEventSource
-import com.hadisatrio.libs.kotlin.foundation.BackgroundExecutingUseCase
+import com.hadisatrio.libs.kotlin.foundation.CoroutineDispatchingUseCase
 import com.hadisatrio.libs.kotlin.foundation.event.CompletionEvent
 import com.hadisatrio.libs.kotlin.foundation.event.EventSources
 import com.hadisatrio.libs.kotlin.foundation.presentation.AdaptingPresenter
+import com.hadisatrio.libs.kotlin.foundation.presentation.CoroutineDispatchingPresenter
 import com.hadisatrio.libs.kotlin.foundation.presentation.Presenters
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.plus
 
 class EditAStoryActivity : AppCompatActivity() {
 
@@ -46,13 +45,16 @@ class EditAStoryActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_edit_a_story)
 
-        BackgroundExecutingUseCase(
-            coroutineScope = lifecycleScope + Dispatchers.Default,
+        CoroutineDispatchingUseCase(
+            coroutineScope = lifecycleScope,
+            coroutineDispatcher = Dispatchers.Default,
             origin = EditAStoryUseCase(
                 targetId = BundledTargetId(intent),
                 stories = journal3Application.stories,
-                presenter = MainThreadEnforcingPresenter(
-                    Presenters(
+                presenter = CoroutineDispatchingPresenter(
+                    coroutineScope = lifecycleScope,
+                    coroutineDispatcher = Dispatchers.Main,
+                    origin = Presenters(
                         AdaptingPresenter(
                             origin = TextViewStringPresenter(findViewById(R.id.title_text_field)),
                             adapter = StoryStringAdapter("title")
@@ -64,7 +66,8 @@ class EditAStoryActivity : AppCompatActivity() {
                     )
                 ),
                 modalPresenter = journal3Application.modalPresenter,
-                eventSource = MainThreadEnforcingEventSource(
+                eventSource = CoroutineDispatchingEventSource(
+                    coroutineDispatcher = Dispatchers.Main,
                     origin = EventSources(
                         journal3Application.globalEventSource,
                         ViewClickEventSource(

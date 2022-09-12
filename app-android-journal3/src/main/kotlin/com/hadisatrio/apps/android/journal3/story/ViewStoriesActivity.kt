@@ -28,15 +28,14 @@ import com.hadisatrio.apps.kotlin.journal3.event.RefreshRequestEvent
 import com.hadisatrio.apps.kotlin.journal3.story.ShowStoriesUseCase
 import com.hadisatrio.apps.kotlin.journal3.story.cache.CachingStoriesPresenter
 import com.hadisatrio.libs.android.foundation.lifecycle.LifecycleTriggeredEventSource
-import com.hadisatrio.libs.android.foundation.os.MainThreadEnforcingPresenter
-import com.hadisatrio.libs.android.foundation.widget.MainThreadEnforcingEventSource
+import com.hadisatrio.libs.android.foundation.widget.CoroutineDispatchingEventSource
 import com.hadisatrio.libs.android.foundation.widget.RecyclerViewItemSelectionEventSource
 import com.hadisatrio.libs.android.foundation.widget.ViewClickEventSource
-import com.hadisatrio.libs.kotlin.foundation.BackgroundExecutingUseCase
+import com.hadisatrio.libs.kotlin.foundation.CoroutineDispatchingUseCase
 import com.hadisatrio.libs.kotlin.foundation.event.EventSources
 import com.hadisatrio.libs.kotlin.foundation.event.SelectionEvent
+import com.hadisatrio.libs.kotlin.foundation.presentation.CoroutineDispatchingPresenter
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.plus
 
 class ViewStoriesActivity : AppCompatActivity() {
 
@@ -45,19 +44,26 @@ class ViewStoriesActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_view_stories)
 
-        BackgroundExecutingUseCase(
-            coroutineScope = lifecycleScope + Dispatchers.Default,
+        CoroutineDispatchingUseCase(
+            coroutineScope = lifecycleScope,
+            coroutineDispatcher = Dispatchers.Default,
             origin = ShowStoriesUseCase(
                 stories = journal3Application.stories,
-                presenter = CachingStoriesPresenter(
-                    scope = lifecycleScope + Dispatchers.Default,
-                    origin = MainThreadEnforcingPresenter(
-                        StoriesRecyclerViewPresenter(
-                            recyclerView = findViewById(R.id.stories_list)
+                presenter = CoroutineDispatchingPresenter(
+                    coroutineScope = lifecycleScope,
+                    coroutineDispatcher = Dispatchers.Default,
+                    origin = CachingStoriesPresenter(
+                        origin = CoroutineDispatchingPresenter(
+                            coroutineScope = lifecycleScope,
+                            coroutineDispatcher = Dispatchers.Main,
+                            origin = StoriesRecyclerViewPresenter(
+                                recyclerView = findViewById(R.id.stories_list)
+                            )
                         )
                     )
                 ),
-                eventSource = MainThreadEnforcingEventSource(
+                eventSource = CoroutineDispatchingEventSource(
+                    coroutineDispatcher = Dispatchers.Main,
                     origin = EventSources(
                         journal3Application.globalEventSource,
                         LifecycleTriggeredEventSource(

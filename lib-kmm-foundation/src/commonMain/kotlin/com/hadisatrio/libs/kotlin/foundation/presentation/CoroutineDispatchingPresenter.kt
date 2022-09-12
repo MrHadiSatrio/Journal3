@@ -15,26 +15,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.hadisatrio.libs.kotlin.foundation
+package com.hadisatrio.libs.kotlin.foundation.presentation
 
-import io.mockk.mockk
-import io.mockk.verify
-import kotlinx.coroutines.test.TestScope
-import kotlinx.coroutines.test.UnconfinedTestDispatcher
-import kotlin.test.Test
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
-class BackgroundExecutingUseCaseTest {
+class CoroutineDispatchingPresenter<T>(
+    private val coroutineScope: CoroutineScope,
+    private val coroutineDispatcher: CoroutineDispatcher,
+    private val origin: Presenter<T>
+) : Presenter<T> {
 
-    @Test
-    fun `Forwards the call to origin within a launched coroutine`() {
-        val origin = mockk<UseCase>(relaxed = true)
-
-        val useCase = BackgroundExecutingUseCase(
-            coroutineScope = TestScope(UnconfinedTestDispatcher()),
-            origin = origin
-        )
-        useCase()
-
-        verify(exactly = 1) { origin.invoke() }
+    override fun present(thing: T) {
+        coroutineScope.launch(coroutineDispatcher) { origin.present(thing) }
     }
 }
