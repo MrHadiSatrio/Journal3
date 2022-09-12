@@ -17,24 +17,17 @@
 
 package com.hadisatrio.libs.kotlin.foundation
 
-import io.mockk.mockk
-import io.mockk.verify
-import kotlinx.coroutines.test.TestScope
-import kotlinx.coroutines.test.UnconfinedTestDispatcher
-import kotlin.test.Test
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
-class BackgroundExecutingUseCaseTest {
+class CoroutineDispatchingUseCase(
+    private val coroutineScope: CoroutineScope,
+    private val coroutineDispatcher: CoroutineDispatcher,
+    private val origin: UseCase
+) : UseCase {
 
-    @Test
-    fun `Forwards the call to origin within a launched coroutine`() {
-        val origin = mockk<UseCase>(relaxed = true)
-
-        val useCase = BackgroundExecutingUseCase(
-            coroutineScope = TestScope(UnconfinedTestDispatcher()),
-            origin = origin
-        )
-        useCase()
-
-        verify(exactly = 1) { origin.invoke() }
+    override fun invoke() {
+        coroutineScope.launch(coroutineDispatcher) { origin() }
     }
 }

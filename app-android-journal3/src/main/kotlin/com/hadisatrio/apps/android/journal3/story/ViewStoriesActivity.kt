@@ -32,7 +32,7 @@ import com.hadisatrio.libs.android.foundation.os.MainThreadEnforcingPresenter
 import com.hadisatrio.libs.android.foundation.widget.MainThreadEnforcingEventSource
 import com.hadisatrio.libs.android.foundation.widget.RecyclerViewItemSelectionEventSource
 import com.hadisatrio.libs.android.foundation.widget.ViewClickEventSource
-import com.hadisatrio.libs.kotlin.foundation.BackgroundExecutingUseCase
+import com.hadisatrio.libs.kotlin.foundation.CoroutineDispatchingUseCase
 import com.hadisatrio.libs.kotlin.foundation.event.EventSources
 import com.hadisatrio.libs.kotlin.foundation.event.SelectionEvent
 import kotlinx.coroutines.Dispatchers
@@ -45,8 +45,9 @@ class ViewStoriesActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_view_stories)
 
-        BackgroundExecutingUseCase(
-            coroutineScope = lifecycleScope + Dispatchers.Default,
+        CoroutineDispatchingUseCase(
+            coroutineScope = lifecycleScope,
+            coroutineDispatcher = Dispatchers.Default,
             origin = ShowStoriesUseCase(
                 stories = journal3Application.stories,
                 presenter = CachingStoriesPresenter(
