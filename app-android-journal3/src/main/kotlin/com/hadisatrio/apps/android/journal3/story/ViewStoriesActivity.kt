@@ -28,7 +28,6 @@ import com.hadisatrio.apps.kotlin.journal3.event.RefreshRequestEvent
 import com.hadisatrio.apps.kotlin.journal3.story.ShowStoriesUseCase
 import com.hadisatrio.apps.kotlin.journal3.story.cache.CachingStoriesPresenter
 import com.hadisatrio.libs.android.foundation.lifecycle.LifecycleTriggeredEventSource
-import com.hadisatrio.libs.android.foundation.os.MainThreadEnforcingPresenter
 import com.hadisatrio.libs.android.foundation.widget.MainThreadEnforcingEventSource
 import com.hadisatrio.libs.android.foundation.widget.RecyclerViewItemSelectionEventSource
 import com.hadisatrio.libs.android.foundation.widget.ViewClickEventSource
@@ -37,7 +36,6 @@ import com.hadisatrio.libs.kotlin.foundation.event.EventSources
 import com.hadisatrio.libs.kotlin.foundation.event.SelectionEvent
 import com.hadisatrio.libs.kotlin.foundation.presentation.CoroutineDispatchingPresenter
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.plus
 
 class ViewStoriesActivity : AppCompatActivity() {
 
@@ -55,8 +53,10 @@ class ViewStoriesActivity : AppCompatActivity() {
                     coroutineScope = lifecycleScope,
                     coroutineDispatcher = Dispatchers.Default,
                     origin = CachingStoriesPresenter(
-                        origin = MainThreadEnforcingPresenter(
-                            StoriesRecyclerViewPresenter(
+                        origin = CoroutineDispatchingPresenter(
+                            coroutineScope = lifecycleScope,
+                            coroutineDispatcher = Dispatchers.Main,
+                            origin = StoriesRecyclerViewPresenter(
                                 recyclerView = findViewById(R.id.stories_list)
                             )
                         )

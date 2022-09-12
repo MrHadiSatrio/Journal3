@@ -25,7 +25,6 @@ import com.hadisatrio.apps.android.journal3.Journal3.Companion.journal3Applicati
 import com.hadisatrio.apps.android.journal3.R
 import com.hadisatrio.apps.android.journal3.id.BundledTargetId
 import com.hadisatrio.apps.kotlin.journal3.story.EditAStoryUseCase
-import com.hadisatrio.libs.android.foundation.os.MainThreadEnforcingPresenter
 import com.hadisatrio.libs.android.foundation.widget.BackButtonCancellationEventSource
 import com.hadisatrio.libs.android.foundation.widget.EditTextInputEventSource
 import com.hadisatrio.libs.android.foundation.widget.MainThreadEnforcingEventSource
@@ -35,9 +34,9 @@ import com.hadisatrio.libs.kotlin.foundation.CoroutineDispatchingUseCase
 import com.hadisatrio.libs.kotlin.foundation.event.CompletionEvent
 import com.hadisatrio.libs.kotlin.foundation.event.EventSources
 import com.hadisatrio.libs.kotlin.foundation.presentation.AdaptingPresenter
+import com.hadisatrio.libs.kotlin.foundation.presentation.CoroutineDispatchingPresenter
 import com.hadisatrio.libs.kotlin.foundation.presentation.Presenters
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.plus
 
 class EditAStoryActivity : AppCompatActivity() {
 
@@ -52,8 +51,10 @@ class EditAStoryActivity : AppCompatActivity() {
             origin = EditAStoryUseCase(
                 targetId = BundledTargetId(intent),
                 stories = journal3Application.stories,
-                presenter = MainThreadEnforcingPresenter(
-                    Presenters(
+                presenter = CoroutineDispatchingPresenter(
+                    coroutineScope = lifecycleScope,
+                    coroutineDispatcher = Dispatchers.Main,
+                    origin = Presenters(
                         AdaptingPresenter(
                             origin = TextViewStringPresenter(findViewById(R.id.title_text_field)),
                             adapter = StoryStringAdapter("title")
