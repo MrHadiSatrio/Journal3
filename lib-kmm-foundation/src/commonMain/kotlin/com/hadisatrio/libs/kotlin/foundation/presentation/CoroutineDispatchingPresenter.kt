@@ -15,16 +15,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.hadisatrio.apps.kotlin.journal3.story.cache
+package com.hadisatrio.libs.kotlin.foundation.presentation
 
-import com.hadisatrio.apps.kotlin.journal3.story.Stories
-import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
-class CachingStoriesPresenter(
-    private val origin: Presenter<Stories>
-) : Presenter<Stories> {
+class CoroutineDispatchingPresenter<T>(
+    private val coroutineScope: CoroutineScope,
+    private val coroutineDispatcher: CoroutineDispatcher,
+    private val origin: Presenter<T>
+) : Presenter<T> {
 
-    override fun present(thing: Stories) {
-        origin.present(CachingStories(thing))
+    override fun present(thing: T) {
+        coroutineScope.launch(coroutineDispatcher) { origin.present(thing) }
     }
 }

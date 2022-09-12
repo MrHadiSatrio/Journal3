@@ -35,6 +35,7 @@ import com.hadisatrio.libs.android.foundation.widget.ViewClickEventSource
 import com.hadisatrio.libs.kotlin.foundation.CoroutineDispatchingUseCase
 import com.hadisatrio.libs.kotlin.foundation.event.EventSources
 import com.hadisatrio.libs.kotlin.foundation.event.SelectionEvent
+import com.hadisatrio.libs.kotlin.foundation.presentation.CoroutineDispatchingPresenter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.plus
 
@@ -50,11 +51,14 @@ class ViewStoriesActivity : AppCompatActivity() {
             coroutineDispatcher = Dispatchers.Default,
             origin = ShowStoriesUseCase(
                 stories = journal3Application.stories,
-                presenter = CachingStoriesPresenter(
-                    scope = lifecycleScope + Dispatchers.Default,
-                    origin = MainThreadEnforcingPresenter(
-                        StoriesRecyclerViewPresenter(
-                            recyclerView = findViewById(R.id.stories_list)
+                presenter = CoroutineDispatchingPresenter(
+                    coroutineScope = lifecycleScope,
+                    coroutineDispatcher = Dispatchers.Default,
+                    origin = CachingStoriesPresenter(
+                        origin = MainThreadEnforcingPresenter(
+                            StoriesRecyclerViewPresenter(
+                                recyclerView = findViewById(R.id.stories_list)
+                            )
                         )
                     )
                 ),
