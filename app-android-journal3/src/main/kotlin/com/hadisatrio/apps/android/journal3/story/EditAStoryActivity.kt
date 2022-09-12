@@ -26,8 +26,8 @@ import com.hadisatrio.apps.android.journal3.R
 import com.hadisatrio.apps.android.journal3.id.BundledTargetId
 import com.hadisatrio.apps.kotlin.journal3.story.EditAStoryUseCase
 import com.hadisatrio.libs.android.foundation.widget.BackButtonCancellationEventSource
+import com.hadisatrio.libs.android.foundation.widget.CoroutineDispatchingEventSource
 import com.hadisatrio.libs.android.foundation.widget.EditTextInputEventSource
-import com.hadisatrio.libs.android.foundation.widget.MainThreadEnforcingEventSource
 import com.hadisatrio.libs.android.foundation.widget.TextViewStringPresenter
 import com.hadisatrio.libs.android.foundation.widget.ViewClickEventSource
 import com.hadisatrio.libs.kotlin.foundation.CoroutineDispatchingUseCase
@@ -66,7 +66,8 @@ class EditAStoryActivity : AppCompatActivity() {
                     )
                 ),
                 modalPresenter = journal3Application.modalPresenter,
-                eventSource = MainThreadEnforcingEventSource(
+                eventSource = CoroutineDispatchingEventSource(
+                    coroutineDispatcher = Dispatchers.Main,
                     origin = EventSources(
                         journal3Application.globalEventSource,
                         ViewClickEventSource(

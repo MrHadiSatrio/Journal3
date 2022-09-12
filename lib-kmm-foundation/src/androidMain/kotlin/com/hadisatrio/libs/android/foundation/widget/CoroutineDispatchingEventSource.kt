@@ -19,15 +19,16 @@ package com.hadisatrio.libs.android.foundation.widget
 
 import com.hadisatrio.libs.kotlin.foundation.event.Event
 import com.hadisatrio.libs.kotlin.foundation.event.EventSource
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
 
-class MainThreadEnforcingEventSource(
+class CoroutineDispatchingEventSource(
+    private val coroutineDispatcher: CoroutineDispatcher,
     private val origin: EventSource
 ) : EventSource {
 
     override fun events(): Flow<Event> {
-        return origin.events().flowOn(Dispatchers.Main)
+        return origin.events().flowOn(coroutineDispatcher)
     }
 }

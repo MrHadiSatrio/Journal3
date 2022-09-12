@@ -28,7 +28,7 @@ import com.hadisatrio.apps.kotlin.journal3.event.RefreshRequestEvent
 import com.hadisatrio.apps.kotlin.journal3.story.ShowStoriesUseCase
 import com.hadisatrio.apps.kotlin.journal3.story.cache.CachingStoriesPresenter
 import com.hadisatrio.libs.android.foundation.lifecycle.LifecycleTriggeredEventSource
-import com.hadisatrio.libs.android.foundation.widget.MainThreadEnforcingEventSource
+import com.hadisatrio.libs.android.foundation.widget.CoroutineDispatchingEventSource
 import com.hadisatrio.libs.android.foundation.widget.RecyclerViewItemSelectionEventSource
 import com.hadisatrio.libs.android.foundation.widget.ViewClickEventSource
 import com.hadisatrio.libs.kotlin.foundation.CoroutineDispatchingUseCase
@@ -62,7 +62,8 @@ class ViewStoriesActivity : AppCompatActivity() {
                         )
                     )
                 ),
-                eventSource = MainThreadEnforcingEventSource(
+                eventSource = CoroutineDispatchingEventSource(
+                    coroutineDispatcher = Dispatchers.Main,
                     origin = EventSources(
                         journal3Application.globalEventSource,
                         LifecycleTriggeredEventSource(
