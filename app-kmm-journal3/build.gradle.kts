@@ -33,7 +33,7 @@ kotlin {
                 api(Dependencies.Commons.DATETIME)
                 api(Dependencies.Commons.OKIO)
 
-                implementation(Dependencies.Commons.JSON)
+                implementation(Dependencies.Commons.KOTLINX_JSON_OKIO)
             }
         }
         val commonTest by getting {
