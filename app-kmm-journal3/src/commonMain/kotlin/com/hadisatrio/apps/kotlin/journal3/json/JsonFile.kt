@@ -15,13 +15,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+@file:OptIn(ExperimentalSerializationApi::class)
+
 package com.hadisatrio.apps.kotlin.journal3.json
 
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.okio.encodeToBufferedSink
 import okio.FileSystem
 import okio.Path
 import okio.buffer
@@ -35,8 +39,9 @@ class JsonFile(
     val name: String get() = path.name
 
     fun put(key: String, element: JsonElement) {
-        val modifiedJson = JsonObject(jsonObject() + (key to element)).toString()
-        fileSystem.write(path) { writeUtf8(modifiedJson) }
+        val modifiedJson = JsonObject(jsonObject() + (key to element))
+        val bufferedSink = fileSystem.sink(path).buffer()
+        bufferedSink.use { Json.encodeToBufferedSink(modifiedJson, it) }
     }
 
     fun get(key: String): JsonElement? {
@@ -55,6 +60,10 @@ class JsonFile(
         if (!fileSystem.exists(path)) {
             return Json.parseToJsonElement("{}").jsonObject
         }
+
+        // There's a bug with kotlinx.serialization that prevented emojis from
+        // being decoded correctly with Json#decodeToBufferedSink.
+        // See https://github.com/Kotlin/kotlinx.serialization/issues/2030.
         val fileContent = fileSystem.source(path).buffer().use { it.readUtf8() }
         val jsonElement = Json.parseToJsonElement(fileContent)
         return jsonElement.jsonObject

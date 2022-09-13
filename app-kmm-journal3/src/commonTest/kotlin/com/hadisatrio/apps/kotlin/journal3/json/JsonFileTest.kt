@@ -48,18 +48,18 @@ class JsonFileTest {
     @Test
     fun `Guards against illegal JSON characters during writes`() = shouldNotThrow<Exception> {
         val jsonFile = JsonFile(fileSystem, path)
-        jsonFile.put("Fizz", JsonPrimitive(""" Buzz" """))
+        jsonFile.put("Fizz", JsonPrimitive(""" Buzz" 👩‍👩‍👧 """))
 
         val fileContent = fileSystem.source(path).buffer().use { it.readUtf8() }
-        fileContent.shouldBe("""{"Fizz":" Buzz\" "}""")
+        fileContent.shouldBe("""{"Fizz":" Buzz\" 👩‍👩‍👧 "}""")
     }
 
     @Test
     fun `Guards against illegal JSON characters during reads`() = shouldNotThrow<Exception> {
         val jsonFile = JsonFile(fileSystem, path)
-        jsonFile.put("Fizz", JsonPrimitive(""" Buzz" """))
+        jsonFile.put("Fizz", JsonPrimitive(""" Buzz" 👩‍👩‍👧 """))
 
-        jsonFile.get("Fizz").shouldBe(JsonPrimitive(""" Buzz" """))
-        jsonFile.getRaw("Fizz").shouldBe(""" Buzz" """)
+        jsonFile.get("Fizz").shouldBe(JsonPrimitive(""" Buzz" 👩‍👩‍👧 """))
+        jsonFile.getRaw("Fizz").shouldBe(""" Buzz" 👩‍👩‍👧 """)
     }
 }

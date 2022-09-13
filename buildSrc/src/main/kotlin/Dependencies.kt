@@ -29,7 +29,7 @@ object Dependencies {
     object Commons {
         const val UUID = "com.benasher44:uuid:0.4.0"
         const val DATETIME = "org.jetbrains.kotlinx:kotlinx-datetime:0.4.0"
-        const val JSON = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.0"
+        const val KOTLINX_JSON_OKIO = "org.jetbrains.kotlinx:kotlinx-serialization-json-okio:1.4.0"
         const val OKIO = "com.squareup.okio:okio:3.2.0"
     }
 
