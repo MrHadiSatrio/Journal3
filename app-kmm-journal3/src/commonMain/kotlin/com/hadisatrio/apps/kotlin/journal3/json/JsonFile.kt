@@ -20,6 +20,7 @@ package com.hadisatrio.apps.kotlin.journal3.json
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.jsonObject
 import okio.FileSystem
 import okio.Path
@@ -43,7 +44,7 @@ class JsonFile(
     }
 
     fun getRaw(key: String): String? {
-        return jsonObject()[key]?.toString()?.removeSurrounding("\"")
+        return (get(key) as? JsonPrimitive)?.content
     }
 
     fun delete() {
