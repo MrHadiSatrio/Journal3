@@ -30,6 +30,7 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 api(project(":lib-kmm-foundation"))
+                api(Dependencies.Commons.URI)
                 api(Dependencies.Commons.DATETIME)
                 api(Dependencies.Commons.OKIO)
 
@@ -72,7 +73,7 @@ android {
     compileSdk = 32
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
     defaultConfig {
-        minSdk = 21
+        minSdk = 23
         targetSdk = 32
     }
 }

@@ -18,8 +18,11 @@
 package com.hadisatrio.apps.kotlin.journal3.story.filesystem
 
 import com.benasher44.uuid.uuid4
+import com.chrynan.uri.core.Uri
+import com.hadisatrio.apps.kotlin.journal3.story.RegularPatterns
 import com.hadisatrio.apps.kotlin.journal3.story.Stories
 import com.hadisatrio.apps.kotlin.journal3.story.Story
+import com.hadisatrio.apps.kotlin.journal3.uri.IllegalUriException
 import okio.FileSystem
 import okio.Path
 
@@ -31,6 +34,19 @@ class FilesystemStories(
     override fun new(): Story {
         fileSystem.createDirectories(dir = path, mustCreate = false)
         return FilesystemStory(fileSystem, path, uuid4())
+    }
+
+    override fun findStory(uri: Uri): Iterable<Story> {
+        val match = Regex(RegularPatterns.STORY_URI).find(uri.uriString)
+            ?: throw IllegalUriException(uri, RegularPatterns.STORY_URI)
+
+        val (idString) = match.destructured
+        val candidatePath = path / idString
+        return if (fileSystem.exists(candidatePath)) {
+            setOf(FilesystemStory(fileSystem, candidatePath))
+        } else {
+            emptySet()
+        }
     }
 
     override fun iterator(): Iterator<Story> {

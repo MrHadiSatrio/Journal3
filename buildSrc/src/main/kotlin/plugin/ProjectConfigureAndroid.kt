@@ -14,7 +14,7 @@ internal fun Project.configureAndroid() {
         buildToolsVersion("7.2.1")
 
         defaultConfig {
-            minSdk = 21
+            minSdk = 23
             consumerProguardFiles("$rootDir/proguard/proguard-rules.pro")
             testInstrumentationRunner("androidx.test.runner.AndroidJUnitRunner")
         }

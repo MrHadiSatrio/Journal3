@@ -15,12 +15,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.hadisatrio.apps.kotlin.journal3.story
+package com.hadisatrio.apps.kotlin.journal3.uri
 
 import com.chrynan.uri.core.Uri
 
-interface Stories : Iterable<Story> {
-    fun new(): Story
-
-    fun findStory(uri: Uri): Iterable<Story>
-}
+class IllegalUriException(
+    uri: Uri,
+    expectedPattern: String
+) : IllegalArgumentException(
+    "Expecting URI in the format of '$expectedPattern'; was ${uri.uriString}."
+)

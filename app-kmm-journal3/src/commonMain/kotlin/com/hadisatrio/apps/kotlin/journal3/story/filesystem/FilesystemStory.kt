@@ -28,12 +28,12 @@ import kotlinx.serialization.json.JsonPrimitive
 import okio.FileSystem
 import okio.Path
 
-class FilesystemStory : Story {
-
-    private val fileSystem: FileSystem
-    private val directory: Path
-    private val detailsFile: JsonFile
+class FilesystemStory(
+    private val fileSystem: FileSystem,
+    private val directory: Path,
+    private val detailsFile: JsonFile,
     private val momentsDirectory: Path
+) : Story {
 
     override val id: Uuid get() {
         return uuidFrom(directory.name)
@@ -51,19 +51,17 @@ class FilesystemStory : Story {
         return FilesystemMoments(fileSystem, momentsDirectory)
     }
 
-    constructor(fileSystem: FileSystem, parentDirectory: Path, id: Uuid) {
-        this.fileSystem = fileSystem
-        this.directory = parentDirectory / id.toString()
-        this.detailsFile = JsonFile(fileSystem, directory / "details")
-        this.momentsDirectory = directory / "moments"
-    }
+    constructor(fileSystem: FileSystem, parentDirectory: Path, id: Uuid) : this(
+        fileSystem = fileSystem,
+        directory = parentDirectory / id.toString()
+    )
 
-    constructor(fileSystem: FileSystem, directory: Path) {
-        this.fileSystem = fileSystem
-        this.directory = directory
-        this.detailsFile = JsonFile(fileSystem, directory / "details")
-        this.momentsDirectory = directory / "moments"
-    }
+    constructor(fileSystem: FileSystem, directory: Path) : this(
+        fileSystem = fileSystem,
+        directory = directory,
+        detailsFile = JsonFile(fileSystem, directory / "details"),
+        momentsDirectory = directory / "moments"
+    )
 
     override fun update(title: String) {
         fileSystem.createDirectories(dir = directory, mustCreate = false)

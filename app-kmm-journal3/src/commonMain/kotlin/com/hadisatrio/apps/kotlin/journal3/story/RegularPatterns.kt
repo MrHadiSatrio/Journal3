@@ -17,10 +17,7 @@
 
 package com.hadisatrio.apps.kotlin.journal3.story
 
-import com.chrynan.uri.core.Uri
+object RegularPatterns {
 
-interface Stories : Iterable<Story> {
-    fun new(): Story
-
-    fun findStory(uri: Uri): Iterable<Story>
+    const val STORY_URI = "^journal3://stories/(.*?)(?:/|$)"
 }

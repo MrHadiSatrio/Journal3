@@ -18,6 +18,8 @@
 package com.hadisatrio.apps.kotlin.journal3.story
 
 import com.benasher44.uuid.uuid4
+import com.chrynan.uri.core.Uri
+import com.hadisatrio.apps.kotlin.journal3.uri.IllegalUriException
 
 class FakeStories(
     private val stories: MutableList<Story>
@@ -29,6 +31,12 @@ class FakeStories(
         val story = FakeStory(uuid4(), stories)
         stories.add(story)
         return story
+    }
+
+    override fun findStory(uri: Uri): Iterable<Story> {
+        val match = Regex(RegularPatterns.STORY_URI).find(uri.uriString)
+        val idString = match?.groupValues?.get(1) ?: throw IllegalUriException(uri, RegularPatterns.STORY_URI)
+        return filter { it.id.toString() == idString }
     }
 
     override fun iterator(): Iterator<Story> {
