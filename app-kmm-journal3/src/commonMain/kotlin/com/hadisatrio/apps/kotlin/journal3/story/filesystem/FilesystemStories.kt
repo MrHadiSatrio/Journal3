@@ -19,6 +19,8 @@ package com.hadisatrio.apps.kotlin.journal3.story.filesystem
 
 import com.benasher44.uuid.uuid4
 import com.chrynan.uri.core.Uri
+import com.hadisatrio.apps.kotlin.journal3.moment.Moment
+import com.hadisatrio.apps.kotlin.journal3.moment.filesystem.FilesystemMoment
 import com.hadisatrio.apps.kotlin.journal3.story.RegularPatterns
 import com.hadisatrio.apps.kotlin.journal3.story.Stories
 import com.hadisatrio.apps.kotlin.journal3.story.Story
@@ -44,6 +46,19 @@ class FilesystemStories(
         val candidatePath = path / idString
         return if (fileSystem.exists(candidatePath)) {
             setOf(FilesystemStory(fileSystem, candidatePath))
+        } else {
+            emptySet()
+        }
+    }
+
+    override fun findMoments(uri: Uri): Iterable<Moment> {
+        val match = Regex(RegularPatterns.MOMENT_URI).find(uri.uriString)
+            ?: return findStory(uri).flatMap { it.moments }
+
+        val (storyIdString, momentIdString) = match.destructured
+        val candidatePath = path / storyIdString / "moments" / momentIdString
+        return if (fileSystem.exists(candidatePath)) {
+            setOf(FilesystemMoment(fileSystem, candidatePath))
         } else {
             emptySet()
         }

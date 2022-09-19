@@ -29,9 +29,9 @@ import kotlinx.serialization.json.JsonPrimitive
 import okio.FileSystem
 import okio.Path
 
-class FilesystemMoment : Moment {
-
+class FilesystemMoment(
     private val file: JsonFile
+) : Moment {
 
     override val id: Uuid get() {
         return uuidFrom(file.name)
@@ -53,13 +53,12 @@ class FilesystemMoment : Moment {
         return DumbSentimentAnalyst.analyze(description.toString())
     }
 
-    constructor(fileSystem: FileSystem, parentDirectory: Path, id: Uuid) {
-        this.file = JsonFile(fileSystem, parentDirectory / id.toString())
-    }
+    constructor(fileSystem: FileSystem, parentDirectory: Path, id: Uuid) : this(
+        fileSystem = fileSystem,
+        file = parentDirectory / id.toString()
+    )
 
-    constructor(fileSystem: FileSystem, file: Path) {
-        this.file = JsonFile(fileSystem, file)
-    }
+    constructor(fileSystem: FileSystem, file: Path) : this(JsonFile(fileSystem, file))
 
     override fun update(timestamp: Timestamp) {
         file.put("timestamp", JsonPrimitive(timestamp.toString()))

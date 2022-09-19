@@ -19,6 +19,7 @@ package com.hadisatrio.apps.kotlin.journal3.story
 
 import com.benasher44.uuid.uuid4
 import com.chrynan.uri.core.Uri
+import com.hadisatrio.apps.kotlin.journal3.moment.Moment
 import com.hadisatrio.apps.kotlin.journal3.uri.IllegalUriException
 
 class FakeStories(
@@ -35,8 +36,15 @@ class FakeStories(
 
     override fun findStory(uri: Uri): Iterable<Story> {
         val match = Regex(RegularPatterns.STORY_URI).find(uri.uriString)
-        val idString = match?.groupValues?.get(1) ?: throw IllegalUriException(uri, RegularPatterns.STORY_URI)
+        val idString = match?.groupValues?.getOrNull(1) ?: throw IllegalUriException(uri, RegularPatterns.STORY_URI)
         return filter { it.id.toString() == idString }
+    }
+
+    override fun findMoments(uri: Uri): Iterable<Moment> {
+        val match = Regex(RegularPatterns.MOMENT_URI).find(uri.uriString)?.groupValues
+        val momentIdString = match?.getOrNull(2) ?: return findStory(uri).flatMap { it.moments }
+        val storyIdString = match.getOrNull(1) ?: throw IllegalUriException(uri, RegularPatterns.MOMENT_URI)
+        return first { it.id.toString() == storyIdString }.moments.filter { it.id.toString() == momentIdString }
     }
 
     override fun iterator(): Iterator<Story> {

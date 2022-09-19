@@ -18,9 +18,12 @@
 package com.hadisatrio.apps.kotlin.journal3.story
 
 import com.chrynan.uri.core.Uri
+import com.hadisatrio.apps.kotlin.journal3.moment.Moment
 
 interface Stories : Iterable<Story> {
     fun new(): Story
 
     fun findStory(uri: Uri): Iterable<Story>
+
+    fun findMoments(uri: Uri): Iterable<Moment>
 }

@@ -86,4 +86,51 @@ class FilesystemStoriesTest {
 
         invalidUris.forEach { shouldThrow<IllegalUriException> { stories.findStory(it) } }
     }
+
+    @Test
+    fun `Returns an empty iterable when asked to find an non-existent moment by URI`() {
+        val stories = SelfPopulatingStories(noOfStories = 1, noOfMoments = 1, origin = stories)
+        val story = stories.first()
+        val uri = Uri.fromString("journal3://stories/${story.id}/moments/${uuid4()}")
+
+        val found = stories.findMoments(uri)
+
+        found.shouldBeEmpty()
+    }
+
+    @Test
+    fun `Finds a moment by URI if one exists`() {
+        val stories = SelfPopulatingStories(noOfStories = 1, noOfMoments = 1, origin = stories)
+        val story = stories.first()
+        val moment = story.moments.first()
+        val uri = Uri.fromString("journal3://stories/${story.id}/moments/${moment.id}")
+
+        val found = stories.findMoments(uri)
+
+        found.shouldHaveSize(1)
+        found.first().id.shouldBe(moment.id)
+    }
+
+    @Test
+    fun `Finds all moments from a story URI if they exists`() {
+        val stories = SelfPopulatingStories(noOfStories = 1, noOfMoments = 10, origin = stories)
+        val story = stories.first()
+        val uri = Uri.fromString("journal3://stories/${story.id}")
+
+        val found = stories.findMoments(uri)
+
+        found.shouldHaveSize(10)
+    }
+
+    @Test
+    fun `Throws IllegalUriException when given an invalid URI to find moments with`() {
+        val invalidUris = setOf(
+            Uri.fromString("https://stories/${uuid4()}"),
+            Uri.fromString("journal2://stories/${uuid4()}"),
+            Uri.fromString("journal3://story/${uuid4()}"),
+            Uri.fromString("journal3://moments/${uuid4()}")
+        )
+
+        invalidUris.forEach { shouldThrow<IllegalUriException> { stories.findMoments(it) } }
+    }
 }

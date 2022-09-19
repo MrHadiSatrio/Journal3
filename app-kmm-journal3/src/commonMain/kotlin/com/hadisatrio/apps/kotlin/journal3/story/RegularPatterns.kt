@@ -20,4 +20,5 @@ package com.hadisatrio.apps.kotlin.journal3.story
 object RegularPatterns {
 
     const val STORY_URI = "^journal3://stories/(.*?)(?:/|$)"
+    const val MOMENT_URI = "^journal3://stories/(.*?)/moments/(.*?)(?:/|$)"
 }
