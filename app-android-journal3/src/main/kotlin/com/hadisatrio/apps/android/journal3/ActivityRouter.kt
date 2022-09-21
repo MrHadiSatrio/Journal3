@@ -21,6 +21,7 @@ import android.app.Activity
 import android.content.Intent
 import com.benasher44.uuid.Uuid
 import com.hadisatrio.apps.android.journal3.story.EditAStoryActivity
+import com.hadisatrio.apps.android.journal3.story.ViewStoryActivity
 import com.hadisatrio.apps.kotlin.journal3.Router
 
 class ActivityRouter(
@@ -47,7 +48,11 @@ class ActivityRouter(
     }
 
     override fun toStoryDetail(id: Uuid) {
-        TODO("Not yet implemented")
+        activity.runOnUiThread {
+            val intent = Intent(activity, ViewStoryActivity::class.java)
+            intent.putExtra("target_id", id.toString())
+            activity.startActivity(intent)
+        }
     }
 
     override fun toMomentDetail(id: Uuid) {
