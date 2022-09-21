@@ -34,6 +34,10 @@ class ActivityRouter(
         }
     }
 
+    override fun toMomentEditor() {
+        TODO("Not yet implemented")
+    }
+
     override fun toStoryEditor(id: Uuid) {
         activity.runOnUiThread {
             val intent = Intent(activity, EditAStoryActivity::class.java)

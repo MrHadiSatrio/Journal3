@@ -15,17 +15,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.hadisatrio.apps.kotlin.journal3
+package com.hadisatrio.apps.kotlin.journal3.event
 
-import com.benasher44.uuid.Uuid
+import com.hadisatrio.libs.kotlin.foundation.event.Event
 
-interface Router {
-    fun toStoryEditor()
+class UnsupportedEvent : Event() {
 
-    fun toMomentEditor()
-
-    fun toStoryEditor(id: Uuid)
-    fun toStoryDetail(id: Uuid)
-    fun toMomentDetail(id: Uuid)
-    fun toPrevious()
+    override fun describeInternally(): Map<String, String> {
+        return emptyMap()
+    }
 }

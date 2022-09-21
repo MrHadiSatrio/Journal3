@@ -17,8 +17,10 @@
 
 package com.hadisatrio.apps.kotlin.journal3.story.filesystem
 
+import com.benasher44.uuid.uuid4
 import com.hadisatrio.apps.kotlin.journal3.story.SelfPopulatingStories
 import io.kotest.matchers.booleans.shouldBeTrue
+import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
 import okio.Path.Companion.toPath
@@ -56,5 +58,12 @@ class FilesystemStoriesTest {
 
         found.shouldHaveSize(1)
         story.id.shouldBe(found.first().id)
+    }
+
+    @Test
+    fun `Returns empty iterable when asked to find a non-existent story by ID`() {
+        val found = stories.find(uuid4())
+
+        found.shouldBeEmpty()
     }
 }
