@@ -68,7 +68,7 @@ class ShowStoriesUseCase(
             "item_position" -> {
                 val position = identifier.toInt()
                 val story = stories.elementAt(position)
-                router.toStoryEditor(story.id)
+                router.toStoryDetail(story.id)
             }
             "action" -> when (identifier) {
                 "add" -> {
