@@ -17,6 +17,7 @@
 
 package com.hadisatrio.apps.kotlin.journal3.story
 
+import com.benasher44.uuid.Uuid
 import com.benasher44.uuid.uuid4
 
 class FakeStories(
@@ -29,6 +30,10 @@ class FakeStories(
         val story = FakeStory(uuid4(), stories)
         stories.add(story)
         return story
+    }
+
+    override fun find(id: Uuid): Iterable<Story> {
+        return filter { it.id == id }
     }
 
     override fun iterator(): Iterator<Story> {

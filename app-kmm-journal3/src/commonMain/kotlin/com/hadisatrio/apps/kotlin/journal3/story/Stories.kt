@@ -17,6 +17,10 @@
 
 package com.hadisatrio.apps.kotlin.journal3.story
 
+import com.benasher44.uuid.Uuid
+
 interface Stories : Iterable<Story> {
     fun new(): Story
+
+    fun find(id: Uuid): Iterable<Story>
 }

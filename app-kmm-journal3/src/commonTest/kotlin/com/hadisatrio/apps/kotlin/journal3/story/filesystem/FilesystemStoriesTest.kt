@@ -17,6 +17,7 @@
 
 package com.hadisatrio.apps.kotlin.journal3.story.filesystem
 
+import com.hadisatrio.apps.kotlin.journal3.story.SelfPopulatingStories
 import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
@@ -44,5 +45,16 @@ class FilesystemStoriesTest {
         stories.shouldHaveSize(1)
         story.title.shouldBe("Foo")
         fileSystem.metadata("content/${story.id}".toPath()).isDirectory.shouldBeTrue()
+    }
+
+    @Test
+    fun `Finds a story by its ID`() {
+        val stories = SelfPopulatingStories(noOfStories = 1, noOfMoments = 1, stories)
+        val story = stories.first()
+
+        val found = stories.find(story.id)
+
+        found.shouldHaveSize(1)
+        story.id.shouldBe(found.first().id)
     }
 }
