@@ -17,6 +17,7 @@
 
 package com.hadisatrio.apps.kotlin.journal3.moment.filesystem
 
+import com.benasher44.uuid.Uuid
 import com.benasher44.uuid.uuid4
 import com.hadisatrio.apps.kotlin.journal3.moment.Moment
 import com.hadisatrio.apps.kotlin.journal3.moment.Moments
@@ -31,6 +32,15 @@ class FilesystemMoments(
     override fun new(): Moment {
         fileSystem.createDirectories(dir = path, mustCreate = false)
         return FilesystemMoment(fileSystem, path, uuid4())
+    }
+
+    override fun find(id: Uuid): Iterable<Moment> {
+        val candidatePath = path / id.toString()
+        if (fileSystem.exists(candidatePath)) {
+            return listOf(FilesystemMoment(fileSystem, candidatePath))
+        } else {
+            return emptyList()
+        }
     }
 
     override fun iterator(): Iterator<Moment> {

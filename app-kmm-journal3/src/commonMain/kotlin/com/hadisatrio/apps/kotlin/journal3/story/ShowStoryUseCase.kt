@@ -45,7 +45,7 @@ class ShowStoryUseCase(
     }
 
     private fun presentState() {
-        val story = stories.find(targetId.asUuid()).first()
+        val story = stories.findStory(targetId.asUuid()).first()
         presenter.present(story)
     }
 
@@ -68,7 +68,7 @@ class ShowStoryUseCase(
         when (kind) {
             "action" -> when (identifier) {
                 "edit" -> {
-                    val story = stories.find(targetId.asUuid()).first()
+                    val story = stories.findStory(targetId.asUuid()).first()
                     router.toStoryEditor(story.id)
                 }
                 "add" -> {

@@ -19,6 +19,7 @@ package com.hadisatrio.apps.kotlin.journal3.story.filesystem
 
 import com.benasher44.uuid.Uuid
 import com.benasher44.uuid.uuid4
+import com.hadisatrio.apps.kotlin.journal3.moment.Moment
 import com.hadisatrio.apps.kotlin.journal3.story.Stories
 import com.hadisatrio.apps.kotlin.journal3.story.Story
 import okio.FileSystem
@@ -34,13 +35,17 @@ class FilesystemStories(
         return FilesystemStory(fileSystem, path, uuid4())
     }
 
-    override fun find(id: Uuid): Iterable<Story> {
+    override fun findStory(id: Uuid): Iterable<Story> {
         val candidatePath = path / id.toString()
         if (fileSystem.exists(candidatePath)) {
             return listOf(FilesystemStory(fileSystem, candidatePath))
         } else {
             return emptyList()
         }
+    }
+
+    override fun findMoment(id: Uuid): Iterable<Moment> {
+        return flatMap { it.moments.find(id) }
     }
 
     override fun iterator(): Iterator<Story> {
