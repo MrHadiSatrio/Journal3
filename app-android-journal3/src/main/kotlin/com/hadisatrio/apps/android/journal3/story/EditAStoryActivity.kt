@@ -49,7 +49,7 @@ class EditAStoryActivity : AppCompatActivity() {
             coroutineScope = lifecycleScope,
             coroutineDispatcher = Dispatchers.Default,
             origin = EditAStoryUseCase(
-                targetId = BundledTargetId(intent),
+                targetId = BundledTargetId(intent, "target_id"),
                 stories = journal3Application.stories,
                 presenter = CoroutineDispatchingPresenter(
                     coroutineScope = lifecycleScope,

@@ -49,7 +49,7 @@ class ViewStoryActivity : AppCompatActivity() {
             coroutineScope = lifecycleScope,
             coroutineDispatcher = Dispatchers.Default,
             origin = ShowStoryUseCase(
-                targetId = BundledTargetId(intent),
+                targetId = BundledTargetId(intent, "target_id"),
                 stories = journal3Application.stories,
                 presenter = CoroutineDispatchingPresenter(
                     coroutineScope = lifecycleScope,

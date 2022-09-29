@@ -24,13 +24,14 @@ import com.benasher44.uuid.uuidFrom
 import com.hadisatrio.apps.kotlin.journal3.id.TargetId
 
 class BundledTargetId(
-    private val bundle: Bundle
+    private val bundle: Bundle,
+    private val bundleKey: String
 ) : TargetId {
 
-    constructor(intent: Intent) : this(intent.extras ?: Bundle.EMPTY)
+    constructor(intent: Intent, key: String) : this(intent.extras ?: Bundle.EMPTY, key)
 
     override fun asUuid(): Uuid {
-        return uuidFrom(bundle.getString("target_id", "00000000-0000-0000-0000-000000000000"))
+        return uuidFrom(bundle.getString(bundleKey, "00000000-0000-0000-0000-000000000000"))
     }
 
     override fun isValid(): Boolean {
