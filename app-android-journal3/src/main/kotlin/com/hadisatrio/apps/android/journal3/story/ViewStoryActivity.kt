@@ -19,14 +19,17 @@ package com.hadisatrio.apps.android.journal3.story
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import com.hadisatrio.apps.android.journal3.ActivityRouter
 import com.hadisatrio.apps.android.journal3.Journal3.Companion.journal3Application
 import com.hadisatrio.apps.android.journal3.R
 import com.hadisatrio.apps.android.journal3.id.BundledTargetId
 import com.hadisatrio.apps.android.journal3.moment.MomentsRecyclerViewPresenter
+import com.hadisatrio.apps.kotlin.journal3.event.RefreshRequestEvent
 import com.hadisatrio.apps.kotlin.journal3.story.ShowStoryUseCase
 import com.hadisatrio.apps.kotlin.journal3.story.cache.CachingStoryPresenter
+import com.hadisatrio.libs.android.foundation.lifecycle.LifecycleTriggeredEventSource
 import com.hadisatrio.libs.android.foundation.widget.CoroutineDispatchingEventSource
 import com.hadisatrio.libs.android.foundation.widget.TextViewStringPresenter
 import com.hadisatrio.libs.android.foundation.widget.ViewClickEventSource
@@ -79,6 +82,11 @@ class ViewStoryActivity : AppCompatActivity() {
                     coroutineDispatcher = Dispatchers.Main,
                     origin = EventSources(
                         journal3Application.globalEventSource,
+                        LifecycleTriggeredEventSource(
+                            lifecycleOwner = this,
+                            lifecycleEvent = Lifecycle.Event.ON_RESUME,
+                            eventFactory = { RefreshRequestEvent("lifecycle") }
+                        ),
                         ViewClickEventSource(
                             view = findViewById(R.id.add_button),
                             eventFactory = { SelectionEvent("action", "add") }

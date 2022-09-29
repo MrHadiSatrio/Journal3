@@ -18,6 +18,7 @@
 package com.hadisatrio.apps.kotlin.journal3.story
 
 import com.hadisatrio.apps.kotlin.journal3.Router
+import com.hadisatrio.apps.kotlin.journal3.event.RefreshRequestEvent
 import com.hadisatrio.apps.kotlin.journal3.id.TargetId
 import com.hadisatrio.libs.kotlin.foundation.UseCase
 import com.hadisatrio.libs.kotlin.foundation.event.CompletionEvent
@@ -59,6 +60,7 @@ class ShowStoryUseCase(
     private fun handleEvent(event: Event) {
         when (event) {
             is SelectionEvent -> handleSelectionEvent(event)
+            is RefreshRequestEvent -> presentState()
         }
     }
 

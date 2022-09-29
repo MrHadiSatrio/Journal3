@@ -19,6 +19,7 @@ package com.hadisatrio.apps.kotlin.journal3.story
 
 import com.hadisatrio.apps.kotlin.journal3.Router
 import com.hadisatrio.apps.kotlin.journal3.event.RecordedEventSource
+import com.hadisatrio.apps.kotlin.journal3.event.RefreshRequestEvent
 import com.hadisatrio.apps.kotlin.journal3.event.UnsupportedEvent
 import com.hadisatrio.apps.kotlin.journal3.id.FakeTargetId
 import com.hadisatrio.libs.kotlin.foundation.event.CompletionEvent
@@ -52,6 +53,29 @@ class ShowStoryUseCaseTest {
         )()
 
         verify(exactly = 1) { presenter.present(story) }
+    }
+
+    @Test
+    fun `Forwards story to the presenter again when refresh is requested`() {
+        val story = stories.first()
+        val targetId = FakeTargetId(story.id)
+        val presenter = mockk<Presenter<Story>>(relaxed = true)
+
+        ShowStoryUseCase(
+            targetId = targetId,
+            stories = stories,
+            presenter = presenter,
+            eventSource = RecordedEventSource(
+                RefreshRequestEvent("test"),
+                RefreshRequestEvent("test"),
+                RefreshRequestEvent("test"),
+                CompletionEvent()
+            ),
+            eventSink = mockk(relaxed = true),
+            router = mockk(relaxed = true)
+        )()
+
+        verify(exactly = 4) { presenter.present(story) }
     }
 
     @Test
