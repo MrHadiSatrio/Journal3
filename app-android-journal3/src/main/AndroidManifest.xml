@@ -46,6 +46,8 @@
 
         <activity android:name=".story.EditAStoryActivity" />
 
+        <activity android:name=".moment.EditAMomentActivity" />
+
     </application>
 
 </manifest>
