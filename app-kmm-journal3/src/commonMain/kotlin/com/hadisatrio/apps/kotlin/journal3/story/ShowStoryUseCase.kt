@@ -65,15 +65,11 @@ class ShowStoryUseCase(
     private fun handleSelectionEvent(event: SelectionEvent) {
         val kind = event.selectionKind
         val identifier = event.selectedIdentifier
+        val story = { stories.findStory(targetId.asUuid()).first() }
         when (kind) {
             "action" -> when (identifier) {
-                "edit" -> {
-                    val story = stories.findStory(targetId.asUuid()).first()
-                    router.toStoryEditor(story.id)
-                }
-                "add" -> {
-                    router.toMomentEditor()
-                }
+                "edit" -> router.toStoryEditor(story().id)
+                "add" -> router.toMomentEditor(story().id)
             }
         }
     }

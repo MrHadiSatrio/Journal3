@@ -80,6 +80,10 @@ class ViewStoryActivity : AppCompatActivity() {
                     origin = EventSources(
                         journal3Application.globalEventSource,
                         ViewClickEventSource(
+                            view = findViewById(R.id.add_button),
+                            eventFactory = { SelectionEvent("action", "add") }
+                        ),
+                        ViewClickEventSource(
                             view = findViewById(R.id.edit_button),
                             eventFactory = { SelectionEvent("action", "edit") }
                         )

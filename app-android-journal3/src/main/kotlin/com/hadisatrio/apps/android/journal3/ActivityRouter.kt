@@ -35,7 +35,7 @@ class ActivityRouter(
         }
     }
 
-    override fun toMomentEditor() {
+    override fun toMomentEditor(storyId: Uuid) {
         TODO("Not yet implemented")
     }
 
