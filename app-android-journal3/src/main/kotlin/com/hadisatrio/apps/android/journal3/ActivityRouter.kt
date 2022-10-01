@@ -36,6 +36,15 @@ class ActivityRouter(
         }
     }
 
+    override fun toMomentEditor(id: Uuid, storyId: Uuid) {
+        activity.runOnUiThread {
+            val intent = Intent(activity, EditAMomentActivity::class.java)
+            intent.putExtra("target_id", id.toString())
+            intent.putExtra("story_id", storyId.toString())
+            activity.startActivity(intent)
+        }
+    }
+
     override fun toMomentEditor(storyId: Uuid) {
         activity.runOnUiThread {
             val intent = Intent(activity, EditAMomentActivity::class.java)

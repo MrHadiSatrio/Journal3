@@ -121,6 +121,28 @@ class ShowStoryUseCaseTest {
     }
 
     @Test
+    fun `Routes to the moment editor when action 'item_position' is selected`() {
+        val story = stories.first()
+        val moment = story.moments.first()
+        val targetId = FakeTargetId(story.id)
+        val router = mockk<Router>(relaxed = true)
+
+        ShowStoryUseCase(
+            targetId = targetId,
+            stories = stories,
+            presenter = mockk(relaxed = true),
+            eventSource = RecordedEventSource(
+                SelectionEvent("item_position", "0"),
+                CompletionEvent()
+            ),
+            eventSink = mockk(relaxed = true),
+            router = router
+        )()
+
+        verify(exactly = 1) { router.toMomentEditor(moment.id, story.id) }
+    }
+
+    @Test
     fun `Routes to the moment editor when action 'add' is selected`() {
         val story = stories.first()
         val targetId = FakeTargetId(story.id)

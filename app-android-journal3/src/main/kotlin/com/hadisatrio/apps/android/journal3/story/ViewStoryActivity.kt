@@ -31,6 +31,7 @@ import com.hadisatrio.apps.kotlin.journal3.story.ShowStoryUseCase
 import com.hadisatrio.apps.kotlin.journal3.story.cache.CachingStoryPresenter
 import com.hadisatrio.libs.android.foundation.lifecycle.LifecycleTriggeredEventSource
 import com.hadisatrio.libs.android.foundation.widget.CoroutineDispatchingEventSource
+import com.hadisatrio.libs.android.foundation.widget.RecyclerViewItemSelectionEventSource
 import com.hadisatrio.libs.android.foundation.widget.TextViewStringPresenter
 import com.hadisatrio.libs.android.foundation.widget.ViewClickEventSource
 import com.hadisatrio.libs.kotlin.foundation.CoroutineDispatchingUseCase
@@ -43,6 +44,7 @@ import kotlinx.coroutines.Dispatchers
 
 class ViewStoryActivity : AppCompatActivity() {
 
+    @Suppress("LongMethod")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -94,6 +96,9 @@ class ViewStoryActivity : AppCompatActivity() {
                         ViewClickEventSource(
                             view = findViewById(R.id.edit_button),
                             eventFactory = { SelectionEvent("action", "edit") }
+                        ),
+                        RecyclerViewItemSelectionEventSource(
+                            recyclerView = findViewById(R.id.moments_list)
                         )
                     )
                 ),
