@@ -23,4 +23,6 @@ interface Moments : Iterable<Moment> {
     fun new(): Moment
 
     fun find(id: Uuid): Iterable<Moment>
+
+    fun mostRecent(): Moment
 }

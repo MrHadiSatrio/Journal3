@@ -22,6 +22,7 @@ import com.hadisatrio.apps.kotlin.journal3.story.SelfPopulatingStories
 import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldHaveSize
+import io.kotest.matchers.ints.shouldBeLessThan
 import io.kotest.matchers.shouldBe
 import okio.Path.Companion.toPath
 import okio.fakefilesystem.FakeFileSystem
@@ -85,5 +86,17 @@ class FilesystemStoriesTest {
         val found = stories.findMoment(uuid4())
 
         found.shouldBeEmpty()
+    }
+
+    @Test
+    fun `Fetches its most recent moment`() {
+        val stories = SelfPopulatingStories(noOfStories = 9, noOfMoments = 10, stories)
+        stories.new().update("Foo") // ...add a story with no moments to increase variety.
+
+        val mostRecentMoment = stories.mostRecentMoment()
+
+        stories.flatMap { it.moments }.filterNot { it.id == mostRecentMoment.id }.forEach { other ->
+            other.timestamp.compareTo(mostRecentMoment.timestamp).shouldBeLessThan(0)
+        }
     }
 }

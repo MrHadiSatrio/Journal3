@@ -36,6 +36,10 @@ class FakeMoments(
         return filter { it.id == id }
     }
 
+    override fun mostRecent(): Moment {
+        return maxBy { it.timestamp }
+    }
+
     override fun iterator(): Iterator<Moment> {
         return moments.iterator()
     }

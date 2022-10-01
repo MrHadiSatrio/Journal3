@@ -18,17 +18,20 @@
 package com.hadisatrio.apps.kotlin.journal3.datetime
 
 import kotlinx.datetime.Instant
-import kotlin.jvm.JvmInline
 
 @JvmInline
 value class Timestamp(
     private val value: Instant
-) {
+) : Comparable<Timestamp> {
 
     constructor(iso8601: String) : this(Instant.parse(iso8601))
 
     fun toEpochMilliseconds(): Long {
         return value.toEpochMilliseconds()
+    }
+
+    override fun compareTo(other: Timestamp): Int {
+        return value.compareTo(other.value)
     }
 
     override fun toString(): String {

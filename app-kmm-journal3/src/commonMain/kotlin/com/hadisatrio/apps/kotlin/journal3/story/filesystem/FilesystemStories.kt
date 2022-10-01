@@ -48,6 +48,15 @@ class FilesystemStories(
         return flatMap { it.moments.find(id) }
     }
 
+    override fun mostRecentMoment(): Moment {
+        val recentMoments = mutableListOf<Moment>()
+        forEach { story ->
+            if (!story.moments.iterator().hasNext()) return@forEach
+            recentMoments.add(story.moments.mostRecent())
+        }
+        return recentMoments.maxBy { it.timestamp }
+    }
+
     override fun iterator(): Iterator<Story> {
         fileSystem.createDirectories(dir = path, mustCreate = false)
         return fileSystem.list(path).map { path -> FilesystemStory(fileSystem, path) }.iterator()

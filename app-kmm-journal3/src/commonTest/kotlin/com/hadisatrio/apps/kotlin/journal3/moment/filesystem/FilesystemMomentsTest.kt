@@ -27,6 +27,7 @@ import io.kotest.matchers.booleans.shouldBeFalse
 import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldHaveSize
+import io.kotest.matchers.ints.shouldBeLessThan
 import io.kotest.matchers.shouldBe
 import okio.Path.Companion.toPath
 import okio.fakefilesystem.FakeFileSystem
@@ -78,6 +79,18 @@ class FilesystemMomentsTest {
         val found = story.moments.find(uuid4())
 
         found.shouldBeEmpty()
+    }
+
+    @Test
+    fun `Fetches its most recent moment`() {
+        val stories = SelfPopulatingStories(noOfStories = 1, noOfMoments = 10, stories)
+        val story = stories.first()
+
+        val mostRecent = story.moments.mostRecent()
+
+        story.moments.filterNot { it.id == mostRecent.id }.forEach { other ->
+            other.timestamp.compareTo(mostRecent.timestamp).shouldBeLessThan(0)
+        }
     }
 
     @Test

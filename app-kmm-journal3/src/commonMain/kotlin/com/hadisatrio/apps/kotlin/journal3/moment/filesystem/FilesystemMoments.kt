@@ -43,6 +43,10 @@ class FilesystemMoments(
         }
     }
 
+    override fun mostRecent(): Moment {
+        return maxBy { it.timestamp }
+    }
+
     override fun iterator(): Iterator<Moment> {
         fileSystem.createDirectories(dir = path, mustCreate = false)
         return fileSystem.list(path).map { path -> FilesystemMoment(fileSystem, path) }.iterator()
