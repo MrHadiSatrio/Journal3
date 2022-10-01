@@ -37,6 +37,10 @@ class FakeStories(
         return filter { it.id == id }
     }
 
+    override fun hasMoments(): Boolean {
+        return any { story -> story.moments.count() > 0 }
+    }
+
     override fun findMoment(id: Uuid): Iterable<Moment> {
         return flatMap { it.moments.find(id) }
     }

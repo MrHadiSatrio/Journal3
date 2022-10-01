@@ -61,6 +61,15 @@ class FilesystemMomentsTest {
     }
 
     @Test
+    fun `Counts its moments`() {
+        val story = stories.new()
+
+        repeat(10) { story.moments.new().update(TokenableString("Foo")) }
+
+        story.moments.shouldHaveSize(10)
+    }
+
+    @Test
     fun `Finds a moment by its ID`() {
         val stories = SelfPopulatingStories(noOfStories = 1, noOfMoments = 10, stories)
         val story = stories.first()

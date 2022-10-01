@@ -25,6 +25,8 @@ interface Stories : Iterable<Story> {
 
     fun findStory(id: Uuid): Iterable<Story>
 
+    fun hasMoments(): Boolean
+
     fun findMoment(id: Uuid): Iterable<Moment>
 
     fun mostRecentMoment(): Moment

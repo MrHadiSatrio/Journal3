@@ -22,6 +22,8 @@ import com.benasher44.uuid.Uuid
 interface Moments : Iterable<Moment> {
     fun new(): Moment
 
+    fun count(): Int
+
     fun find(id: Uuid): Iterable<Moment>
 
     fun mostRecent(): Moment

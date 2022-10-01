@@ -24,11 +24,14 @@ import com.hadisatrio.apps.kotlin.journal3.story.Stories
 import com.hadisatrio.apps.kotlin.journal3.story.Story
 import okio.FileSystem
 import okio.Path
+import okio.Path.Companion.toPath
 
 class FilesystemStories(
     private val fileSystem: FileSystem,
     private val path: Path
 ) : Stories {
+
+    constructor(fileSystem: FileSystem, path: String) : this(fileSystem, path.toPath())
 
     override fun new(): Story {
         fileSystem.createDirectories(dir = path, mustCreate = false)
@@ -42,6 +45,10 @@ class FilesystemStories(
         } else {
             return emptyList()
         }
+    }
+
+    override fun hasMoments(): Boolean {
+        return any { story -> story.moments.count() > 0 }
     }
 
     override fun findMoment(id: Uuid): Iterable<Moment> {

@@ -32,6 +32,10 @@ class FakeMoments(
         return moment
     }
 
+    override fun count(): Int {
+        return moments.size
+    }
+
     override fun find(id: Uuid): Iterable<Moment> {
         return filter { it.id == id }
     }
