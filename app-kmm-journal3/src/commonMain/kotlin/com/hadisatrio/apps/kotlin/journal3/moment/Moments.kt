@@ -17,6 +17,10 @@
 
 package com.hadisatrio.apps.kotlin.journal3.moment
 
+import com.benasher44.uuid.Uuid
+
 interface Moments : Iterable<Moment> {
     fun new(): Moment
+
+    fun find(id: Uuid): Iterable<Moment>
 }

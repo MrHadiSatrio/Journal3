@@ -22,6 +22,10 @@ import com.benasher44.uuid.Uuid
 interface Router {
     fun toStoryEditor()
 
+    fun toMomentEditor(id: Uuid, storyId: Uuid)
+
+    fun toMomentEditor(storyId: Uuid)
+
     fun toStoryEditor(id: Uuid)
     fun toStoryDetail(id: Uuid)
     fun toMomentDetail(id: Uuid)

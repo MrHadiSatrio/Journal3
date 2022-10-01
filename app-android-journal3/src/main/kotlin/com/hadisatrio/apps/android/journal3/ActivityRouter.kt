@@ -20,7 +20,9 @@ package com.hadisatrio.apps.android.journal3
 import android.app.Activity
 import android.content.Intent
 import com.benasher44.uuid.Uuid
+import com.hadisatrio.apps.android.journal3.moment.EditAMomentActivity
 import com.hadisatrio.apps.android.journal3.story.EditAStoryActivity
+import com.hadisatrio.apps.android.journal3.story.ViewStoryActivity
 import com.hadisatrio.apps.kotlin.journal3.Router
 
 class ActivityRouter(
@@ -34,6 +36,23 @@ class ActivityRouter(
         }
     }
 
+    override fun toMomentEditor(id: Uuid, storyId: Uuid) {
+        activity.runOnUiThread {
+            val intent = Intent(activity, EditAMomentActivity::class.java)
+            intent.putExtra("target_id", id.toString())
+            intent.putExtra("story_id", storyId.toString())
+            activity.startActivity(intent)
+        }
+    }
+
+    override fun toMomentEditor(storyId: Uuid) {
+        activity.runOnUiThread {
+            val intent = Intent(activity, EditAMomentActivity::class.java)
+            intent.putExtra("story_id", storyId.toString())
+            activity.startActivity(intent)
+        }
+    }
+
     override fun toStoryEditor(id: Uuid) {
         activity.runOnUiThread {
             val intent = Intent(activity, EditAStoryActivity::class.java)
@@ -43,7 +62,11 @@ class ActivityRouter(
     }
 
     override fun toStoryDetail(id: Uuid) {
-        TODO("Not yet implemented")
+        activity.runOnUiThread {
+            val intent = Intent(activity, ViewStoryActivity::class.java)
+            intent.putExtra("target_id", id.toString())
+            activity.startActivity(intent)
+        }
     }
 
     override fun toMomentDetail(id: Uuid) {

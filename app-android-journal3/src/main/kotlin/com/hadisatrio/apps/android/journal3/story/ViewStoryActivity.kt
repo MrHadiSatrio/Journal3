@@ -19,70 +19,87 @@ package com.hadisatrio.apps.android.journal3.story
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import com.hadisatrio.apps.android.journal3.ActivityRouter
 import com.hadisatrio.apps.android.journal3.Journal3.Companion.journal3Application
 import com.hadisatrio.apps.android.journal3.R
 import com.hadisatrio.apps.android.journal3.id.BundledTargetId
-import com.hadisatrio.apps.kotlin.journal3.story.EditAStoryUseCase
-import com.hadisatrio.libs.android.foundation.widget.BackButtonCancellationEventSource
+import com.hadisatrio.apps.android.journal3.moment.MomentsRecyclerViewPresenter
+import com.hadisatrio.apps.kotlin.journal3.event.RefreshRequestEvent
+import com.hadisatrio.apps.kotlin.journal3.story.ShowStoryUseCase
+import com.hadisatrio.apps.kotlin.journal3.story.cache.CachingStoryPresenter
+import com.hadisatrio.libs.android.foundation.lifecycle.LifecycleTriggeredEventSource
 import com.hadisatrio.libs.android.foundation.widget.CoroutineDispatchingEventSource
-import com.hadisatrio.libs.android.foundation.widget.EditTextInputEventSource
+import com.hadisatrio.libs.android.foundation.widget.RecyclerViewItemSelectionEventSource
 import com.hadisatrio.libs.android.foundation.widget.TextViewStringPresenter
 import com.hadisatrio.libs.android.foundation.widget.ViewClickEventSource
 import com.hadisatrio.libs.kotlin.foundation.CoroutineDispatchingUseCase
-import com.hadisatrio.libs.kotlin.foundation.event.CompletionEvent
 import com.hadisatrio.libs.kotlin.foundation.event.EventSources
+import com.hadisatrio.libs.kotlin.foundation.event.SelectionEvent
 import com.hadisatrio.libs.kotlin.foundation.presentation.AdaptingPresenter
 import com.hadisatrio.libs.kotlin.foundation.presentation.CoroutineDispatchingPresenter
 import com.hadisatrio.libs.kotlin.foundation.presentation.Presenters
 import kotlinx.coroutines.Dispatchers
 
-class EditAStoryActivity : AppCompatActivity() {
+class ViewStoryActivity : AppCompatActivity() {
 
+    @Suppress("LongMethod")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setContentView(R.layout.activity_edit_a_story)
+        setContentView(R.layout.activity_view_story)
 
         CoroutineDispatchingUseCase(
             coroutineScope = lifecycleScope,
             coroutineDispatcher = Dispatchers.Default,
-            origin = EditAStoryUseCase(
+            origin = ShowStoryUseCase(
                 targetId = BundledTargetId(intent, "target_id"),
                 stories = journal3Application.stories,
                 presenter = CoroutineDispatchingPresenter(
                     coroutineScope = lifecycleScope,
                     coroutineDispatcher = Dispatchers.Main,
-                    origin = Presenters(
-                        AdaptingPresenter(
-                            origin = TextViewStringPresenter(findViewById(R.id.title_text_field)),
-                            adapter = StoryStringAdapter("title")
-                        ),
-                        AdaptingPresenter(
-                            origin = TextViewStringPresenter(findViewById(R.id.synopsis_text_field)),
-                            adapter = StoryStringAdapter("synopsis")
+                    origin = CachingStoryPresenter(
+                        origin = CoroutineDispatchingPresenter(
+                            coroutineScope = lifecycleScope,
+                            coroutineDispatcher = Dispatchers.Main,
+                            origin = Presenters(
+                                AdaptingPresenter(
+                                    origin = TextViewStringPresenter(findViewById(R.id.title_label)),
+                                    adapter = StoryStringAdapter("title")
+                                ),
+                                AdaptingPresenter(
+                                    origin = TextViewStringPresenter(findViewById(R.id.synopsis_label)),
+                                    adapter = StoryStringAdapter("synopsis")
+                                ),
+                                AdaptingPresenter(
+                                    origin = MomentsRecyclerViewPresenter(findViewById(R.id.moments_list)),
+                                    adapter = { thing -> thing.moments }
+                                )
+                            )
                         )
                     )
                 ),
-                modalPresenter = journal3Application.modalPresenter,
                 eventSource = CoroutineDispatchingEventSource(
                     coroutineDispatcher = Dispatchers.Main,
                     origin = EventSources(
                         journal3Application.globalEventSource,
+                        LifecycleTriggeredEventSource(
+                            lifecycleOwner = this,
+                            lifecycleEvent = Lifecycle.Event.ON_RESUME,
+                            eventFactory = { RefreshRequestEvent("lifecycle") }
+                        ),
                         ViewClickEventSource(
                             view = findViewById(R.id.add_button),
-                            eventFactory = { CompletionEvent() }
+                            eventFactory = { SelectionEvent("action", "add") }
                         ),
-                        EditTextInputEventSource(
-                            editText = findViewById(R.id.title_text_field),
-                            inputKind = "title"
+                        ViewClickEventSource(
+                            view = findViewById(R.id.edit_button),
+                            eventFactory = { SelectionEvent("action", "edit") }
                         ),
-                        EditTextInputEventSource(
-                            editText = findViewById(R.id.synopsis_text_field),
-                            inputKind = "synopsis"
-                        ),
-                        BackButtonCancellationEventSource(this)
+                        RecyclerViewItemSelectionEventSource(
+                            recyclerView = findViewById(R.id.moments_list)
+                        )
                     )
                 ),
                 eventSink = journal3Application.globalEventSink,

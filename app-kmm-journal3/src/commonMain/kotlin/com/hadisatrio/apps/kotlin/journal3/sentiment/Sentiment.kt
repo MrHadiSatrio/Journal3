@@ -32,6 +32,10 @@ value class Sentiment(val value: Float) {
         }
     }
 
+    override fun toString(): String {
+        return value.toString()
+    }
+
     companion object {
         val DEFAULT = Sentiment(0.123456789F)
     }

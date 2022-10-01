@@ -42,7 +42,11 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".story.ViewStoryActivity" />
+
         <activity android:name=".story.EditAStoryActivity" />
+
+        <activity android:name=".moment.EditAMomentActivity" />
 
     </application>
 

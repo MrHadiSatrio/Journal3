@@ -94,7 +94,7 @@ class ShowStoriesUseCaseTest {
     }
 
     @Test
-    fun `Routes to the editor when a valid story is selected through its position`() {
+    fun `Routes to the detail when a valid story is selected through its position`() {
         val eventSink = mockk<EventSink>(relaxed = true)
         val router = mockk<Router>(relaxed = true)
 
@@ -109,7 +109,7 @@ class ShowStoriesUseCaseTest {
             router = router
         )()
 
-        verify(exactly = 1) { router.toStoryEditor(stories.elementAt(9).id) }
+        verify(exactly = 1) { router.toStoryDetail(stories.elementAt(9).id) }
         verify(exactly = 1) { eventSink.sink(withArg { it.name.shouldBe("Selection Event") }) }
     }
 }

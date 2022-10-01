@@ -19,6 +19,7 @@ package com.hadisatrio.apps.kotlin.journal3.story
 
 import com.hadisatrio.apps.kotlin.journal3.Router
 import com.hadisatrio.apps.kotlin.journal3.event.RefreshRequestEvent
+import com.hadisatrio.apps.kotlin.journal3.id.TargetId
 import com.hadisatrio.libs.kotlin.foundation.UseCase
 import com.hadisatrio.libs.kotlin.foundation.event.CompletionEvent
 import com.hadisatrio.libs.kotlin.foundation.event.Event
@@ -30,9 +31,10 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.takeWhile
 import kotlinx.coroutines.runBlocking
 
-class ShowStoriesUseCase(
+class ShowStoryUseCase(
+    private val targetId: TargetId,
     private val stories: Stories,
-    private val presenter: Presenter<Stories>,
+    private val presenter: Presenter<Story>,
     private val eventSource: EventSource,
     private val eventSink: EventSink,
     private val router: Router
@@ -44,7 +46,8 @@ class ShowStoriesUseCase(
     }
 
     private fun presentState() {
-        presenter.present(stories)
+        val story = stories.findStory(targetId.asUuid()).first()
+        presenter.present(story)
     }
 
     private fun observeEvents() = runBlocking {
@@ -56,24 +59,23 @@ class ShowStoriesUseCase(
 
     private fun handleEvent(event: Event) {
         when (event) {
-            is SelectionEvent -> handleSelection(event)
+            is SelectionEvent -> handleSelectionEvent(event)
             is RefreshRequestEvent -> presentState()
         }
     }
 
-    private fun handleSelection(event: SelectionEvent) {
+    private fun handleSelectionEvent(event: SelectionEvent) {
         val kind = event.selectionKind
         val identifier = event.selectedIdentifier
+        val story = stories.findStory(targetId.asUuid()).first()
         when (kind) {
             "item_position" -> {
-                val position = identifier.toInt()
-                val story = stories.elementAt(position)
-                router.toStoryDetail(story.id)
+                val moment = story.moments.elementAt(identifier.toInt())
+                router.toMomentEditor(moment.id, story.id)
             }
             "action" -> when (identifier) {
-                "add" -> {
-                    router.toStoryEditor()
-                }
+                "edit" -> router.toStoryEditor(story.id)
+                "add" -> router.toMomentEditor(story.id)
             }
         }
     }

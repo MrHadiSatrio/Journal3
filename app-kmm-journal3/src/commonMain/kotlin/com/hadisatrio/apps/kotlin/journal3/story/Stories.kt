@@ -17,6 +17,13 @@
 
 package com.hadisatrio.apps.kotlin.journal3.story
 
+import com.benasher44.uuid.Uuid
+import com.hadisatrio.apps.kotlin.journal3.moment.Moment
+
 interface Stories : Iterable<Story> {
     fun new(): Story
+
+    fun findStory(id: Uuid): Iterable<Story>
+
+    fun findMoment(id: Uuid): Iterable<Moment>
 }

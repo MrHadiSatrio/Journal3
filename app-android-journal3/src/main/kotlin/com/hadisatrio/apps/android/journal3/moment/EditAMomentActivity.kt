@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.hadisatrio.apps.android.journal3.story
+package com.hadisatrio.apps.android.journal3.moment
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
@@ -23,8 +23,11 @@ import androidx.lifecycle.lifecycleScope
 import com.hadisatrio.apps.android.journal3.ActivityRouter
 import com.hadisatrio.apps.android.journal3.Journal3.Companion.journal3Application
 import com.hadisatrio.apps.android.journal3.R
+import com.hadisatrio.apps.android.journal3.datetime.TimestampSelectionEventSource
 import com.hadisatrio.apps.android.journal3.id.BundledTargetId
-import com.hadisatrio.apps.kotlin.journal3.story.EditAStoryUseCase
+import com.hadisatrio.apps.kotlin.journal3.moment.EditAMomentUseCase
+import com.hadisatrio.libs.android.foundation.material.SliderFloatPresenter
+import com.hadisatrio.libs.android.foundation.material.SliderSelectionEventSource
 import com.hadisatrio.libs.android.foundation.widget.BackButtonCancellationEventSource
 import com.hadisatrio.libs.android.foundation.widget.CoroutineDispatchingEventSource
 import com.hadisatrio.libs.android.foundation.widget.EditTextInputEventSource
@@ -38,30 +41,35 @@ import com.hadisatrio.libs.kotlin.foundation.presentation.CoroutineDispatchingPr
 import com.hadisatrio.libs.kotlin.foundation.presentation.Presenters
 import kotlinx.coroutines.Dispatchers
 
-class EditAStoryActivity : AppCompatActivity() {
+class EditAMomentActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setContentView(R.layout.activity_edit_a_story)
+        setContentView(R.layout.activity_edit_a_moment)
 
         CoroutineDispatchingUseCase(
             coroutineScope = lifecycleScope,
             coroutineDispatcher = Dispatchers.Default,
-            origin = EditAStoryUseCase(
+            origin = EditAMomentUseCase(
                 targetId = BundledTargetId(intent, "target_id"),
+                storyId = BundledTargetId(intent, "story_id"),
                 stories = journal3Application.stories,
                 presenter = CoroutineDispatchingPresenter(
                     coroutineScope = lifecycleScope,
                     coroutineDispatcher = Dispatchers.Main,
                     origin = Presenters(
                         AdaptingPresenter(
-                            origin = TextViewStringPresenter(findViewById(R.id.title_text_field)),
-                            adapter = StoryStringAdapter("title")
+                            origin = TextViewStringPresenter(findViewById(R.id.timestamp_selector_button)),
+                            adapter = { moment -> moment.timestamp.toString() }
                         ),
                         AdaptingPresenter(
-                            origin = TextViewStringPresenter(findViewById(R.id.synopsis_text_field)),
-                            adapter = StoryStringAdapter("synopsis")
+                            origin = TextViewStringPresenter(findViewById(R.id.description_text_field)),
+                            adapter = { moment -> moment.description.toString() }
+                        ),
+                        AdaptingPresenter(
+                            origin = SliderFloatPresenter(findViewById(R.id.sentiment_slider)),
+                            adapter = { moment -> moment.sentiment.value }
                         )
                     )
                 ),
@@ -74,13 +82,16 @@ class EditAStoryActivity : AppCompatActivity() {
                             view = findViewById(R.id.add_button),
                             eventFactory = { CompletionEvent() }
                         ),
-                        EditTextInputEventSource(
-                            editText = findViewById(R.id.title_text_field),
-                            inputKind = "title"
+                        TimestampSelectionEventSource(
+                            button = findViewById(R.id.timestamp_selector_button)
                         ),
                         EditTextInputEventSource(
-                            editText = findViewById(R.id.synopsis_text_field),
-                            inputKind = "synopsis"
+                            editText = findViewById(R.id.description_text_field),
+                            inputKind = "description"
+                        ),
+                        SliderSelectionEventSource(
+                            slider = findViewById(R.id.sentiment_slider),
+                            selectionKind = "sentiment"
                         ),
                         BackButtonCancellationEventSource(this)
                     )

@@ -17,12 +17,15 @@
 
 package com.hadisatrio.apps.kotlin.journal3.moment.filesystem
 
+import com.benasher44.uuid.uuid4
 import com.hadisatrio.apps.kotlin.journal3.datetime.Timestamp
 import com.hadisatrio.apps.kotlin.journal3.sentiment.Sentiment
+import com.hadisatrio.apps.kotlin.journal3.story.SelfPopulatingStories
 import com.hadisatrio.apps.kotlin.journal3.story.filesystem.FilesystemStories
 import com.hadisatrio.apps.kotlin.journal3.token.TokenableString
 import io.kotest.matchers.booleans.shouldBeFalse
 import io.kotest.matchers.booleans.shouldBeTrue
+import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
 import okio.Path.Companion.toPath
@@ -54,6 +57,27 @@ class FilesystemMomentsTest {
         moment.sentiment.shouldBe(Sentiment(1.0F))
         moment.timestamp.shouldBe(Timestamp("2019-07-07T20:00:00+07:00"))
         fileSystem.metadata("content/${story.id}/moments/${moment.id}".toPath()).isRegularFile.shouldBeTrue()
+    }
+
+    @Test
+    fun `Finds a moment by its ID`() {
+        val stories = SelfPopulatingStories(noOfStories = 1, noOfMoments = 10, stories)
+        val story = stories.first()
+        val moment = story.moments.first()
+
+        val found = story.moments.find(moment.id)
+
+        found.shouldHaveSize(1)
+        moment.id.shouldBe(found.first().id)
+    }
+
+    @Test
+    fun `Returns empty iterable when asked to find a non-existent moment by ID`() {
+        val stories = SelfPopulatingStories(noOfStories = 1, noOfMoments = 10, stories)
+        val story = stories.first()
+        val found = story.moments.find(uuid4())
+
+        found.shouldBeEmpty()
     }
 
     @Test

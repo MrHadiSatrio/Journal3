@@ -17,6 +17,7 @@
 
 package com.hadisatrio.apps.kotlin.journal3.moment
 
+import com.benasher44.uuid.Uuid
 import com.benasher44.uuid.uuid4
 
 class FakeMoments(
@@ -26,7 +27,13 @@ class FakeMoments(
     constructor(vararg moment: Moment) : this(moment.toMutableList())
 
     override fun new(): Moment {
-        return FakeMoment(uuid4(), moments)
+        val moment = FakeMoment(uuid4(), moments)
+        moments.add(moment)
+        return moment
+    }
+
+    override fun find(id: Uuid): Iterable<Moment> {
+        return filter { it.id == id }
     }
 
     override fun iterator(): Iterator<Moment> {

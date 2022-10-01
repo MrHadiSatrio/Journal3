@@ -15,27 +15,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.hadisatrio.apps.kotlin.journal3.datetime
+package com.hadisatrio.apps.kotlin.journal3.story.cache
 
-import kotlinx.datetime.Instant
-import kotlin.jvm.JvmInline
+import com.hadisatrio.apps.kotlin.journal3.story.Story
+import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
 
-@JvmInline
-value class Timestamp(
-    private val value: Instant
-) {
+class CachingStoryPresenter(
+    private val origin: Presenter<Story>
+) : Presenter<Story> {
 
-    constructor(iso8601: String) : this(Instant.parse(iso8601))
-
-    fun toEpochMilliseconds(): Long {
-        return value.toEpochMilliseconds()
-    }
-
-    override fun toString(): String {
-        return value.toString()
-    }
-
-    companion object {
-        val DEFAULT = Timestamp(Instant.fromEpochMilliseconds(0))
+    override fun present(thing: Story) {
+        origin.present(CachingStory(thing))
     }
 }
