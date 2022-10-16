@@ -32,6 +32,7 @@ import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.datetime.Clock
 import okio.FileSystem
 import okio.Path.Companion.toPath
 import kotlin.time.Duration
@@ -69,6 +70,10 @@ class Journal3 : Application() {
 
     val inactivityAlertThreshold: Duration by lazy {
         3.hours
+    }
+
+    val clock: Clock by lazy {
+        Clock.System
     }
 
     companion object {

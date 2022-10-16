@@ -20,6 +20,7 @@ package com.hadisatrio.apps.kotlin.journal3.moment
 import com.hadisatrio.apps.kotlin.journal3.Router
 import com.hadisatrio.apps.kotlin.journal3.datetime.Timestamp
 import com.hadisatrio.apps.kotlin.journal3.id.TargetId
+import com.hadisatrio.apps.kotlin.journal3.moment.datetime.ClockRespectingMoments
 import com.hadisatrio.apps.kotlin.journal3.sentiment.Sentiment
 import com.hadisatrio.apps.kotlin.journal3.story.Stories
 import com.hadisatrio.apps.kotlin.journal3.token.TokenableString
@@ -38,6 +39,7 @@ import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.takeWhile
 import kotlinx.coroutines.runBlocking
+import kotlinx.datetime.Clock
 
 @Suppress("LongParameterList")
 class EditAMomentUseCase(
@@ -48,7 +50,8 @@ class EditAMomentUseCase(
     private val modalPresenter: Presenter<Modal>,
     private val eventSource: EventSource,
     private val eventSink: EventSink,
-    private val router: Router
+    private val router: Router,
+    private val clock: Clock
 ) : UseCase {
 
     private lateinit var currentTarget: Moment
@@ -63,7 +66,9 @@ class EditAMomentUseCase(
         currentTarget = if (targetId.isValid()) {
             stories.findMoment(targetId.asUuid()).first()
         } else {
-            stories.findStory(storyId.asUuid()).first().moments.new()
+            val story = stories.findStory(storyId.asUuid()).first()
+            val moments = ClockRespectingMoments(clock, story.moments)
+            moments.new()
         }
     }
 

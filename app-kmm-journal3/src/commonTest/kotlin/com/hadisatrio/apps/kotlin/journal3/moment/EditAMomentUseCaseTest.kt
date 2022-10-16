@@ -39,6 +39,7 @@ import io.kotest.matchers.shouldBe
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
+import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import kotlin.test.Test
 
@@ -65,7 +66,8 @@ class EditAMomentUseCaseTest {
                 CompletionEvent()
             ),
             eventSink = mockk(relaxed = true),
-            router = mockk(relaxed = true)
+            router = mockk(relaxed = true),
+            clock = Clock.System
         )()
 
         story.moments.shouldHaveSize(1)
@@ -94,7 +96,8 @@ class EditAMomentUseCaseTest {
                 CompletionEvent()
             ),
             eventSink = mockk(relaxed = true),
-            router = mockk(relaxed = true)
+            router = mockk(relaxed = true),
+            clock = Clock.System
         )()
 
         story.moments.shouldHaveSize(1)
@@ -125,7 +128,8 @@ class EditAMomentUseCaseTest {
                 CompletionEvent()
             ),
             eventSink = mockk(relaxed = true),
-            router = mockk(relaxed = true)
+            router = mockk(relaxed = true),
+            clock = Clock.System
         )()
 
         verify(exactly = 1) { modalPresenter.present(withArg { it.kind.shouldBe("edit_cancellation_confirmation") }) }
@@ -153,7 +157,8 @@ class EditAMomentUseCaseTest {
                 ModalApprovalEvent("edit_cancellation_confirmation")
             ),
             eventSink = mockk(relaxed = true),
-            router = mockk(relaxed = true)
+            router = mockk(relaxed = true),
+            clock = Clock.System
         )()
 
         verify(exactly = 1) { modalPresenter.present(withArg { it.kind.shouldBe("edit_cancellation_confirmation") }) }
@@ -182,7 +187,8 @@ class EditAMomentUseCaseTest {
                 CompletionEvent()
             ),
             eventSink = mockk(relaxed = true),
-            router = mockk(relaxed = true)
+            router = mockk(relaxed = true),
+            clock = Clock.System
         )()
     }
 }
