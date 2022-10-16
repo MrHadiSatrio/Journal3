@@ -17,4 +17,10 @@
 
 <resources>
     <string name="app_name">Journal3</string>
+
+    <string name="notifChannelName_alertsReminders">Alert &amp; Reminders</string>
+    <string name="notifChannelDesc_alertsReminders">Timely alert and reminders to help keep your journaling habit on track.</string>
+
+    <string name="notifTitle_inactivityAlert">What have you been up to?</string>
+    <string name="notifMessage_inactivityAlert">Good memories often consist of many small, seemingly uninteresting moments. Don\'t let them slip away.</string>
 </resources>

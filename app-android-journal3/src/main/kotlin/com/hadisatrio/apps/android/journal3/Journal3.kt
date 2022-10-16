@@ -34,6 +34,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import okio.FileSystem
 import okio.Path.Companion.toPath
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.hours
 
 class Journal3 : Application() {
 
@@ -63,6 +65,10 @@ class Journal3 : Application() {
 
     val globalEventSource: EventHub by lazy {
         EventHub(MutableSharedFlow(extraBufferCapacity = 1))
+    }
+
+    val inactivityAlertThreshold: Duration by lazy {
+        3.hours
     }
 
     companion object {
