@@ -15,19 +15,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.hadisatrio.apps.kotlin.journal3.story
+package com.hadisatrio.apps.android.journal3.notification
 
-import com.benasher44.uuid.Uuid
-import com.hadisatrio.apps.kotlin.journal3.moment.Moment
+import android.content.Context
+import androidx.startup.Initializer
 
-interface Stories : Iterable<Story> {
-    fun new(): Story
+@Suppress("unused")
+class NotificationChannelInitializer : Initializer<Unit> {
 
-    fun findStory(id: Uuid): Iterable<Story>
+    override fun create(context: Context) {
+        NotificationChannel.values().forEach { it.create(context) }
+    }
 
-    fun hasMoments(): Boolean
-
-    fun findMoment(id: Uuid): Iterable<Moment>
-
-    fun mostRecentMoment(): Moment
+    override fun dependencies(): MutableList<Class<out Initializer<*>>> {
+        return mutableListOf()
+    }
 }

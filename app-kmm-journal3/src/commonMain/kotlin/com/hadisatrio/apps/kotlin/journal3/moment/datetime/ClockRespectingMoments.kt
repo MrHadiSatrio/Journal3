@@ -15,36 +15,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.hadisatrio.apps.kotlin.journal3.moment
+package com.hadisatrio.apps.kotlin.journal3.moment.datetime
 
-import com.benasher44.uuid.Uuid
-import com.benasher44.uuid.uuid4
+import com.hadisatrio.apps.kotlin.journal3.datetime.Timestamp
+import com.hadisatrio.apps.kotlin.journal3.moment.Moment
+import com.hadisatrio.apps.kotlin.journal3.moment.Moments
+import kotlinx.datetime.Clock
 
-class FakeMoments(
-    private val moments: MutableList<Moment>
-) : Moments {
-
-    constructor(vararg moment: Moment) : this(moment.toMutableList())
+class ClockRespectingMoments(
+    private val clock: Clock,
+    private val origin: Moments
+) : Moments by origin {
 
     override fun new(): Moment {
-        val moment = FakeMoment(uuid4(), moments)
-        moments.add(moment)
+        val moment = origin.new()
+        moment.update(Timestamp(clock.now()))
         return moment
-    }
-
-    override fun count(): Int {
-        return moments.size
-    }
-
-    override fun find(id: Uuid): Iterable<Moment> {
-        return filter { it.id == id }
-    }
-
-    override fun mostRecent(): Moment {
-        return maxBy { it.timestamp }
-    }
-
-    override fun iterator(): Iterator<Moment> {
-        return moments.iterator()
     }
 }

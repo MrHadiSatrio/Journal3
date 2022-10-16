@@ -19,9 +19,11 @@ package com.hadisatrio.apps.kotlin.journal3.story.filesystem
 
 import com.benasher44.uuid.uuid4
 import com.hadisatrio.apps.kotlin.journal3.story.SelfPopulatingStories
+import io.kotest.matchers.booleans.shouldBeFalse
 import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldHaveSize
+import io.kotest.matchers.ints.shouldBeLessThan
 import io.kotest.matchers.shouldBe
 import okio.Path.Companion.toPath
 import okio.fakefilesystem.FakeFileSystem
@@ -31,7 +33,7 @@ import kotlin.test.Test
 class FilesystemStoriesTest {
 
     private val fileSystem = FakeFileSystem()
-    private val stories = FilesystemStories(fileSystem, "content".toPath())
+    private val stories = FilesystemStories(fileSystem, "content")
 
     @AfterTest
     fun `Closes all file streams`() {
@@ -47,6 +49,15 @@ class FilesystemStoriesTest {
         stories.shouldHaveSize(1)
         story.title.shouldBe("Foo")
         fileSystem.metadata("content/${story.id}".toPath()).isDirectory.shouldBeTrue()
+    }
+
+    @Test
+    fun `Tells whether or not it contains any moments within`() {
+        val empty = FilesystemStories(fileSystem, "Foo")
+        val nonEmpty = SelfPopulatingStories(noOfStories = 1, noOfMoments = 1, FilesystemStories(fileSystem, "Bar"))
+
+        empty.hasMoments().shouldBeFalse()
+        nonEmpty.hasMoments().shouldBeTrue()
     }
 
     @Test
@@ -85,5 +96,17 @@ class FilesystemStoriesTest {
         val found = stories.findMoment(uuid4())
 
         found.shouldBeEmpty()
+    }
+
+    @Test
+    fun `Fetches its most recent moment`() {
+        val stories = SelfPopulatingStories(noOfStories = 9, noOfMoments = 10, stories)
+        stories.new().update("Foo") // ...add a story with no moments to increase variety.
+
+        val mostRecentMoment = stories.mostRecentMoment()
+
+        stories.flatMap { it.moments }.filterNot { it.id == mostRecentMoment.id }.forEach { other ->
+            other.timestamp.compareTo(mostRecentMoment.timestamp).shouldBeLessThan(0)
+        }
     }
 }

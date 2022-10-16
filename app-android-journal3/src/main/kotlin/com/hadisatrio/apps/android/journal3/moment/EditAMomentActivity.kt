@@ -97,7 +97,8 @@ class EditAMomentActivity : AppCompatActivity() {
                     )
                 ),
                 eventSink = journal3Application.globalEventSink,
-                router = ActivityRouter(this)
+                router = ActivityRouter(this),
+                clock = journal3Application.clock
             )
         )()
     }

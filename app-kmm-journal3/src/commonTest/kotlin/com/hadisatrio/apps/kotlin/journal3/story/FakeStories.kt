@@ -37,8 +37,21 @@ class FakeStories(
         return filter { it.id == id }
     }
 
+    override fun hasMoments(): Boolean {
+        return any { story -> story.moments.count() > 0 }
+    }
+
     override fun findMoment(id: Uuid): Iterable<Moment> {
         return flatMap { it.moments.find(id) }
+    }
+
+    override fun mostRecentMoment(): Moment {
+        val recentMoments = mutableListOf<Moment>()
+        forEach { story ->
+            if (!story.moments.iterator().hasNext()) return@forEach
+            recentMoments.add(story.moments.mostRecent())
+        }
+        return recentMoments.maxBy { it.timestamp }
     }
 
     override fun iterator(): Iterator<Story> {

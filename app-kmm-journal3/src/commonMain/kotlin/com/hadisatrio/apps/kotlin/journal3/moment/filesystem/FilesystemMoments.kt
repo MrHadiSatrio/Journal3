@@ -34,6 +34,10 @@ class FilesystemMoments(
         return FilesystemMoment(fileSystem, path, uuid4())
     }
 
+    override fun count(): Int {
+        return fileSystem.list(path).size
+    }
+
     override fun find(id: Uuid): Iterable<Moment> {
         val candidatePath = path / id.toString()
         if (fileSystem.exists(candidatePath)) {
@@ -41,6 +45,10 @@ class FilesystemMoments(
         } else {
             return emptyList()
         }
+    }
+
+    override fun mostRecent(): Moment {
+        return maxBy { it.timestamp }
     }
 
     override fun iterator(): Iterator<Moment> {
