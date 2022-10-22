@@ -25,6 +25,7 @@ import com.hadisatrio.libs.kotlin.foundation.event.SelectionEvent
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlin.math.abs
 
 class RecyclerViewItemSelectionEventSource(
     private val recyclerView: RecyclerView
@@ -34,20 +35,43 @@ class RecyclerViewItemSelectionEventSource(
         callbackFlow {
             val listener = object : RecyclerView.SimpleOnItemTouchListener() {
 
-                private var isBeingTouched = false
+                private var isBeingPressed = false
+                private var initialPressCoordinates = 0F to 0F
 
                 override fun onInterceptTouchEvent(view: RecyclerView, event: MotionEvent): Boolean {
-                    if (event.action == MotionEvent.ACTION_DOWN) {
-                        isBeingTouched = true
-                    } else if (event.action == MotionEvent.ACTION_UP && isBeingTouched) {
-                        isBeingTouched = false
-                        val touched = view.findChildViewUnder(event.x, event.y)!!
-                        val position = view.getChildAdapterPosition(touched)
-                        trySend(SelectionEvent("item_position", position.toString()))
-                    } else {
-                        isBeingTouched = false
+                    when {
+                        event.action == MotionEvent.ACTION_DOWN -> {
+                            markBeginningOfPress(event.x, event.y)
+                        }
+                        event.action == MotionEvent.ACTION_MOVE && isBeingPressed -> {
+                            if (!isMovementTolerated(event.x, event.y)) markEndOfPress()
+                        }
+                        event.action == MotionEvent.ACTION_UP && isBeingPressed -> {
+                            markEndOfPress()
+                            val touched = view.findChildViewUnder(event.x, event.y)!!
+                            val position = view.getChildAdapterPosition(touched)
+                            trySend(SelectionEvent("item_position", position.toString()))
+                        }
+                        else -> markEndOfPress()
                     }
                     return super.onInterceptTouchEvent(view, event)
+                }
+
+                private fun markBeginningOfPress(x: Float, y: Float) {
+                    isBeingPressed = true
+                    initialPressCoordinates = x to y
+                }
+
+                private fun isMovementTolerated(x: Float, y: Float): Boolean {
+                    val (initialX, initialY) = initialPressCoordinates
+                    val xDistance = abs(initialX - x)
+                    val yDistance = abs(initialY - y)
+                    return xDistance <= MOVEMENT_THRESHOLD_PX && yDistance <= MOVEMENT_THRESHOLD_PX
+                }
+
+                private fun markEndOfPress() {
+                    isBeingPressed = false
+                    initialPressCoordinates = 0F to 0F
                 }
             }
             recyclerView.addOnItemTouchListener(listener)
@@ -57,5 +81,9 @@ class RecyclerViewItemSelectionEventSource(
 
     override fun events(): Flow<Event> {
         return events
+    }
+
+    companion object {
+        private const val MOVEMENT_THRESHOLD_PX = 50
     }
 }

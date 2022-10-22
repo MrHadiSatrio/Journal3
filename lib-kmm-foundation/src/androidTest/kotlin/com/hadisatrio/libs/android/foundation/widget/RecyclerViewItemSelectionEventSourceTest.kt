@@ -24,6 +24,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.runner.AndroidJUnit4
 import com.hadisatrio.libs.kotlin.foundation.event.Event
+import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.maps.shouldContain
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
@@ -73,6 +74,123 @@ class RecyclerViewItemSelectionEventSourceTest {
         description.shouldContain("name" to "Selection Event")
         description.shouldContain("selection_kind" to "item_position")
         description.shouldContain("selected_id" to "0")
+        collectJob.cancel()
+    }
+
+    @Test
+    fun `Tolerates slight movement whilst registering click events`() = runTest {
+        val recyclerView = RecyclerView(RuntimeEnvironment.getApplication())
+        val events = mutableListOf<Event>()
+        recyclerView.layoutManager = LinearLayoutManager(RuntimeEnvironment.getApplication())
+        recyclerView.adapter = Adapter(listOf("Foo", "Bar", "Fizz", "Buzz"))
+        recyclerView.measure(0, 0)
+        recyclerView.layout(0, 0, 1000, 1000)
+
+        val collectJob = launch(UnconfinedTestDispatcher()) {
+            RecyclerViewItemSelectionEventSource(recyclerView).events().toList(events)
+        }
+        recyclerView.dispatchTouchEvent(
+            MotionEvent.obtain(
+                /* downTime = */ System.currentTimeMillis(),
+                /* eventTime = */ System.currentTimeMillis(),
+                /* action = */ MotionEvent.ACTION_DOWN,
+                /* x = */ recyclerView.getChildAt(0).x,
+                /* y = */ recyclerView.getChildAt(0).y,
+                /* metaState = */ 0
+            )
+        )
+        recyclerView.dispatchTouchEvent(
+            MotionEvent.obtain(
+                /* downTime = */ System.currentTimeMillis(),
+                /* eventTime = */ System.currentTimeMillis(),
+                /* action = */ MotionEvent.ACTION_MOVE,
+                /* x = */ recyclerView.getChildAt(0).x + 10F,
+                /* y = */ recyclerView.getChildAt(0).y + 10F,
+                /* metaState = */ 0
+            )
+        )
+        recyclerView.dispatchTouchEvent(
+            MotionEvent.obtain(
+                /* downTime = */ System.currentTimeMillis(),
+                /* eventTime = */ System.currentTimeMillis(),
+                /* action = */ MotionEvent.ACTION_MOVE,
+                /* x = */ recyclerView.getChildAt(0).x + 25F,
+                /* y = */ recyclerView.getChildAt(0).y + 25F,
+                /* metaState = */ 0
+            )
+        )
+        recyclerView.dispatchTouchEvent(
+            MotionEvent.obtain(
+                /* downTime = */ System.currentTimeMillis(),
+                /* eventTime = */ System.currentTimeMillis(),
+                /* action = */ MotionEvent.ACTION_UP,
+                /* x = */ recyclerView.getChildAt(0).x + 25F,
+                /* y = */ recyclerView.getChildAt(0).y + 25F,
+                /* metaState = */ 0
+            )
+        )
+
+        val description = events.first().describe()
+        description.shouldContain("name" to "Selection Event")
+        description.shouldContain("selection_kind" to "item_position")
+        description.shouldContain("selected_id" to "0")
+        collectJob.cancel()
+    }
+
+    @Test
+    fun `Prevents major movements from resulting in a click event`() = runTest {
+        val recyclerView = RecyclerView(RuntimeEnvironment.getApplication())
+        val events = mutableListOf<Event>()
+        recyclerView.layoutManager = LinearLayoutManager(RuntimeEnvironment.getApplication())
+        recyclerView.adapter = Adapter(listOf("Foo", "Bar", "Fizz", "Buzz"))
+        recyclerView.measure(0, 0)
+        recyclerView.layout(0, 0, 1000, 1000)
+
+        val collectJob = launch(UnconfinedTestDispatcher()) {
+            RecyclerViewItemSelectionEventSource(recyclerView).events().toList(events)
+        }
+        recyclerView.dispatchTouchEvent(
+            MotionEvent.obtain(
+                /* downTime = */ System.currentTimeMillis(),
+                /* eventTime = */ System.currentTimeMillis(),
+                /* action = */ MotionEvent.ACTION_DOWN,
+                /* x = */ recyclerView.getChildAt(0).x,
+                /* y = */ recyclerView.getChildAt(0).y,
+                /* metaState = */ 0
+            )
+        )
+        recyclerView.dispatchTouchEvent(
+            MotionEvent.obtain(
+                /* downTime = */ System.currentTimeMillis(),
+                /* eventTime = */ System.currentTimeMillis(),
+                /* action = */ MotionEvent.ACTION_MOVE,
+                /* x = */ recyclerView.getChildAt(0).x + 100F,
+                /* y = */ recyclerView.getChildAt(0).y + 100F,
+                /* metaState = */ 0
+            )
+        )
+        recyclerView.dispatchTouchEvent(
+            MotionEvent.obtain(
+                /* downTime = */ System.currentTimeMillis(),
+                /* eventTime = */ System.currentTimeMillis(),
+                /* action = */ MotionEvent.ACTION_MOVE,
+                /* x = */ recyclerView.getChildAt(0).x + 250F,
+                /* y = */ recyclerView.getChildAt(0).y + 250F,
+                /* metaState = */ 0
+            )
+        )
+        recyclerView.dispatchTouchEvent(
+            MotionEvent.obtain(
+                /* downTime = */ System.currentTimeMillis(),
+                /* eventTime = */ System.currentTimeMillis(),
+                /* action = */ MotionEvent.ACTION_UP,
+                /* x = */ recyclerView.getChildAt(0).x + 250F,
+                /* y = */ recyclerView.getChildAt(0).y + 250F,
+                /* metaState = */ 0
+            )
+        )
+
+        events.shouldBeEmpty()
         collectJob.cancel()
     }
 
