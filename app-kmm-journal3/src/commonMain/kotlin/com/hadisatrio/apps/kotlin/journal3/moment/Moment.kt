@@ -22,7 +22,7 @@ import com.hadisatrio.apps.kotlin.journal3.datetime.Timestamp
 import com.hadisatrio.apps.kotlin.journal3.sentiment.Sentiment
 import com.hadisatrio.apps.kotlin.journal3.token.TokenableString
 
-interface Moment {
+interface Moment : Comparable<Moment> {
     val id: Uuid
     val timestamp: Timestamp
     val description: TokenableString

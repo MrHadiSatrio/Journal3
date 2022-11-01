@@ -76,4 +76,8 @@ class FilesystemMoment : Moment {
     override fun forget() {
         file.delete()
     }
+
+    override fun compareTo(other: Moment): Int {
+        return timestamp.compareTo(other.timestamp)
+    }
 }
