@@ -1,6 +1,6 @@
 # Journal3
 
-![CI Status Badge](https://github.com/MrHadiSatrio/Journal3/actions/workflows/ci.yaml/badge.svg)
+![CI Status Badge](https://github.com/MrHadiSatrio/Journal3/actions/workflows/ci.yaml/badge.svg) [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=MrHadiSatrio_Journal3&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=MrHadiSatrio_Journal3) [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=MrHadiSatrio_Journal3&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=MrHadiSatrio_Journal3)
 
 There's barely anything special about the features that Journal3 is offering,
 it's literally yet another journaling application.
