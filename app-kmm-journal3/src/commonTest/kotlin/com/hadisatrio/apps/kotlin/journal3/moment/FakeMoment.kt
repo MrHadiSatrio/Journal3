@@ -57,4 +57,8 @@ class FakeMoment(
         isForgotten = true
         group.remove(this)
     }
+
+    override fun compareTo(other: Moment): Int {
+        return timestamp.compareTo(other.timestamp)
+    }
 }

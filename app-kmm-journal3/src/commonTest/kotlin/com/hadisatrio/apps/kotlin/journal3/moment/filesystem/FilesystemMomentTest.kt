@@ -22,6 +22,8 @@ import com.hadisatrio.apps.kotlin.journal3.sentiment.Sentiment
 import com.hadisatrio.apps.kotlin.journal3.story.filesystem.FilesystemStories
 import com.hadisatrio.apps.kotlin.journal3.token.TokenableString
 import io.kotest.matchers.booleans.shouldBeFalse
+import io.kotest.matchers.ints.shouldBeNegative
+import io.kotest.matchers.ints.shouldBePositive
 import io.kotest.matchers.shouldBe
 import kotlinx.datetime.Instant
 import okio.Path.Companion.toPath
@@ -35,6 +37,8 @@ class FilesystemMomentTest {
 
     private val fileSystem = FakeFileSystem()
     private val stories = FilesystemStories(fileSystem, "content".toPath())
+    private val story = stories.new()
+    private val moments = story.moments
 
     @AfterTest
     fun `Closes all file streams`() {
@@ -43,7 +47,7 @@ class FilesystemMomentTest {
 
     @Test
     fun `Returns expected default values`() {
-        val moment = stories.new().moments.new()
+        val moment = moments.new()
 
         moment.timestamp.shouldBe(Timestamp(Instant.fromEpochMilliseconds(0)))
         moment.description.shouldBe(TokenableString(""))
@@ -52,8 +56,7 @@ class FilesystemMomentTest {
 
     @Test
     fun `Write updates to the filesystem`() {
-        val story = stories.new()
-        val moment = story.moments.new()
+        val moment = moments.new()
 
         moment.update(timestamp = Timestamp(Instant.fromEpochMilliseconds(1000)))
         moment.update(description = TokenableString("Foo"))
@@ -70,12 +73,21 @@ class FilesystemMomentTest {
 
     @Test
     fun `Deletes itself from the filesystem`() {
-        val story = stories.new()
-        val moment = story.moments.new()
+        val moment = moments.new()
 
         moment.forget()
 
         val path = "content/${story.id}/moments/${moment.id}".toPath()
         fileSystem.exists(path).shouldBeFalse()
+    }
+
+    @Test
+    fun `Compares itself to others based on timestamp`() {
+        val self = moments.new()
+        val newer = moments.new().apply { update(Timestamp(Instant.DISTANT_FUTURE)) }
+        val older = moments.new().apply { update(Timestamp(Instant.DISTANT_PAST)) }
+
+        self.compareTo(newer).shouldBeNegative()
+        self.compareTo(older).shouldBePositive()
     }
 }
