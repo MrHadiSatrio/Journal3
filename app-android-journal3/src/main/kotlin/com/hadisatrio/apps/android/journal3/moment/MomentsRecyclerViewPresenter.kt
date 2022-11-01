@@ -44,7 +44,7 @@ class MomentsRecyclerViewPresenter(
 
     override fun present(thing: Moments) {
         setupRecyclerView()
-        adapter.submitList(thing.map { "${it.timestamp}\n${it.description}\n${it.sentiment}" })
+        adapter.submitList(thing.sortedDescending().map { "${it.timestamp}\n${it.description}\n${it.sentiment}" })
     }
 
     private fun setupRecyclerView() = with(recyclerView) {
