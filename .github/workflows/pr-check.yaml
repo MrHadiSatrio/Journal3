@@ -5,7 +5,7 @@ on:
     branches: [ develop ]
 
 jobs:
-  build-and-deploy:
+  check:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -22,3 +22,9 @@ jobs:
 
       - name: Check with Gradle
         run: ./gradlew clean check
+
+      - name: Analyze with SonarCloud
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: ./gradlew clean build sonarqube
