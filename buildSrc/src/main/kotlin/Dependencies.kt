@@ -38,6 +38,10 @@ object Dependencies {
         const val OKIO = "com.squareup.okio:okio:3.2.0"
     }
 
+    object Network {
+        const val KTOR = "io.ktor:ktor-client-core:2.1.3"
+    }
+
     object TestRuntime {
         const val ANDROID_JUNIT_4 = "androidx.test:runner:1.4.0"
         const val JUNIT_5 = "org.junit.jupiter:junit-jupiter-engine:5.8.2"
@@ -59,6 +63,7 @@ object Dependencies {
     object TestDouble {
         const val MOCKK = "io.mockk:mockk:1.12.5"
         const val OKIO_FAKE_FS = "com.squareup.okio:okio-fakefilesystem:3.2.0"
+        const val KTOR_MOCK_ENGINE = "io.ktor:ktor-client-mock:2.1.3"
     }
 }
 

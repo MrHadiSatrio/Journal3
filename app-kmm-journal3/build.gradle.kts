@@ -32,6 +32,7 @@ kotlin {
                 api(project(":lib-kmm-foundation"))
                 api(Dependencies.Commons.DATETIME)
                 api(Dependencies.Commons.OKIO)
+                api(Dependencies.Network.KTOR)
 
                 implementation(Dependencies.Commons.KOTLINX_JSON_OKIO)
             }
@@ -43,6 +44,7 @@ kotlin {
                 implementation(Dependencies.TestUtility.KOTEST_ASSERTIONS)
                 implementation(Dependencies.TestDouble.OKIO_FAKE_FS)
                 implementation(Dependencies.TestDouble.MOCKK)
+                implementation(Dependencies.TestDouble.KTOR_MOCK_ENGINE)
             }
         }
         val androidMain by getting
