@@ -19,16 +19,19 @@ package com.hadisatrio.apps.kotlin.journal3.moment.cache
 
 import com.benasher44.uuid.Uuid
 import com.hadisatrio.apps.kotlin.journal3.datetime.Timestamp
+import com.hadisatrio.apps.kotlin.journal3.geography.Place
 import com.hadisatrio.apps.kotlin.journal3.moment.Moment
 import com.hadisatrio.apps.kotlin.journal3.sentiment.Sentiment
 import com.hadisatrio.apps.kotlin.journal3.token.TokenableString
 
+@Suppress("LongParameterList")
 class CachingMoment(
     override val id: Uuid,
     override val timestamp: Timestamp,
     override val description: TokenableString,
     override val sentiment: Sentiment,
     override val impliedSentiment: Sentiment,
+    override val place: Place,
     private val origin: Moment
 ) : Moment by origin {
 
@@ -38,6 +41,7 @@ class CachingMoment(
         origin.description,
         origin.sentiment,
         origin.impliedSentiment,
+        origin.place,
         origin
     )
 }

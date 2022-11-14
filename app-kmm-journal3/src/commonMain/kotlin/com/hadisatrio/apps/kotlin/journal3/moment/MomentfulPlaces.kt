@@ -18,22 +18,10 @@
 package com.hadisatrio.apps.kotlin.journal3.moment
 
 import com.benasher44.uuid.Uuid
-import com.hadisatrio.apps.kotlin.journal3.datetime.Timestamp
 import com.hadisatrio.apps.kotlin.journal3.geography.Place
-import com.hadisatrio.apps.kotlin.journal3.sentiment.Sentiment
-import com.hadisatrio.apps.kotlin.journal3.token.TokenableString
 
-interface Moment : Comparable<Moment> {
-    val id: Uuid
-    val timestamp: Timestamp
-    val description: TokenableString
-    val sentiment: Sentiment
-    val impliedSentiment: Sentiment
-    val place: Place
-
-    fun update(timestamp: Timestamp)
-    fun update(description: TokenableString)
-    fun update(sentiment: Sentiment)
-    fun update(place: Place)
-    fun forget()
+interface MomentfulPlaces : Iterable<MomentfulPlace> {
+    fun remember(place: Place): MomentfulPlace
+    fun find(id: Uuid): Iterable<MomentfulPlace>
+    fun relevantTo(moment: Moment): Iterable<MomentfulPlace>
 }

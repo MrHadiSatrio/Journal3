@@ -17,23 +17,20 @@
 
 package com.hadisatrio.apps.kotlin.journal3.moment
 
-import com.benasher44.uuid.Uuid
-import com.hadisatrio.apps.kotlin.journal3.datetime.Timestamp
+import com.hadisatrio.apps.kotlin.journal3.geography.Coordinates
 import com.hadisatrio.apps.kotlin.journal3.geography.Place
-import com.hadisatrio.apps.kotlin.journal3.sentiment.Sentiment
-import com.hadisatrio.apps.kotlin.journal3.token.TokenableString
 
-interface Moment : Comparable<Moment> {
-    val id: Uuid
-    val timestamp: Timestamp
-    val description: TokenableString
-    val sentiment: Sentiment
-    val impliedSentiment: Sentiment
-    val place: Place
+interface MomentfulPlace : Place {
 
-    fun update(timestamp: Timestamp)
-    fun update(description: TokenableString)
-    fun update(sentiment: Sentiment)
-    fun update(place: Place)
-    fun forget()
+    val label: String
+
+    fun updateLabel(label: String)
+    fun updateName(name: String)
+    fun updateAddress(address: String)
+    fun update(coordinates: Coordinates)
+
+    fun link(moment: Moment)
+    fun unlink(moment: Moment)
+
+    fun relevantTo(moment: Moment): Boolean
 }

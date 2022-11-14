@@ -20,6 +20,7 @@ package com.hadisatrio.apps.kotlin.journal3.story.filesystem
 import com.benasher44.uuid.Uuid
 import com.benasher44.uuid.uuidFrom
 import com.hadisatrio.apps.kotlin.journal3.json.JsonFile
+import com.hadisatrio.apps.kotlin.journal3.moment.MomentfulPlaces
 import com.hadisatrio.apps.kotlin.journal3.moment.Moments
 import com.hadisatrio.apps.kotlin.journal3.moment.filesystem.FilesystemMoments
 import com.hadisatrio.apps.kotlin.journal3.story.Story
@@ -28,12 +29,13 @@ import kotlinx.serialization.json.JsonPrimitive
 import okio.FileSystem
 import okio.Path
 
-class FilesystemStory : Story {
-
-    private val fileSystem: FileSystem
-    private val directory: Path
-    private val detailsFile: JsonFile
-    private val momentsDirectory: Path
+class FilesystemStory(
+    private val fileSystem: FileSystem,
+    private val directory: Path,
+    private val detailsFile: JsonFile,
+    private val momentsDirectory: Path,
+    private val places: MomentfulPlaces
+) : Story {
 
     override val id: Uuid get() {
         return uuidFrom(directory.name)
@@ -48,22 +50,22 @@ class FilesystemStory : Story {
     }
 
     override val moments: Moments get() {
-        return FilesystemMoments(fileSystem, momentsDirectory)
+        return FilesystemMoments(fileSystem, momentsDirectory, places)
     }
 
-    constructor(fileSystem: FileSystem, parentDirectory: Path, id: Uuid) {
-        this.fileSystem = fileSystem
-        this.directory = parentDirectory / id.toString()
-        this.detailsFile = JsonFile(fileSystem, directory / "details")
-        this.momentsDirectory = directory / "moments"
-    }
+    constructor(fileSystem: FileSystem, parentDirectory: Path, id: Uuid, places: MomentfulPlaces) : this(
+        fileSystem = fileSystem,
+        directory = parentDirectory / id.toString(),
+        places = places
+    )
 
-    constructor(fileSystem: FileSystem, directory: Path) {
-        this.fileSystem = fileSystem
-        this.directory = directory
-        this.detailsFile = JsonFile(fileSystem, directory / "details")
-        this.momentsDirectory = directory / "moments"
-    }
+    constructor(fileSystem: FileSystem, directory: Path, places: MomentfulPlaces) : this(
+        fileSystem = fileSystem,
+        directory = directory,
+        detailsFile = JsonFile(fileSystem, directory / "details"),
+        momentsDirectory = directory / "moments",
+        places = places
+    )
 
     override fun update(title: String) {
         fileSystem.createDirectories(dir = directory, mustCreate = false)

@@ -15,25 +15,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.hadisatrio.apps.kotlin.journal3.moment
+package com.hadisatrio.apps.kotlin.journal3.geography
 
 import com.benasher44.uuid.Uuid
-import com.hadisatrio.apps.kotlin.journal3.datetime.Timestamp
-import com.hadisatrio.apps.kotlin.journal3.geography.Place
-import com.hadisatrio.apps.kotlin.journal3.sentiment.Sentiment
-import com.hadisatrio.apps.kotlin.journal3.token.TokenableString
+import java.util.UUID
 
-interface Moment : Comparable<Moment> {
-    val id: Uuid
-    val timestamp: Timestamp
-    val description: TokenableString
-    val sentiment: Sentiment
-    val impliedSentiment: Sentiment
-    val place: Place
+object NullIsland : Place {
 
-    fun update(timestamp: Timestamp)
-    fun update(description: TokenableString)
-    fun update(sentiment: Sentiment)
-    fun update(place: Place)
-    fun forget()
+    override val id: Uuid = UUID.fromString("00000000-0000-0000-0000-000000000000")
+
+    override val name: String = "Null Island"
+
+    override val address: String = "Null Island, Gulf of Guinea, South Atlantic Ocean"
+
+    override val coordinates: Coordinates = LiteralCoordinates("0.0,0.0")
 }

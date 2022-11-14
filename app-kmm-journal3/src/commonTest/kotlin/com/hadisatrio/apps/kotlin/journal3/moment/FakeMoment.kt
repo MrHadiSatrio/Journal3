@@ -19,6 +19,8 @@ package com.hadisatrio.apps.kotlin.journal3.moment
 
 import com.benasher44.uuid.Uuid
 import com.hadisatrio.apps.kotlin.journal3.datetime.Timestamp
+import com.hadisatrio.apps.kotlin.journal3.geography.NullIsland
+import com.hadisatrio.apps.kotlin.journal3.geography.Place
 import com.hadisatrio.apps.kotlin.journal3.sentiment.Sentiment
 import com.hadisatrio.apps.kotlin.journal3.token.TokenableString
 
@@ -37,6 +39,8 @@ class FakeMoment(
         private set
     override var impliedSentiment: Sentiment = Sentiment.DEFAULT
         private set
+    override var place: Place = NullIsland
+        private set
 
     override fun update(timestamp: Timestamp) {
         require(!isForgotten) { "This moment has already been forgotten." }
@@ -51,6 +55,11 @@ class FakeMoment(
     override fun update(sentiment: Sentiment) {
         require(!isForgotten) { "This moment has already been forgotten." }
         this.sentiment = sentiment
+    }
+
+    override fun update(place: Place) {
+        require(!isForgotten) { "This moment has already been forgotten." }
+        this.place = place
     }
 
     override fun forget() {

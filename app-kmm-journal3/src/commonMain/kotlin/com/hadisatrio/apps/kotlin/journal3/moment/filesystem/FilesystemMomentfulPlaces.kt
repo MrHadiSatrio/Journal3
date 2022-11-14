@@ -18,43 +18,45 @@
 package com.hadisatrio.apps.kotlin.journal3.moment.filesystem
 
 import com.benasher44.uuid.Uuid
-import com.benasher44.uuid.uuid4
+import com.hadisatrio.apps.kotlin.journal3.geography.Place
 import com.hadisatrio.apps.kotlin.journal3.moment.Moment
+import com.hadisatrio.apps.kotlin.journal3.moment.MomentfulPlace
 import com.hadisatrio.apps.kotlin.journal3.moment.MomentfulPlaces
-import com.hadisatrio.apps.kotlin.journal3.moment.Moments
 import okio.FileSystem
 import okio.Path
 
-class FilesystemMoments(
+class FilesystemMomentfulPlaces(
     private val fileSystem: FileSystem,
-    private val path: Path,
-    private val places: MomentfulPlaces
-) : Moments {
+    private val path: Path
+) : MomentfulPlaces {
 
-    override fun new(): Moment {
+    override fun remember(place: Place): MomentfulPlace {
         fileSystem.createDirectories(dir = path, mustCreate = false)
-        return FilesystemMoment(fileSystem, path, uuid4(), places)
+        val candidatePath = path / place.id.toString()
+        val candidate = FilesystemMomentfulPlace(fileSystem, candidatePath)
+        if (!fileSystem.exists(candidatePath)) {
+            candidate.updateName(place.name)
+            candidate.updateAddress(place.address)
+            candidate.update(place.coordinates)
+        }
+        return candidate
     }
 
-    override fun count(): Int {
-        return fileSystem.list(path).size
-    }
-
-    override fun find(id: Uuid): Iterable<Moment> {
+    override fun find(id: Uuid): Iterable<MomentfulPlace> {
         val candidatePath = path / id.toString()
         if (fileSystem.exists(candidatePath)) {
-            return listOf(FilesystemMoment(fileSystem, candidatePath, places))
+            return listOf(FilesystemMomentfulPlace(fileSystem, candidatePath))
         } else {
             return emptyList()
         }
     }
 
-    override fun mostRecent(): Moment {
-        return maxBy { it.timestamp }
+    override fun relevantTo(moment: Moment): Iterable<MomentfulPlace> {
+        return filter { it.relevantTo(moment) }
     }
 
-    override fun iterator(): Iterator<Moment> {
+    override fun iterator(): Iterator<MomentfulPlace> {
         fileSystem.createDirectories(dir = path, mustCreate = false)
-        return fileSystem.list(path).map { path -> FilesystemMoment(fileSystem, path, places) }.iterator()
+        return fileSystem.list(path).map { path -> FilesystemMomentfulPlace(fileSystem, path) }.iterator()
     }
 }

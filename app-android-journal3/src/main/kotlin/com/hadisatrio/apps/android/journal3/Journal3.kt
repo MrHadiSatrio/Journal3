@@ -19,6 +19,7 @@ package com.hadisatrio.apps.android.journal3
 
 import android.app.Application
 import android.content.Context
+import com.hadisatrio.apps.kotlin.journal3.moment.filesystem.FilesystemMomentfulPlaces
 import com.hadisatrio.apps.kotlin.journal3.story.Stories
 import com.hadisatrio.apps.kotlin.journal3.story.filesystem.FilesystemStories
 import com.hadisatrio.libs.android.foundation.activity.CurrentActivity
@@ -41,7 +42,14 @@ import kotlin.time.Duration.Companion.hours
 class Journal3 : Application() {
 
     val stories: Stories by lazy {
-        FilesystemStories(FileSystem.SYSTEM, filesDir.absolutePath.toPath() / "content")
+        FilesystemStories(
+            fileSystem = FileSystem.SYSTEM,
+            path = filesDir.absolutePath.toPath() / "content" / "stories",
+            places = FilesystemMomentfulPlaces(
+                fileSystem = FileSystem.SYSTEM,
+                path = filesDir.absolutePath.toPath() / "content" / "places",
+            )
+        )
     }
 
     val modalPresenter: Presenter<Modal> by lazy {
