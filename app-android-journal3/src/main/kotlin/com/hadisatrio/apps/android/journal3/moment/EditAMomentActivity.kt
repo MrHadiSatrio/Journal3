@@ -55,6 +55,7 @@ class EditAMomentActivity : AppCompatActivity() {
                 targetId = BundledTargetId(intent, "target_id"),
                 storyId = BundledTargetId(intent, "story_id"),
                 stories = journal3Application.stories,
+                places = journal3Application.places,
                 presenter = CoroutineDispatchingPresenter(
                     coroutineScope = lifecycleScope,
                     coroutineDispatcher = Dispatchers.Main,

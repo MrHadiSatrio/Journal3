@@ -17,25 +17,12 @@
 
 package com.hadisatrio.apps.kotlin.journal3.geography
 
-import com.benasher44.uuid.Uuid
+class SelfPopulatingPlaces(
+    noOfPlaces: Int,
+    private val origin: Places
+) : Places by origin {
 
-class FakePlaces(
-    private val places: MutableList<Place>
-) : Places {
-
-    constructor(vararg place: Place) : this(place.toMutableList())
-
-    override fun new(): Place {
-        val place = FakePlace()
-        places.add(place)
-        return place
-    }
-
-    override fun findPlace(id: Uuid): Iterable<Place> {
-        return places.filter { it.id == id }
-    }
-
-    override fun iterator(): Iterator<Place> {
-        return places.iterator()
+    init {
+        repeat(noOfPlaces) { origin.new() }
     }
 }

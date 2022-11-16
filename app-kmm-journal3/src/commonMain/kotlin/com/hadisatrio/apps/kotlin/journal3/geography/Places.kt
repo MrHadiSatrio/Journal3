@@ -17,6 +17,9 @@
 
 package com.hadisatrio.apps.kotlin.journal3.geography
 
+import com.benasher44.uuid.Uuid
+
 interface Places : Iterable<Place> {
     fun new(): Place
+    fun findPlace(id: Uuid): Iterable<Place>
 }

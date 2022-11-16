@@ -17,6 +17,10 @@ object Dependencies {
         const val APPCOMPAT = "androidx.appcompat:appcompat:1.4.2"
     }
 
+    object AndroidNetwork {
+        const val KTOR = "io.ktor:ktor-client-android:2.1.3"
+    }
+
     object AndroidUi {
         const val RECYCLER_VIEW = "androidx.recyclerview:recyclerview:1.2.1"
         const val MATERIAL = "com.google.android.material:material:1.5.0-alpha04"

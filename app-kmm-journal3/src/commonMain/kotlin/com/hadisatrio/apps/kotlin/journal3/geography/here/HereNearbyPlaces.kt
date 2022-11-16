@@ -17,6 +17,7 @@
 
 package com.hadisatrio.apps.kotlin.journal3.geography.here
 
+import com.benasher44.uuid.Uuid
 import com.hadisatrio.apps.kotlin.journal3.geography.Coordinates
 import com.hadisatrio.apps.kotlin.journal3.geography.Place
 import com.hadisatrio.apps.kotlin.journal3.geography.Places
@@ -41,6 +42,10 @@ class HereNearbyPlaces(
 
     override fun new(): Place {
         throw UnsupportedOperationException("This collection of places is read-only.")
+    }
+
+    override fun findPlace(id: Uuid): Iterable<Place> {
+        return filter { it.id == id }
     }
 
     override fun iterator(): Iterator<Place> {

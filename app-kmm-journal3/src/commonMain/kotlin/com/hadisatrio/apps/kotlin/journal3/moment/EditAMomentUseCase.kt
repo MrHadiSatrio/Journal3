@@ -17,8 +17,10 @@
 
 package com.hadisatrio.apps.kotlin.journal3.moment
 
+import com.benasher44.uuid.uuidFrom
 import com.hadisatrio.apps.kotlin.journal3.Router
 import com.hadisatrio.apps.kotlin.journal3.datetime.Timestamp
+import com.hadisatrio.apps.kotlin.journal3.geography.Places
 import com.hadisatrio.apps.kotlin.journal3.id.TargetId
 import com.hadisatrio.apps.kotlin.journal3.moment.datetime.ClockRespectingMoments
 import com.hadisatrio.apps.kotlin.journal3.sentiment.Sentiment
@@ -46,6 +48,7 @@ class EditAMomentUseCase(
     private val targetId: TargetId,
     private val storyId: TargetId,
     private val stories: Stories,
+    private val places: Places,
     private val presenter: Presenter<Moment>,
     private val modalPresenter: Presenter<Modal>,
     private val eventSource: EventSource,
@@ -105,6 +108,7 @@ class EditAMomentUseCase(
         when (kind) {
             "timestamp" -> currentTarget.update(Timestamp(identifier))
             "sentiment" -> currentTarget.update(Sentiment(identifier))
+            "place" -> currentTarget.update(places.findPlace(uuidFrom(identifier)).first())
         }
     }
 

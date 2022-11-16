@@ -13,10 +13,22 @@ plugins {
     id("io.gitlab.arturbosch.detekt")
 }
 
+android {
+    buildTypes {
+        debug {
+            buildConfigField("String", "KEY_HERE_API", "\"${System.getenv("DEBUG_KEY_HERE_API")}\"")
+        }
+        release {
+            buildConfigField("String", "KEY_HERE_API", "\"${System.getenv("DEBUG_KEY_HERE_API")}\"")
+        }
+    }
+}
+
 dependencies {
     implementation(project(":app-kmm-journal3"))
     implementation(Dependencies.AndroidArchitecture.STARTUP)
     implementation(Dependencies.AndroidAsynchrony.WORKMANAGER)
+    implementation(Dependencies.AndroidNetwork.KTOR)
 }
 
 detekt {

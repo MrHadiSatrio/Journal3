@@ -19,6 +19,9 @@ package com.hadisatrio.apps.android.journal3
 
 import android.app.Application
 import android.content.Context
+import com.hadisatrio.apps.kotlin.journal3.geography.NullIsland
+import com.hadisatrio.apps.kotlin.journal3.geography.Places
+import com.hadisatrio.apps.kotlin.journal3.geography.here.HereNearbyPlaces
 import com.hadisatrio.apps.kotlin.journal3.moment.filesystem.FilesystemMomentfulPlaces
 import com.hadisatrio.apps.kotlin.journal3.story.Stories
 import com.hadisatrio.apps.kotlin.journal3.story.filesystem.FilesystemStories
@@ -30,6 +33,7 @@ import com.hadisatrio.libs.kotlin.foundation.event.EventSink
 import com.hadisatrio.libs.kotlin.foundation.modal.Modal
 import com.hadisatrio.libs.kotlin.foundation.presentation.CoroutineDispatchingPresenter
 import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
+import io.ktor.client.HttpClient
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -40,6 +44,15 @@ import kotlin.time.Duration
 import kotlin.time.Duration.Companion.hours
 
 class Journal3 : Application() {
+
+    val places: Places by lazy {
+        HereNearbyPlaces(
+            coordinates = NullIsland.coordinates,
+            limit = 100,
+            apiKey = BuildConfig.KEY_HERE_API,
+            httpClient = HttpClient()
+        )
+    }
 
     val stories: Stories by lazy {
         FilesystemStories(
