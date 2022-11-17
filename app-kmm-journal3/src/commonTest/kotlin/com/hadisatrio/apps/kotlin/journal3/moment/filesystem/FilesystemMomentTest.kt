@@ -18,11 +18,11 @@
 package com.hadisatrio.apps.kotlin.journal3.moment.filesystem
 
 import com.hadisatrio.apps.kotlin.journal3.datetime.Timestamp
-import com.hadisatrio.apps.kotlin.journal3.geography.FakePlace
-import com.hadisatrio.apps.kotlin.journal3.geography.NullIsland
 import com.hadisatrio.apps.kotlin.journal3.sentiment.Sentiment
 import com.hadisatrio.apps.kotlin.journal3.story.filesystem.FilesystemStories
 import com.hadisatrio.apps.kotlin.journal3.token.TokenableString
+import com.hadisatrio.libs.kotlin.geography.NullIsland
+import com.hadisatrio.libs.kotlin.geography.fake.FakePlace
 import io.kotest.matchers.booleans.shouldBeFalse
 import io.kotest.matchers.ints.shouldBeNegative
 import io.kotest.matchers.ints.shouldBePositive

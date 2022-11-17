@@ -19,16 +19,15 @@ package com.hadisatrio.apps.kotlin.journal3.moment.filesystem
 
 import com.benasher44.uuid.Uuid
 import com.benasher44.uuid.uuidFrom
-import com.hadisatrio.apps.kotlin.journal3.geography.Coordinates
-import com.hadisatrio.apps.kotlin.journal3.geography.LiteralCoordinates
-import com.hadisatrio.apps.kotlin.journal3.json.JsonFile
 import com.hadisatrio.apps.kotlin.journal3.moment.Moment
 import com.hadisatrio.apps.kotlin.journal3.moment.MomentfulPlace
+import com.hadisatrio.libs.kotlin.geography.Coordinates
+import com.hadisatrio.libs.kotlin.geography.LiteralCoordinates
+import com.hadisatrio.libs.kotlin.json.JsonFile
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.buildJsonArray
 import kotlinx.serialization.json.jsonArray
-import kotlinx.serialization.json.jsonPrimitive
 import okio.FileSystem
 import okio.Path
 
@@ -86,7 +85,7 @@ class FilesystemMomentfulPlace(
 
     override fun unlink(moment: Moment) {
         val momentId = JsonPrimitive(moment.id.toString())
-        val newIds = buildJsonArray { momentIds.filterNot { it.jsonPrimitive == momentId }.forEach(::add) }
+        val newIds = buildJsonArray { momentIds.filterNot { it == momentId }.forEach(::add) }
         file.put("moment_ids", newIds)
     }
 

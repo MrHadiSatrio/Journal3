@@ -20,15 +20,15 @@ package com.hadisatrio.apps.kotlin.journal3.moment.filesystem
 import com.benasher44.uuid.Uuid
 import com.benasher44.uuid.uuidFrom
 import com.hadisatrio.apps.kotlin.journal3.datetime.Timestamp
-import com.hadisatrio.apps.kotlin.journal3.geography.NullIsland
-import com.hadisatrio.apps.kotlin.journal3.geography.Place
-import com.hadisatrio.apps.kotlin.journal3.json.JsonFile
 import com.hadisatrio.apps.kotlin.journal3.moment.Moment
 import com.hadisatrio.apps.kotlin.journal3.moment.MomentfulPlace
 import com.hadisatrio.apps.kotlin.journal3.moment.MomentfulPlaces
 import com.hadisatrio.apps.kotlin.journal3.sentiment.DumbSentimentAnalyst
 import com.hadisatrio.apps.kotlin.journal3.sentiment.Sentiment
 import com.hadisatrio.apps.kotlin.journal3.token.TokenableString
+import com.hadisatrio.libs.kotlin.geography.NullIsland
+import com.hadisatrio.libs.kotlin.geography.Place
+import com.hadisatrio.libs.kotlin.json.JsonFile
 import kotlinx.serialization.json.JsonPrimitive
 import okio.FileSystem
 import okio.Path
@@ -58,9 +58,10 @@ class FilesystemMoment(
         return DumbSentimentAnalyst.analyze(description.toString())
     }
 
-    override val place: Place get() {
-        return places.relevantTo(this).firstOrNull() ?: NullIsland
-    }
+    override val place: Place
+        get() {
+            return places.relevantTo(this).firstOrNull() ?: NullIsland
+        }
 
     constructor(fileSystem: FileSystem, parentDirectory: Path, id: Uuid, places: MomentfulPlaces) : this(
         fileSystem = fileSystem,

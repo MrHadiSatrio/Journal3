@@ -20,7 +20,6 @@ package com.hadisatrio.apps.kotlin.journal3.moment
 import com.benasher44.uuid.uuidFrom
 import com.hadisatrio.apps.kotlin.journal3.Router
 import com.hadisatrio.apps.kotlin.journal3.datetime.Timestamp
-import com.hadisatrio.apps.kotlin.journal3.geography.Places
 import com.hadisatrio.apps.kotlin.journal3.id.TargetId
 import com.hadisatrio.apps.kotlin.journal3.moment.datetime.ClockRespectingMoments
 import com.hadisatrio.apps.kotlin.journal3.sentiment.Sentiment
@@ -38,6 +37,7 @@ import com.hadisatrio.libs.kotlin.foundation.modal.BinaryConfirmationModal
 import com.hadisatrio.libs.kotlin.foundation.modal.Modal
 import com.hadisatrio.libs.kotlin.foundation.modal.ModalApprovalEvent
 import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
+import com.hadisatrio.libs.kotlin.geography.Places
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.takeWhile
 import kotlinx.coroutines.runBlocking

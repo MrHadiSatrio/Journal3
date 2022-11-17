@@ -18,7 +18,7 @@
 package com.hadisatrio.apps.kotlin.journal3.moment
 
 import com.benasher44.uuid.Uuid
-import com.hadisatrio.apps.kotlin.journal3.geography.Place
+import com.hadisatrio.libs.kotlin.geography.Place
 
 interface MomentfulPlaces : Iterable<MomentfulPlace> {
     fun remember(place: Place): MomentfulPlace

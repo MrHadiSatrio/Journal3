@@ -17,8 +17,8 @@
 
 package com.hadisatrio.apps.kotlin.journal3.moment
 
-import com.hadisatrio.apps.kotlin.journal3.geography.Coordinates
-import com.hadisatrio.apps.kotlin.journal3.geography.Place
+import com.hadisatrio.libs.kotlin.geography.Coordinates
+import com.hadisatrio.libs.kotlin.geography.Place
 
 interface MomentfulPlace : Place {
 

@@ -19,10 +19,10 @@ package com.hadisatrio.apps.kotlin.journal3.moment.cache
 
 import com.benasher44.uuid.Uuid
 import com.hadisatrio.apps.kotlin.journal3.datetime.Timestamp
-import com.hadisatrio.apps.kotlin.journal3.geography.Place
 import com.hadisatrio.apps.kotlin.journal3.moment.Moment
 import com.hadisatrio.apps.kotlin.journal3.sentiment.Sentiment
 import com.hadisatrio.apps.kotlin.journal3.token.TokenableString
+import com.hadisatrio.libs.kotlin.geography.Place
 
 @Suppress("LongParameterList")
 class CachingMoment(

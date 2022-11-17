@@ -20,8 +20,6 @@ package com.hadisatrio.apps.kotlin.journal3.moment
 import com.hadisatrio.apps.kotlin.journal3.datetime.Timestamp
 import com.hadisatrio.apps.kotlin.journal3.event.RecordedEventSource
 import com.hadisatrio.apps.kotlin.journal3.event.UnsupportedEvent
-import com.hadisatrio.apps.kotlin.journal3.geography.FakePlaces
-import com.hadisatrio.apps.kotlin.journal3.geography.SelfPopulatingPlaces
 import com.hadisatrio.apps.kotlin.journal3.id.FakeTargetId
 import com.hadisatrio.apps.kotlin.journal3.id.TargetId
 import com.hadisatrio.apps.kotlin.journal3.sentiment.Sentiment
@@ -35,6 +33,8 @@ import com.hadisatrio.libs.kotlin.foundation.modal.Modal
 import com.hadisatrio.libs.kotlin.foundation.modal.ModalApprovalEvent
 import com.hadisatrio.libs.kotlin.foundation.modal.ModalDismissalEvent
 import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
+import com.hadisatrio.libs.kotlin.geography.SelfPopulatingPlaces
+import com.hadisatrio.libs.kotlin.geography.fake.FakePlaces
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
@@ -196,6 +196,7 @@ class EditAMomentUseCaseTest {
                 SelectionEvent("fizz", Timestamp(Instant.DISTANT_FUTURE).toString()),
                 SelectionEvent("buzz", Sentiment(0.75F).toString()),
                 ModalApprovalEvent("lorem"),
+                CancellationEvent("system"),
                 UnsupportedEvent(),
                 CompletionEvent()
             ),

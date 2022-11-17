@@ -30,11 +30,10 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 api(project(":lib-kmm-foundation"))
+                api(project(":lib-kmm-json"))
+                api(project(":lib-kmm-geography"))
                 api(Dependencies.Commons.DATETIME)
                 api(Dependencies.Commons.OKIO)
-                api(Dependencies.Network.KTOR)
-
-                implementation(Dependencies.Commons.KOTLINX_JSON_OKIO)
             }
         }
         val commonTest by getting {
@@ -44,7 +43,6 @@ kotlin {
                 implementation(Dependencies.TestUtility.KOTEST_ASSERTIONS)
                 implementation(Dependencies.TestDouble.OKIO_FAKE_FS)
                 implementation(Dependencies.TestDouble.MOCKK)
-                implementation(Dependencies.TestDouble.KTOR_MOCK_ENGINE)
             }
         }
         val androidMain by getting
@@ -82,7 +80,7 @@ android {
 kover {
     filters {
         classes {
-            excludes += listOf("*Fake*")
+            excludes += listOf("*Fake*", "*Test")
         }
     }
     verify {

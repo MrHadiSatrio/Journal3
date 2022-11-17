@@ -19,10 +19,10 @@ package com.hadisatrio.apps.kotlin.journal3.moment
 
 import com.benasher44.uuid.Uuid
 import com.hadisatrio.apps.kotlin.journal3.datetime.Timestamp
-import com.hadisatrio.apps.kotlin.journal3.geography.NullIsland
-import com.hadisatrio.apps.kotlin.journal3.geography.Place
 import com.hadisatrio.apps.kotlin.journal3.sentiment.Sentiment
 import com.hadisatrio.apps.kotlin.journal3.token.TokenableString
+import com.hadisatrio.libs.kotlin.geography.NullIsland
+import com.hadisatrio.libs.kotlin.geography.Place
 
 class FakeMoment(
     override val id: Uuid,

@@ -19,12 +19,12 @@ package com.hadisatrio.apps.kotlin.journal3.story.filesystem
 
 import com.benasher44.uuid.Uuid
 import com.benasher44.uuid.uuidFrom
-import com.hadisatrio.apps.kotlin.journal3.json.JsonFile
 import com.hadisatrio.apps.kotlin.journal3.moment.MomentfulPlaces
 import com.hadisatrio.apps.kotlin.journal3.moment.Moments
 import com.hadisatrio.apps.kotlin.journal3.moment.filesystem.FilesystemMoments
 import com.hadisatrio.apps.kotlin.journal3.story.Story
 import com.hadisatrio.apps.kotlin.journal3.token.TokenableString
+import com.hadisatrio.libs.kotlin.json.JsonFile
 import kotlinx.serialization.json.JsonPrimitive
 import okio.FileSystem
 import okio.Path

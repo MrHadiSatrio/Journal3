@@ -17,9 +17,9 @@
 
 package com.hadisatrio.apps.kotlin.journal3.moment.filesystem
 
-import com.hadisatrio.apps.kotlin.journal3.geography.FakePlace
-import com.hadisatrio.apps.kotlin.journal3.geography.LiteralCoordinates
 import com.hadisatrio.apps.kotlin.journal3.moment.FakeMoments
+import com.hadisatrio.libs.kotlin.geography.LiteralCoordinates
+import com.hadisatrio.libs.kotlin.geography.fake.FakePlace
 import io.kotest.matchers.booleans.shouldBeFalse
 import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.shouldBe
@@ -62,28 +62,17 @@ class FilesystemMomentfulPlaceTest {
     }
 
     @Test
-    fun `Reports relevancy for linked moments`() {
+    fun `Reports relevancy for moments`() {
+        val oneMoment = FakeMoments().new()
+        val otherMoment = FakeMoments().new()
         val moment = FakeMoments().new()
 
-        momentfulPlace.link(moment)
+        momentfulPlace.link(oneMoment)
+        momentfulPlace.link(otherMoment)
+        momentfulPlace.unlink(otherMoment)
 
-        momentfulPlace.relevantTo(moment).shouldBeTrue()
-    }
-
-    @Test
-    fun `Reports relevancy for unlinked moments`() {
-        val moment = FakeMoments().new()
-
-        momentfulPlace.link(moment)
-        momentfulPlace.unlink(moment)
-
-        momentfulPlace.relevantTo(moment).shouldBeFalse()
-    }
-
-    @Test
-    fun `Reports relevancy for unknown moments`() {
-        val moment = FakeMoments().new()
-
+        momentfulPlace.relevantTo(oneMoment).shouldBeTrue()
+        momentfulPlace.relevantTo(otherMoment).shouldBeFalse()
         momentfulPlace.relevantTo(moment).shouldBeFalse()
     }
 }

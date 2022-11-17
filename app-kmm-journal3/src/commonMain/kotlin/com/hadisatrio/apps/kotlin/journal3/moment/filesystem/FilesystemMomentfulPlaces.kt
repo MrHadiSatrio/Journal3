@@ -18,10 +18,10 @@
 package com.hadisatrio.apps.kotlin.journal3.moment.filesystem
 
 import com.benasher44.uuid.Uuid
-import com.hadisatrio.apps.kotlin.journal3.geography.Place
 import com.hadisatrio.apps.kotlin.journal3.moment.Moment
 import com.hadisatrio.apps.kotlin.journal3.moment.MomentfulPlace
 import com.hadisatrio.apps.kotlin.journal3.moment.MomentfulPlaces
+import com.hadisatrio.libs.kotlin.geography.Place
 import okio.FileSystem
 import okio.Path
 

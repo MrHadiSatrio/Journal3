@@ -19,9 +19,6 @@ package com.hadisatrio.apps.android.journal3
 
 import android.app.Application
 import android.content.Context
-import com.hadisatrio.apps.kotlin.journal3.geography.NullIsland
-import com.hadisatrio.apps.kotlin.journal3.geography.Places
-import com.hadisatrio.apps.kotlin.journal3.geography.here.HereNearbyPlaces
 import com.hadisatrio.apps.kotlin.journal3.moment.filesystem.FilesystemMomentfulPlaces
 import com.hadisatrio.apps.kotlin.journal3.story.Stories
 import com.hadisatrio.apps.kotlin.journal3.story.filesystem.FilesystemStories
@@ -33,6 +30,9 @@ import com.hadisatrio.libs.kotlin.foundation.event.EventSink
 import com.hadisatrio.libs.kotlin.foundation.modal.Modal
 import com.hadisatrio.libs.kotlin.foundation.presentation.CoroutineDispatchingPresenter
 import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
+import com.hadisatrio.libs.kotlin.geography.NullIsland
+import com.hadisatrio.libs.kotlin.geography.Places
+import com.hadisatrio.libs.kotlin.geography.here.HereNearbyPlaces
 import io.ktor.client.HttpClient
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
