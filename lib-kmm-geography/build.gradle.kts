@@ -31,14 +31,16 @@ kotlin {
             dependencies {
                 api(project(":lib-kmm-json"))
                 api(Dependencies.Commons.UUID)
+                api(Dependencies.Commons.DATETIME)
                 api(Dependencies.Network.KTOR)
             }
         }
         val commonTest by getting {
             dependencies {
                 implementation(kotlin("test"))
-                implementation(Dependencies.TestUtility.COROUTINES_TEST)
                 implementation(Dependencies.TestUtility.KOTEST_ASSERTIONS)
+                implementation(Dependencies.TestUtility.ROBOLECTRIC)
+                implementation(Dependencies.TestDouble.MOCKK)
                 implementation(Dependencies.TestDouble.KTOR_MOCK_ENGINE)
             }
         }

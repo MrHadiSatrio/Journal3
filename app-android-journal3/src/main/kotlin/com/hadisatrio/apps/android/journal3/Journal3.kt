@@ -25,12 +25,12 @@ import com.hadisatrio.apps.kotlin.journal3.story.filesystem.FilesystemStories
 import com.hadisatrio.libs.android.foundation.activity.CurrentActivity
 import com.hadisatrio.libs.android.foundation.modal.AlertDialogModalPresenter
 import com.hadisatrio.libs.android.foundation.os.SystemLog
+import com.hadisatrio.libs.android.geography.LocationManagerCoordinates
 import com.hadisatrio.libs.kotlin.foundation.event.EventHub
 import com.hadisatrio.libs.kotlin.foundation.event.EventSink
 import com.hadisatrio.libs.kotlin.foundation.modal.Modal
 import com.hadisatrio.libs.kotlin.foundation.presentation.CoroutineDispatchingPresenter
 import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
-import com.hadisatrio.libs.kotlin.geography.NullIsland
 import com.hadisatrio.libs.kotlin.geography.Places
 import com.hadisatrio.libs.kotlin.geography.here.HereNearbyPlaces
 import io.ktor.client.HttpClient
@@ -47,7 +47,7 @@ class Journal3 : Application() {
 
     val places: Places by lazy {
         HereNearbyPlaces(
-            coordinates = NullIsland.coordinates,
+            coordinates = LocationManagerCoordinates(this, clock),
             limit = 100,
             apiKey = BuildConfig.KEY_HERE_API,
             httpClient = HttpClient()
