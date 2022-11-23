@@ -31,6 +31,10 @@ object Dependencies {
         const val MICROBENCHMARK = "androidx.benchmark:benchmark-junit4:1.1.0"
     }
 
+    object AndroidSecurity {
+        const val ASSENT = "com.afollestad.assent:core:3.0.0-RC4"
+    }
+
     object Asynchrony {
         const val COROUTINES = "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.2"
     }

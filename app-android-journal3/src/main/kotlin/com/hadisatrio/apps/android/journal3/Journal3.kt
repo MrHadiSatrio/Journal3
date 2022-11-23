@@ -19,6 +19,7 @@ package com.hadisatrio.apps.android.journal3
 
 import android.app.Application
 import android.content.Context
+import android.os.Build
 import com.hadisatrio.apps.kotlin.journal3.moment.filesystem.FilesystemMomentfulPlaces
 import com.hadisatrio.apps.kotlin.journal3.story.Stories
 import com.hadisatrio.apps.kotlin.journal3.story.filesystem.FilesystemStories
@@ -26,6 +27,7 @@ import com.hadisatrio.libs.android.foundation.activity.CurrentActivity
 import com.hadisatrio.libs.android.foundation.modal.AlertDialogModalPresenter
 import com.hadisatrio.libs.android.foundation.os.SystemLog
 import com.hadisatrio.libs.android.geography.LocationManagerCoordinates
+import com.hadisatrio.libs.android.geography.PermissionAwareCoordinates
 import com.hadisatrio.libs.kotlin.foundation.event.EventHub
 import com.hadisatrio.libs.kotlin.foundation.event.EventSink
 import com.hadisatrio.libs.kotlin.foundation.modal.Modal
@@ -47,7 +49,14 @@ class Journal3 : Application() {
 
     val places: Places by lazy {
         HereNearbyPlaces(
-            coordinates = LocationManagerCoordinates(this, clock),
+            coordinates = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                PermissionAwareCoordinates(
+                    currentActivity = currentActivity,
+                    origin = LocationManagerCoordinates(this, clock)
+                )
+            } else {
+                LocationManagerCoordinates(this, clock)
+            },
             limit = 100,
             apiKey = BuildConfig.KEY_HERE_API,
             httpClient = HttpClient()

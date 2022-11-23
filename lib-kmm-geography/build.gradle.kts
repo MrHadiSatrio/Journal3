@@ -29,6 +29,7 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
+                api(project(":lib-kmm-foundation"))
                 api(project(":lib-kmm-json"))
                 api(Dependencies.Commons.UUID)
                 api(Dependencies.Commons.DATETIME)
@@ -44,7 +45,11 @@ kotlin {
                 implementation(Dependencies.TestDouble.KTOR_MOCK_ENGINE)
             }
         }
-        val androidMain by getting
+        val androidMain by getting {
+            dependencies {
+                implementation(Dependencies.AndroidSecurity.ASSENT)
+            }
+        }
         val androidTest by getting {
             dependencies {
                 implementation(Dependencies.TestRuntime.ANDROID_JUNIT_4)
