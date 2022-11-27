@@ -62,6 +62,8 @@
 
         <activity android:name=".moment.EditAMomentActivity" />
 
+        <activity android:name=".geography.SelectAPlaceActivity" />
+
     </application>
 
 </manifest>
