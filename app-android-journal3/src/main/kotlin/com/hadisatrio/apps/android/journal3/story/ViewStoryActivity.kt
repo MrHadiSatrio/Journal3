@@ -75,8 +75,9 @@ class ViewStoryActivity : AppCompatActivity() {
                                 AdaptingPresenter(
                                     origin = StringRecyclerViewPresenter(findViewById(R.id.moments_list)),
                                     adapter = { story ->
-                                        story.moments.sortedDescending()
-                                            .map { "${it.timestamp}\n${it.description}\n${it.sentiment}" }
+                                        story.moments.sortedDescending().map {
+                                            "${it.timestamp}\n${it.description}\n${it.sentiment}\n${it.place.name}"
+                                        }
                                     }
                                 )
                             )
