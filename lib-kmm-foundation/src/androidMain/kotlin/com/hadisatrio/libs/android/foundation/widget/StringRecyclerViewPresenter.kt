@@ -15,62 +15,61 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.hadisatrio.apps.android.journal3.story
+package com.hadisatrio.libs.android.foundation.widget
 
+import android.content.res.Resources
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.core.view.setPadding
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.LayoutParams.MATCH_PARENT
 import androidx.recyclerview.widget.RecyclerView.LayoutParams.WRAP_CONTENT
-import com.google.android.material.divider.MaterialDividerItemDecoration
-import com.hadisatrio.apps.android.journal3.R
-import com.hadisatrio.apps.kotlin.journal3.story.Stories
 import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
+import kotlin.math.roundToInt
 
-class StoriesRecyclerViewPresenter(
-    private val recyclerView: RecyclerView
-) : Presenter<Stories> {
+class StringRecyclerViewPresenter(
+    private val recyclerView: RecyclerView,
+    private val layoutManager: RecyclerView.LayoutManager
+) : Presenter<Iterable<String>> {
 
     private val adapter: Adapter by lazy {
-        Adapter()
-    }
-    private val layoutManager: LinearLayoutManager by lazy {
-        LinearLayoutManager(recyclerView.context, RecyclerView.VERTICAL, false)
+        Adapter(recyclerView.resources)
     }
 
-    override fun present(thing: Stories) {
+    constructor(recyclerView: RecyclerView) : this(
+        recyclerView,
+        LinearLayoutManager(recyclerView.context, RecyclerView.VERTICAL, false)
+    )
+
+    override fun present(thing: Iterable<String>) {
         setupRecyclerView()
-        adapter.submitList(thing.map { "${it.title}\n${it.synopsis}" })
+        adapter.submitList(thing.toList())
     }
 
     private fun setupRecyclerView() = with(recyclerView) {
-        adapter = this@StoriesRecyclerViewPresenter.adapter
-        layoutManager = this@StoriesRecyclerViewPresenter.layoutManager
-        if (itemDecorationCount == 0) {
-            addItemDecoration(
-                MaterialDividerItemDecoration(
-                    recyclerView.context,
-                    RecyclerView.VERTICAL
-                )
-            )
-        }
+        adapter = this@StringRecyclerViewPresenter.adapter
+        layoutManager = this@StringRecyclerViewPresenter.layoutManager
     }
 
-    private class Adapter : ListAdapter<String, ViewHolder>(DiffCallback()) {
+    private class Adapter(resources: Resources) : ListAdapter<String, ViewHolder>(DiffCallback()) {
+
+        private val itemPadding: Int by lazy { (resources.displayMetrics.density * ITEM_PADDING_DP).roundToInt() }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
             val view = TextView(parent.context)
             view.layoutParams = RecyclerView.LayoutParams(MATCH_PARENT, WRAP_CONTENT)
-            view.setPadding(parent.resources.getDimensionPixelSize(R.dimen.margin))
+            view.setPadding(itemPadding, itemPadding, itemPadding, itemPadding)
             return ViewHolder(view)
         }
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             holder.view.text = getItem(position)
+        }
+
+        companion object {
+            private const val ITEM_PADDING_DP = 16
         }
     }
 

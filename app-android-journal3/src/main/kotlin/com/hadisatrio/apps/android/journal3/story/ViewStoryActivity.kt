@@ -25,13 +25,13 @@ import com.hadisatrio.apps.android.journal3.ActivityRouter
 import com.hadisatrio.apps.android.journal3.Journal3.Companion.journal3Application
 import com.hadisatrio.apps.android.journal3.R
 import com.hadisatrio.apps.android.journal3.id.BundledTargetId
-import com.hadisatrio.apps.android.journal3.moment.MomentsRecyclerViewPresenter
 import com.hadisatrio.apps.kotlin.journal3.event.RefreshRequestEvent
 import com.hadisatrio.apps.kotlin.journal3.story.ShowStoryUseCase
 import com.hadisatrio.apps.kotlin.journal3.story.cache.CachingStoryPresenter
 import com.hadisatrio.libs.android.foundation.lifecycle.LifecycleTriggeredEventSource
 import com.hadisatrio.libs.android.foundation.widget.CoroutineDispatchingEventSource
 import com.hadisatrio.libs.android.foundation.widget.RecyclerViewItemSelectionEventSource
+import com.hadisatrio.libs.android.foundation.widget.StringRecyclerViewPresenter
 import com.hadisatrio.libs.android.foundation.widget.TextViewStringPresenter
 import com.hadisatrio.libs.android.foundation.widget.ViewClickEventSource
 import com.hadisatrio.libs.kotlin.foundation.CoroutineDispatchingUseCase
@@ -73,8 +73,11 @@ class ViewStoryActivity : AppCompatActivity() {
                                     adapter = StoryStringAdapter("synopsis")
                                 ),
                                 AdaptingPresenter(
-                                    origin = MomentsRecyclerViewPresenter(findViewById(R.id.moments_list)),
-                                    adapter = { thing -> thing.moments }
+                                    origin = StringRecyclerViewPresenter(findViewById(R.id.moments_list)),
+                                    adapter = { story ->
+                                        story.moments.sortedDescending()
+                                            .map { "${it.timestamp}\n${it.description}\n${it.sentiment}" }
+                                    }
                                 )
                             )
                         )

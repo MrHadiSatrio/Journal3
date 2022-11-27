@@ -30,10 +30,12 @@ import com.hadisatrio.apps.kotlin.journal3.story.cache.CachingStoriesPresenter
 import com.hadisatrio.libs.android.foundation.lifecycle.LifecycleTriggeredEventSource
 import com.hadisatrio.libs.android.foundation.widget.CoroutineDispatchingEventSource
 import com.hadisatrio.libs.android.foundation.widget.RecyclerViewItemSelectionEventSource
+import com.hadisatrio.libs.android.foundation.widget.StringRecyclerViewPresenter
 import com.hadisatrio.libs.android.foundation.widget.ViewClickEventSource
 import com.hadisatrio.libs.kotlin.foundation.CoroutineDispatchingUseCase
 import com.hadisatrio.libs.kotlin.foundation.event.EventSources
 import com.hadisatrio.libs.kotlin.foundation.event.SelectionEvent
+import com.hadisatrio.libs.kotlin.foundation.presentation.AdaptingPresenter
 import com.hadisatrio.libs.kotlin.foundation.presentation.CoroutineDispatchingPresenter
 import kotlinx.coroutines.Dispatchers
 
@@ -56,8 +58,9 @@ class ViewStoriesActivity : AppCompatActivity() {
                         origin = CoroutineDispatchingPresenter(
                             coroutineScope = lifecycleScope,
                             coroutineDispatcher = Dispatchers.Main,
-                            origin = StoriesRecyclerViewPresenter(
-                                recyclerView = findViewById(R.id.stories_list)
+                            origin = AdaptingPresenter(
+                                origin = StringRecyclerViewPresenter(recyclerView = findViewById(R.id.stories_list)),
+                                adapter = { stories -> stories.map { "${it.title}\n${it.synopsis}" } }
                             )
                         )
                     )
