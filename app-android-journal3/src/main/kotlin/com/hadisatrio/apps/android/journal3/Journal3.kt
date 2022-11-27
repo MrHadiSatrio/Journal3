@@ -30,6 +30,7 @@ import com.hadisatrio.libs.android.geography.LocationManagerCoordinates
 import com.hadisatrio.libs.android.geography.PermissionAwareCoordinates
 import com.hadisatrio.libs.kotlin.foundation.event.EventHub
 import com.hadisatrio.libs.kotlin.foundation.event.EventSink
+import com.hadisatrio.libs.kotlin.foundation.event.EventSinks
 import com.hadisatrio.libs.kotlin.foundation.modal.Modal
 import com.hadisatrio.libs.kotlin.foundation.presentation.CoroutineDispatchingPresenter
 import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
@@ -87,7 +88,10 @@ class Journal3 : Application() {
     }
 
     val globalEventSink: EventSink by lazy {
-        SystemLog("Journal3")
+        EventSinks(
+            ActivityRoutingEventSink(currentActivity),
+            SystemLog("Journal3")
+        )
     }
 
     val globalCoroutineScope: CoroutineScope by lazy {
