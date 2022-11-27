@@ -36,6 +36,7 @@ import com.hadisatrio.libs.android.foundation.widget.ViewClickEventSource
 import com.hadisatrio.libs.kotlin.foundation.CoroutineDispatchingUseCase
 import com.hadisatrio.libs.kotlin.foundation.event.CompletionEvent
 import com.hadisatrio.libs.kotlin.foundation.event.EventSources
+import com.hadisatrio.libs.kotlin.foundation.event.SelectionEvent
 import com.hadisatrio.libs.kotlin.foundation.presentation.AdaptingPresenter
 import com.hadisatrio.libs.kotlin.foundation.presentation.CoroutineDispatchingPresenter
 import com.hadisatrio.libs.kotlin.foundation.presentation.Presenters
@@ -43,6 +44,7 @@ import kotlinx.coroutines.Dispatchers
 
 class EditAMomentActivity : AppCompatActivity() {
 
+    @Suppress("LongMethod")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -65,6 +67,10 @@ class EditAMomentActivity : AppCompatActivity() {
                             adapter = { moment -> moment.timestamp.toString() }
                         ),
                         AdaptingPresenter(
+                            origin = TextViewStringPresenter(findViewById(R.id.place_selector_button)),
+                            adapter = { moment -> moment.place.name }
+                        ),
+                        AdaptingPresenter(
                             origin = TextViewStringPresenter(findViewById(R.id.description_text_field)),
                             adapter = { moment -> moment.description.toString() }
                         ),
@@ -82,6 +88,10 @@ class EditAMomentActivity : AppCompatActivity() {
                         ViewClickEventSource(
                             view = findViewById(R.id.add_button),
                             eventFactory = { CompletionEvent() }
+                        ),
+                        ViewClickEventSource(
+                            view = findViewById(R.id.place_selector_button),
+                            eventFactory = { SelectionEvent("action", "select_place") }
                         ),
                         TimestampSelectionEventSource(
                             button = findViewById(R.id.timestamp_selector_button)
