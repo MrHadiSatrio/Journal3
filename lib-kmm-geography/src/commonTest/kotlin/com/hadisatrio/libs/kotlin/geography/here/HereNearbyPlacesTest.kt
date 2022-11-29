@@ -17,6 +17,7 @@
 
 package com.hadisatrio.libs.kotlin.geography.here
 
+import com.hadisatrio.libs.kotlin.geography.Coordinates
 import com.hadisatrio.libs.kotlin.geography.LiteralCoordinates
 import com.hadisatrio.libs.kotlin.geography.SelfPopulatingPlaces
 import com.hadisatrio.libs.kotlin.geography.fake.FakePlaces
@@ -25,31 +26,55 @@ import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldNotBeEmpty
 import io.kotest.matchers.doubles.shouldBeBetween
+import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldStartWith
 import io.ktor.client.HttpClient
-import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.engine.mock.MockEngine
 import io.ktor.client.engine.mock.respondError
 import io.ktor.client.engine.mock.respondOk
 import io.ktor.http.HttpStatusCode
 import io.ktor.utils.io.errors.IOException
+import io.mockk.every
+import io.mockk.mockk
 import kotlin.test.Test
 
 class HereNearbyPlacesTest {
 
     private val coordinates = LiteralCoordinates(37.5323749, -122.4151854)
     private val apiKey = "wCHWXm4g%Nkg@79z8bMzkg@79z8bMz"
+    private val httpClientEngine = clientEngine(false)
     private val places = HereNearbyPlaces(
         coordinates = coordinates,
         limit = 100,
         apiKey = apiKey,
-        httpClient = HttpClient(clientEngine(false))
+        httpClient = HttpClient(httpClientEngine)
     )
 
     @Test
     fun `Lists down places in vicinity (less than 250 KMs) of the given coordinates`() {
         val distances = places.map { it.distanceTo(coordinates) }
         distances.forEach { it.value.shouldBeBetween(0.0, 250_000.0, 0.0) }
+    }
+
+    @Test
+    fun `Guards against multiple requests for request with nearby coordinates`() {
+        val coordinates = mockk<Coordinates>()
+        val places = HereNearbyPlaces(
+            coordinates = coordinates,
+            limit = 100,
+            apiKey = apiKey,
+            httpClient = HttpClient(httpClientEngine)
+        )
+
+        every { coordinates.toString() }.returns("37.5323749,-122.4151854")
+        repeat(10) { places.toList() }
+        httpClientEngine.requestHistory.size.shouldBe(1)
+        httpClientEngine.responseHistory.size.shouldBe(1)
+
+        every { coordinates.toString() }.returns("38.5323749,-123.4151854")
+        repeat(10) { places.toList() }
+        httpClientEngine.requestHistory.size.shouldBe(2)
+        httpClientEngine.responseHistory.size.shouldBe(2)
     }
 
     @Test
@@ -62,14 +87,7 @@ class HereNearbyPlacesTest {
 
     @Test
     fun `Throws NoSuchElementException when iterating outside of valid bound`() {
-        val places = HereNearbyPlaces(
-            coordinates = coordinates,
-            limit = 100,
-            apiKey = apiKey,
-            httpClient = HttpClient(clientEngine(false))
-        )
         val iterator = places.iterator()
-
         shouldThrow<NoSuchElementException> { repeat(101) { iterator.next() } }
     }
 
@@ -87,17 +105,10 @@ class HereNearbyPlacesTest {
 
     @Test
     fun `Throws UnsupportedOperationException when asked to create new places`() {
-        val places = HereNearbyPlaces(
-            coordinates = coordinates,
-            limit = 100,
-            apiKey = apiKey,
-            httpClient = HttpClient(clientEngine(false))
-        )
-
         shouldThrow<UnsupportedOperationException> { places.new() }
     }
 
-    private fun clientEngine(shouldFail: Boolean): HttpClientEngine {
+    private fun clientEngine(shouldFail: Boolean): MockEngine {
         return MockEngine { request ->
             val url = request.url
             val parameters = url.parameters
