@@ -21,6 +21,7 @@ import com.hadisatrio.apps.kotlin.journal3.Router
 import com.hadisatrio.apps.kotlin.journal3.datetime.Timestamp
 import com.hadisatrio.apps.kotlin.journal3.story.Stories
 import com.hadisatrio.libs.kotlin.foundation.UseCase
+import com.hadisatrio.libs.kotlin.foundation.event.CancellationEvent
 import com.hadisatrio.libs.kotlin.foundation.event.CompletionEvent
 import com.hadisatrio.libs.kotlin.foundation.event.Event
 import com.hadisatrio.libs.kotlin.foundation.event.EventSink
@@ -29,6 +30,8 @@ import com.hadisatrio.libs.kotlin.foundation.modal.BinaryConfirmationModal
 import com.hadisatrio.libs.kotlin.foundation.modal.Modal
 import com.hadisatrio.libs.kotlin.foundation.modal.ModalApprovalEvent
 import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.takeWhile
 import kotlinx.coroutines.runBlocking
@@ -44,6 +47,8 @@ class AlertInactivityUseCase(
     private val router: Router
 ) : UseCase {
 
+    private val completionEvents by lazy { MutableSharedFlow<CompletionEvent>(extraBufferCapacity = 1) }
+
     override fun invoke() {
         if (!isAlertNecessary()) return
         presenter.present(BinaryConfirmationModal("inactivity_alert"))
@@ -58,14 +63,27 @@ class AlertInactivityUseCase(
     }
 
     private fun observeEvents() = runBlocking {
-        eventSource.events().onEach { eventSink.sink(it) }
+        merge(eventSource.events(), completionEvents)
+            .onEach { eventSink.sink(it) }
             .takeWhile { event -> (event as? CompletionEvent)?.also { handleCompletion() } == null }
             .collect { event -> handle(event) }
     }
 
-    private fun handle(event: Event) {
-        if (event !is ModalApprovalEvent || event.modalKind != "inactivity_alert") return
+    private suspend fun handle(event: Event) {
+        when (event) {
+            is ModalApprovalEvent -> handleModalApproval(event)
+            is CancellationEvent -> handleCancellation()
+        }
+    }
+
+    private suspend fun handleModalApproval(event: ModalApprovalEvent) {
+        if (event.modalKind != "inactivity_alert") return
         router.toMomentEditor(stories.first().id)
+        completionEvents.emit(CompletionEvent())
+    }
+
+    private suspend fun handleCancellation() {
+        completionEvents.emit(CompletionEvent())
     }
 
     private fun handleCompletion() {

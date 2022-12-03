@@ -21,12 +21,15 @@ import com.hadisatrio.apps.kotlin.journal3.Router
 import com.hadisatrio.apps.kotlin.journal3.event.RefreshRequestEvent
 import com.hadisatrio.apps.kotlin.journal3.id.TargetId
 import com.hadisatrio.libs.kotlin.foundation.UseCase
+import com.hadisatrio.libs.kotlin.foundation.event.CancellationEvent
 import com.hadisatrio.libs.kotlin.foundation.event.CompletionEvent
 import com.hadisatrio.libs.kotlin.foundation.event.Event
 import com.hadisatrio.libs.kotlin.foundation.event.EventSink
 import com.hadisatrio.libs.kotlin.foundation.event.EventSource
 import com.hadisatrio.libs.kotlin.foundation.event.SelectionEvent
 import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.takeWhile
 import kotlinx.coroutines.runBlocking
@@ -40,6 +43,8 @@ class ShowStoryUseCase(
     private val router: Router
 ) : UseCase {
 
+    private val completionEvents by lazy { MutableSharedFlow<CompletionEvent>(extraBufferCapacity = 1) }
+
     override fun invoke() {
         presentState()
         observeEvents()
@@ -51,16 +56,17 @@ class ShowStoryUseCase(
     }
 
     private fun observeEvents() = runBlocking {
-        eventSource.events()
+        merge(eventSource.events(), completionEvents)
             .onEach { eventSink.sink(it) }
             .takeWhile { event -> (event as? CompletionEvent)?.also { handleCompletion() } == null }
             .collect { event -> handleEvent(event) }
     }
 
-    private fun handleEvent(event: Event) {
+    private suspend fun handleEvent(event: Event) {
         when (event) {
             is SelectionEvent -> handleSelectionEvent(event)
             is RefreshRequestEvent -> presentState()
+            is CancellationEvent -> handleCancellation()
         }
     }
 
@@ -78,6 +84,10 @@ class ShowStoryUseCase(
                 "add" -> router.toMomentEditor(story.id)
             }
         }
+    }
+
+    private suspend fun handleCancellation() {
+        completionEvents.emit(CompletionEvent())
     }
 
     private fun handleCompletion() {

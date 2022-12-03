@@ -144,4 +144,23 @@ class EditAStoryUseCaseTest {
         verify(exactly = 1) { modalPresenter.present(withArg { it.kind.shouldBe("edit_cancellation_confirmation") }) }
         stories.shouldBeEmpty()
     }
+
+    @Test(timeout = 5_000)
+    fun `Stops upon receiving cancellation events`() {
+        val targetId = mockk<TargetId>()
+        val stories = FakeStories()
+        every { targetId.isValid() } returns false
+
+        listOf(CancellationEvent("system")).forEach { event ->
+            EditAStoryUseCase(
+                targetId = targetId,
+                stories = stories,
+                presenter = mockk(relaxed = true),
+                modalPresenter = mockk(relaxed = true),
+                eventSource = RecordedEventSource(event),
+                eventSink = mockk(relaxed = true),
+                router = mockk(relaxed = true)
+            )()
+        }
+    }
 }

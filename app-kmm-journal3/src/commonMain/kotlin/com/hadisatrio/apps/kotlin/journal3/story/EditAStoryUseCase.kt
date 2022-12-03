@@ -31,6 +31,8 @@ import com.hadisatrio.libs.kotlin.foundation.modal.BinaryConfirmationModal
 import com.hadisatrio.libs.kotlin.foundation.modal.Modal
 import com.hadisatrio.libs.kotlin.foundation.modal.ModalApprovalEvent
 import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.takeWhile
 import kotlinx.coroutines.runBlocking
@@ -46,6 +48,7 @@ class EditAStoryUseCase(
     private val router: Router
 ) : UseCase {
 
+    private val completionEvents by lazy { MutableSharedFlow<CompletionEvent>(extraBufferCapacity = 1) }
     private lateinit var currentTarget: Story
 
     override operator fun invoke() {
@@ -67,12 +70,13 @@ class EditAStoryUseCase(
     }
 
     private fun observeEvents() = runBlocking {
-        eventSource.events().onEach { eventSink.sink(it) }
+        merge(eventSource.events(), completionEvents)
+            .onEach { eventSink.sink(it) }
             .takeWhile { event -> (event as? CompletionEvent)?.also { handleCompletion() } == null }
             .collect { event -> handle(event) }
     }
 
-    private fun handle(event: Event) {
+    private suspend fun handle(event: Event) {
         when (event) {
             is TextInputEvent -> handleTextInput(event)
             is ModalApprovalEvent -> handleModalApproval(event)
@@ -89,20 +93,23 @@ class EditAStoryUseCase(
         presenter.present(currentTarget)
     }
 
-    private fun handleModalApproval(event: ModalApprovalEvent) {
+    private suspend fun handleModalApproval(event: ModalApprovalEvent) {
         when (event.modalKind) {
             "edit_cancellation_confirmation" -> {
                 currentTarget.forget()
-                router.toPrevious()
+                completionEvents.emit(CompletionEvent())
             }
         }
     }
 
-    private fun handleCancellation(event: CancellationEvent) {
+    private suspend fun handleCancellation(event: CancellationEvent) {
         when (event.reason) {
             "user" -> {
                 val modal = BinaryConfirmationModal("edit_cancellation_confirmation")
                 modalPresenter.present(modal)
+            }
+            else -> {
+                completionEvents.emit(CompletionEvent())
             }
         }
     }

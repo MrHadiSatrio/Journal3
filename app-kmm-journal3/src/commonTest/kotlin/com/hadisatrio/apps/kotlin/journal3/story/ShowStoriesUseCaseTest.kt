@@ -20,6 +20,7 @@ package com.hadisatrio.apps.kotlin.journal3.story
 import com.hadisatrio.apps.kotlin.journal3.Router
 import com.hadisatrio.apps.kotlin.journal3.event.RecordedEventSource
 import com.hadisatrio.apps.kotlin.journal3.event.RefreshRequestEvent
+import com.hadisatrio.libs.kotlin.foundation.event.CancellationEvent
 import com.hadisatrio.libs.kotlin.foundation.event.CompletionEvent
 import com.hadisatrio.libs.kotlin.foundation.event.EventSink
 import com.hadisatrio.libs.kotlin.foundation.event.SelectionEvent
@@ -111,5 +112,18 @@ class ShowStoriesUseCaseTest {
 
         verify(exactly = 1) { router.toStoryDetail(stories.elementAt(9).id) }
         verify(exactly = 1) { eventSink.sink(withArg { it.name.shouldBe("Selection Event") }) }
+    }
+
+    @Test(timeout = 5_000)
+    fun `Stops upon receiving cancellation events`() {
+        listOf(CancellationEvent("user"), CancellationEvent("system")).forEach { event ->
+            ShowStoriesUseCase(
+                stories = stories,
+                presenter = mockk(relaxed = true),
+                eventSource = RecordedEventSource(event),
+                eventSink = mockk(relaxed = true),
+                router = mockk(relaxed = true)
+            )()
+        }
     }
 }

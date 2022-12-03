@@ -176,6 +176,27 @@ class EditAMomentUseCaseTest {
         story.moments.shouldBeEmpty()
     }
 
+    @Test(timeout = 5_000)
+    fun `Stops upon receiving cancellation events`() {
+        val stories = SelfPopulatingStories(noOfStories = 1, noOfMoments = 0, origin = FakeStories())
+        val story = stories.first()
+
+        listOf(CancellationEvent("system")).forEach { event ->
+            EditAMomentUseCase(
+                targetId = mockk(relaxed = true),
+                storyId = FakeTargetId(story.id),
+                stories = stories,
+                places = mockk(relaxed = true),
+                presenter = mockk(relaxed = true),
+                modalPresenter = mockk(relaxed = true),
+                eventSource = RecordedEventSource(event),
+                eventSink = mockk(relaxed = true),
+                router = mockk(relaxed = true),
+                clock = Clock.System
+            )()
+        }
+    }
+
     @Test
     fun `Ignores unknown events without repercussions`() {
         val targetId = mockk<TargetId>()

@@ -22,6 +22,7 @@ import com.hadisatrio.apps.kotlin.journal3.event.RecordedEventSource
 import com.hadisatrio.apps.kotlin.journal3.event.RefreshRequestEvent
 import com.hadisatrio.apps.kotlin.journal3.event.UnsupportedEvent
 import com.hadisatrio.apps.kotlin.journal3.id.FakeTargetId
+import com.hadisatrio.libs.kotlin.foundation.event.CancellationEvent
 import com.hadisatrio.libs.kotlin.foundation.event.CompletionEvent
 import com.hadisatrio.libs.kotlin.foundation.event.SelectionEvent
 import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
@@ -161,6 +162,23 @@ class ShowStoryUseCaseTest {
         )()
 
         verify(exactly = 1) { router.toMomentEditor(story.id) }
+    }
+
+    @Test(timeout = 5_000)
+    fun `Stops upon receiving cancellation events`() {
+        val story = stories.first()
+        val targetId = FakeTargetId(story.id)
+
+        listOf(CancellationEvent("user"), CancellationEvent("system")).forEach { event ->
+            ShowStoryUseCase(
+                targetId = targetId,
+                stories = stories,
+                presenter = mockk(relaxed = true),
+                eventSource = RecordedEventSource(event),
+                eventSink = mockk(relaxed = true),
+                router = mockk(relaxed = true)
+            )()
+        }
     }
 
     @Test

@@ -19,8 +19,11 @@ package com.hadisatrio.apps.kotlin.journal3.event
 
 import com.hadisatrio.libs.kotlin.foundation.event.Event
 import com.hadisatrio.libs.kotlin.foundation.event.EventSource
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.merge
 
 class RecordedEventSource(
     private val events: List<Event>
@@ -29,6 +32,9 @@ class RecordedEventSource(
     constructor(vararg event: Event) : this(event.toList())
 
     override fun events(): Flow<Event> {
-        return events.asFlow()
+        return merge(
+            events.asFlow(),
+            flow { delay(Long.MAX_VALUE) } // ...to prevent the flow from completing.
+        )
     }
 }

@@ -87,6 +87,18 @@ class SelectAPlaceUseCaseTest {
         }
     }
 
+    @Test(timeout = 5_000)
+    fun `Stops upon receiving cancellation events`() {
+        listOf(CancellationEvent("user"), CancellationEvent("system")).forEach { event ->
+            SelectAPlaceUseCase(
+                places = places,
+                presenter = mockk(relaxed = true),
+                eventSource = RecordedEventSource(event),
+                eventSink = mockk(relaxed = true)
+            )()
+        }
+    }
+
     @Test
     fun `Ignores unknown events without repercussions`() {
         SelectAPlaceUseCase(
