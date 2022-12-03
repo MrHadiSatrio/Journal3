@@ -15,20 +15,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.hadisatrio.libs.android.foundation.widget
+package com.hadisatrio.libs.kotlin.foundation.event
 
-import com.hadisatrio.libs.kotlin.foundation.event.Event
-import com.hadisatrio.libs.kotlin.foundation.event.EventSource
-import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
+import java.util.concurrent.Executor
 
-class CoroutineDispatchingEventSource(
-    private val coroutineDispatcher: CoroutineDispatcher,
+class ExecutorDispatchingEventSource(
+    private val executor: Executor,
     private val origin: EventSource
 ) : EventSource {
 
     override fun events(): Flow<Event> {
-        return origin.events().flowOn(coroutineDispatcher)
+        return origin.events().flowOn(executor.asCoroutineDispatcher())
     }
 }

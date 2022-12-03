@@ -17,25 +17,23 @@
 
 package com.hadisatrio.libs.kotlin.foundation.presentation
 
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
+import com.hadisatrio.libs.kotlin.foundation.concurrent.CurrentThreadExecutor
+import io.mockk.mockk
+import io.mockk.spyk
+import io.mockk.verify
+import org.junit.Test
+import java.util.concurrent.Executor
 
-@Deprecated(
-    message = "Coroutine behavior can be flaky for how we are using it in this application.",
-    replaceWith = ReplaceWith(
-        "ExecutorDispatchingPresenter",
-        "com.hadisatrio.libs.kotlin.foundation.presentation.ExecutorDispatchingPresenter"
-    ),
-    level = DeprecationLevel.WARNING
-)
-class CoroutineDispatchingPresenter<T>(
-    private val coroutineScope: CoroutineScope,
-    private val coroutineDispatcher: CoroutineDispatcher,
-    private val origin: Presenter<T>
-) : Presenter<T> {
+class ExecutorDispatchingPresenterTest {
 
-    override fun present(thing: T) {
-        coroutineScope.launch(coroutineDispatcher) { origin.present(thing) }
+    private val executor: Executor = spyk(CurrentThreadExecutor())
+    private val origin: Presenter<Any> = mockk(relaxUnitFun = true)
+    private val presenter = ExecutorDispatchingPresenter(executor, origin)
+
+    @Test
+    fun `Forwards call to the origin on the given executor`() {
+        presenter.present("Foo")
+        verify(exactly = 1) { executor.execute(any()) }
+        verify(exactly = 1) { origin.present("Foo") }
     }
 }

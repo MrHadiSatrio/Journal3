@@ -20,6 +20,7 @@ package com.hadisatrio.apps.android.journal3
 import android.app.Application
 import android.content.Context
 import android.os.Build
+import androidx.core.content.ContextCompat
 import com.hadisatrio.apps.kotlin.journal3.moment.filesystem.FilesystemMomentfulPlaces
 import com.hadisatrio.apps.kotlin.journal3.story.Stories
 import com.hadisatrio.apps.kotlin.journal3.story.filesystem.FilesystemStories
@@ -32,17 +33,17 @@ import com.hadisatrio.libs.kotlin.foundation.event.EventHub
 import com.hadisatrio.libs.kotlin.foundation.event.EventSink
 import com.hadisatrio.libs.kotlin.foundation.event.EventSinks
 import com.hadisatrio.libs.kotlin.foundation.modal.Modal
-import com.hadisatrio.libs.kotlin.foundation.presentation.CoroutineDispatchingPresenter
+import com.hadisatrio.libs.kotlin.foundation.presentation.ExecutorDispatchingPresenter
 import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
 import com.hadisatrio.libs.kotlin.geography.Places
 import com.hadisatrio.libs.kotlin.geography.here.HereNearbyPlaces
 import io.ktor.client.HttpClient
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.datetime.Clock
 import okio.FileSystem
 import okio.Path.Companion.toPath
+import java.util.concurrent.Executor
+import java.util.concurrent.Executors
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.hours
 
@@ -76,9 +77,8 @@ class Journal3 : Application() {
     }
 
     val modalPresenter: Presenter<Modal> by lazy {
-        CoroutineDispatchingPresenter(
-            coroutineScope = globalCoroutineScope,
-            coroutineDispatcher = Dispatchers.Main,
+        ExecutorDispatchingPresenter(
+            executor = foregroundExecutor,
             origin = AlertDialogModalPresenter(currentActivity, globalEventSource)
         )
     }
@@ -94,10 +94,6 @@ class Journal3 : Application() {
         )
     }
 
-    val globalCoroutineScope: CoroutineScope by lazy {
-        CoroutineScope(Dispatchers.Default)
-    }
-
     val globalEventSource: EventHub by lazy {
         EventHub(MutableSharedFlow(extraBufferCapacity = 1))
     }
@@ -108,6 +104,14 @@ class Journal3 : Application() {
 
     val clock: Clock by lazy {
         Clock.System
+    }
+
+    val backgroundExecutor: Executor by lazy {
+        Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors())
+    }
+
+    val foregroundExecutor: Executor by lazy {
+        ContextCompat.getMainExecutor(this)
     }
 
     companion object {

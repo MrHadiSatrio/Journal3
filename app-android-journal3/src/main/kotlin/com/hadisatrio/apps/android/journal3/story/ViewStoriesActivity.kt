@@ -20,7 +20,6 @@ package com.hadisatrio.apps.android.journal3.story
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
 import com.hadisatrio.apps.android.journal3.ActivityRouter
 import com.hadisatrio.apps.android.journal3.Journal3.Companion.journal3Application
 import com.hadisatrio.apps.android.journal3.R
@@ -28,16 +27,16 @@ import com.hadisatrio.apps.kotlin.journal3.event.RefreshRequestEvent
 import com.hadisatrio.apps.kotlin.journal3.story.ShowStoriesUseCase
 import com.hadisatrio.apps.kotlin.journal3.story.cache.CachingStoriesPresenter
 import com.hadisatrio.libs.android.foundation.lifecycle.LifecycleTriggeredEventSource
-import com.hadisatrio.libs.android.foundation.widget.CoroutineDispatchingEventSource
 import com.hadisatrio.libs.android.foundation.widget.RecyclerViewItemSelectionEventSource
 import com.hadisatrio.libs.android.foundation.widget.StringRecyclerViewPresenter
 import com.hadisatrio.libs.android.foundation.widget.ViewClickEventSource
-import com.hadisatrio.libs.kotlin.foundation.CoroutineDispatchingUseCase
+import com.hadisatrio.libs.kotlin.foundation.ExecutorDispatchingUseCase
+import com.hadisatrio.libs.kotlin.foundation.event.CancellationEvent
 import com.hadisatrio.libs.kotlin.foundation.event.EventSources
+import com.hadisatrio.libs.kotlin.foundation.event.ExecutorDispatchingEventSource
 import com.hadisatrio.libs.kotlin.foundation.event.SelectionEvent
 import com.hadisatrio.libs.kotlin.foundation.presentation.AdaptingPresenter
-import com.hadisatrio.libs.kotlin.foundation.presentation.CoroutineDispatchingPresenter
-import kotlinx.coroutines.Dispatchers
+import com.hadisatrio.libs.kotlin.foundation.presentation.ExecutorDispatchingPresenter
 
 class ViewStoriesActivity : AppCompatActivity() {
 
@@ -46,18 +45,15 @@ class ViewStoriesActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_view_stories)
 
-        CoroutineDispatchingUseCase(
-            coroutineScope = lifecycleScope,
-            coroutineDispatcher = Dispatchers.Default,
+        ExecutorDispatchingUseCase(
+            executor = journal3Application.backgroundExecutor,
             origin = ShowStoriesUseCase(
                 stories = journal3Application.stories,
-                presenter = CoroutineDispatchingPresenter(
-                    coroutineScope = lifecycleScope,
-                    coroutineDispatcher = Dispatchers.Default,
+                presenter = ExecutorDispatchingPresenter(
+                    executor = journal3Application.backgroundExecutor,
                     origin = CachingStoriesPresenter(
-                        origin = CoroutineDispatchingPresenter(
-                            coroutineScope = lifecycleScope,
-                            coroutineDispatcher = Dispatchers.Main,
+                        origin = ExecutorDispatchingPresenter(
+                            executor = journal3Application.foregroundExecutor,
                             origin = AdaptingPresenter(
                                 origin = StringRecyclerViewPresenter(recyclerView = findViewById(R.id.stories_list)),
                                 adapter = { stories -> stories.map { "${it.title}\n${it.synopsis}" } }
@@ -65,14 +61,19 @@ class ViewStoriesActivity : AppCompatActivity() {
                         )
                     )
                 ),
-                eventSource = CoroutineDispatchingEventSource(
-                    coroutineDispatcher = Dispatchers.Main,
+                eventSource = ExecutorDispatchingEventSource(
+                    executor = journal3Application.foregroundExecutor,
                     origin = EventSources(
                         journal3Application.globalEventSource,
                         LifecycleTriggeredEventSource(
                             lifecycleOwner = this,
                             lifecycleEvent = Lifecycle.Event.ON_START,
                             eventFactory = { RefreshRequestEvent("lifecycle") }
+                        ),
+                        LifecycleTriggeredEventSource(
+                            lifecycleOwner = this,
+                            lifecycleEvent = Lifecycle.Event.ON_DESTROY,
+                            eventFactory = { CancellationEvent("system") }
                         ),
                         ViewClickEventSource(
                             view = findViewById(R.id.add_button),

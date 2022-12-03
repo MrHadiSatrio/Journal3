@@ -19,28 +19,29 @@ package com.hadisatrio.apps.android.journal3.moment
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.Lifecycle
 import com.hadisatrio.apps.android.journal3.ActivityRouter
 import com.hadisatrio.apps.android.journal3.Journal3.Companion.journal3Application
 import com.hadisatrio.apps.android.journal3.R
 import com.hadisatrio.apps.android.journal3.datetime.TimestampSelectionEventSource
 import com.hadisatrio.apps.android.journal3.id.BundledTargetId
 import com.hadisatrio.apps.kotlin.journal3.moment.EditAMomentUseCase
+import com.hadisatrio.libs.android.foundation.lifecycle.LifecycleTriggeredEventSource
 import com.hadisatrio.libs.android.foundation.material.SliderFloatPresenter
 import com.hadisatrio.libs.android.foundation.material.SliderSelectionEventSource
 import com.hadisatrio.libs.android.foundation.widget.BackButtonCancellationEventSource
-import com.hadisatrio.libs.android.foundation.widget.CoroutineDispatchingEventSource
 import com.hadisatrio.libs.android.foundation.widget.EditTextInputEventSource
 import com.hadisatrio.libs.android.foundation.widget.TextViewStringPresenter
 import com.hadisatrio.libs.android.foundation.widget.ViewClickEventSource
-import com.hadisatrio.libs.kotlin.foundation.CoroutineDispatchingUseCase
+import com.hadisatrio.libs.kotlin.foundation.ExecutorDispatchingUseCase
+import com.hadisatrio.libs.kotlin.foundation.event.CancellationEvent
 import com.hadisatrio.libs.kotlin.foundation.event.CompletionEvent
 import com.hadisatrio.libs.kotlin.foundation.event.EventSources
+import com.hadisatrio.libs.kotlin.foundation.event.ExecutorDispatchingEventSource
 import com.hadisatrio.libs.kotlin.foundation.event.SelectionEvent
 import com.hadisatrio.libs.kotlin.foundation.presentation.AdaptingPresenter
-import com.hadisatrio.libs.kotlin.foundation.presentation.CoroutineDispatchingPresenter
+import com.hadisatrio.libs.kotlin.foundation.presentation.ExecutorDispatchingPresenter
 import com.hadisatrio.libs.kotlin.foundation.presentation.Presenters
-import kotlinx.coroutines.Dispatchers
 
 class EditAMomentActivity : AppCompatActivity() {
 
@@ -50,17 +51,15 @@ class EditAMomentActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_edit_a_moment)
 
-        CoroutineDispatchingUseCase(
-            coroutineScope = lifecycleScope,
-            coroutineDispatcher = Dispatchers.Default,
+        ExecutorDispatchingUseCase(
+            executor = journal3Application.backgroundExecutor,
             origin = EditAMomentUseCase(
                 targetId = BundledTargetId(intent, "target_id"),
                 storyId = BundledTargetId(intent, "story_id"),
                 stories = journal3Application.stories,
                 places = journal3Application.places,
-                presenter = CoroutineDispatchingPresenter(
-                    coroutineScope = lifecycleScope,
-                    coroutineDispatcher = Dispatchers.Main,
+                presenter = ExecutorDispatchingPresenter(
+                    executor = journal3Application.foregroundExecutor,
                     origin = Presenters(
                         AdaptingPresenter(
                             origin = TextViewStringPresenter(findViewById(R.id.timestamp_selector_button)),
@@ -81,10 +80,15 @@ class EditAMomentActivity : AppCompatActivity() {
                     )
                 ),
                 modalPresenter = journal3Application.modalPresenter,
-                eventSource = CoroutineDispatchingEventSource(
-                    coroutineDispatcher = Dispatchers.Main,
+                eventSource = ExecutorDispatchingEventSource(
+                    executor = journal3Application.foregroundExecutor,
                     origin = EventSources(
                         journal3Application.globalEventSource,
+                        LifecycleTriggeredEventSource(
+                            lifecycleOwner = this,
+                            lifecycleEvent = Lifecycle.Event.ON_DESTROY,
+                            eventFactory = { CancellationEvent("system") }
+                        ),
                         ViewClickEventSource(
                             view = findViewById(R.id.add_button),
                             eventFactory = { CompletionEvent() }

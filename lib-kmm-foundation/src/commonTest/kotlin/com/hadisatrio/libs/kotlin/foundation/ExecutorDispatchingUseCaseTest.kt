@@ -17,25 +17,23 @@
 
 package com.hadisatrio.libs.kotlin.foundation
 
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
+import com.hadisatrio.libs.kotlin.foundation.concurrent.CurrentThreadExecutor
+import io.mockk.mockk
+import io.mockk.spyk
+import io.mockk.verify
+import org.junit.Test
+import java.util.concurrent.Executor
 
-@Deprecated(
-    message = "Coroutine behavior can be flaky for how we are using it in this application.",
-    replaceWith = ReplaceWith(
-        "ExecutorDispatchingUseCase",
-        "com.hadisatrio.libs.kotlin.foundation.ExecutorDispatchingUseCase"
-    ),
-    level = DeprecationLevel.WARNING
-)
-class CoroutineDispatchingUseCase(
-    private val coroutineScope: CoroutineScope,
-    private val coroutineDispatcher: CoroutineDispatcher,
-    private val origin: UseCase
-) : UseCase {
+class ExecutorDispatchingUseCaseTest {
 
-    override fun invoke() {
-        coroutineScope.launch(coroutineDispatcher) { origin() }
+    private val executor: Executor = spyk(CurrentThreadExecutor())
+    private val origin: UseCase = mockk(relaxUnitFun = true)
+    private val useCase = ExecutorDispatchingUseCase(executor, origin)
+
+    @Test
+    fun `Forwards call to the origin on the given executor`() {
+        useCase()
+        verify(exactly = 1) { executor.execute(any()) }
+        verify(exactly = 1) { origin.invoke() }
     }
 }

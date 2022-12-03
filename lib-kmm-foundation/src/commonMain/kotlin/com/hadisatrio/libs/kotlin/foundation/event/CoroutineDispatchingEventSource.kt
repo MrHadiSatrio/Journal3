@@ -15,27 +15,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.hadisatrio.libs.kotlin.foundation
+package com.hadisatrio.libs.kotlin.foundation.event
 
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOn
 
 @Deprecated(
     message = "Coroutine behavior can be flaky for how we are using it in this application.",
     replaceWith = ReplaceWith(
-        "ExecutorDispatchingUseCase",
-        "com.hadisatrio.libs.kotlin.foundation.ExecutorDispatchingUseCase"
+        "ExecutorDispatchingEventSource",
+        "com.hadisatrio.libs.kotlin.foundation.event.ExecutorDispatchingEventSource"
     ),
     level = DeprecationLevel.WARNING
 )
-class CoroutineDispatchingUseCase(
-    private val coroutineScope: CoroutineScope,
+class CoroutineDispatchingEventSource(
     private val coroutineDispatcher: CoroutineDispatcher,
-    private val origin: UseCase
-) : UseCase {
+    private val origin: EventSource
+) : EventSource {
 
-    override fun invoke() {
-        coroutineScope.launch(coroutineDispatcher) { origin() }
+    override fun events(): Flow<Event> {
+        return origin.events().flowOn(coroutineDispatcher)
     }
 }

@@ -17,25 +17,14 @@
 
 package com.hadisatrio.libs.kotlin.foundation
 
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
+import java.util.concurrent.Executor
 
-@Deprecated(
-    message = "Coroutine behavior can be flaky for how we are using it in this application.",
-    replaceWith = ReplaceWith(
-        "ExecutorDispatchingUseCase",
-        "com.hadisatrio.libs.kotlin.foundation.ExecutorDispatchingUseCase"
-    ),
-    level = DeprecationLevel.WARNING
-)
-class CoroutineDispatchingUseCase(
-    private val coroutineScope: CoroutineScope,
-    private val coroutineDispatcher: CoroutineDispatcher,
+class ExecutorDispatchingUseCase(
+    private val executor: Executor,
     private val origin: UseCase
 ) : UseCase {
 
     override fun invoke() {
-        coroutineScope.launch(coroutineDispatcher) { origin() }
+        executor.execute { origin() }
     }
 }
