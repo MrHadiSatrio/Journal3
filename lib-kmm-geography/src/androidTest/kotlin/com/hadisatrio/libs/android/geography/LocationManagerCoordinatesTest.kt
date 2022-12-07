@@ -87,7 +87,7 @@ class LocationManagerCoordinatesTest {
     fun `Prevents spamming the LocationManager on multi-threaded requests`() {
         val coordinates = LocationManagerCoordinates(locationManager, clock)
         val threads = mutableSetOf<Thread>()
-        repeat(10) {
+        repeat(2) {
             threads.add(Thread { coordinates.latitude; coordinates.longitude })
         }
 

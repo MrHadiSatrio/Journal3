@@ -89,7 +89,7 @@ class Api30AndUnderLocationManagerCoordinatesTest {
     @Test(timeout = 10_000)
     fun `Prevents spamming the LocationManager on multi-threaded requests`() {
         val threads = mutableSetOf<Thread>()
-        repeat(10) {
+        repeat(2) {
             threads.add(Thread { coordinates.latitude; coordinates.longitude })
         }
 
@@ -115,7 +115,7 @@ class Api30AndUnderLocationManagerCoordinatesTest {
     }
 
     private fun ShadowLocationManager.enqueueSimulateLocation(location: Location) {
-        Thread.sleep(50L)
+        Thread.sleep(100L)
         simulateLocation(location)
     }
 }
