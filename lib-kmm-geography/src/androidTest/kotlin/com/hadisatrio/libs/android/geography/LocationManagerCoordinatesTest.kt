@@ -47,7 +47,7 @@ class LocationManagerCoordinatesTest {
         ShadowLocationManager.reset()
     }
 
-    @Test
+    @Test(timeout = 10_000)
     fun `Returns device location`() {
         var lat = 0.0
         var lng = 0.0
@@ -65,7 +65,7 @@ class LocationManagerCoordinatesTest {
         lng.shouldBe(gpsLocation.longitude)
     }
 
-    @Test
+    @Test(timeout = 10_000)
     fun `Prevents spamming the LocationManager on rapid requests`() {
         val thread = Thread {
             val coordinates = LocationManagerCoordinates(locationManager, clock)
@@ -83,7 +83,7 @@ class LocationManagerCoordinatesTest {
         verify(exactly = 2) { locationManager.getCurrentLocation(any(), any(), any(), any()) }
     }
 
-    @Test
+    @Test(timeout = 10_000)
     fun `Prevents spamming the LocationManager on multi-threaded requests`() {
         val coordinates = LocationManagerCoordinates(locationManager, clock)
         val threads = mutableSetOf<Thread>()
@@ -98,7 +98,7 @@ class LocationManagerCoordinatesTest {
         verify(exactly = 1) { locationManager.getCurrentLocation(any(), any(), any(), any()) }
     }
 
-    @Test
+    @Test(timeout = 10_000)
     fun `Throws IllegalStateException when no providers are available`() {
         shadowLocationManager.setProviderEnabled(LocationManager.GPS_PROVIDER, false)
         shadowLocationManager.setProviderEnabled(LocationManager.PASSIVE_PROVIDER, false)
