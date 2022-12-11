@@ -15,11 +15,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.hadisatrio.apps.kotlin.journal3.story
+package com.hadisatrio.apps.kotlin.journal3.story.fake
 
 import com.benasher44.uuid.Uuid
 import com.benasher44.uuid.uuid4
 import com.hadisatrio.apps.kotlin.journal3.moment.Moment
+import com.hadisatrio.apps.kotlin.journal3.story.Stories
+import com.hadisatrio.apps.kotlin.journal3.story.Story
 
 class FakeStories(
     private val stories: MutableList<Story>

@@ -23,7 +23,7 @@ import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkManagerInitializer
-import com.hadisatrio.apps.android.journal3.Journal3.Companion.journal3Application
+import com.hadisatrio.apps.android.journal3.journal3Application
 import java.util.concurrent.TimeUnit
 
 @Suppress("unused")

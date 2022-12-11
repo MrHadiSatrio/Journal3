@@ -17,6 +17,7 @@
 
 package com.hadisatrio.libs.kotlin.foundation.event
 
+import com.hadisatrio.libs.kotlin.foundation.event.fake.FakeEventSink
 import io.kotest.matchers.shouldBe
 import org.junit.Test
 

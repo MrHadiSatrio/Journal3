@@ -46,6 +46,9 @@ internal fun Project.configureAndroid() {
 
         testOptions {
             animationsDisabled = true
+            unitTests {
+                isIncludeAndroidResources = true
+            }
         }
 
         dependencies {

@@ -18,7 +18,7 @@
 package com.hadisatrio.apps.kotlin.journal3.moment.filesystem
 
 import com.benasher44.uuid.uuid4
-import com.hadisatrio.apps.kotlin.journal3.moment.FakeMoments
+import com.hadisatrio.apps.kotlin.journal3.moment.fake.FakeMoments
 import com.hadisatrio.libs.kotlin.geography.fake.FakePlace
 import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.collections.shouldBeEmpty

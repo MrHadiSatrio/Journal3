@@ -15,19 +15,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.hadisatrio.libs.kotlin.foundation.event
+package com.hadisatrio.libs.kotlin.foundation.presentation.fake
 
-class FakeEventSink(
-    private val sunkEvents: MutableList<Event>
-) : EventSink {
+import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
 
-    constructor() : this(mutableListOf())
+class FakePresenter<T> : Presenter<T> {
 
-    fun sunkCount(): Int {
-        return sunkEvents.size
-    }
+    private val presented = mutableListOf<T>()
 
-    override fun sink(event: Event) {
-        sunkEvents.add(event)
+    override fun present(thing: T) {
+        presented += thing
     }
 }

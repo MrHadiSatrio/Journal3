@@ -20,8 +20,8 @@ package com.hadisatrio.apps.android.journal3.geography
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
-import com.hadisatrio.apps.android.journal3.Journal3.Companion.journal3Application
 import com.hadisatrio.apps.android.journal3.R
+import com.hadisatrio.apps.android.journal3.journal3Application
 import com.hadisatrio.apps.kotlin.journal3.geography.SelectAPlaceUseCase
 import com.hadisatrio.libs.android.foundation.activity.ActivityCompletionEventSink
 import com.hadisatrio.libs.android.foundation.lifecycle.LifecycleTriggeredEventSource

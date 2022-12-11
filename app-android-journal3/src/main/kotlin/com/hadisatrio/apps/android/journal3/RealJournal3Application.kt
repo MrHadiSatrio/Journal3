@@ -17,8 +17,6 @@
 
 package com.hadisatrio.apps.android.journal3
 
-import android.app.Application
-import android.content.Context
 import android.os.Build
 import androidx.core.content.ContextCompat
 import com.hadisatrio.apps.kotlin.journal3.moment.filesystem.FilesystemMomentfulPlaces
@@ -47,9 +45,9 @@ import java.util.concurrent.Executors
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.hours
 
-class Journal3 : Application() {
+class RealJournal3Application : Journal3Application() {
 
-    val places: Places by lazy {
+    override val places: Places by lazy {
         HereNearbyPlaces(
             coordinates = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 PermissionAwareCoordinates(
@@ -65,7 +63,7 @@ class Journal3 : Application() {
         )
     }
 
-    val stories: Stories by lazy {
+    override val stories: Stories by lazy {
         FilesystemStories(
             fileSystem = FileSystem.SYSTEM,
             path = filesDir.absolutePath.toPath() / "content" / "stories",
@@ -76,47 +74,41 @@ class Journal3 : Application() {
         )
     }
 
-    val modalPresenter: Presenter<Modal> by lazy {
+    override val modalPresenter: Presenter<Modal> by lazy {
         ExecutorDispatchingPresenter(
             executor = foregroundExecutor,
             origin = AlertDialogModalPresenter(currentActivity, globalEventSource)
         )
     }
 
-    val currentActivity: CurrentActivity by lazy {
+    override val currentActivity: CurrentActivity by lazy {
         CurrentActivity(this)
     }
 
-    val globalEventSink: EventSink by lazy {
+    override val globalEventSink: EventSink by lazy {
         EventSinks(
             ActivityRoutingEventSink(currentActivity),
             SystemLog("Journal3")
         )
     }
 
-    val globalEventSource: EventHub by lazy {
+    override val globalEventSource: EventHub by lazy {
         EventHub(MutableSharedFlow(extraBufferCapacity = 1))
     }
 
-    val inactivityAlertThreshold: Duration by lazy {
+    override val inactivityAlertThreshold: Duration by lazy {
         3.hours
     }
 
-    val clock: Clock by lazy {
+    override val clock: Clock by lazy {
         Clock.System
     }
 
-    val backgroundExecutor: Executor by lazy {
+    override val backgroundExecutor: Executor by lazy {
         Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors())
     }
 
-    val foregroundExecutor: Executor by lazy {
+    override val foregroundExecutor: Executor by lazy {
         ContextCompat.getMainExecutor(this)
-    }
-
-    companion object {
-
-        val Context.journal3Application: Journal3
-            get() = applicationContext as Journal3
     }
 }

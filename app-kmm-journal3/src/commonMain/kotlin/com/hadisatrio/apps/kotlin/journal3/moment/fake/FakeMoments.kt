@@ -15,10 +15,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.hadisatrio.apps.kotlin.journal3.moment
+package com.hadisatrio.apps.kotlin.journal3.moment.fake
 
 import com.benasher44.uuid.Uuid
 import com.benasher44.uuid.uuid4
+import com.hadisatrio.apps.kotlin.journal3.moment.Moment
+import com.hadisatrio.apps.kotlin.journal3.moment.Moments
 
 class FakeMoments(
     private val moments: MutableList<Moment>

@@ -21,8 +21,8 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
 import com.hadisatrio.apps.android.journal3.ActivityRouter
-import com.hadisatrio.apps.android.journal3.Journal3.Companion.journal3Application
 import com.hadisatrio.apps.android.journal3.R
+import com.hadisatrio.apps.android.journal3.journal3Application
 import com.hadisatrio.apps.kotlin.journal3.event.RefreshRequestEvent
 import com.hadisatrio.apps.kotlin.journal3.story.ShowStoriesUseCase
 import com.hadisatrio.apps.kotlin.journal3.story.cache.CachingStoriesPresenter

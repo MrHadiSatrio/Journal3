@@ -15,20 +15,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.hadisatrio.libs.kotlin.foundation.event
+package com.hadisatrio.libs.kotlin.foundation.event.fake
 
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
+import com.hadisatrio.libs.kotlin.foundation.event.Event
+import com.hadisatrio.libs.kotlin.foundation.event.EventSink
 
-class FakeEventSource(
-    private val sharedFlow: MutableSharedFlow<Event>
-) : EventSource {
+class FakeEventSink(
+    private val sunkEvents: MutableList<Event>
+) : EventSink {
 
-    fun produce(event: Event) {
-        sharedFlow.tryEmit(event)
+    constructor() : this(mutableListOf())
+
+    fun sunkCount(): Int {
+        return sunkEvents.size
     }
 
-    override fun events(): Flow<Event> {
-        return sharedFlow
+    override fun sink(event: Event) {
+        sunkEvents.add(event)
     }
 }

@@ -15,22 +15,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.hadisatrio.libs.kotlin.foundation.event
+package com.hadisatrio.libs.kotlin.foundation.event.fake
 
-import com.hadisatrio.libs.kotlin.foundation.event.fake.FakeEventSink
-import io.kotest.matchers.shouldBe
-import kotlin.test.Test
+import com.hadisatrio.libs.kotlin.foundation.event.Event
+import com.hadisatrio.libs.kotlin.foundation.event.EventSource
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 
-class FilteringEventSinkTest {
+class FakeEventSource(
+    private val sharedFlow: MutableSharedFlow<Event>
+) : EventSource {
 
-    private val origin = FakeEventSink()
-    private val eventSink = FilteringEventSink({ it is CompletionEvent }, origin)
+    fun produce(event: Event) {
+        sharedFlow.tryEmit(event)
+    }
 
-    @Test
-    fun `Forwards to origin when the event matches the predicate`() {
-        eventSink.sink(SelectionEvent("foo", "Bar"))
-        eventSink.sink(CompletionEvent())
-        eventSink.sink(CancellationEvent("system"))
-        origin.sunkCount().shouldBe(1)
+    override fun events(): Flow<Event> {
+        return sharedFlow
     }
 }

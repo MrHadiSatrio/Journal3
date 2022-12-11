@@ -18,7 +18,7 @@
 package com.hadisatrio.apps.kotlin.journal3.moment.datetime
 
 import com.hadisatrio.apps.kotlin.journal3.datetime.Timestamp
-import com.hadisatrio.apps.kotlin.journal3.moment.FakeMoments
+import com.hadisatrio.apps.kotlin.journal3.moment.fake.FakeMoments
 import io.kotest.matchers.shouldBe
 import io.mockk.every
 import io.mockk.mockk

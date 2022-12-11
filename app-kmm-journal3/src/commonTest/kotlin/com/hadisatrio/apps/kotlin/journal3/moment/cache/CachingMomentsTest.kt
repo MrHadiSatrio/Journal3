@@ -18,9 +18,9 @@
 package com.hadisatrio.apps.kotlin.journal3.moment.cache
 
 import com.benasher44.uuid.uuid4
-import com.hadisatrio.apps.kotlin.journal3.moment.FakeMoment
-import com.hadisatrio.apps.kotlin.journal3.moment.FakeMoments
 import com.hadisatrio.apps.kotlin.journal3.moment.Moment
+import com.hadisatrio.apps.kotlin.journal3.moment.fake.FakeMoment
+import com.hadisatrio.apps.kotlin.journal3.moment.fake.FakeMoments
 import io.mockk.spyk
 import io.mockk.verify
 import kotlin.test.Test

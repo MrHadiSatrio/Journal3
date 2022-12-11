@@ -18,8 +18,8 @@
 package com.hadisatrio.apps.kotlin.journal3.story.cache
 
 import com.benasher44.uuid.uuid4
-import com.hadisatrio.apps.kotlin.journal3.story.FakeStory
 import com.hadisatrio.apps.kotlin.journal3.story.Story
+import com.hadisatrio.apps.kotlin.journal3.story.fake.FakeStory
 import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
 import io.mockk.mockk
 import io.mockk.spyk
