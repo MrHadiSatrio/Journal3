@@ -20,27 +20,26 @@ package com.hadisatrio.apps.android.journal3.story
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
 import com.hadisatrio.apps.android.journal3.ActivityRouter
-import com.hadisatrio.apps.android.journal3.Journal3.Companion.journal3Application
 import com.hadisatrio.apps.android.journal3.R
 import com.hadisatrio.apps.android.journal3.id.BundledTargetId
-import com.hadisatrio.apps.android.journal3.moment.MomentsRecyclerViewPresenter
+import com.hadisatrio.apps.android.journal3.journal3Application
 import com.hadisatrio.apps.kotlin.journal3.event.RefreshRequestEvent
 import com.hadisatrio.apps.kotlin.journal3.story.ShowStoryUseCase
 import com.hadisatrio.apps.kotlin.journal3.story.cache.CachingStoryPresenter
 import com.hadisatrio.libs.android.foundation.lifecycle.LifecycleTriggeredEventSource
-import com.hadisatrio.libs.android.foundation.widget.CoroutineDispatchingEventSource
 import com.hadisatrio.libs.android.foundation.widget.RecyclerViewItemSelectionEventSource
+import com.hadisatrio.libs.android.foundation.widget.StringRecyclerViewPresenter
 import com.hadisatrio.libs.android.foundation.widget.TextViewStringPresenter
 import com.hadisatrio.libs.android.foundation.widget.ViewClickEventSource
-import com.hadisatrio.libs.kotlin.foundation.CoroutineDispatchingUseCase
+import com.hadisatrio.libs.kotlin.foundation.ExecutorDispatchingUseCase
+import com.hadisatrio.libs.kotlin.foundation.event.CancellationEvent
 import com.hadisatrio.libs.kotlin.foundation.event.EventSources
+import com.hadisatrio.libs.kotlin.foundation.event.ExecutorDispatchingEventSource
 import com.hadisatrio.libs.kotlin.foundation.event.SelectionEvent
 import com.hadisatrio.libs.kotlin.foundation.presentation.AdaptingPresenter
-import com.hadisatrio.libs.kotlin.foundation.presentation.CoroutineDispatchingPresenter
+import com.hadisatrio.libs.kotlin.foundation.presentation.ExecutorDispatchingPresenter
 import com.hadisatrio.libs.kotlin.foundation.presentation.Presenters
-import kotlinx.coroutines.Dispatchers
 
 class ViewStoryActivity : AppCompatActivity() {
 
@@ -50,19 +49,16 @@ class ViewStoryActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_view_story)
 
-        CoroutineDispatchingUseCase(
-            coroutineScope = lifecycleScope,
-            coroutineDispatcher = Dispatchers.Default,
+        ExecutorDispatchingUseCase(
+            executor = journal3Application.backgroundExecutor,
             origin = ShowStoryUseCase(
                 targetId = BundledTargetId(intent, "target_id"),
                 stories = journal3Application.stories,
-                presenter = CoroutineDispatchingPresenter(
-                    coroutineScope = lifecycleScope,
-                    coroutineDispatcher = Dispatchers.Main,
+                presenter = ExecutorDispatchingPresenter(
+                    executor = mainExecutor,
                     origin = CachingStoryPresenter(
-                        origin = CoroutineDispatchingPresenter(
-                            coroutineScope = lifecycleScope,
-                            coroutineDispatcher = Dispatchers.Main,
+                        origin = ExecutorDispatchingPresenter(
+                            executor = journal3Application.foregroundExecutor,
                             origin = Presenters(
                                 AdaptingPresenter(
                                     origin = TextViewStringPresenter(findViewById(R.id.title_label)),
@@ -73,21 +69,30 @@ class ViewStoryActivity : AppCompatActivity() {
                                     adapter = StoryStringAdapter("synopsis")
                                 ),
                                 AdaptingPresenter(
-                                    origin = MomentsRecyclerViewPresenter(findViewById(R.id.moments_list)),
-                                    adapter = { thing -> thing.moments }
+                                    origin = StringRecyclerViewPresenter(findViewById(R.id.moments_list)),
+                                    adapter = { story ->
+                                        story.moments.sortedDescending().map {
+                                            "${it.timestamp}\n${it.description}\n${it.sentiment}\n${it.place.name}"
+                                        }
+                                    }
                                 )
                             )
                         )
                     )
                 ),
-                eventSource = CoroutineDispatchingEventSource(
-                    coroutineDispatcher = Dispatchers.Main,
+                eventSource = ExecutorDispatchingEventSource(
+                    executor = journal3Application.foregroundExecutor,
                     origin = EventSources(
                         journal3Application.globalEventSource,
                         LifecycleTriggeredEventSource(
                             lifecycleOwner = this,
                             lifecycleEvent = Lifecycle.Event.ON_RESUME,
                             eventFactory = { RefreshRequestEvent("lifecycle") }
+                        ),
+                        LifecycleTriggeredEventSource(
+                            lifecycleOwner = this,
+                            lifecycleEvent = Lifecycle.Event.ON_DESTROY,
+                            eventFactory = { CancellationEvent("system") }
                         ),
                         ViewClickEventSource(
                             view = findViewById(R.id.add_button),

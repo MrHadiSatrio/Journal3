@@ -19,6 +19,7 @@
 
 package com.hadisatrio.libs.kotlin.foundation.event
 
+import com.hadisatrio.libs.kotlin.foundation.event.fake.FakeEventSource
 import io.kotest.matchers.collections.shouldHaveSize
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableSharedFlow

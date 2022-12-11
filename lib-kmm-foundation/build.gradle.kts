@@ -95,7 +95,7 @@ android {
 kover {
     filters {
         classes {
-            excludes += listOf("*Fake*")
+            excludes += listOf("*Fake*", "*Test")
         }
     }
     verify {

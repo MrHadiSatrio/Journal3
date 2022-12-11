@@ -21,7 +21,7 @@ import android.content.Context
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.benasher44.uuid.Uuid
-import com.hadisatrio.apps.android.journal3.Journal3.Companion.journal3Application
+import com.hadisatrio.apps.android.journal3.journal3Application
 import com.hadisatrio.apps.android.journal3.notification.NotificationChannel
 import com.hadisatrio.apps.kotlin.journal3.Router
 import com.hadisatrio.apps.kotlin.journal3.alert.AlertInactivityUseCase

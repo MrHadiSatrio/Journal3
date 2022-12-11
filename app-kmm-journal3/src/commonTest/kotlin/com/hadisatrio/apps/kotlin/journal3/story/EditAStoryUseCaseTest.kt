@@ -21,6 +21,8 @@ import com.benasher44.uuid.uuid4
 import com.hadisatrio.apps.kotlin.journal3.event.RecordedEventSource
 import com.hadisatrio.apps.kotlin.journal3.id.FakeTargetId
 import com.hadisatrio.apps.kotlin.journal3.id.TargetId
+import com.hadisatrio.apps.kotlin.journal3.story.fake.FakeStories
+import com.hadisatrio.apps.kotlin.journal3.story.fake.FakeStory
 import com.hadisatrio.apps.kotlin.journal3.token.TokenableString
 import com.hadisatrio.libs.kotlin.foundation.event.CancellationEvent
 import com.hadisatrio.libs.kotlin.foundation.event.CompletionEvent
@@ -143,5 +145,24 @@ class EditAStoryUseCaseTest {
 
         verify(exactly = 1) { modalPresenter.present(withArg { it.kind.shouldBe("edit_cancellation_confirmation") }) }
         stories.shouldBeEmpty()
+    }
+
+    @Test(timeout = 5_000)
+    fun `Stops upon receiving cancellation events`() {
+        val targetId = mockk<TargetId>()
+        val stories = FakeStories()
+        every { targetId.isValid() } returns false
+
+        listOf(CancellationEvent("system")).forEach { event ->
+            EditAStoryUseCase(
+                targetId = targetId,
+                stories = stories,
+                presenter = mockk(relaxed = true),
+                modalPresenter = mockk(relaxed = true),
+                eventSource = RecordedEventSource(event),
+                eventSink = mockk(relaxed = true),
+                router = mockk(relaxed = true)
+            )()
+        }
     }
 }

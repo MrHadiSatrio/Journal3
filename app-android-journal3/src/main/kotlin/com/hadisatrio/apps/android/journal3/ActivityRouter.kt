@@ -25,6 +25,14 @@ import com.hadisatrio.apps.android.journal3.story.EditAStoryActivity
 import com.hadisatrio.apps.android.journal3.story.ViewStoryActivity
 import com.hadisatrio.apps.kotlin.journal3.Router
 
+@Deprecated(
+    message = "Routing via a dedicated router object is no longer advised; use an event sink instead.",
+    replaceWith = ReplaceWith(
+        "ActivityRoutingEventSink",
+        "com.hadisatrio.apps.android.journal3.ActivityRoutingEventSink"
+    ),
+    level = DeprecationLevel.WARNING
+)
 class ActivityRouter(
     private val activity: Activity
 ) : Router {

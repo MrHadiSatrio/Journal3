@@ -17,6 +17,10 @@ object Dependencies {
         const val APPCOMPAT = "androidx.appcompat:appcompat:1.4.2"
     }
 
+    object AndroidNetwork {
+        const val KTOR = "io.ktor:ktor-client-android:2.1.3"
+    }
+
     object AndroidUi {
         const val RECYCLER_VIEW = "androidx.recyclerview:recyclerview:1.2.1"
         const val MATERIAL = "com.google.android.material:material:1.5.0-alpha04"
@@ -25,6 +29,10 @@ object Dependencies {
 
     object AndroidPerformance {
         const val MICROBENCHMARK = "androidx.benchmark:benchmark-junit4:1.1.0"
+    }
+
+    object AndroidSecurity {
+        const val ASSENT = "com.afollestad.assent:core:3.0.0-RC4"
     }
 
     object Asynchrony {
@@ -36,6 +44,10 @@ object Dependencies {
         const val DATETIME = "org.jetbrains.kotlinx:kotlinx-datetime:0.4.0"
         const val KOTLINX_JSON_OKIO = "org.jetbrains.kotlinx:kotlinx-serialization-json-okio:1.4.0"
         const val OKIO = "com.squareup.okio:okio:3.2.0"
+    }
+
+    object Network {
+        const val KTOR = "io.ktor:ktor-client-core:2.1.3"
     }
 
     object TestRuntime {
@@ -59,6 +71,7 @@ object Dependencies {
     object TestDouble {
         const val MOCKK = "io.mockk:mockk:1.12.5"
         const val OKIO_FAKE_FS = "com.squareup.okio:okio-fakefilesystem:3.2.0"
+        const val KTOR_MOCK_ENGINE = "io.ktor:ktor-client-mock:2.1.3"
     }
 }
 

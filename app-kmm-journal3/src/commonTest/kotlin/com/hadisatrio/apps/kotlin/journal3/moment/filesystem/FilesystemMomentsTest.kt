@@ -37,7 +37,8 @@ import kotlin.test.Test
 class FilesystemMomentsTest {
 
     private val fileSystem = FakeFileSystem()
-    private val stories = FilesystemStories(fileSystem, "content".toPath())
+    private val places = FilesystemMomentfulPlaces(fileSystem, "content/places".toPath())
+    private val stories = FilesystemStories(fileSystem, "content".toPath(), places)
 
     @AfterTest
     fun `Closes all file streams`() {

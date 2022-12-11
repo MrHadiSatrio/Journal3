@@ -33,9 +33,9 @@ class CurrentActivity(
     }
 
     fun acquire(): Activity {
-        val current = activityRef.get()
-        check(current != null) { "No current activity exists." }
-        return current
+        var activity: Activity? = null
+        while (activity == null) activity = activityRef.get()
+        return activity
     }
 
     @Suppress("EmptyFunctionBlock")

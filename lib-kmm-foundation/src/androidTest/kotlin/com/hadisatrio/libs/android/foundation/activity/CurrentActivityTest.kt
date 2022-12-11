@@ -17,42 +17,38 @@
 
 package com.hadisatrio.libs.android.foundation.activity
 
+import android.app.Activity
 import androidx.activity.ComponentActivity
 import androidx.test.runner.AndroidJUnit4
-import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.types.shouldBeInstanceOf
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.Robolectric
 import org.robolectric.RuntimeEnvironment
-import java.lang.IllegalStateException
 
 @RunWith(AndroidJUnit4::class)
 class CurrentActivityTest {
 
+    private val currentActivity = CurrentActivity(RuntimeEnvironment.getApplication())
+
+    private val fooActivityController = Robolectric.buildActivity(FooActivity::class.java)
+    private val barActivityController = Robolectric.buildActivity(BarActivity::class.java)
+
     @Test
     fun `Provides the currently active activity`() {
-        val currentActivity = CurrentActivity(RuntimeEnvironment.getApplication())
-        Robolectric.buildActivity(FooActivity::class.java).setup().visible()
-        Robolectric.buildActivity(BarActivity::class.java).setup().visible()
-
+        fooActivityController.setup().visible()
+        barActivityController.setup().visible()
         currentActivity.acquire().shouldBeInstanceOf<BarActivity>()
     }
 
     @Test
-    fun `Throws when all activities are paused`() {
-        val currentActivity = CurrentActivity(RuntimeEnvironment.getApplication())
-        Robolectric.buildActivity(FooActivity::class.java).setup().visible().pause()
-        Robolectric.buildActivity(BarActivity::class.java).setup().visible().pause()
-
-        shouldThrow<IllegalStateException> { currentActivity.acquire() }
-    }
-
-    @Test
-    fun `Throws when there are no activities at all`() {
-        val currentActivity = CurrentActivity(RuntimeEnvironment.getApplication())
-
-        shouldThrow<IllegalStateException> { currentActivity.acquire() }
+    fun `Blocks until an activity can be acquired`() {
+        var acquired: Activity? = null
+        val acquirerThread = Thread { acquired = currentActivity.acquire() }
+        acquirerThread.start()
+        fooActivityController.setup().visible()
+        acquirerThread.join()
+        acquired.shouldBeInstanceOf<FooActivity>()
     }
 
     private class FooActivity : ComponentActivity()

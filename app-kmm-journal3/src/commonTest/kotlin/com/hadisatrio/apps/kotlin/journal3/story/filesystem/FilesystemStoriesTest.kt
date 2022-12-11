@@ -18,6 +18,7 @@
 package com.hadisatrio.apps.kotlin.journal3.story.filesystem
 
 import com.benasher44.uuid.uuid4
+import com.hadisatrio.apps.kotlin.journal3.moment.filesystem.FilesystemMomentfulPlaces
 import com.hadisatrio.apps.kotlin.journal3.story.SelfPopulatingStories
 import io.kotest.matchers.booleans.shouldBeFalse
 import io.kotest.matchers.booleans.shouldBeTrue
@@ -33,7 +34,8 @@ import kotlin.test.Test
 class FilesystemStoriesTest {
 
     private val fileSystem = FakeFileSystem()
-    private val stories = FilesystemStories(fileSystem, "content")
+    private val places = FilesystemMomentfulPlaces(fileSystem, "content/places".toPath())
+    private val stories = FilesystemStories(fileSystem, "content", places)
 
     @AfterTest
     fun `Closes all file streams`() {
@@ -53,8 +55,12 @@ class FilesystemStoriesTest {
 
     @Test
     fun `Tells whether or not it contains any moments within`() {
-        val empty = FilesystemStories(fileSystem, "Foo")
-        val nonEmpty = SelfPopulatingStories(noOfStories = 1, noOfMoments = 1, FilesystemStories(fileSystem, "Bar"))
+        val empty = FilesystemStories(fileSystem, "Foo", places)
+        val nonEmpty = SelfPopulatingStories(
+            noOfStories = 1,
+            noOfMoments = 1,
+            FilesystemStories(fileSystem, "Bar", places)
+        )
 
         empty.hasMoments().shouldBeFalse()
         nonEmpty.hasMoments().shouldBeTrue()

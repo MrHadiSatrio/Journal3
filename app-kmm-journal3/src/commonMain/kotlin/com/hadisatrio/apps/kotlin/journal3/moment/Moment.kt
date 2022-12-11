@@ -21,6 +21,7 @@ import com.benasher44.uuid.Uuid
 import com.hadisatrio.apps.kotlin.journal3.datetime.Timestamp
 import com.hadisatrio.apps.kotlin.journal3.sentiment.Sentiment
 import com.hadisatrio.apps.kotlin.journal3.token.TokenableString
+import com.hadisatrio.libs.kotlin.geography.Place
 
 interface Moment : Comparable<Moment> {
     val id: Uuid
@@ -28,9 +29,11 @@ interface Moment : Comparable<Moment> {
     val description: TokenableString
     val sentiment: Sentiment
     val impliedSentiment: Sentiment
+    val place: Place
 
     fun update(timestamp: Timestamp)
     fun update(description: TokenableString)
     fun update(sentiment: Sentiment)
+    fun update(place: Place)
     fun forget()
 }

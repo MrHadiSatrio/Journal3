@@ -23,8 +23,8 @@ import com.hadisatrio.apps.kotlin.journal3.event.UnsupportedEvent
 import com.hadisatrio.apps.kotlin.journal3.id.FakeTargetId
 import com.hadisatrio.apps.kotlin.journal3.id.TargetId
 import com.hadisatrio.apps.kotlin.journal3.sentiment.Sentiment
-import com.hadisatrio.apps.kotlin.journal3.story.FakeStories
 import com.hadisatrio.apps.kotlin.journal3.story.SelfPopulatingStories
+import com.hadisatrio.apps.kotlin.journal3.story.fake.FakeStories
 import com.hadisatrio.libs.kotlin.foundation.event.CancellationEvent
 import com.hadisatrio.libs.kotlin.foundation.event.CompletionEvent
 import com.hadisatrio.libs.kotlin.foundation.event.SelectionEvent
@@ -33,6 +33,8 @@ import com.hadisatrio.libs.kotlin.foundation.modal.Modal
 import com.hadisatrio.libs.kotlin.foundation.modal.ModalApprovalEvent
 import com.hadisatrio.libs.kotlin.foundation.modal.ModalDismissalEvent
 import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
+import com.hadisatrio.libs.kotlin.geography.SelfPopulatingPlaces
+import com.hadisatrio.libs.kotlin.geography.fake.FakePlaces
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
@@ -47,22 +49,24 @@ class EditAMomentUseCaseTest {
 
     @Test
     fun `Updates the target moment when target ID is valid`() {
-        val targetId = mockk<TargetId>()
+        val places = SelfPopulatingPlaces(noOfPlaces = 1, origin = FakePlaces())
         val stories = SelfPopulatingStories(noOfStories = 1, noOfMoments = 1, origin = FakeStories())
+        val place = places.first()
         val story = stories.first()
         val moment = story.moments.first()
-        every { targetId.isValid() } returns false
 
         EditAMomentUseCase(
             targetId = FakeTargetId(moment.id),
             storyId = FakeTargetId(story.id),
             stories = stories,
+            places = places,
             presenter = mockk(relaxed = true),
             modalPresenter = mockk(relaxed = true),
             eventSource = RecordedEventSource(
                 TextInputEvent("description", "Foo"),
                 SelectionEvent("timestamp", Timestamp(Instant.DISTANT_FUTURE).toString()),
                 SelectionEvent("sentiment", Sentiment(0.75F).toString()),
+                SelectionEvent("place", place.id.toString()),
                 CompletionEvent()
             ),
             eventSink = mockk(relaxed = true),
@@ -74,11 +78,13 @@ class EditAMomentUseCaseTest {
         moment.description.toString().shouldBe("Foo")
         moment.timestamp.shouldBe(Timestamp(Instant.DISTANT_FUTURE))
         moment.sentiment.shouldBe(Sentiment(0.75F))
+        moment.place.id.shouldBe(place.id)
     }
 
     @Test
     fun `Updates a new moment when target ID is invalid`() {
         val targetId = mockk<TargetId>()
+        val places = SelfPopulatingPlaces(noOfPlaces = 1, origin = FakePlaces())
         val stories = SelfPopulatingStories(noOfStories = 1, noOfMoments = 0, origin = FakeStories())
         val story = stories.first()
         every { targetId.isValid() } returns false
@@ -87,6 +93,7 @@ class EditAMomentUseCaseTest {
             targetId = targetId,
             storyId = FakeTargetId(story.id),
             stories = stories,
+            places = places,
             presenter = mockk(relaxed = true),
             modalPresenter = mockk(relaxed = true),
             eventSource = RecordedEventSource(
@@ -109,6 +116,7 @@ class EditAMomentUseCaseTest {
     @Test
     fun `Prevents accidental cancellation by the user`() {
         val targetId = mockk<TargetId>()
+        val places = SelfPopulatingPlaces(noOfPlaces = 1, origin = FakePlaces())
         val stories = SelfPopulatingStories(noOfStories = 1, noOfMoments = 0, origin = FakeStories())
         val story = stories.first()
         val modalPresenter = mockk<Presenter<Modal>>(relaxed = true)
@@ -118,6 +126,7 @@ class EditAMomentUseCaseTest {
             targetId = targetId,
             storyId = FakeTargetId(story.id),
             stories = stories,
+            places = places,
             presenter = mockk(relaxed = true),
             modalPresenter = modalPresenter,
             eventSource = RecordedEventSource(
@@ -140,6 +149,7 @@ class EditAMomentUseCaseTest {
     @Test
     fun `Deletes the moment-in-edit when the user requests and confirms to cancel`() {
         val targetId = mockk<TargetId>()
+        val places = SelfPopulatingPlaces(noOfPlaces = 1, origin = FakePlaces())
         val stories = SelfPopulatingStories(noOfStories = 1, noOfMoments = 0, origin = FakeStories())
         val story = stories.first()
         val modalPresenter = mockk<Presenter<Modal>>(relaxed = true)
@@ -149,6 +159,7 @@ class EditAMomentUseCaseTest {
             targetId = targetId,
             storyId = FakeTargetId(story.id),
             stories = stories,
+            places = places,
             presenter = mockk(relaxed = true),
             modalPresenter = modalPresenter,
             eventSource = RecordedEventSource(
@@ -165,9 +176,31 @@ class EditAMomentUseCaseTest {
         story.moments.shouldBeEmpty()
     }
 
+    @Test(timeout = 5_000)
+    fun `Stops upon receiving cancellation events`() {
+        val stories = SelfPopulatingStories(noOfStories = 1, noOfMoments = 0, origin = FakeStories())
+        val story = stories.first()
+
+        listOf(CancellationEvent("system")).forEach { event ->
+            EditAMomentUseCase(
+                targetId = mockk(relaxed = true),
+                storyId = FakeTargetId(story.id),
+                stories = stories,
+                places = mockk(relaxed = true),
+                presenter = mockk(relaxed = true),
+                modalPresenter = mockk(relaxed = true),
+                eventSource = RecordedEventSource(event),
+                eventSink = mockk(relaxed = true),
+                router = mockk(relaxed = true),
+                clock = Clock.System
+            )()
+        }
+    }
+
     @Test
     fun `Ignores unknown events without repercussions`() {
         val targetId = mockk<TargetId>()
+        val places = SelfPopulatingPlaces(noOfPlaces = 1, origin = FakePlaces())
         val stories = SelfPopulatingStories(noOfStories = 1, noOfMoments = 0, origin = FakeStories())
         val story = stories.first()
         every { targetId.isValid() } returns false
@@ -176,6 +209,7 @@ class EditAMomentUseCaseTest {
             targetId = targetId,
             storyId = FakeTargetId(story.id),
             stories = stories,
+            places = places,
             presenter = mockk(relaxed = true),
             modalPresenter = mockk(relaxed = true),
             eventSource = RecordedEventSource(
@@ -183,6 +217,7 @@ class EditAMomentUseCaseTest {
                 SelectionEvent("fizz", Timestamp(Instant.DISTANT_FUTURE).toString()),
                 SelectionEvent("buzz", Sentiment(0.75F).toString()),
                 ModalApprovalEvent("lorem"),
+                CancellationEvent("system"),
                 UnsupportedEvent(),
                 CompletionEvent()
             ),

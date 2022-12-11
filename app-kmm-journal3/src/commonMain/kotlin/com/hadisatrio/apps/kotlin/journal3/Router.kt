@@ -19,6 +19,10 @@ package com.hadisatrio.apps.kotlin.journal3
 
 import com.benasher44.uuid.Uuid
 
+@Deprecated(
+    message = "Routing via a dedicated router object is no longer advised; use an event sink instead.",
+    level = DeprecationLevel.WARNING
+)
 interface Router {
     fun toStoryEditor()
 

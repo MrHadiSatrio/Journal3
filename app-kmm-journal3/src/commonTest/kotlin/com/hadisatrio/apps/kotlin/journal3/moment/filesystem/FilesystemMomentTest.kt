@@ -21,10 +21,14 @@ import com.hadisatrio.apps.kotlin.journal3.datetime.Timestamp
 import com.hadisatrio.apps.kotlin.journal3.sentiment.Sentiment
 import com.hadisatrio.apps.kotlin.journal3.story.filesystem.FilesystemStories
 import com.hadisatrio.apps.kotlin.journal3.token.TokenableString
+import com.hadisatrio.libs.kotlin.geography.NullIsland
+import com.hadisatrio.libs.kotlin.geography.fake.FakePlace
 import io.kotest.matchers.booleans.shouldBeFalse
 import io.kotest.matchers.ints.shouldBeNegative
 import io.kotest.matchers.ints.shouldBePositive
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.string.shouldContain
+import io.kotest.matchers.string.shouldNotContain
 import kotlinx.datetime.Instant
 import okio.Path.Companion.toPath
 import okio.buffer
@@ -36,7 +40,8 @@ import kotlin.test.Test
 class FilesystemMomentTest {
 
     private val fileSystem = FakeFileSystem()
-    private val stories = FilesystemStories(fileSystem, "content".toPath())
+    private val places = FilesystemMomentfulPlaces(fileSystem, "content/places".toPath())
+    private val stories = FilesystemStories(fileSystem, "content".toPath(), places)
     private val story = stories.new()
     private val moments = story.moments
 
@@ -52,10 +57,11 @@ class FilesystemMomentTest {
         moment.timestamp.shouldBe(Timestamp(Instant.fromEpochMilliseconds(0)))
         moment.description.shouldBe(TokenableString(""))
         moment.sentiment.shouldBe(Sentiment(0.123456789F))
+        moment.place.shouldBe(NullIsland)
     }
 
     @Test
-    fun `Write updates to the filesystem`() {
+    fun `Writes details updates to the filesystem`() {
         val moment = moments.new()
 
         moment.update(timestamp = Timestamp(Instant.fromEpochMilliseconds(1000)))
@@ -64,11 +70,49 @@ class FilesystemMomentTest {
 
         val path = "content/${story.id}/moments/${moment.id}".toPath()
         val fileContent = fileSystem.source(path).buffer().use { it.readUtf8() }
-        fileContent.contains("Foo")
-        fileContent.contains("0.5")
+        fileContent.shouldContain("Foo")
+        fileContent.shouldContain("0.5")
         moment.timestamp.shouldBe(Timestamp(Instant.fromEpochMilliseconds(1000)))
         moment.description.shouldBe(TokenableString("Foo"))
         moment.sentiment.shouldBe(Sentiment(0.5F))
+    }
+
+    @Test
+    fun `Writes place updates to the filesystem`() {
+        val moment = moments.new()
+        val firstPlace = FakePlace()
+        val secondPlace = FakePlace()
+        val firstPlaceFileContent = {
+            val path = "content/places/${firstPlace.id}".toPath()
+            fileSystem.source(path).buffer().use { it.readUtf8() }
+        }
+        val secondPlaceFileContent = {
+            val path = "content/places/${secondPlace.id}".toPath()
+            fileSystem.source(path).buffer().use { it.readUtf8() }
+        }
+
+        moment.update(place = firstPlace)
+
+        firstPlaceFileContent().shouldContain(moment.id.toString())
+        moment.place.id.shouldBe(firstPlace.id)
+
+        moment.update(place = secondPlace)
+
+        firstPlaceFileContent().shouldNotContain(moment.id.toString())
+        secondPlaceFileContent().shouldContain(moment.id.toString())
+        moment.place.id.shouldBe(secondPlace.id)
+
+        moment.update(place = NullIsland)
+
+        firstPlaceFileContent().shouldNotContain(moment.id.toString())
+        secondPlaceFileContent().shouldNotContain(moment.id.toString())
+        moment.place.id.shouldBe(NullIsland.id)
+
+        moment.update(place = firstPlace)
+
+        firstPlaceFileContent().shouldContain(moment.id.toString())
+        secondPlaceFileContent().shouldNotContain(moment.id.toString())
+        moment.place.id.shouldBe(firstPlace.id)
     }
 
     @Test

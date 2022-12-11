@@ -21,7 +21,8 @@ import com.hadisatrio.apps.kotlin.journal3.Router
 import com.hadisatrio.apps.kotlin.journal3.datetime.Timestamp
 import com.hadisatrio.apps.kotlin.journal3.event.RecordedEventSource
 import com.hadisatrio.apps.kotlin.journal3.event.UnsupportedEvent
-import com.hadisatrio.apps.kotlin.journal3.story.FakeStories
+import com.hadisatrio.apps.kotlin.journal3.story.fake.FakeStories
+import com.hadisatrio.libs.kotlin.foundation.event.CancellationEvent
 import com.hadisatrio.libs.kotlin.foundation.event.CompletionEvent
 import com.hadisatrio.libs.kotlin.foundation.modal.Modal
 import com.hadisatrio.libs.kotlin.foundation.modal.ModalApprovalEvent
@@ -36,12 +37,14 @@ import kotlin.time.Duration.Companion.hours
 
 class AlertInactivityUseCaseTest {
 
+    private val presenter = mockk<Presenter<Modal>>(relaxed = true)
+    private val stories = FakeStories()
+    private val story = stories.new()
+    private val moment = story.moments.new()
+    private val router = mockk<Router>(relaxed = true)
+
     @Test
     fun `Presents a modal should last written moment timestamp exceeds threshold`() {
-        val presenter = mockk<Presenter<Modal>>(relaxed = true)
-        val stories = FakeStories()
-        val story = stories.new()
-        val moment = story.moments.new()
         moment.update(Timestamp(Clock.System.now() - 1.days))
 
         AlertInactivityUseCase(
@@ -60,9 +63,6 @@ class AlertInactivityUseCaseTest {
 
     @Test
     fun `Presents a modal should no moments have ever been written`() {
-        val presenter = mockk<Presenter<Modal>>(relaxed = true)
-        val stories = FakeStories()
-
         AlertInactivityUseCase(
             threshold = 3.hours,
             stories = stories,
@@ -79,10 +79,6 @@ class AlertInactivityUseCaseTest {
 
     @Test
     fun `Does nothing should last written moment timestamp is under threshold`() {
-        val presenter = mockk<Presenter<Modal>>(relaxed = true)
-        val stories = FakeStories()
-        val story = stories.new()
-        val moment = story.moments.new()
         moment.update(Timestamp(Clock.System.now() - 1.hours))
 
         AlertInactivityUseCase(
@@ -101,10 +97,6 @@ class AlertInactivityUseCaseTest {
 
     @Test
     fun `Routes to the moment editor when receiving modal approval for 'inactivity_alert'`() {
-        val router = mockk<Router>(relaxed = true)
-        val stories = FakeStories()
-        val story = stories.new()
-        val moment = story.moments.new()
         moment.update(Timestamp(Clock.System.now() - 1.days))
 
         AlertInactivityUseCase(
@@ -122,11 +114,24 @@ class AlertInactivityUseCaseTest {
         verify(exactly = 1) { router.toMomentEditor(story.id) }
     }
 
+    @Test(timeout = 5_000)
+    fun `Stops upon receiving cancellation events`() {
+        moment.update(Timestamp(Clock.System.now() - 1.days))
+
+        listOf(CancellationEvent("user"), CancellationEvent("system")).forEach { event ->
+            AlertInactivityUseCase(
+                threshold = 3.hours,
+                stories = stories,
+                presenter = mockk(relaxed = true),
+                eventSource = RecordedEventSource(event),
+                eventSink = mockk(relaxed = true),
+                router = mockk(relaxed = true)
+            )()
+        }
+    }
+
     @Test
     fun `Ignores unknown events without repercussions`() {
-        val stories = FakeStories()
-        val story = stories.new()
-        val moment = story.moments.new()
         moment.update(Timestamp(Clock.System.now() - 1.days))
 
         AlertInactivityUseCase(

@@ -21,6 +21,14 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
+@Deprecated(
+    message = "Coroutine behavior can be flaky for how we are using it in this application.",
+    replaceWith = ReplaceWith(
+        "ExecutorDispatchingPresenter",
+        "com.hadisatrio.libs.kotlin.foundation.presentation.ExecutorDispatchingPresenter"
+    ),
+    level = DeprecationLevel.WARNING
+)
 class CoroutineDispatchingPresenter<T>(
     private val coroutineScope: CoroutineScope,
     private val coroutineDispatcher: CoroutineDispatcher,
