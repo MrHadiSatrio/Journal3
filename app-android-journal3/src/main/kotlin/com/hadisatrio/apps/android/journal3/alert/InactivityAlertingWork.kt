@@ -20,10 +20,8 @@ package com.hadisatrio.apps.android.journal3.alert
 import android.content.Context
 import androidx.work.Worker
 import androidx.work.WorkerParameters
-import com.benasher44.uuid.Uuid
 import com.hadisatrio.apps.android.journal3.journal3Application
 import com.hadisatrio.apps.android.journal3.notification.NotificationChannel
-import com.hadisatrio.apps.kotlin.journal3.Router
 import com.hadisatrio.apps.kotlin.journal3.alert.AlertInactivityUseCase
 import com.hadisatrio.libs.android.foundation.modal.NotificationModalPresenter
 import com.hadisatrio.libs.kotlin.foundation.event.CompletionEvent
@@ -59,16 +57,5 @@ class InactivityAlertingWork(
         override fun events(): Flow<Event> {
             return flowOf(CompletionEvent())
         }
-    }
-
-    @Suppress("EmptyFunctionBlock")
-    private class NoOpRouter : Router {
-        override fun toStoryEditor() {}
-        override fun toMomentEditor(id: Uuid, storyId: Uuid) {}
-        override fun toMomentEditor(storyId: Uuid) {}
-        override fun toStoryEditor(id: Uuid) {}
-        override fun toStoryDetail(id: Uuid) {}
-        override fun toMomentDetail(id: Uuid) {}
-        override fun toPrevious() {}
     }
 }
