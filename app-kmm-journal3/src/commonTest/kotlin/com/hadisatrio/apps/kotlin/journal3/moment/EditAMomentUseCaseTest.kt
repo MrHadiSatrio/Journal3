@@ -70,7 +70,6 @@ class EditAMomentUseCaseTest {
                 CompletionEvent()
             ),
             eventSink = mockk(relaxed = true),
-            router = mockk(relaxed = true),
             clock = Clock.System
         )()
 
@@ -103,7 +102,6 @@ class EditAMomentUseCaseTest {
                 CompletionEvent()
             ),
             eventSink = mockk(relaxed = true),
-            router = mockk(relaxed = true),
             clock = Clock.System
         )()
 
@@ -137,7 +135,6 @@ class EditAMomentUseCaseTest {
                 CompletionEvent()
             ),
             eventSink = mockk(relaxed = true),
-            router = mockk(relaxed = true),
             clock = Clock.System
         )()
 
@@ -168,7 +165,6 @@ class EditAMomentUseCaseTest {
                 ModalApprovalEvent("edit_cancellation_confirmation")
             ),
             eventSink = mockk(relaxed = true),
-            router = mockk(relaxed = true),
             clock = Clock.System
         )()
 
@@ -191,7 +187,6 @@ class EditAMomentUseCaseTest {
                 modalPresenter = mockk(relaxed = true),
                 eventSource = RecordedEventSource(event),
                 eventSink = mockk(relaxed = true),
-                router = mockk(relaxed = true),
                 clock = Clock.System
             )()
         }
@@ -222,7 +217,6 @@ class EditAMomentUseCaseTest {
                 CompletionEvent()
             ),
             eventSink = mockk(relaxed = true),
-            router = mockk(relaxed = true),
             clock = Clock.System
         )()
     }

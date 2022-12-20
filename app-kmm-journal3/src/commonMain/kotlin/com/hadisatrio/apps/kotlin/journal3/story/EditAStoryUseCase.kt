@@ -17,7 +17,6 @@
 
 package com.hadisatrio.apps.kotlin.journal3.story
 
-import com.hadisatrio.apps.kotlin.journal3.Router
 import com.hadisatrio.apps.kotlin.journal3.id.TargetId
 import com.hadisatrio.apps.kotlin.journal3.token.TokenableString
 import com.hadisatrio.libs.kotlin.foundation.UseCase
@@ -44,8 +43,7 @@ class EditAStoryUseCase(
     private val presenter: Presenter<Story>,
     private val modalPresenter: Presenter<Modal>,
     private val eventSource: EventSource,
-    private val eventSink: EventSink,
-    private val router: Router
+    private val eventSink: EventSink
 ) : UseCase {
 
     private val completionEvents by lazy { MutableSharedFlow<CompletionEvent>(extraBufferCapacity = 1) }
@@ -72,7 +70,7 @@ class EditAStoryUseCase(
     private fun observeEvents() = runBlocking {
         merge(eventSource.events(), completionEvents)
             .onEach { eventSink.sink(it) }
-            .takeWhile { event -> (event as? CompletionEvent)?.also { handleCompletion() } == null }
+            .takeWhile { event -> (event as? CompletionEvent) == null }
             .collect { event -> handle(event) }
     }
 
@@ -112,9 +110,5 @@ class EditAStoryUseCase(
                 completionEvents.emit(CompletionEvent())
             }
         }
-    }
-
-    private fun handleCompletion() {
-        router.toPrevious()
     }
 }

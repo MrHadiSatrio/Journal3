@@ -27,7 +27,6 @@ you would come to realize when diving deeper into the codebase.
 
 - `UseCase` as representation of business requirements/features
 - `Event` as the dominant way of inter-objects communication
-- `Router` as the primary enabler for navigation
 - `Presenter` as the renderer of objects (not to be confused with MVP)
 
 One thing that I hope you'd also notice is that they are not necessarily

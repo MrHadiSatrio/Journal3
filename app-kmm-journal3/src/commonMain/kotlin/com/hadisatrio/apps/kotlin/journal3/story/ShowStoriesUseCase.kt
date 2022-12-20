@@ -17,7 +17,6 @@
 
 package com.hadisatrio.apps.kotlin.journal3.story
 
-import com.hadisatrio.apps.kotlin.journal3.Router
 import com.hadisatrio.apps.kotlin.journal3.event.RefreshRequestEvent
 import com.hadisatrio.libs.kotlin.foundation.UseCase
 import com.hadisatrio.libs.kotlin.foundation.event.CancellationEvent
@@ -37,8 +36,7 @@ class ShowStoriesUseCase(
     private val stories: Stories,
     private val presenter: Presenter<Stories>,
     private val eventSource: EventSource,
-    private val eventSink: EventSink,
-    private val router: Router
+    private val eventSink: EventSink
 ) : UseCase {
 
     private val completionEvents by lazy { MutableSharedFlow<CompletionEvent>(extraBufferCapacity = 1) }
@@ -55,7 +53,7 @@ class ShowStoriesUseCase(
     private fun observeEvents() = runBlocking {
         merge(eventSource.events(), completionEvents)
             .onEach { eventSink.sink(it) }
-            .takeWhile { event -> (event as? CompletionEvent)?.also { handleCompletion() } == null }
+            .takeWhile { event -> (event as? CompletionEvent) == null }
             .collect { event -> handleEvent(event) }
     }
 
@@ -73,22 +71,19 @@ class ShowStoriesUseCase(
         when (kind) {
             "item_position" -> {
                 val position = identifier.toInt()
-                val story = stories.elementAt(position)
-                router.toStoryDetail(story.id)
-            }
-            "action" -> when (identifier) {
-                "add" -> {
-                    router.toStoryEditor()
-                }
+                val storyId = stories.elementAt(position).id
+                eventSink.sink(
+                    SelectionEvent(
+                        selectionKind = "action",
+                        selectedIdentifier = "view_story",
+                        "story_id" to storyId.toString()
+                    )
+                )
             }
         }
     }
 
     private suspend fun handleCancellation() {
         completionEvents.emit(CompletionEvent())
-    }
-
-    private fun handleCompletion() {
-        router.toPrevious()
     }
 }

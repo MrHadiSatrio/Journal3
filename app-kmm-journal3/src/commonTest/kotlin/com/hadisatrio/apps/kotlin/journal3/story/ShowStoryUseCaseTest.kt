@@ -17,7 +17,6 @@
 
 package com.hadisatrio.apps.kotlin.journal3.story
 
-import com.hadisatrio.apps.kotlin.journal3.Router
 import com.hadisatrio.apps.kotlin.journal3.event.RecordedEventSource
 import com.hadisatrio.apps.kotlin.journal3.event.RefreshRequestEvent
 import com.hadisatrio.apps.kotlin.journal3.event.UnsupportedEvent
@@ -25,8 +24,10 @@ import com.hadisatrio.apps.kotlin.journal3.id.FakeTargetId
 import com.hadisatrio.apps.kotlin.journal3.story.fake.FakeStories
 import com.hadisatrio.libs.kotlin.foundation.event.CancellationEvent
 import com.hadisatrio.libs.kotlin.foundation.event.CompletionEvent
+import com.hadisatrio.libs.kotlin.foundation.event.EventSink
 import com.hadisatrio.libs.kotlin.foundation.event.SelectionEvent
 import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
+import io.kotest.matchers.shouldBe
 import io.mockk.mockk
 import io.mockk.verify
 import org.junit.Test
@@ -50,8 +51,7 @@ class ShowStoryUseCaseTest {
             stories = stories,
             presenter = presenter,
             eventSource = RecordedEventSource(CompletionEvent()),
-            eventSink = mockk(relaxed = true),
-            router = mockk(relaxed = true)
+            eventSink = mockk(relaxed = true)
         )()
 
         verify(exactly = 1) { presenter.present(story) }
@@ -73,18 +73,17 @@ class ShowStoryUseCaseTest {
                 RefreshRequestEvent("test"),
                 CompletionEvent()
             ),
-            eventSink = mockk(relaxed = true),
-            router = mockk(relaxed = true)
+            eventSink = mockk(relaxed = true)
         )()
 
         verify(exactly = 4) { presenter.present(story) }
     }
 
     @Test
-    fun `Routes to the editor when action 'add' is selected`() {
+    fun `Forwards to the sink when action 'add' is selected`() {
         val story = stories.first()
         val targetId = FakeTargetId(story.id)
-        val router = mockk<Router>(relaxed = true)
+        val eventSink = mockk<EventSink>(relaxed = true)
 
         ShowStoryUseCase(
             targetId = targetId,
@@ -94,18 +93,26 @@ class ShowStoryUseCaseTest {
                 SelectionEvent("action", "add"),
                 CompletionEvent()
             ),
-            eventSink = mockk(relaxed = true),
-            router = router
+            eventSink = eventSink
         )()
 
-        verify(exactly = 1) { router.toMomentEditor(story.id) }
+        verify(exactly = 1) {
+            eventSink.sink(
+                withArg { event ->
+                    event["name"].shouldBe("Selection Event")
+                    event["selection_kind"].shouldBe("action")
+                    event["selected_id"].shouldBe("add_moment")
+                    event["story_id"].shouldBe(story.id.toString())
+                }
+            )
+        }
     }
 
     @Test
-    fun `Routes to the editor when action 'edit' is selected`() {
+    fun `Forwards to the sink when action 'edit' is selected`() {
         val story = stories.first()
         val targetId = FakeTargetId(story.id)
-        val router = mockk<Router>(relaxed = true)
+        val eventSink = mockk<EventSink>(relaxed = true)
 
         ShowStoryUseCase(
             targetId = targetId,
@@ -115,19 +122,27 @@ class ShowStoryUseCaseTest {
                 SelectionEvent("action", "edit"),
                 CompletionEvent()
             ),
-            eventSink = mockk(relaxed = true),
-            router = router
+            eventSink = eventSink
         )()
 
-        verify(exactly = 1) { router.toStoryEditor(story.id) }
+        verify(exactly = 1) {
+            eventSink.sink(
+                withArg { event ->
+                    event["name"].shouldBe("Selection Event")
+                    event["selection_kind"].shouldBe("action")
+                    event["selected_id"].shouldBe("edit_story")
+                    event["story_id"].shouldBe(story.id.toString())
+                }
+            )
+        }
     }
 
     @Test
-    fun `Routes to the moment editor when action 'item_position' is selected`() {
+    fun `Forwards to the sink when action 'item_position' is selected`() {
         val story = stories.first()
         val moment = story.moments.first()
         val targetId = FakeTargetId(story.id)
-        val router = mockk<Router>(relaxed = true)
+        val eventSink = mockk<EventSink>(relaxed = true)
 
         ShowStoryUseCase(
             targetId = targetId,
@@ -137,32 +152,20 @@ class ShowStoryUseCaseTest {
                 SelectionEvent("item_position", "0"),
                 CompletionEvent()
             ),
-            eventSink = mockk(relaxed = true),
-            router = router
+            eventSink = eventSink
         )()
 
-        verify(exactly = 1) { router.toMomentEditor(moment.id, story.id) }
-    }
-
-    @Test
-    fun `Routes to the moment editor when action 'add' is selected`() {
-        val story = stories.first()
-        val targetId = FakeTargetId(story.id)
-        val router = mockk<Router>(relaxed = true)
-
-        ShowStoryUseCase(
-            targetId = targetId,
-            stories = stories,
-            presenter = mockk(relaxed = true),
-            eventSource = RecordedEventSource(
-                SelectionEvent("action", "add"),
-                CompletionEvent()
-            ),
-            eventSink = mockk(relaxed = true),
-            router = router
-        )()
-
-        verify(exactly = 1) { router.toMomentEditor(story.id) }
+        verify(exactly = 1) {
+            eventSink.sink(
+                withArg { event ->
+                    event["name"].shouldBe("Selection Event")
+                    event["selection_kind"].shouldBe("action")
+                    event["selected_id"].shouldBe("edit_moment")
+                    event["moment_id"].shouldBe(moment.id.toString())
+                    event["story_id"].shouldBe(story.id.toString())
+                }
+            )
+        }
     }
 
     @Test(timeout = 5_000)
@@ -176,8 +179,7 @@ class ShowStoryUseCaseTest {
                 stories = stories,
                 presenter = mockk(relaxed = true),
                 eventSource = RecordedEventSource(event),
-                eventSink = mockk(relaxed = true),
-                router = mockk(relaxed = true)
+                eventSink = mockk(relaxed = true)
             )()
         }
     }
@@ -195,8 +197,7 @@ class ShowStoryUseCaseTest {
                 UnsupportedEvent(),
                 CompletionEvent()
             ),
-            eventSink = mockk(relaxed = true),
-            router = mockk(relaxed = true)
+            eventSink = mockk(relaxed = true)
         )()
     }
 }

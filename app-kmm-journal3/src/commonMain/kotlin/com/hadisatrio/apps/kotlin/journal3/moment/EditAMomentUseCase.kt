@@ -18,7 +18,6 @@
 package com.hadisatrio.apps.kotlin.journal3.moment
 
 import com.benasher44.uuid.uuidFrom
-import com.hadisatrio.apps.kotlin.journal3.Router
 import com.hadisatrio.apps.kotlin.journal3.datetime.Timestamp
 import com.hadisatrio.apps.kotlin.journal3.id.TargetId
 import com.hadisatrio.apps.kotlin.journal3.moment.datetime.ClockRespectingMoments
@@ -55,7 +54,6 @@ class EditAMomentUseCase(
     private val modalPresenter: Presenter<Modal>,
     private val eventSource: EventSource,
     private val eventSink: EventSink,
-    private val router: Router,
     private val clock: Clock
 ) : UseCase {
 
@@ -85,7 +83,7 @@ class EditAMomentUseCase(
     private fun observeEvents() = runBlocking {
         merge(eventSource.events(), completionEvents)
             .onEach { eventSink.sink(it) }
-            .takeWhile { event -> (event as? CompletionEvent)?.also { handleCompletion() } == null }
+            .takeWhile { event -> (event as? CompletionEvent) == null }
             .collect { event -> handle(event) }
     }
 
@@ -135,9 +133,5 @@ class EditAMomentUseCase(
                 completionEvents.emit(CompletionEvent())
             }
         }
-    }
-
-    private fun handleCompletion() {
-        router.toPrevious()
     }
 }

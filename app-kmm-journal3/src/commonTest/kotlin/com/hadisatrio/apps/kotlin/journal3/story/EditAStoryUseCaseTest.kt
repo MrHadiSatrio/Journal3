@@ -57,8 +57,7 @@ class EditAStoryUseCaseTest {
                 TextInputEvent("synopsis", "Bar"),
                 CompletionEvent()
             ),
-            eventSink = mockk(relaxed = true),
-            router = mockk(relaxed = true)
+            eventSink = mockk(relaxed = true)
         )()
 
         story.title.shouldBe("Foo")
@@ -81,8 +80,7 @@ class EditAStoryUseCaseTest {
                 TextInputEvent("synopsis", "Bar"),
                 CompletionEvent()
             ),
-            eventSink = mockk(relaxed = true),
-            router = mockk(relaxed = true)
+            eventSink = mockk(relaxed = true)
         )()
 
         stories.shouldHaveSize(1)
@@ -111,8 +109,7 @@ class EditAStoryUseCaseTest {
                 TextInputEvent("synopsis", "Buzz"),
                 CompletionEvent()
             ),
-            eventSink = mockk(relaxed = true),
-            router = mockk(relaxed = true)
+            eventSink = mockk(relaxed = true)
         )()
 
         verify(exactly = 1) { modalPresenter.present(withArg { it.kind.shouldBe("edit_cancellation_confirmation") }) }
@@ -139,8 +136,7 @@ class EditAStoryUseCaseTest {
                 CancellationEvent("user"),
                 ModalApprovalEvent("edit_cancellation_confirmation")
             ),
-            eventSink = mockk(relaxed = true),
-            router = mockk(relaxed = true)
+            eventSink = mockk(relaxed = true)
         )()
 
         verify(exactly = 1) { modalPresenter.present(withArg { it.kind.shouldBe("edit_cancellation_confirmation") }) }
@@ -160,8 +156,7 @@ class EditAStoryUseCaseTest {
                 presenter = mockk(relaxed = true),
                 modalPresenter = mockk(relaxed = true),
                 eventSource = RecordedEventSource(event),
-                eventSink = mockk(relaxed = true),
-                router = mockk(relaxed = true)
+                eventSink = mockk(relaxed = true)
             )()
         }
     }

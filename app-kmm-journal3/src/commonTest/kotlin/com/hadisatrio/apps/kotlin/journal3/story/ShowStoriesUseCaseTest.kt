@@ -17,7 +17,6 @@
 
 package com.hadisatrio.apps.kotlin.journal3.story
 
-import com.hadisatrio.apps.kotlin.journal3.Router
 import com.hadisatrio.apps.kotlin.journal3.event.RecordedEventSource
 import com.hadisatrio.apps.kotlin.journal3.event.RefreshRequestEvent
 import com.hadisatrio.apps.kotlin.journal3.story.fake.FakeStories
@@ -48,8 +47,7 @@ class ShowStoriesUseCaseTest {
             stories = stories,
             presenter = presenter,
             eventSource = RecordedEventSource(CompletionEvent()),
-            eventSink = mockk(relaxed = true),
-            router = mockk(relaxed = true)
+            eventSink = mockk(relaxed = true)
         )()
 
         verify(exactly = 1) { presenter.present(withArg { it.shouldHaveSize(10) }) }
@@ -68,51 +66,38 @@ class ShowStoriesUseCaseTest {
                 RefreshRequestEvent("test"),
                 CompletionEvent()
             ),
-            eventSink = mockk(relaxed = true),
-            router = mockk(relaxed = true)
+            eventSink = mockk(relaxed = true)
         )()
 
         verify(exactly = 4) { presenter.present(withArg { it.shouldHaveSize(10) }) }
     }
 
     @Test
-    fun `Routes to the editor when action 'add' is selected`() {
+    fun `Forwards to the sink when a valid story is selected through its position`() {
         val eventSink = mockk<EventSink>(relaxed = true)
-        val router = mockk<Router>(relaxed = true)
+        val story = stories.toList().random()
+        val storyIndex = stories.indexOf(story)
 
         ShowStoriesUseCase(
             stories = stories,
             presenter = mockk(relaxed = true),
             eventSource = RecordedEventSource(
-                SelectionEvent("action", "add"),
+                SelectionEvent("item_position", storyIndex.toString()),
                 CompletionEvent()
             ),
-            eventSink = eventSink,
-            router = router
+            eventSink = eventSink
         )()
 
-        verify(exactly = 1) { router.toStoryEditor() }
-        verify(exactly = 1) { eventSink.sink(withArg { it.name.shouldBe("Selection Event") }) }
-    }
-
-    @Test
-    fun `Routes to the detail when a valid story is selected through its position`() {
-        val eventSink = mockk<EventSink>(relaxed = true)
-        val router = mockk<Router>(relaxed = true)
-
-        ShowStoriesUseCase(
-            stories = stories,
-            presenter = mockk(relaxed = true),
-            eventSource = RecordedEventSource(
-                SelectionEvent("item_position", "9"),
-                CompletionEvent()
-            ),
-            eventSink = eventSink,
-            router = router
-        )()
-
-        verify(exactly = 1) { router.toStoryDetail(stories.elementAt(9).id) }
-        verify(exactly = 1) { eventSink.sink(withArg { it.name.shouldBe("Selection Event") }) }
+        verify(exactly = 1) {
+            eventSink.sink(
+                withArg { event ->
+                    event["name"].shouldBe("Selection Event")
+                    event["selection_kind"].shouldBe("action")
+                    event["selected_id"].shouldBe("view_story")
+                    event["story_id"].shouldBe(story.id.toString())
+                }
+            )
+        }
     }
 
     @Test(timeout = 5_000)
@@ -122,8 +107,7 @@ class ShowStoriesUseCaseTest {
                 stories = stories,
                 presenter = mockk(relaxed = true),
                 eventSource = RecordedEventSource(event),
-                eventSink = mockk(relaxed = true),
-                router = mockk(relaxed = true)
+                eventSink = mockk(relaxed = true)
             )()
         }
     }

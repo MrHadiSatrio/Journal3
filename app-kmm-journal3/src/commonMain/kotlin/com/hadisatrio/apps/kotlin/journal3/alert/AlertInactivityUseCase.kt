@@ -17,7 +17,6 @@
 
 package com.hadisatrio.apps.kotlin.journal3.alert
 
-import com.hadisatrio.apps.kotlin.journal3.Router
 import com.hadisatrio.apps.kotlin.journal3.datetime.Timestamp
 import com.hadisatrio.apps.kotlin.journal3.story.Stories
 import com.hadisatrio.libs.kotlin.foundation.UseCase
@@ -26,6 +25,7 @@ import com.hadisatrio.libs.kotlin.foundation.event.CompletionEvent
 import com.hadisatrio.libs.kotlin.foundation.event.Event
 import com.hadisatrio.libs.kotlin.foundation.event.EventSink
 import com.hadisatrio.libs.kotlin.foundation.event.EventSource
+import com.hadisatrio.libs.kotlin.foundation.event.SelectionEvent
 import com.hadisatrio.libs.kotlin.foundation.modal.BinaryConfirmationModal
 import com.hadisatrio.libs.kotlin.foundation.modal.Modal
 import com.hadisatrio.libs.kotlin.foundation.modal.ModalApprovalEvent
@@ -43,8 +43,7 @@ class AlertInactivityUseCase(
     private val stories: Stories,
     private val presenter: Presenter<Modal>,
     private val eventSource: EventSource,
-    private val eventSink: EventSink,
-    private val router: Router
+    private val eventSink: EventSink
 ) : UseCase {
 
     private val completionEvents by lazy { MutableSharedFlow<CompletionEvent>(extraBufferCapacity = 1) }
@@ -65,7 +64,7 @@ class AlertInactivityUseCase(
     private fun observeEvents() = runBlocking {
         merge(eventSource.events(), completionEvents)
             .onEach { eventSink.sink(it) }
-            .takeWhile { event -> (event as? CompletionEvent)?.also { handleCompletion() } == null }
+            .takeWhile { event -> (event as? CompletionEvent) == null }
             .collect { event -> handle(event) }
     }
 
@@ -78,15 +77,17 @@ class AlertInactivityUseCase(
 
     private suspend fun handleModalApproval(event: ModalApprovalEvent) {
         if (event.modalKind != "inactivity_alert") return
-        router.toMomentEditor(stories.first().id)
+        eventSink.sink(
+            SelectionEvent(
+                selectionKind = "action",
+                selectedIdentifier = "add_moment",
+                "story_id" to stories.first().id.toString()
+            )
+        )
         completionEvents.emit(CompletionEvent())
     }
 
     private suspend fun handleCancellation() {
         completionEvents.emit(CompletionEvent())
-    }
-
-    private fun handleCompletion() {
-        router.toPrevious()
     }
 }
