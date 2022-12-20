@@ -17,7 +17,6 @@
 
 package com.hadisatrio.apps.kotlin.journal3.story
 
-import com.hadisatrio.apps.kotlin.journal3.Router
 import com.hadisatrio.apps.kotlin.journal3.event.RefreshRequestEvent
 import com.hadisatrio.apps.kotlin.journal3.id.TargetId
 import com.hadisatrio.libs.kotlin.foundation.UseCase
@@ -39,8 +38,7 @@ class ShowStoryUseCase(
     private val stories: Stories,
     private val presenter: Presenter<Story>,
     private val eventSource: EventSource,
-    private val eventSink: EventSink,
-    private val router: Router
+    private val eventSink: EventSink
 ) : UseCase {
 
     private val completionEvents by lazy { MutableSharedFlow<CompletionEvent>(extraBufferCapacity = 1) }
@@ -58,7 +56,7 @@ class ShowStoryUseCase(
     private fun observeEvents() = runBlocking {
         merge(eventSource.events(), completionEvents)
             .onEach { eventSink.sink(it) }
-            .takeWhile { event -> (event as? CompletionEvent)?.also { handleCompletion() } == null }
+            .takeWhile { event -> (event as? CompletionEvent) == null }
             .collect { event -> handleEvent(event) }
     }
 
@@ -75,22 +73,44 @@ class ShowStoryUseCase(
         val identifier = event.selectedIdentifier
         val story = stories.findStory(targetId.asUuid()).first()
         when (kind) {
-            "item_position" -> {
-                val moment = story.moments.elementAt(identifier.toInt())
-                router.toMomentEditor(moment.id, story.id)
-            }
+            "item_position" -> handleItemPositionSelectionEvent(story, identifier)
             "action" -> when (identifier) {
-                "edit" -> router.toStoryEditor(story.id)
-                "add" -> router.toMomentEditor(story.id)
+                "edit" -> {
+                    eventSink.sink(
+                        SelectionEvent(
+                            selectionKind = "action",
+                            selectedIdentifier = "edit_story",
+                            "story_id" to story.id.toString()
+                        )
+                    )
+                }
+
+                "add" -> {
+                    eventSink.sink(
+                        SelectionEvent(
+                            selectionKind = "action",
+                            selectedIdentifier = "add_moment",
+                            "story_id" to story.id.toString()
+                        )
+                    )
+                }
             }
         }
     }
 
-    private suspend fun handleCancellation() {
-        completionEvents.emit(CompletionEvent())
+    private fun handleItemPositionSelectionEvent(story: Story, identifier: String) {
+        val moment = story.moments.elementAt(identifier.toInt())
+        eventSink.sink(
+            SelectionEvent(
+                selectionKind = "action",
+                selectedIdentifier = "edit_moment",
+                "moment_id" to moment.id.toString(),
+                "story_id" to story.id.toString()
+            )
+        )
     }
 
-    private fun handleCompletion() {
-        router.toPrevious()
+    private suspend fun handleCancellation() {
+        completionEvents.emit(CompletionEvent())
     }
 }

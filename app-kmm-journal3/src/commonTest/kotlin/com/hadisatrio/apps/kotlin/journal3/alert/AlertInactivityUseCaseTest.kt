@@ -17,13 +17,13 @@
 
 package com.hadisatrio.apps.kotlin.journal3.alert
 
-import com.hadisatrio.apps.kotlin.journal3.Router
 import com.hadisatrio.apps.kotlin.journal3.datetime.Timestamp
 import com.hadisatrio.apps.kotlin.journal3.event.RecordedEventSource
 import com.hadisatrio.apps.kotlin.journal3.event.UnsupportedEvent
 import com.hadisatrio.apps.kotlin.journal3.story.fake.FakeStories
 import com.hadisatrio.libs.kotlin.foundation.event.CancellationEvent
 import com.hadisatrio.libs.kotlin.foundation.event.CompletionEvent
+import com.hadisatrio.libs.kotlin.foundation.event.EventSink
 import com.hadisatrio.libs.kotlin.foundation.modal.Modal
 import com.hadisatrio.libs.kotlin.foundation.modal.ModalApprovalEvent
 import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
@@ -41,7 +41,7 @@ class AlertInactivityUseCaseTest {
     private val stories = FakeStories()
     private val story = stories.new()
     private val moment = story.moments.new()
-    private val router = mockk<Router>(relaxed = true)
+    private val eventSink = mockk<EventSink>(relaxed = true)
 
     @Test
     fun `Presents a modal should last written moment timestamp exceeds threshold`() {
@@ -54,8 +54,7 @@ class AlertInactivityUseCaseTest {
             eventSource = RecordedEventSource(
                 CompletionEvent()
             ),
-            eventSink = mockk(relaxed = true),
-            router = mockk(relaxed = true)
+            eventSink = eventSink
         )()
 
         verify(exactly = 1) { presenter.present(withArg { it.kind.shouldBe("inactivity_alert") }) }
@@ -70,8 +69,7 @@ class AlertInactivityUseCaseTest {
             eventSource = RecordedEventSource(
                 CompletionEvent()
             ),
-            eventSink = mockk(relaxed = true),
-            router = mockk(relaxed = true)
+            eventSink = eventSink
         )()
 
         verify(exactly = 1) { presenter.present(withArg { it.kind.shouldBe("inactivity_alert") }) }
@@ -88,8 +86,7 @@ class AlertInactivityUseCaseTest {
             eventSource = RecordedEventSource(
                 CompletionEvent()
             ),
-            eventSink = mockk(relaxed = true),
-            router = mockk(relaxed = true)
+            eventSink = eventSink
         )()
 
         verify(inverse = true) { presenter.present(any()) }
@@ -107,11 +104,19 @@ class AlertInactivityUseCaseTest {
                 ModalApprovalEvent("inactivity_alert"),
                 CompletionEvent()
             ),
-            eventSink = mockk(relaxed = true),
-            router = router
+            eventSink = eventSink
         )()
 
-        verify(exactly = 1) { router.toMomentEditor(story.id) }
+        verify(exactly = 1) {
+            eventSink.sink(
+                withArg { event ->
+                    event["name"].shouldBe("Selection Event")
+                    event["selection_kind"].shouldBe("action")
+                    event["selected_id"].shouldBe("add_moment")
+                    event["story_id"].shouldBe(story.id.toString())
+                }
+            )
+        }
     }
 
     @Test(timeout = 5_000)
@@ -124,8 +129,7 @@ class AlertInactivityUseCaseTest {
                 stories = stories,
                 presenter = mockk(relaxed = true),
                 eventSource = RecordedEventSource(event),
-                eventSink = mockk(relaxed = true),
-                router = mockk(relaxed = true)
+                eventSink = eventSink
             )()
         }
     }
@@ -143,8 +147,7 @@ class AlertInactivityUseCaseTest {
                 UnsupportedEvent(),
                 CompletionEvent()
             ),
-            eventSink = mockk(relaxed = true),
-            router = mockk(relaxed = true)
+            eventSink = eventSink
         )()
     }
 }

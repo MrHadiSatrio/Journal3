@@ -20,12 +20,12 @@ package com.hadisatrio.apps.android.journal3.moment
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
-import com.hadisatrio.apps.android.journal3.ActivityRouter
 import com.hadisatrio.apps.android.journal3.R
 import com.hadisatrio.apps.android.journal3.datetime.TimestampSelectionEventSource
 import com.hadisatrio.apps.android.journal3.id.BundledTargetId
 import com.hadisatrio.apps.android.journal3.journal3Application
 import com.hadisatrio.apps.kotlin.journal3.moment.EditAMomentUseCase
+import com.hadisatrio.libs.android.foundation.activity.ActivityCompletionEventSink
 import com.hadisatrio.libs.android.foundation.lifecycle.LifecycleTriggeredEventSource
 import com.hadisatrio.libs.android.foundation.material.SliderFloatPresenter
 import com.hadisatrio.libs.android.foundation.material.SliderSelectionEventSource
@@ -36,6 +36,7 @@ import com.hadisatrio.libs.android.foundation.widget.ViewClickEventSource
 import com.hadisatrio.libs.kotlin.foundation.ExecutorDispatchingUseCase
 import com.hadisatrio.libs.kotlin.foundation.event.CancellationEvent
 import com.hadisatrio.libs.kotlin.foundation.event.CompletionEvent
+import com.hadisatrio.libs.kotlin.foundation.event.EventSinks
 import com.hadisatrio.libs.kotlin.foundation.event.EventSources
 import com.hadisatrio.libs.kotlin.foundation.event.ExecutorDispatchingEventSource
 import com.hadisatrio.libs.kotlin.foundation.event.SelectionEvent
@@ -111,8 +112,10 @@ class EditAMomentActivity : AppCompatActivity() {
                         BackButtonCancellationEventSource(this)
                     )
                 ),
-                eventSink = journal3Application.globalEventSink,
-                router = ActivityRouter(this),
+                eventSink = EventSinks(
+                    journal3Application.globalEventSink,
+                    ActivityCompletionEventSink(this)
+                ),
                 clock = journal3Application.clock
             )
         )()

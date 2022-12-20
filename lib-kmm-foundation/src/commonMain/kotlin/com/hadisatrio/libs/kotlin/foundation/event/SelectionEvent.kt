@@ -19,10 +19,18 @@ package com.hadisatrio.libs.kotlin.foundation.event
 
 class SelectionEvent(
     val selectionKind: String,
-    val selectedIdentifier: String
+    val selectedIdentifier: String,
+    val additionalEntries: Map<String, String>
 ) : Event() {
 
+    constructor(
+        selectionKind: String,
+        selectedIdentifier: String,
+        vararg additionalEntries: Pair<String, String>
+    ) : this(selectionKind, selectedIdentifier, additionalEntries.toMap())
+
     override fun describeInternally(): Map<String, String> {
-        return mapOf("selection_kind" to selectionKind, "selected_id" to selectedIdentifier)
+        val mainEntries = mapOf("selection_kind" to selectionKind, "selected_id" to selectedIdentifier)
+        return additionalEntries.plus(mainEntries)
     }
 }

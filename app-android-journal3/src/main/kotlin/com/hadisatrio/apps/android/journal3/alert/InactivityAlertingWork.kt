@@ -50,8 +50,7 @@ class InactivityAlertingWork(
                 ),
             ),
             eventSource = NoOpEventSource(),
-            eventSink = context.journal3Application.globalEventSink,
-            router = NoOpRouter()
+            eventSink = context.journal3Application.globalEventSink
         )()
         return Result.success()
     }

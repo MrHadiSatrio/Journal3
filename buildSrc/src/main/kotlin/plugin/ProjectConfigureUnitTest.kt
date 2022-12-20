@@ -13,6 +13,7 @@ internal fun Project.configureUnitTestForAndroid() = this.extensions.getByType<B
         add("testImplementation", Dependencies.TestRuntime.ANDROID_JUNIT_4)
         add("testImplementation", Dependencies.TestFramework.JUNIT_4)
         add("testImplementation", Dependencies.TestDouble.MOCKK)
+        add("testImplementation", Dependencies.TestUtility.KOTEST_ASSERTIONS)
         add("testImplementation", Dependencies.TestUtility.ROBOLECTRIC)
     }
 }
@@ -22,6 +23,7 @@ internal fun Project.configureUnitTestForKotlinJvm() = this.extensions.getByType
         add("testRuntimeOnly", Dependencies.TestRuntime.JUNIT_5)
         add("testImplementation", Dependencies.TestFramework.JUNIT_5)
         add("testImplementation", Dependencies.TestDouble.MOCKK)
+        add("testImplementation", Dependencies.TestUtility.KOTEST_ASSERTIONS)
     }
     project.tasks.withType(Test::class.java) { useJUnitPlatform() }
 }
