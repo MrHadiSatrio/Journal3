@@ -50,7 +50,11 @@
 
         <activity
             android:name=".story.ViewStoriesActivity"
-            android:exported="true">
+            android:exported="false" />
+
+        <activity
+                android:name=".story.ViewStoriesComposeActivity"
+                android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

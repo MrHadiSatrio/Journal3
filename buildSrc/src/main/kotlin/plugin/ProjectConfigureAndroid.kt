@@ -74,6 +74,7 @@ internal fun Project.configureAndroid() {
             add("implementation", Dependencies.AndroidUi.MATERIAL)
             add("implementation", platform(Dependencies.AndroidUi.COMPOSE_BOM))
             add("implementation", Dependencies.AndroidUi.COMPOSE_MATERIAL_3)
+            add("implementation", Dependencies.AndroidUi.COMPOSE_ACTIVITY)
             add("implementation", Dependencies.Asynchrony.COROUTINES)
 
             add("androidTestImplementation", Dependencies.TestDouble.MOCKK)
