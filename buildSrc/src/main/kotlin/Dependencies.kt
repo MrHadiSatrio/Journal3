@@ -25,6 +25,8 @@ object Dependencies {
         const val RECYCLER_VIEW = "androidx.recyclerview:recyclerview:1.2.1"
         const val MATERIAL = "com.google.android.material:material:1.5.0-alpha04"
         const val FLOW_BINDING = "io.github.reactivecircus.flowbinding:flowbinding-android:1.2.0"
+        const val COMPOSE_BOM = "androidx.compose:compose-bom:2023.01.00"
+        const val COMPOSE_MATERIAL_3 = "androidx.compose.material3:material3"
     }
 
     object AndroidPerformance {
@@ -65,7 +67,7 @@ object Dependencies {
         const val COROUTINES_TEST = "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.2"
         const val KOTEST_ASSERTIONS = "io.kotest:kotest-assertions-core:5.4.2"
         const val ESPRESSO = "androidx.test.espresso:espresso-core:3.4.0"
-        const val ROBOLECTRIC = "org.robolectric:robolectric:4.8.2"
+        const val ROBOLECTRIC = "org.robolectric:robolectric:4.9.2"
     }
 
     object TestDouble {
