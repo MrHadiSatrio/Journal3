@@ -21,7 +21,7 @@ import android.app.Activity
 import android.content.Intent
 import com.hadisatrio.apps.android.journal3.geography.SelectAPlaceActivity
 import com.hadisatrio.apps.android.journal3.moment.EditAMomentActivity
-import com.hadisatrio.apps.android.journal3.story.EditAStoryActivity
+import com.hadisatrio.apps.android.journal3.story.EditAStoryComposeActivity
 import com.hadisatrio.apps.android.journal3.story.ViewStoryActivity
 import com.hadisatrio.libs.android.foundation.activity.CurrentActivity
 import com.hadisatrio.libs.kotlin.foundation.event.Event
@@ -37,7 +37,7 @@ class ActivityRoutingEventSink(
         val identifier = event.selectedIdentifier
         val activity = currentActivity.acquire()
         when (identifier) {
-            "add_story" -> activity.startActivity(Intent(activity, EditAStoryActivity::class.java))
+            "add_story" -> activity.startActivity(Intent(activity, EditAStoryComposeActivity::class.java))
             "edit_story" -> activity.startEditAStoryActivity(event)
             "view_story" -> activity.startViewStoryActivity(event)
             "add_moment" -> activity.startAddAMomentActivity(event)
@@ -53,7 +53,7 @@ class ActivityRoutingEventSink(
     }
 
     private fun Activity.startEditAStoryActivity(event: SelectionEvent) {
-        val intent = Intent(this, EditAStoryActivity::class.java)
+        val intent = Intent(this, EditAStoryComposeActivity::class.java)
         intent.putExtra("target_id", event["story_id"])
         startActivity(intent)
     }
