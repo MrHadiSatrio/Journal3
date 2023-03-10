@@ -37,7 +37,7 @@ class FilesystemMoments(
     }
 
     override fun count(): Int {
-        return fileSystem.list(path).size
+        return if (fileSystem.exists(path).not()) 0 else fileSystem.list(path).size
     }
 
     override fun find(id: Uuid): Iterable<Moment> {
