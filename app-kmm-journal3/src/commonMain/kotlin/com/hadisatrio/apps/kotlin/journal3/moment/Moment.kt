@@ -35,5 +35,6 @@ interface Moment : Comparable<Moment> {
     fun update(description: TokenableString)
     fun update(sentiment: Sentiment)
     fun update(place: Place)
+
     fun forget()
 }

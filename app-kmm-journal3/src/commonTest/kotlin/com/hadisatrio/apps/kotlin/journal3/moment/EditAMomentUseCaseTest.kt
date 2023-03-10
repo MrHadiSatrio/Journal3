@@ -25,6 +25,7 @@ import com.hadisatrio.apps.kotlin.journal3.id.TargetId
 import com.hadisatrio.apps.kotlin.journal3.sentiment.Sentiment
 import com.hadisatrio.apps.kotlin.journal3.story.SelfPopulatingStories
 import com.hadisatrio.apps.kotlin.journal3.story.fake.FakeStories
+import com.hadisatrio.apps.kotlin.journal3.token.TokenableString
 import com.hadisatrio.libs.kotlin.foundation.event.CancellationEvent
 import com.hadisatrio.libs.kotlin.foundation.event.CompletionEvent
 import com.hadisatrio.libs.kotlin.foundation.event.SelectionEvent
@@ -112,10 +113,11 @@ class EditAMomentUseCaseTest {
     }
 
     @Test
-    fun `Prevents accidental cancellation by the user`() {
+    fun `Prevents accidental cancellation by the user when a meaningful edit has been made`() {
         val targetId = mockk<TargetId>()
         val places = SelfPopulatingPlaces(noOfPlaces = 1, origin = FakePlaces())
         val stories = SelfPopulatingStories(noOfStories = 1, noOfMoments = 0, origin = FakeStories())
+        val place = places.first()
         val story = stories.first()
         val modalPresenter = mockk<Presenter<Modal>>(relaxed = true)
         every { targetId.isValid() } returns false
@@ -128,7 +130,9 @@ class EditAMomentUseCaseTest {
             presenter = mockk(relaxed = true),
             modalPresenter = modalPresenter,
             eventSource = RecordedEventSource(
-                TextInputEvent("description", "Foo"),
+                TextInputEvent("description", "Fizz"),
+                SelectionEvent("sentiment", Sentiment(0.75F).toString()),
+                SelectionEvent("place", place.id.toString()),
                 CancellationEvent("user"),
                 ModalDismissalEvent("edit_cancellation_confirmation"),
                 TextInputEvent("description", "Fizz"),
@@ -144,9 +148,8 @@ class EditAMomentUseCaseTest {
     }
 
     @Test
-    fun `Deletes the moment-in-edit when the user requests and confirms to cancel`() {
+    fun `Does not prevent accidental cancellation by the user when a meaningful edit has not been made`() {
         val targetId = mockk<TargetId>()
-        val places = SelfPopulatingPlaces(noOfPlaces = 1, origin = FakePlaces())
         val stories = SelfPopulatingStories(noOfStories = 1, noOfMoments = 0, origin = FakeStories())
         val story = stories.first()
         val modalPresenter = mockk<Presenter<Modal>>(relaxed = true)
@@ -156,11 +159,43 @@ class EditAMomentUseCaseTest {
             targetId = targetId,
             storyId = FakeTargetId(story.id),
             stories = stories,
-            places = places,
+            places = FakePlaces(),
             presenter = mockk(relaxed = true),
             modalPresenter = modalPresenter,
             eventSource = RecordedEventSource(
-                TextInputEvent("description", "Foo"),
+                TextInputEvent("description", "Fizz"),
+                TextInputEvent("description", ""),
+                SelectionEvent("sentiment", Sentiment(0.75F).toString()),
+                SelectionEvent("sentiment", Sentiment.DEFAULT.toString()),
+                CancellationEvent("user"),
+                CompletionEvent()
+            ),
+            eventSink = mockk(relaxed = true),
+            clock = Clock.System
+        )()
+
+        verify(inverse = true) {
+            modalPresenter.present(withArg { it.kind.shouldBe("edit_cancellation_confirmation") })
+        }
+        story.moments.shouldBeEmpty()
+    }
+
+    @Test
+    fun `Deletes the moment-in-edit when it is a new one and the user cancels without editing`() {
+        val targetId = mockk<TargetId>()
+        val stories = SelfPopulatingStories(noOfStories = 1, noOfMoments = 0, origin = FakeStories())
+        val story = stories.first()
+        val modalPresenter = mockk<Presenter<Modal>>(relaxed = true)
+        every { targetId.isValid() } returns false
+
+        EditAMomentUseCase(
+            targetId = targetId,
+            storyId = FakeTargetId(story.id),
+            stories = stories,
+            places = FakePlaces(),
+            presenter = mockk(relaxed = true),
+            modalPresenter = modalPresenter,
+            eventSource = RecordedEventSource(
                 CancellationEvent("user"),
                 ModalApprovalEvent("edit_cancellation_confirmation")
             ),
@@ -168,8 +203,42 @@ class EditAMomentUseCaseTest {
             clock = Clock.System
         )()
 
-        verify(exactly = 1) { modalPresenter.present(withArg { it.kind.shouldBe("edit_cancellation_confirmation") }) }
+        verify(inverse = true) {
+            modalPresenter.present(withArg { it.kind.shouldBe("edit_cancellation_confirmation") })
+        }
         story.moments.shouldBeEmpty()
+    }
+
+    @Test
+    fun `Does not delete the moment-in-edit when it is an existing one even if the user cancels without editing`() {
+        val stories = SelfPopulatingStories(noOfStories = 1, noOfMoments = 1, origin = FakeStories())
+        val story = stories.first()
+        val moment = story.moments.first()
+        val targetId = FakeTargetId(moment.id)
+        val modalPresenter = mockk<Presenter<Modal>>(relaxed = true)
+
+        moment.update(TokenableString("Fizz"))
+
+        EditAMomentUseCase(
+            targetId = targetId,
+            storyId = FakeTargetId(story.id),
+            stories = stories,
+            places = FakePlaces(),
+            presenter = mockk(relaxed = true),
+            modalPresenter = modalPresenter,
+            eventSource = RecordedEventSource(
+                CancellationEvent("user"),
+                ModalApprovalEvent("edit_cancellation_confirmation")
+            ),
+            eventSink = mockk(relaxed = true),
+            clock = Clock.System
+        )()
+
+        verify(inverse = true) {
+            modalPresenter.present(withArg { it.kind.shouldBe("edit_cancellation_confirmation") })
+        }
+        story.moments.shouldHaveSize(1)
+        story.moments.first().description.toString().shouldBe("Fizz")
     }
 
     @Test(timeout = 5_000)
