@@ -58,7 +58,9 @@ class EditAMomentUseCase(
 ) : UseCase {
 
     private val completionEvents by lazy { MutableSharedFlow<CompletionEvent>(extraBufferCapacity = 1) }
-    private lateinit var currentTarget: Moment
+    private lateinit var currentTarget: UpdateDeferringMoment
+    private var isTargetNew: Boolean = false
+    private var isEditCancelled: Boolean = false
 
     override operator fun invoke() {
         identifyTarget()
@@ -67,13 +69,16 @@ class EditAMomentUseCase(
     }
 
     private fun identifyTarget() {
-        currentTarget = if (targetId.isValid()) {
-            stories.findMoment(targetId.asUuid()).first()
-        } else {
-            val story = stories.findStory(storyId.asUuid()).first()
-            val moments = ClockRespectingMoments(clock, story.moments)
-            moments.new()
-        }
+        currentTarget = UpdateDeferringMoment(
+            if (targetId.isValid()) {
+                stories.findMoment(targetId.asUuid()).first()
+            } else {
+                val story = stories.findStory(storyId.asUuid()).first()
+                val moments = ClockRespectingMoments(clock, story.moments)
+                isTargetNew = true
+                moments.new()
+            }
+        )
     }
 
     private fun presentInitialState() {
@@ -83,7 +88,7 @@ class EditAMomentUseCase(
     private fun observeEvents() = runBlocking {
         merge(eventSource.events(), completionEvents)
             .onEach { eventSink.sink(it) }
-            .takeWhile { event -> (event as? CompletionEvent) == null }
+            .takeWhile { event -> (event as? CompletionEvent)?.also { handleCompletion() } == null }
             .collect { event -> handle(event) }
     }
 
@@ -117,21 +122,31 @@ class EditAMomentUseCase(
     private suspend fun handleModalApproval(event: ModalApprovalEvent) {
         when (event.modalKind) {
             "edit_cancellation_confirmation" -> {
-                currentTarget.forget()
+                isEditCancelled = true
                 completionEvents.emit(CompletionEvent())
             }
         }
     }
 
+    private fun handleCompletion() {
+        if (isEditCancelled) {
+            if (isTargetNew) currentTarget.forget()
+        } else {
+            currentTarget.commit()
+        }
+    }
+
     private suspend fun handleCancellation(event: CancellationEvent) {
-        when (event.reason) {
-            "user" -> {
-                val modal = BinaryConfirmationModal("edit_cancellation_confirmation")
-                modalPresenter.present(modal)
-            }
-            else -> {
-                completionEvents.emit(CompletionEvent())
-            }
+        if (event.reason != "user") {
+            completionEvents.emit(CompletionEvent())
+            return
+        }
+
+        if (currentTarget.updatesMade()) {
+            val modal = BinaryConfirmationModal("edit_cancellation_confirmation")
+            modalPresenter.present(modal)
+        } else {
+            isEditCancelled = true
         }
     }
 }

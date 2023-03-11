@@ -18,14 +18,18 @@
 package com.hadisatrio.apps.kotlin.journal3.story
 
 import com.benasher44.uuid.uuid4
+import com.hadisatrio.apps.kotlin.journal3.datetime.Timestamp
 import com.hadisatrio.apps.kotlin.journal3.event.RecordedEventSource
+import com.hadisatrio.apps.kotlin.journal3.event.UnsupportedEvent
 import com.hadisatrio.apps.kotlin.journal3.id.FakeTargetId
 import com.hadisatrio.apps.kotlin.journal3.id.TargetId
+import com.hadisatrio.apps.kotlin.journal3.sentiment.Sentiment
 import com.hadisatrio.apps.kotlin.journal3.story.fake.FakeStories
 import com.hadisatrio.apps.kotlin.journal3.story.fake.FakeStory
 import com.hadisatrio.apps.kotlin.journal3.token.TokenableString
 import com.hadisatrio.libs.kotlin.foundation.event.CancellationEvent
 import com.hadisatrio.libs.kotlin.foundation.event.CompletionEvent
+import com.hadisatrio.libs.kotlin.foundation.event.SelectionEvent
 import com.hadisatrio.libs.kotlin.foundation.event.TextInputEvent
 import com.hadisatrio.libs.kotlin.foundation.modal.Modal
 import com.hadisatrio.libs.kotlin.foundation.modal.ModalApprovalEvent
@@ -37,6 +41,7 @@ import io.kotest.matchers.shouldBe
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
+import kotlinx.datetime.Instant
 import kotlin.test.Test
 
 class EditAStoryUseCaseTest {
@@ -89,7 +94,7 @@ class EditAStoryUseCaseTest {
     }
 
     @Test
-    fun `Prevents accidental cancellation by the user`() {
+    fun `Prevents accidental cancellation by the user when a meaningful edit has been made`() {
         val targetId = mockk<TargetId>()
         val stories = FakeStories()
         val modalPresenter = mockk<Presenter<Modal>>(relaxed = true)
@@ -119,7 +124,7 @@ class EditAStoryUseCaseTest {
     }
 
     @Test
-    fun `Deletes the story-in-edit when the user requests and confirms to cancel`() {
+    fun `Does not prevent accidental cancellation by the user when a meaningful edit has not been made`() {
         val targetId = mockk<TargetId>()
         val stories = FakeStories()
         val modalPresenter = mockk<Presenter<Modal>>(relaxed = true)
@@ -133,14 +138,72 @@ class EditAStoryUseCaseTest {
             eventSource = RecordedEventSource(
                 TextInputEvent("title", "Foo"),
                 TextInputEvent("synopsis", "Bar"),
+                TextInputEvent("title", ""),
+                TextInputEvent("synopsis", ""),
+                CancellationEvent("user"),
+                CompletionEvent()
+            ),
+            eventSink = mockk(relaxed = true)
+        )()
+
+        verify(inverse = true) {
+            modalPresenter.present(withArg { it.kind.shouldBe("edit_cancellation_confirmation") })
+        }
+        stories.shouldBeEmpty()
+    }
+
+    @Test
+    fun `Deletes the story-in-edit when it is a new one and the user cancels without editing`() {
+        val targetId = mockk<TargetId>()
+        val stories = FakeStories()
+        val modalPresenter = mockk<Presenter<Modal>>(relaxed = true)
+        every { targetId.isValid() } returns false
+
+        EditAStoryUseCase(
+            targetId = targetId,
+            stories = stories,
+            presenter = mockk(relaxed = true),
+            modalPresenter = modalPresenter,
+            eventSource = RecordedEventSource(
                 CancellationEvent("user"),
                 ModalApprovalEvent("edit_cancellation_confirmation")
             ),
             eventSink = mockk(relaxed = true)
         )()
 
-        verify(exactly = 1) { modalPresenter.present(withArg { it.kind.shouldBe("edit_cancellation_confirmation") }) }
+        verify(inverse = true) {
+            modalPresenter.present(withArg { it.kind.shouldBe("edit_cancellation_confirmation") })
+        }
         stories.shouldBeEmpty()
+    }
+
+    @Test
+    fun `Does not delete the story-in-edit when it is an existing one even if the user cancels without editing`() {
+        val stories = SelfPopulatingStories(noOfStories = 1, noOfMoments = 0, origin = FakeStories())
+        val story = stories.first()
+        val targetId = FakeTargetId(story.id)
+        val modalPresenter = mockk<Presenter<Modal>>(relaxed = true)
+
+        story.update("Fizz")
+
+        EditAStoryUseCase(
+            targetId = targetId,
+            stories = stories,
+            presenter = mockk(relaxed = true),
+            modalPresenter = modalPresenter,
+            eventSource = RecordedEventSource(
+                CancellationEvent("user"),
+                ModalApprovalEvent("edit_cancellation_confirmation"),
+                CompletionEvent()
+            ),
+            eventSink = mockk(relaxed = true)
+        )()
+
+        verify(inverse = true) {
+            modalPresenter.present(withArg { it.kind.shouldBe("edit_cancellation_confirmation") })
+        }
+        stories.shouldHaveSize(1)
+        stories.first().title.shouldBe("Fizz")
     }
 
     @Test(timeout = 5_000)
@@ -159,5 +222,29 @@ class EditAStoryUseCaseTest {
                 eventSink = mockk(relaxed = true)
             )()
         }
+    }
+
+    @Test(timeout = 5_000)
+    fun `Ignores unknown events without repercussions`() {
+        val targetId = mockk<TargetId>()
+        val stories = FakeStories()
+        every { targetId.isValid() } returns false
+
+        EditAStoryUseCase(
+            targetId = targetId,
+            stories = stories,
+            presenter = mockk(relaxed = true),
+            modalPresenter = mockk(relaxed = true),
+            eventSource = RecordedEventSource(
+                TextInputEvent("foo", "Bar"),
+                SelectionEvent("fizz", Timestamp(Instant.DISTANT_FUTURE).toString()),
+                SelectionEvent("buzz", Sentiment(0.75F).toString()),
+                ModalApprovalEvent("lorem"),
+                CancellationEvent("system"),
+                UnsupportedEvent(),
+                CompletionEvent()
+            ),
+            eventSink = mockk(relaxed = true)
+        )()
     }
 }
