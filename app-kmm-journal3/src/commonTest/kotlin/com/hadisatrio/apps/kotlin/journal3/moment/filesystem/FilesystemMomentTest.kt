@@ -40,7 +40,7 @@ import kotlin.test.Test
 class FilesystemMomentTest {
 
     private val fileSystem = FakeFileSystem()
-    private val places = FilesystemMomentfulPlaces(fileSystem, "content/places".toPath())
+    private val places = FilesystemMemorablePlaces(fileSystem, "content/places".toPath())
     private val stories = FilesystemStories(fileSystem, "content".toPath(), places)
     private val story = stories.new()
     private val moments = story.moments

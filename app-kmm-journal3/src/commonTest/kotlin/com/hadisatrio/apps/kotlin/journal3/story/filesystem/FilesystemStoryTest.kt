@@ -17,7 +17,7 @@
 
 package com.hadisatrio.apps.kotlin.journal3.story.filesystem
 
-import com.hadisatrio.apps.kotlin.journal3.moment.filesystem.FilesystemMomentfulPlaces
+import com.hadisatrio.apps.kotlin.journal3.moment.filesystem.FilesystemMemorablePlaces
 import com.hadisatrio.apps.kotlin.journal3.token.TokenableString
 import io.kotest.matchers.booleans.shouldBeFalse
 import io.kotest.matchers.shouldBe
@@ -31,7 +31,7 @@ import kotlin.test.Test
 class FilesystemStoryTest {
 
     private val fileSystem = FakeFileSystem()
-    private val places = FilesystemMomentfulPlaces(fileSystem, "content/places".toPath())
+    private val places = FilesystemMemorablePlaces(fileSystem, "content/places".toPath())
     private val stories = FilesystemStories(fileSystem, "content".toPath(), places)
 
     @AfterTest

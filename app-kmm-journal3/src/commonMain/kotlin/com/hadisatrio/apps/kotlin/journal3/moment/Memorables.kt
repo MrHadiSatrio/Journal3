@@ -17,20 +17,10 @@
 
 package com.hadisatrio.apps.kotlin.journal3.moment
 
-import com.hadisatrio.libs.kotlin.geography.Coordinates
-import com.hadisatrio.libs.kotlin.geography.Place
+import com.benasher44.uuid.Uuid
 
-interface MomentfulPlace : Place {
-
-    val label: String
-
-    fun updateLabel(label: String)
-    fun updateName(name: String)
-    fun updateAddress(address: String)
-    fun update(coordinates: Coordinates)
-
-    fun link(moment: Moment)
-    fun unlink(moment: Moment)
-
-    fun relevantTo(moment: Moment): Boolean
+interface Memorables : Iterable<Memorable> {
+    fun relate(momentId: Uuid, thing: Any)
+    fun find(id: Uuid): Iterable<Memorable>
+    fun relevantTo(momentId: Uuid): Iterable<Memorable>
 }

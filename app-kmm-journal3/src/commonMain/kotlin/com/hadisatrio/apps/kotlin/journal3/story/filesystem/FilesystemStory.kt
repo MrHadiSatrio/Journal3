@@ -19,7 +19,7 @@ package com.hadisatrio.apps.kotlin.journal3.story.filesystem
 
 import com.benasher44.uuid.Uuid
 import com.benasher44.uuid.uuidFrom
-import com.hadisatrio.apps.kotlin.journal3.moment.MomentfulPlaces
+import com.hadisatrio.apps.kotlin.journal3.moment.Memorables
 import com.hadisatrio.apps.kotlin.journal3.moment.Moments
 import com.hadisatrio.apps.kotlin.journal3.moment.filesystem.FilesystemMoments
 import com.hadisatrio.apps.kotlin.journal3.story.Story
@@ -34,7 +34,7 @@ class FilesystemStory(
     private val directory: Path,
     private val detailsFile: JsonFile,
     private val momentsDirectory: Path,
-    private val places: MomentfulPlaces
+    private val memorables: Memorables
 ) : Story {
 
     override val id: Uuid get() {
@@ -50,21 +50,21 @@ class FilesystemStory(
     }
 
     override val moments: Moments get() {
-        return FilesystemMoments(fileSystem, momentsDirectory, places)
+        return FilesystemMoments(fileSystem, momentsDirectory, memorables)
     }
 
-    constructor(fileSystem: FileSystem, parentDirectory: Path, id: Uuid, places: MomentfulPlaces) : this(
+    constructor(fileSystem: FileSystem, parentDirectory: Path, id: Uuid, memorables: Memorables) : this(
         fileSystem = fileSystem,
         directory = parentDirectory / id.toString(),
-        places = places
+        memorables = memorables
     )
 
-    constructor(fileSystem: FileSystem, directory: Path, places: MomentfulPlaces) : this(
+    constructor(fileSystem: FileSystem, directory: Path, memorables: Memorables) : this(
         fileSystem = fileSystem,
         directory = directory,
         detailsFile = JsonFile(fileSystem, directory / "details"),
         momentsDirectory = directory / "moments",
-        places = places
+        memorables = memorables
     )
 
     override fun update(title: String) {

@@ -19,7 +19,7 @@ package com.hadisatrio.apps.android.journal3
 
 import android.os.Build
 import androidx.core.content.ContextCompat
-import com.hadisatrio.apps.kotlin.journal3.moment.filesystem.FilesystemMomentfulPlaces
+import com.hadisatrio.apps.kotlin.journal3.moment.filesystem.FilesystemMemorablePlaces
 import com.hadisatrio.apps.kotlin.journal3.story.Stories
 import com.hadisatrio.apps.kotlin.journal3.story.filesystem.FilesystemStories
 import com.hadisatrio.libs.android.foundation.activity.CurrentActivity
@@ -67,7 +67,7 @@ class RealJournal3Application : Journal3Application() {
         FilesystemStories(
             fileSystem = FileSystem.SYSTEM,
             path = filesDir.absolutePath.toPath() / "content" / "stories",
-            places = FilesystemMomentfulPlaces(
+            memorables = FilesystemMemorablePlaces(
                 fileSystem = FileSystem.SYSTEM,
                 path = filesDir.absolutePath.toPath() / "content" / "places",
             )
