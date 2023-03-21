@@ -78,6 +78,7 @@ class FilesystemMoment(
     }
 
     override fun update(description: TokenableString) {
+        memorables.relate(id, description)
         file.put("description", JsonPrimitive(description.toString()))
     }
 

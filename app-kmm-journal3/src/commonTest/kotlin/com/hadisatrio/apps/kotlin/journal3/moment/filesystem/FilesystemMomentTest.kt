@@ -18,8 +18,10 @@
 package com.hadisatrio.apps.kotlin.journal3.moment.filesystem
 
 import com.hadisatrio.apps.kotlin.journal3.datetime.Timestamp
+import com.hadisatrio.apps.kotlin.journal3.moment.MemorablesCollection
 import com.hadisatrio.apps.kotlin.journal3.sentiment.Sentiment
 import com.hadisatrio.apps.kotlin.journal3.story.filesystem.FilesystemStories
+import com.hadisatrio.apps.kotlin.journal3.token.Token
 import com.hadisatrio.apps.kotlin.journal3.token.TokenableString
 import com.hadisatrio.libs.kotlin.geography.NullIsland
 import com.hadisatrio.libs.kotlin.geography.fake.FakePlace
@@ -41,7 +43,8 @@ class FilesystemMomentTest {
 
     private val fileSystem = FakeFileSystem()
     private val places = FilesystemMemorablePlaces(fileSystem, "content/places".toPath())
-    private val stories = FilesystemStories(fileSystem, "content".toPath(), places)
+    private val people = FilesystemMentionedPeople(fileSystem, "content/people".toPath())
+    private val stories = FilesystemStories(fileSystem, "content".toPath(), MemorablesCollection(places, people))
     private val story = stories.new()
     private val moments = story.moments
 
@@ -113,6 +116,20 @@ class FilesystemMomentTest {
         firstPlaceFileContent().shouldContain(moment.id.toString())
         secondPlaceFileContent().shouldNotContain(moment.id.toString())
         moment.place.id.shouldBe(firstPlace.id)
+    }
+
+    @Test
+    fun `Writes mention updates to the filesystem`() {
+        val moment = moments.new()
+        val person = people.remember(Token(("@nahlito")))
+        val personFileContent = {
+            val path = "content/people/${person.id}".toPath()
+            fileSystem.source(path).buffer().use { it.readUtf8() }
+        }
+
+        moment.update(TokenableString(("Going to the park with @nahlito!")))
+
+        personFileContent().shouldContain(moment.id.toString())
     }
 
     @Test
