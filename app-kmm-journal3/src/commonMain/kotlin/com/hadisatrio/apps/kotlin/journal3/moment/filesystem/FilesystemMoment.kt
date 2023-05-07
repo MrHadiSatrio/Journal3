@@ -20,9 +20,8 @@ package com.hadisatrio.apps.kotlin.journal3.moment.filesystem
 import com.benasher44.uuid.Uuid
 import com.benasher44.uuid.uuidFrom
 import com.hadisatrio.apps.kotlin.journal3.datetime.Timestamp
+import com.hadisatrio.apps.kotlin.journal3.moment.Memorables
 import com.hadisatrio.apps.kotlin.journal3.moment.Moment
-import com.hadisatrio.apps.kotlin.journal3.moment.MomentfulPlace
-import com.hadisatrio.apps.kotlin.journal3.moment.MomentfulPlaces
 import com.hadisatrio.apps.kotlin.journal3.sentiment.DumbSentimentAnalyst
 import com.hadisatrio.apps.kotlin.journal3.sentiment.Sentiment
 import com.hadisatrio.apps.kotlin.journal3.token.TokenableString
@@ -35,7 +34,7 @@ import okio.Path
 
 class FilesystemMoment(
     private val file: JsonFile,
-    private val places: MomentfulPlaces
+    private val memorables: Memorables
 ) : Moment {
 
     override val id: Uuid get() {
@@ -58,20 +57,20 @@ class FilesystemMoment(
         return DumbSentimentAnalyst.analyze(description.toString())
     }
 
-    override val place: Place
-        get() {
-            return places.relevantTo(this).firstOrNull() ?: NullIsland
-        }
+    override val place: Place get() {
+        val relevantReferables = memorables.relevantTo(this.id)
+        return relevantReferables.filterIsInstance<Place>().firstOrNull() ?: NullIsland
+    }
 
-    constructor(fileSystem: FileSystem, parentDirectory: Path, id: Uuid, places: MomentfulPlaces) : this(
+    constructor(fileSystem: FileSystem, parentDirectory: Path, id: Uuid, memorables: Memorables) : this(
         fileSystem = fileSystem,
         path = parentDirectory / id.toString(),
-        places = places
+        memorables = memorables
     )
 
-    constructor(fileSystem: FileSystem, path: Path, places: MomentfulPlaces) : this(
+    constructor(fileSystem: FileSystem, path: Path, memorables: Memorables) : this(
         file = JsonFile(fileSystem, path),
-        places = places
+        memorables = memorables
     )
 
     override fun update(timestamp: Timestamp) {
@@ -79,6 +78,7 @@ class FilesystemMoment(
     }
 
     override fun update(description: TokenableString) {
+        memorables.relate(id, description)
         file.put("description", JsonPrimitive(description.toString()))
     }
 
@@ -87,11 +87,7 @@ class FilesystemMoment(
     }
 
     override fun update(place: Place) {
-        val old = this.place as? MomentfulPlace
-        val new = places.find(place.id).firstOrNull() ?: places.remember(place)
-        old?.unlink(this)
-        if (place == NullIsland) return
-        new.link(this)
+        memorables.relate(id, place)
     }
 
     override fun forget() {

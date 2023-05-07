@@ -19,8 +19,8 @@ package com.hadisatrio.apps.kotlin.journal3.moment.filesystem
 
 import com.benasher44.uuid.Uuid
 import com.benasher44.uuid.uuid4
+import com.hadisatrio.apps.kotlin.journal3.moment.Memorables
 import com.hadisatrio.apps.kotlin.journal3.moment.Moment
-import com.hadisatrio.apps.kotlin.journal3.moment.MomentfulPlaces
 import com.hadisatrio.apps.kotlin.journal3.moment.Moments
 import okio.FileSystem
 import okio.Path
@@ -28,12 +28,12 @@ import okio.Path
 class FilesystemMoments(
     private val fileSystem: FileSystem,
     private val path: Path,
-    private val places: MomentfulPlaces
+    private val memorables: Memorables
 ) : Moments {
 
     override fun new(): Moment {
         fileSystem.createDirectories(dir = path, mustCreate = false)
-        return FilesystemMoment(fileSystem, path, uuid4(), places)
+        return FilesystemMoment(fileSystem, path, uuid4(), memorables)
     }
 
     override fun count(): Int {
@@ -43,7 +43,7 @@ class FilesystemMoments(
     override fun find(id: Uuid): Iterable<Moment> {
         val candidatePath = path / id.toString()
         if (fileSystem.exists(candidatePath)) {
-            return listOf(FilesystemMoment(fileSystem, candidatePath, places))
+            return listOf(FilesystemMoment(fileSystem, candidatePath, memorables))
         } else {
             return emptyList()
         }
@@ -55,6 +55,6 @@ class FilesystemMoments(
 
     override fun iterator(): Iterator<Moment> {
         fileSystem.createDirectories(dir = path, mustCreate = false)
-        return fileSystem.list(path).map { path -> FilesystemMoment(fileSystem, path, places) }.iterator()
+        return fileSystem.list(path).map { path -> FilesystemMoment(fileSystem, path, memorables) }.iterator()
     }
 }

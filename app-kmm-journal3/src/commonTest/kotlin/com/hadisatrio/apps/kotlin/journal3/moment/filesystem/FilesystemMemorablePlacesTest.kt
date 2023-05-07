@@ -18,18 +18,21 @@
 package com.hadisatrio.apps.kotlin.journal3.moment.filesystem
 
 import com.benasher44.uuid.uuid4
+import com.hadisatrio.apps.kotlin.journal3.moment.Memorable
 import com.hadisatrio.apps.kotlin.journal3.moment.fake.FakeMoments
 import com.hadisatrio.libs.kotlin.geography.fake.FakePlace
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
+import io.mockk.mockk
 import okio.Path.Companion.toPath
 import okio.fakefilesystem.FakeFileSystem
 import kotlin.test.AfterTest
 import kotlin.test.Test
 
-class FilesystemMomentfulPlacesTest {
+class FilesystemMemorablePlacesTest {
 
     private val fileSystem = FakeFileSystem()
 
@@ -40,7 +43,7 @@ class FilesystemMomentfulPlacesTest {
 
     @Test
     fun `Writes newly remembered places to disk`() {
-        val places = FilesystemMomentfulPlaces(fileSystem, "content".toPath())
+        val places = FilesystemMemorablePlaces(fileSystem, "content".toPath())
         val place = FakePlace()
 
         val remembered = places.remember(place)
@@ -56,7 +59,7 @@ class FilesystemMomentfulPlacesTest {
 
     @Test
     fun `Doesn't change anything if asked to remember an existing place`() {
-        val places = FilesystemMomentfulPlaces(fileSystem, "content".toPath())
+        val places = FilesystemMemorablePlaces(fileSystem, "content".toPath())
         val place = FakePlace()
 
         val old = places.remember(place)
@@ -68,7 +71,7 @@ class FilesystemMomentfulPlacesTest {
 
     @Test
     fun `Finds a place by its ID`() {
-        val places = FilesystemMomentfulPlaces(fileSystem, "content".toPath())
+        val places = FilesystemMemorablePlaces(fileSystem, "content".toPath())
         repeat(10) { places.remember(FakePlace()) }
         val randomized = places.toList().random()
 
@@ -79,7 +82,7 @@ class FilesystemMomentfulPlacesTest {
 
     @Test
     fun `Returns empty iterable when asked to find a non-existent place by ID`() {
-        val places = FilesystemMomentfulPlaces(fileSystem, "content".toPath())
+        val places = FilesystemMemorablePlaces(fileSystem, "content".toPath())
         repeat(10) { places.remember(FakePlace()) }
 
         val found = places.find(uuid4())
@@ -89,25 +92,33 @@ class FilesystemMomentfulPlacesTest {
 
     @Test
     fun `Finds a place relevant to given moment`() {
-        val moment = FakeMoments().new()
-        val places = FilesystemMomentfulPlaces(fileSystem, "content".toPath())
+        val momentId = FakeMoments().new().id
+        val places = FilesystemMemorablePlaces(fileSystem, "content".toPath())
         repeat(10) { places.remember(FakePlace()) }
         val randomized = places.toList().random()
-        randomized.link(moment)
+        randomized.link(momentId)
 
-        val found = places.relevantTo(moment)
+        val found = places.relevantTo(momentId)
 
         found.shouldHaveSize(1)
     }
 
     @Test
     fun `Returns empty iterable when asked to find a place relevant to an unknown moment`() {
-        val moment = FakeMoments().new()
-        val places = FilesystemMomentfulPlaces(fileSystem, "content".toPath())
-        repeat(10) { places.remember(FakePlace()).link(moment) }
+        val momentId = FakeMoments().new().id
+        val places = FilesystemMemorablePlaces(fileSystem, "content".toPath())
+        repeat(10) { places.remember(FakePlace()).link(momentId) }
 
-        val found = places.relevantTo(FakeMoments().new())
+        val found = places.relevantTo(FakeMoments().new().id)
 
         found.shouldBeEmpty()
+    }
+
+    @Test
+    fun `Throws when asked to relate an unknown referable`() {
+        val momentId = FakeMoments().new().id
+        val places = FilesystemMemorablePlaces(fileSystem, "content".toPath())
+
+        shouldThrow<IllegalArgumentException> { places.relate(momentId, mockk<Memorable>()) }
     }
 }

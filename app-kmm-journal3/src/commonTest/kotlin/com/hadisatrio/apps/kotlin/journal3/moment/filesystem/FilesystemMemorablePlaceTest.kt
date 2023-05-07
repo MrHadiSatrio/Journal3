@@ -30,12 +30,12 @@ import okio.use
 import kotlin.test.AfterTest
 import kotlin.test.Test
 
-class FilesystemMomentfulPlaceTest {
+class FilesystemMemorablePlaceTest {
 
     private val fileSystem = FakeFileSystem()
-    private val places = FilesystemMomentfulPlaces(fileSystem, "content".toPath())
+    private val places = FilesystemMemorablePlaces(fileSystem, "content".toPath())
     private val place = FakePlace()
-    private val momentfulPlace = places.remember(place)
+    private val memorablePlace = places.remember(place)
 
     @AfterTest
     fun `Closes all file streams`() {
@@ -44,10 +44,10 @@ class FilesystemMomentfulPlaceTest {
 
     @Test
     fun `Write updates to the filesystem`() {
-        momentfulPlace.updateLabel("Foo")
-        momentfulPlace.updateName("Bar")
-        momentfulPlace.updateAddress("FizzBuzz")
-        momentfulPlace.update(LiteralCoordinates("-7.607355,110.203804"))
+        memorablePlace.updateLabel("Foo")
+        memorablePlace.updateName("Bar")
+        memorablePlace.updateAddress("FizzBuzz")
+        memorablePlace.update(LiteralCoordinates("-7.607355,110.203804"))
 
         val path = "content/${place.id}".toPath()
         val fileContent = fileSystem.source(path).buffer().use { it.readUtf8() }
@@ -55,24 +55,24 @@ class FilesystemMomentfulPlaceTest {
         fileContent.contains("Bar")
         fileContent.contains("FizzBuzz")
         fileContent.contains("-7.607355,110.203804")
-        momentfulPlace.label.shouldBe("Foo")
-        momentfulPlace.name.shouldBe("Bar")
-        momentfulPlace.address.shouldBe("FizzBuzz")
-        momentfulPlace.coordinates.toString().shouldBe("-7.607355,110.203804")
+        memorablePlace.label.shouldBe("Foo")
+        memorablePlace.name.shouldBe("Bar")
+        memorablePlace.address.shouldBe("FizzBuzz")
+        memorablePlace.coordinates.toString().shouldBe("-7.607355,110.203804")
     }
 
     @Test
     fun `Reports relevancy for moments`() {
-        val oneMoment = FakeMoments().new()
-        val otherMoment = FakeMoments().new()
-        val moment = FakeMoments().new()
+        val oneMomentId = FakeMoments().new().id
+        val otherMomentId = FakeMoments().new().id
+        val momentId = FakeMoments().new().id
 
-        momentfulPlace.link(oneMoment)
-        momentfulPlace.link(otherMoment)
-        momentfulPlace.unlink(otherMoment)
+        memorablePlace.link(oneMomentId)
+        memorablePlace.link(otherMomentId)
+        memorablePlace.unlink(otherMomentId)
 
-        momentfulPlace.relevantTo(oneMoment).shouldBeTrue()
-        momentfulPlace.relevantTo(otherMoment).shouldBeFalse()
-        momentfulPlace.relevantTo(moment).shouldBeFalse()
+        memorablePlace.relevantTo(oneMomentId).shouldBeTrue()
+        memorablePlace.relevantTo(otherMomentId).shouldBeFalse()
+        memorablePlace.relevantTo(momentId).shouldBeFalse()
     }
 }

@@ -19,8 +19,7 @@ package com.hadisatrio.apps.kotlin.journal3.moment.filesystem
 
 import com.benasher44.uuid.Uuid
 import com.benasher44.uuid.uuidFrom
-import com.hadisatrio.apps.kotlin.journal3.moment.Moment
-import com.hadisatrio.apps.kotlin.journal3.moment.MomentfulPlace
+import com.hadisatrio.apps.kotlin.journal3.moment.MemorablePlace
 import com.hadisatrio.libs.kotlin.geography.Coordinates
 import com.hadisatrio.libs.kotlin.geography.LiteralCoordinates
 import com.hadisatrio.libs.kotlin.json.JsonFile
@@ -31,9 +30,9 @@ import kotlinx.serialization.json.jsonArray
 import okio.FileSystem
 import okio.Path
 
-class FilesystemMomentfulPlace(
+class FilesystemMemorablePlace(
     private val file: JsonFile
-) : MomentfulPlace {
+) : MemorablePlace {
 
     override val id: Uuid get() {
         return uuidFrom(file.name)
@@ -77,20 +76,20 @@ class FilesystemMomentfulPlace(
         file.put("coordinates", JsonPrimitive(coordinates.toString()))
     }
 
-    override fun link(moment: Moment) {
-        val momentId = JsonPrimitive(moment.id.toString())
-        val newIds = buildJsonArray { momentIds.forEach(::add); add(momentId) }
+    override fun link(momentId: Uuid) {
+        val idPrimitive = JsonPrimitive(momentId.toString())
+        val newIds = buildJsonArray { momentIds.forEach(::add); add(idPrimitive) }
         file.put("moment_ids", newIds)
     }
 
-    override fun unlink(moment: Moment) {
-        val momentId = JsonPrimitive(moment.id.toString())
-        val newIds = buildJsonArray { momentIds.filterNot { it == momentId }.forEach(::add) }
+    override fun unlink(momentId: Uuid) {
+        val idPrimitive = JsonPrimitive(momentId.toString())
+        val newIds = buildJsonArray { momentIds.filterNot { it == idPrimitive }.forEach(::add) }
         file.put("moment_ids", newIds)
     }
 
-    override fun relevantTo(moment: Moment): Boolean {
-        val momentId = JsonPrimitive(moment.id.toString())
-        return momentIds.contains(momentId)
+    override fun relevantTo(momentId: Uuid): Boolean {
+        val idPrimitive = JsonPrimitive(momentId.toString())
+        return momentIds.contains(idPrimitive)
     }
 }

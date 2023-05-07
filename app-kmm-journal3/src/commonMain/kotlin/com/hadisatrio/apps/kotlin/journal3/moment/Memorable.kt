@@ -18,10 +18,10 @@
 package com.hadisatrio.apps.kotlin.journal3.moment
 
 import com.benasher44.uuid.Uuid
-import com.hadisatrio.libs.kotlin.geography.Place
 
-interface MomentfulPlaces : Iterable<MomentfulPlace> {
-    fun remember(place: Place): MomentfulPlace
-    fun find(id: Uuid): Iterable<MomentfulPlace>
-    fun relevantTo(moment: Moment): Iterable<MomentfulPlace>
+interface Memorable {
+    val id: Uuid
+    fun link(momentId: Uuid)
+    fun unlink(momentId: Uuid)
+    fun relevantTo(momentId: Uuid): Boolean
 }

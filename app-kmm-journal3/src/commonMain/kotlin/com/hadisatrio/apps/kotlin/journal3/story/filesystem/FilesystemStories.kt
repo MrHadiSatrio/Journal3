@@ -19,8 +19,8 @@ package com.hadisatrio.apps.kotlin.journal3.story.filesystem
 
 import com.benasher44.uuid.Uuid
 import com.benasher44.uuid.uuid4
+import com.hadisatrio.apps.kotlin.journal3.moment.Memorables
 import com.hadisatrio.apps.kotlin.journal3.moment.Moment
-import com.hadisatrio.apps.kotlin.journal3.moment.MomentfulPlaces
 import com.hadisatrio.apps.kotlin.journal3.story.Stories
 import com.hadisatrio.apps.kotlin.journal3.story.Story
 import okio.FileSystem
@@ -30,20 +30,24 @@ import okio.Path.Companion.toPath
 class FilesystemStories(
     private val fileSystem: FileSystem,
     private val path: Path,
-    private val places: MomentfulPlaces
+    private val memorables: Memorables
 ) : Stories {
 
-    constructor(fileSystem: FileSystem, path: String, places: MomentfulPlaces) : this(fileSystem, path.toPath(), places)
+    constructor(
+        fileSystem: FileSystem,
+        path: String,
+        memorables: Memorables
+    ) : this(fileSystem, path.toPath(), memorables)
 
     override fun new(): Story {
         fileSystem.createDirectories(dir = path, mustCreate = false)
-        return FilesystemStory(fileSystem, path, uuid4(), places)
+        return FilesystemStory(fileSystem, path, uuid4(), memorables)
     }
 
     override fun findStory(id: Uuid): Iterable<Story> {
         val candidatePath = path / id.toString()
         if (fileSystem.exists(candidatePath)) {
-            return listOf(FilesystemStory(fileSystem, candidatePath, places))
+            return listOf(FilesystemStory(fileSystem, candidatePath, memorables))
         } else {
             return emptyList()
         }
@@ -68,6 +72,6 @@ class FilesystemStories(
 
     override fun iterator(): Iterator<Story> {
         fileSystem.createDirectories(dir = path, mustCreate = false)
-        return fileSystem.list(path).map { path -> FilesystemStory(fileSystem, path, places) }.iterator()
+        return fileSystem.list(path).map { path -> FilesystemStory(fileSystem, path, memorables) }.iterator()
     }
 }
