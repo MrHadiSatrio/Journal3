@@ -2,6 +2,12 @@
 
 object Dependencies {
 
+    object AndroidSdk {
+        const val MINIMUM = 23
+        const val COMPILE = 33
+        const val TARGET = 32
+    }
+
     object AndroidArchitecture {
         const val VIEWMODEL = "androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1"
         const val LIFECYCLE = "androidx.lifecycle:lifecycle-runtime-ktx:2.4.0"
@@ -65,7 +71,7 @@ object Dependencies {
         const val COROUTINES_TEST = "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.2"
         const val KOTEST_ASSERTIONS = "io.kotest:kotest-assertions-core:5.4.2"
         const val ESPRESSO = "androidx.test.espresso:espresso-core:3.4.0"
-        const val ROBOLECTRIC = "org.robolectric:robolectric:4.8.2"
+        const val ROBOLECTRIC = "org.robolectric:robolectric:4.10.2"
     }
 
     object TestDouble {

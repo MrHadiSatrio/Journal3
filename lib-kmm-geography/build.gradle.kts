@@ -79,11 +79,11 @@ kotlin {
 }
 
 android {
-    compileSdk = 32
+    compileSdk = Dependencies.AndroidSdk.COMPILE
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
     defaultConfig {
-        minSdk = 21
-        targetSdk = 32
+        minSdk = Dependencies.AndroidSdk.MINIMUM
+        targetSdk = Dependencies.AndroidSdk.TARGET
     }
     testOptions {
         unitTests {

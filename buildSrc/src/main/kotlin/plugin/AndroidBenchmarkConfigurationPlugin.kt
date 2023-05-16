@@ -15,7 +15,7 @@ class AndroidBenchmarkConfigurationPlugin : Plugin<Project> {
 
         project.extensions.getByType<BaseExtension>().run {
             defaultConfig {
-                minSdk = 23
+                minSdk = Dependencies.AndroidSdk.MINIMUM
                 testInstrumentationRunner("androidx.benchmark.junit4.AndroidBenchmarkRunner")
             }
 

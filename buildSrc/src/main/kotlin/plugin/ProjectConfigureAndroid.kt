@@ -1,5 +1,6 @@
 package plugin
 
+import Dependencies
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.getByType
 import com.android.build.gradle.BaseExtension
@@ -10,11 +11,12 @@ internal fun Project.configureAndroid() {
 
     this.extensions.getByType<BaseExtension>().run {
 
-        compileSdkVersion(32)
+        compileSdkVersion(Dependencies.AndroidSdk.COMPILE)
         buildToolsVersion("7.2.1")
 
         defaultConfig {
-            minSdk = 21
+            minSdk = Dependencies.AndroidSdk.MINIMUM
+            targetSdk = Dependencies.AndroidSdk.TARGET
             consumerProguardFiles("$rootDir/proguard/proguard-rules.pro")
             testInstrumentationRunner("androidx.test.runner.AndroidJUnitRunner")
         }
