@@ -38,7 +38,7 @@ object Dependencies {
     }
 
     object AndroidSecurity {
-        const val ASSENT = "com.afollestad.assent:core:3.0.0-RC4"
+        const val ASSENT = "com.afollestad.assent:core:3.0.2"
     }
 
     object Asynchrony {
