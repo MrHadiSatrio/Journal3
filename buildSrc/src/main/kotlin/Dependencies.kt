@@ -70,7 +70,7 @@ object Dependencies {
     object TestUtility {
         const val COROUTINES_TEST = "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.2"
         const val KOTEST_ASSERTIONS = "io.kotest:kotest-assertions-core:5.4.2"
-        const val ESPRESSO = "androidx.test.espresso:espresso-core:3.4.0"
+        const val ESPRESSO = "androidx.test.espresso:espresso-core:3.5.1"
         const val ROBOLECTRIC = "org.robolectric:robolectric:4.10.2"
     }
 
