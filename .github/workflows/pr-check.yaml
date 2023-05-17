@@ -20,10 +20,7 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      - name: Check with Gradle
-        run: ./gradlew clean check
-
-      - name: Analyze with SonarCloud
+      - name: Build with Gradle and SonarCloud
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
