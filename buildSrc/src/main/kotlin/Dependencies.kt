@@ -28,7 +28,7 @@ object Dependencies {
     }
 
     object AndroidUi {
-        const val RECYCLER_VIEW = "androidx.recyclerview:recyclerview:1.2.1"
+        const val RECYCLER_VIEW = "androidx.recyclerview:recyclerview:1.3.0"
         const val MATERIAL = "com.google.android.material:material:1.5.0-alpha04"
         const val FLOW_BINDING = "io.github.reactivecircus.flowbinding:flowbinding-android:1.2.0"
     }
