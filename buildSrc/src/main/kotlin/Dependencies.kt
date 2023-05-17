@@ -15,7 +15,7 @@ object Dependencies {
     }
 
     object AndroidAsynchrony {
-        const val WORKMANAGER = "androidx.work:work-runtime-ktx:2.7.1"
+        const val WORKMANAGER = "androidx.work:work-runtime-ktx:2.8.1"
     }
 
     object AndroidCompatibility {
