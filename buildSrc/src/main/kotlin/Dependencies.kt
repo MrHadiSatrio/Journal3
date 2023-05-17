@@ -57,7 +57,7 @@ object Dependencies {
     }
 
     object TestRuntime {
-        const val ANDROID_JUNIT_4 = "androidx.test:runner:1.4.0"
+        const val ANDROID_JUNIT_4 = "androidx.test:runner:1.5.2"
         const val JUNIT_5 = "org.junit.jupiter:junit-jupiter-engine:5.8.2"
     }
 
