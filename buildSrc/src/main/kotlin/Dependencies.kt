@@ -64,7 +64,7 @@ object Dependencies {
     object TestFramework {
         const val JUNIT_4 = "junit:junit:4.13.2"
         const val JUNIT_5 = "org.junit.jupiter:junit-jupiter-api:5.8.2"
-        const val ANDROID_JUNIT = "androidx.test.ext:junit:1.1.3"
+        const val ANDROID_JUNIT = "androidx.test.ext:junit:1.1.5"
     }
 
     object TestUtility {
