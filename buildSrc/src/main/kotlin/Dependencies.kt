@@ -19,7 +19,7 @@ object Dependencies {
     }
 
     object AndroidCompatibility {
-        const val CORE_KTX = "androidx.core:core-ktx:1.8.0"
+        const val CORE_KTX = "androidx.core:core-ktx:1.10.1"
         const val APPCOMPAT = "androidx.appcompat:appcompat:1.4.2"
     }
 
