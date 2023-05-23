@@ -9,7 +9,7 @@ object Dependencies {
     }
 
     object AndroidArchitecture {
-        const val VIEWMODEL = "androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1"
+        const val VIEWMODEL = "androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1"
         const val LIFECYCLE = "androidx.lifecycle:lifecycle-runtime-ktx:2.6.1"
         const val STARTUP = "androidx.startup:startup-runtime:1.1.1"
     }
