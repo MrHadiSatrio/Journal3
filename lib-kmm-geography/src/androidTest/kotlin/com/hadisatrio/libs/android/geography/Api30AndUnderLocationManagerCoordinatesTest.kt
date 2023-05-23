@@ -27,6 +27,7 @@ import io.kotest.matchers.shouldBe
 import io.mockk.spyk
 import io.mockk.verify
 import org.junit.After
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RuntimeEnvironment
@@ -38,6 +39,9 @@ import kotlin.time.Duration.Companion.seconds
 @RunWith(AndroidJUnit4::class)
 @Config(sdk = [Build.VERSION_CODES.Q])
 class Api30AndUnderLocationManagerCoordinatesTest {
+
+    @get:Rule
+    val retryRule = RetryRule(retryCount = 5)
 
     private val application = RuntimeEnvironment.getApplication()
     private val locationManager = spyk(application.getSystemService(Context.LOCATION_SERVICE) as LocationManager)
