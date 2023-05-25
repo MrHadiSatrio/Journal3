@@ -5,7 +5,7 @@ plugins {
     id("org.jetbrains.kotlinx.kover").version("0.7.0")
     id("io.gitlab.arturbosch.detekt").version("1.23.0")
     id("org.barfuin.gradle.jacocolog").version("3.1.0")
-    id("org.sonarqube").version("3.5.0.2730")
+    id("org.sonarqube").version("4.0.0.2929")
 }
 
 buildscript {
