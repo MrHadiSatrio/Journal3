@@ -3,7 +3,7 @@ plugins {
     id("org.ajoberstar.grgit").version("4.1.1")
     id("org.jetbrains.dokka").version("1.7.0")
     id("org.jetbrains.kotlinx.kover").version("0.7.0")
-    id("io.gitlab.arturbosch.detekt").version("1.21.0")
+    id("io.gitlab.arturbosch.detekt").version("1.23.0")
     id("org.barfuin.gradle.jacocolog").version("2.0.0")
     id("org.sonarqube").version("3.5.0.2730")
 }
