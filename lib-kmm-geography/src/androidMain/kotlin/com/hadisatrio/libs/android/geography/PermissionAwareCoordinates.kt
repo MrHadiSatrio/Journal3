@@ -19,8 +19,6 @@ package com.hadisatrio.libs.android.geography
 
 import android.Manifest
 import android.content.pm.PackageManager.PERMISSION_GRANTED
-import android.os.Build
-import androidx.annotation.RequiresApi
 import com.afollestad.assent.Permission
 import com.afollestad.assent.askForPermissions
 import com.hadisatrio.libs.android.foundation.activity.CurrentActivity
@@ -28,7 +26,6 @@ import com.hadisatrio.libs.kotlin.geography.Coordinates
 import java.util.concurrent.LinkedBlockingQueue
 import java.util.concurrent.TimeUnit
 
-@RequiresApi(Build.VERSION_CODES.M)
 class PermissionAwareCoordinates(
     private val currentActivity: CurrentActivity,
     private val origin: Coordinates
