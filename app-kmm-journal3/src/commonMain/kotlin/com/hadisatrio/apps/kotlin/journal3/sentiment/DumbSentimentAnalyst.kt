@@ -26,7 +26,13 @@ object DumbSentimentAnalyst : SentimentAnalyst {
         "elated", "relax", "relaxing", "relaxed", "calm", "serene", "good"
     )
     private val negativeWords: Set<String> = setOf(
-        "tired", "exhausted", "stressed", "depressed", "sad", "mourn", "mourning",
+        "tired",
+        "exhausted",
+        "stressed",
+        "depressed",
+        "sad",
+        "mourn",
+        "mourning",
         "saddened"
     )
 

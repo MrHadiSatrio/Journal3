@@ -48,10 +48,14 @@ class InactivityAlertModalNotificationBuilderAdapter(
                         PendingIntent.FLAG_UPDATE_CURRENT
                     }
                     val pendingIntent = PendingIntent.getActivity(
-                        /* context = */ context,
-                        /* requestCode = */ 0,
-                        /* intent = */ Intent(context, ViewStoriesActivity::class.java),
-                        /* flags = */ pendingIntentFlags
+                        /* context = */
+                        context,
+                        /* requestCode = */
+                        0,
+                        /* intent = */
+                        Intent(context, ViewStoriesActivity::class.java),
+                        /* flags = */
+                        pendingIntentFlags
                     )
                     setPriority(NotificationCompat.PRIORITY_DEFAULT)
                     setSmallIcon(R.drawable.ic_notification)

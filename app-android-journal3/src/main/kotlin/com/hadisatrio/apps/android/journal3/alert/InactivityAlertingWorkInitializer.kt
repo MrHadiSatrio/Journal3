@@ -38,9 +38,12 @@ class InactivityAlertingWorkInitializer : Initializer<Unit> {
         )
 
         workManager.enqueueUniquePeriodicWork(
-            /* uniqueWorkName = */ InactivityAlertingWork::class.java.simpleName,
-            /* existingPeriodicWorkPolicy = */ ExistingPeriodicWorkPolicy.REPLACE,
-            /* periodicWork = */ workRequestBuilder.build()
+            /* uniqueWorkName = */
+            InactivityAlertingWork::class.java.simpleName,
+            /* existingPeriodicWorkPolicy = */
+            ExistingPeriodicWorkPolicy.REPLACE,
+            /* periodicWork = */
+            workRequestBuilder.build()
         )
     }
 

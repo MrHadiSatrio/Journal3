@@ -51,22 +51,34 @@ class RecyclerViewItemSelectionEventSourceTest {
         }
         recyclerView.dispatchTouchEvent(
             MotionEvent.obtain(
-                /* downTime = */ System.currentTimeMillis(),
-                /* eventTime = */ System.currentTimeMillis(),
-                /* action = */ MotionEvent.ACTION_DOWN,
-                /* x = */ recyclerView.getChildAt(0).x,
-                /* y = */ recyclerView.getChildAt(0).y,
-                /* metaState = */ 0
+                /* downTime = */
+                System.currentTimeMillis(),
+                /* eventTime = */
+                System.currentTimeMillis(),
+                /* action = */
+                MotionEvent.ACTION_DOWN,
+                /* x = */
+                recyclerView.getChildAt(0).x,
+                /* y = */
+                recyclerView.getChildAt(0).y,
+                /* metaState = */
+                0
             )
         )
         recyclerView.dispatchTouchEvent(
             MotionEvent.obtain(
-                /* downTime = */ System.currentTimeMillis(),
-                /* eventTime = */ System.currentTimeMillis(),
-                /* action = */ MotionEvent.ACTION_UP,
-                /* x = */ recyclerView.getChildAt(0).x,
-                /* y = */ recyclerView.getChildAt(0).y,
-                /* metaState = */ 0
+                /* downTime = */
+                System.currentTimeMillis(),
+                /* eventTime = */
+                System.currentTimeMillis(),
+                /* action = */
+                MotionEvent.ACTION_UP,
+                /* x = */
+                recyclerView.getChildAt(0).x,
+                /* y = */
+                recyclerView.getChildAt(0).y,
+                /* metaState = */
+                0
             )
         )
 
@@ -91,42 +103,66 @@ class RecyclerViewItemSelectionEventSourceTest {
         }
         recyclerView.dispatchTouchEvent(
             MotionEvent.obtain(
-                /* downTime = */ System.currentTimeMillis(),
-                /* eventTime = */ System.currentTimeMillis(),
-                /* action = */ MotionEvent.ACTION_DOWN,
-                /* x = */ recyclerView.getChildAt(0).x,
-                /* y = */ recyclerView.getChildAt(0).y,
-                /* metaState = */ 0
+                /* downTime = */
+                System.currentTimeMillis(),
+                /* eventTime = */
+                System.currentTimeMillis(),
+                /* action = */
+                MotionEvent.ACTION_DOWN,
+                /* x = */
+                recyclerView.getChildAt(0).x,
+                /* y = */
+                recyclerView.getChildAt(0).y,
+                /* metaState = */
+                0
             )
         )
         recyclerView.dispatchTouchEvent(
             MotionEvent.obtain(
-                /* downTime = */ System.currentTimeMillis(),
-                /* eventTime = */ System.currentTimeMillis(),
-                /* action = */ MotionEvent.ACTION_MOVE,
-                /* x = */ recyclerView.getChildAt(0).x + 10F,
-                /* y = */ recyclerView.getChildAt(0).y + 10F,
-                /* metaState = */ 0
+                /* downTime = */
+                System.currentTimeMillis(),
+                /* eventTime = */
+                System.currentTimeMillis(),
+                /* action = */
+                MotionEvent.ACTION_MOVE,
+                /* x = */
+                recyclerView.getChildAt(0).x + 10F,
+                /* y = */
+                recyclerView.getChildAt(0).y + 10F,
+                /* metaState = */
+                0
             )
         )
         recyclerView.dispatchTouchEvent(
             MotionEvent.obtain(
-                /* downTime = */ System.currentTimeMillis(),
-                /* eventTime = */ System.currentTimeMillis(),
-                /* action = */ MotionEvent.ACTION_MOVE,
-                /* x = */ recyclerView.getChildAt(0).x + 25F,
-                /* y = */ recyclerView.getChildAt(0).y + 25F,
-                /* metaState = */ 0
+                /* downTime = */
+                System.currentTimeMillis(),
+                /* eventTime = */
+                System.currentTimeMillis(),
+                /* action = */
+                MotionEvent.ACTION_MOVE,
+                /* x = */
+                recyclerView.getChildAt(0).x + 25F,
+                /* y = */
+                recyclerView.getChildAt(0).y + 25F,
+                /* metaState = */
+                0
             )
         )
         recyclerView.dispatchTouchEvent(
             MotionEvent.obtain(
-                /* downTime = */ System.currentTimeMillis(),
-                /* eventTime = */ System.currentTimeMillis(),
-                /* action = */ MotionEvent.ACTION_UP,
-                /* x = */ recyclerView.getChildAt(0).x + 25F,
-                /* y = */ recyclerView.getChildAt(0).y + 25F,
-                /* metaState = */ 0
+                /* downTime = */
+                System.currentTimeMillis(),
+                /* eventTime = */
+                System.currentTimeMillis(),
+                /* action = */
+                MotionEvent.ACTION_UP,
+                /* x = */
+                recyclerView.getChildAt(0).x + 25F,
+                /* y = */
+                recyclerView.getChildAt(0).y + 25F,
+                /* metaState = */
+                0
             )
         )
 
@@ -151,42 +187,66 @@ class RecyclerViewItemSelectionEventSourceTest {
         }
         recyclerView.dispatchTouchEvent(
             MotionEvent.obtain(
-                /* downTime = */ System.currentTimeMillis(),
-                /* eventTime = */ System.currentTimeMillis(),
-                /* action = */ MotionEvent.ACTION_DOWN,
-                /* x = */ recyclerView.getChildAt(0).x,
-                /* y = */ recyclerView.getChildAt(0).y,
-                /* metaState = */ 0
+                /* downTime = */
+                System.currentTimeMillis(),
+                /* eventTime = */
+                System.currentTimeMillis(),
+                /* action = */
+                MotionEvent.ACTION_DOWN,
+                /* x = */
+                recyclerView.getChildAt(0).x,
+                /* y = */
+                recyclerView.getChildAt(0).y,
+                /* metaState = */
+                0
             )
         )
         recyclerView.dispatchTouchEvent(
             MotionEvent.obtain(
-                /* downTime = */ System.currentTimeMillis(),
-                /* eventTime = */ System.currentTimeMillis(),
-                /* action = */ MotionEvent.ACTION_MOVE,
-                /* x = */ recyclerView.getChildAt(0).x + 100F,
-                /* y = */ recyclerView.getChildAt(0).y + 100F,
-                /* metaState = */ 0
+                /* downTime = */
+                System.currentTimeMillis(),
+                /* eventTime = */
+                System.currentTimeMillis(),
+                /* action = */
+                MotionEvent.ACTION_MOVE,
+                /* x = */
+                recyclerView.getChildAt(0).x + 100F,
+                /* y = */
+                recyclerView.getChildAt(0).y + 100F,
+                /* metaState = */
+                0
             )
         )
         recyclerView.dispatchTouchEvent(
             MotionEvent.obtain(
-                /* downTime = */ System.currentTimeMillis(),
-                /* eventTime = */ System.currentTimeMillis(),
-                /* action = */ MotionEvent.ACTION_MOVE,
-                /* x = */ recyclerView.getChildAt(0).x + 250F,
-                /* y = */ recyclerView.getChildAt(0).y + 250F,
-                /* metaState = */ 0
+                /* downTime = */
+                System.currentTimeMillis(),
+                /* eventTime = */
+                System.currentTimeMillis(),
+                /* action = */
+                MotionEvent.ACTION_MOVE,
+                /* x = */
+                recyclerView.getChildAt(0).x + 250F,
+                /* y = */
+                recyclerView.getChildAt(0).y + 250F,
+                /* metaState = */
+                0
             )
         )
         recyclerView.dispatchTouchEvent(
             MotionEvent.obtain(
-                /* downTime = */ System.currentTimeMillis(),
-                /* eventTime = */ System.currentTimeMillis(),
-                /* action = */ MotionEvent.ACTION_UP,
-                /* x = */ recyclerView.getChildAt(0).x + 250F,
-                /* y = */ recyclerView.getChildAt(0).y + 250F,
-                /* metaState = */ 0
+                /* downTime = */
+                System.currentTimeMillis(),
+                /* eventTime = */
+                System.currentTimeMillis(),
+                /* action = */
+                MotionEvent.ACTION_UP,
+                /* x = */
+                recyclerView.getChildAt(0).x + 250F,
+                /* y = */
+                recyclerView.getChildAt(0).y + 250F,
+                /* metaState = */
+                0
             )
         )
 
