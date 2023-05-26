@@ -17,7 +17,8 @@
 
 package com.hadisatrio.libs.android.geography
 
-import android.annotation.SuppressLint
+import android.Manifest.permission.ACCESS_COARSE_LOCATION
+import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.content.Context
 import android.location.Criteria
 import android.location.Location
@@ -25,13 +26,13 @@ import android.location.LocationManager
 import android.os.Build
 import android.os.Handler
 import android.os.HandlerThread
+import androidx.annotation.RequiresPermission
 import com.hadisatrio.libs.kotlin.geography.Coordinates
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import java.util.concurrent.Executor
 import kotlin.time.Duration.Companion.seconds
 
-@SuppressLint("MissingPermission")
 class LocationManagerCoordinates(
     private val manager: LocationManager,
     private val clock: Clock
@@ -42,8 +43,10 @@ class LocationManagerCoordinates(
         clock
     )
 
-    override val latitude: Double get() = location().latitude
-    override val longitude: Double get() = location().longitude
+    override val latitude: Double @RequiresPermission(allOf = [ ACCESS_COARSE_LOCATION, ACCESS_FINE_LOCATION ])
+    get() = location().latitude
+    override val longitude: Double @RequiresPermission(allOf = [ ACCESS_COARSE_LOCATION, ACCESS_FINE_LOCATION ])
+    get() = location().longitude
 
     private val provider: String? get() {
         val criteria = Criteria().apply { accuracy = Criteria.ACCURACY_FINE }
@@ -55,6 +58,7 @@ class LocationManagerCoordinates(
 
     @Synchronized
     @Suppress("DEPRECATION")
+    @RequiresPermission(allOf = [ ACCESS_COARSE_LOCATION, ACCESS_FINE_LOCATION ])
     private fun location(): Location {
         val lastFetchInstant = this.lastFetchInstant
         val currentInstant = clock.now()

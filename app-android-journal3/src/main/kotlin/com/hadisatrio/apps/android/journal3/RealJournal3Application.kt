@@ -17,7 +17,6 @@
 
 package com.hadisatrio.apps.android.journal3
 
-import android.os.Build
 import androidx.core.content.ContextCompat
 import com.hadisatrio.apps.kotlin.journal3.moment.MemorablesCollection
 import com.hadisatrio.apps.kotlin.journal3.moment.filesystem.FilesystemMemorablePlaces
@@ -51,14 +50,10 @@ class RealJournal3Application : Journal3Application() {
 
     override val places: Places by lazy {
         HereNearbyPlaces(
-            coordinates = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                PermissionAwareCoordinates(
-                    currentActivity = currentActivity,
-                    origin = LocationManagerCoordinates(this, clock)
-                )
-            } else {
-                LocationManagerCoordinates(this, clock)
-            },
+            coordinates = PermissionAwareCoordinates(
+                currentActivity = currentActivity,
+                origin = LocationManagerCoordinates(this, clock)
+            ),
             limit = 100,
             apiKey = BuildConfig.KEY_HERE_API,
             httpClient = HttpClient()
