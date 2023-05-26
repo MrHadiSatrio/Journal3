@@ -77,13 +77,16 @@ class LocationManagerCoordinates(
                 val handler = Handler(thread.looper)
                 handler.post {
                     manager.requestSingleUpdate(
-                        /* provider = */ provider,
-                        /* listener = */ { location ->
-                        this@LocationManagerCoordinates.lastDeviceLocation = location
-                        this@LocationManagerCoordinates.lastFetchInstant = clock.now()
-                        thread.quit()
-                    },
-                        /* looper = */ null
+                        /* provider = */
+                        provider,
+                        /* listener = */
+                        { location ->
+                            this@LocationManagerCoordinates.lastDeviceLocation = location
+                            this@LocationManagerCoordinates.lastFetchInstant = clock.now()
+                            thread.quit()
+                        },
+                        /* looper = */
+                        null
                     )
                 }
                 thread.join()
