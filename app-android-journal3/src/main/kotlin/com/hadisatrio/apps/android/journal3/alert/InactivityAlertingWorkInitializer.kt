@@ -41,7 +41,7 @@ class InactivityAlertingWorkInitializer : Initializer<Unit> {
             /* uniqueWorkName = */
             InactivityAlertingWork::class.java.simpleName,
             /* existingPeriodicWorkPolicy = */
-            ExistingPeriodicWorkPolicy.REPLACE,
+            ExistingPeriodicWorkPolicy.UPDATE,
             /* periodicWork = */
             workRequestBuilder.build()
         )
