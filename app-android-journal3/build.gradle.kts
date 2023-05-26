@@ -8,7 +8,6 @@ val version = ext.get("gitVersionName")
 plugins {
     id("com.android.application")
     kotlin("android")
-    kotlin("android.extensions")
     kotlin("kapt")
     id("io.gitlab.arturbosch.detekt")
 }
