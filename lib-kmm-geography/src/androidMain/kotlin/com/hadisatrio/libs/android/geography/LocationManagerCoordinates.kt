@@ -43,10 +43,12 @@ class LocationManagerCoordinates(
         clock
     )
 
-    override val latitude: Double @RequiresPermission(allOf = [ ACCESS_COARSE_LOCATION, ACCESS_FINE_LOCATION ])
-    get() = location().latitude
-    override val longitude: Double @RequiresPermission(allOf = [ ACCESS_COARSE_LOCATION, ACCESS_FINE_LOCATION ])
-    get() = location().longitude
+    override val latitude: Double
+        @RequiresPermission(allOf = [ ACCESS_COARSE_LOCATION, ACCESS_FINE_LOCATION ])
+        get() = location().latitude
+    override val longitude: Double
+        @RequiresPermission(allOf = [ ACCESS_COARSE_LOCATION, ACCESS_FINE_LOCATION ])
+        get() = location().longitude
 
     private val provider: String? get() {
         val criteria = Criteria().apply { accuracy = Criteria.ACCURACY_FINE }
