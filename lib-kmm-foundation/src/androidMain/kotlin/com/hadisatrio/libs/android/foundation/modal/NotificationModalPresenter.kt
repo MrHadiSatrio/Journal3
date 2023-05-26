@@ -17,7 +17,9 @@
 
 package com.hadisatrio.libs.android.foundation.modal
 
+import android.Manifest.permission.POST_NOTIFICATIONS
 import android.content.Context
+import androidx.annotation.RequiresPermission
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.hadisatrio.libs.kotlin.foundation.modal.Modal
@@ -29,6 +31,7 @@ class NotificationModalPresenter(
     private val contentAdapter: Adapter<Modal, NotificationBuilderFactory>
 ) : Presenter<Modal> {
 
+    @RequiresPermission(POST_NOTIFICATIONS)
     override fun present(thing: Modal) {
         val builder = contentAdapter.adapt(thing).create()
         val manager = NotificationManagerCompat.from(context)
