@@ -25,6 +25,7 @@ kotlin {
                 implementation(kotlin("test"))
                 implementation(Dependencies.TestUtility.KOTEST_ASSERTIONS)
                 implementation(Dependencies.TestDouble.OKIO_FAKE_FS)
+                implementation(Dependencies.TestDouble.MOCKK)
             }
         }
         val androidMain by getting
@@ -41,7 +42,7 @@ kotlin {
 }
 
 android {
-    compileSdk = 32
+    compileSdk = 33
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
     defaultConfig {
         minSdk = 23

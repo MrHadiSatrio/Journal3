@@ -23,6 +23,10 @@ object Dependencies {
         const val APPCOMPAT = "androidx.appcompat:appcompat:1.6.1"
     }
 
+    object AndroidFramework {
+        const val GLIDE = "com.github.bumptech.glide:glide:4.15.1"
+    }
+
     object AndroidNetwork {
         const val KTOR = "io.ktor:ktor-client-android:2.3.0"
     }

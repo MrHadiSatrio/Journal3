@@ -27,6 +27,7 @@ dependencies {
     implementation(project(":app-kmm-journal3"))
     implementation(Dependencies.AndroidArchitecture.STARTUP)
     implementation(Dependencies.AndroidAsynchrony.WORKMANAGER)
+    implementation(Dependencies.AndroidFramework.GLIDE)
     implementation(Dependencies.AndroidNetwork.KTOR)
 }
 

@@ -19,6 +19,7 @@ package com.hadisatrio.apps.android.journal3
 
 import androidx.core.content.ContextCompat
 import com.hadisatrio.apps.kotlin.journal3.moment.MemorablesCollection
+import com.hadisatrio.apps.kotlin.journal3.moment.filesystem.FilesystemMemorableFiles
 import com.hadisatrio.apps.kotlin.journal3.moment.filesystem.FilesystemMemorablePlaces
 import com.hadisatrio.apps.kotlin.journal3.moment.filesystem.FilesystemMentionedPeople
 import com.hadisatrio.apps.kotlin.journal3.story.Stories
@@ -28,6 +29,7 @@ import com.hadisatrio.libs.android.foundation.modal.AlertDialogModalPresenter
 import com.hadisatrio.libs.android.foundation.os.SystemLog
 import com.hadisatrio.libs.android.geography.LocationManagerCoordinates
 import com.hadisatrio.libs.android.geography.PermissionAwareCoordinates
+import com.hadisatrio.libs.android.io.content.ContentResolverSources
 import com.hadisatrio.libs.kotlin.foundation.event.EventHub
 import com.hadisatrio.libs.kotlin.foundation.event.EventSink
 import com.hadisatrio.libs.kotlin.foundation.event.EventSinks
@@ -36,6 +38,8 @@ import com.hadisatrio.libs.kotlin.foundation.presentation.ExecutorDispatchingPre
 import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
 import com.hadisatrio.libs.kotlin.geography.Places
 import com.hadisatrio.libs.kotlin.geography.here.HereNearbyPlaces
+import com.hadisatrio.libs.kotlin.io.SchemeWiseSources
+import com.hadisatrio.libs.kotlin.io.filesystem.FileSystemSources
 import io.ktor.client.HttpClient
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.datetime.Clock
@@ -72,6 +76,14 @@ class RealJournal3Application : Journal3Application() {
                 FilesystemMentionedPeople(
                     fileSystem = FileSystem.SYSTEM,
                     path = filesDir.absolutePath.toPath() / "content" / "people",
+                ),
+                FilesystemMemorableFiles(
+                    fileSystem = FileSystem.SYSTEM,
+                    path = filesDir.absolutePath.toPath() / "content" / "attachments",
+                    sources = SchemeWiseSources(
+                        "file" to FileSystemSources(FileSystem.SYSTEM),
+                        "content" to ContentResolverSources(contentResolver)
+                    )
                 )
             )
         )

@@ -18,8 +18,12 @@
 package com.hadisatrio.apps.android.journal3.moment
 
 import android.os.Bundle
+import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.hadisatrio.apps.android.journal3.R
 import com.hadisatrio.apps.android.journal3.datetime.TimestampSelectionEventSource
 import com.hadisatrio.apps.android.journal3.id.BundledTargetId
@@ -31,6 +35,9 @@ import com.hadisatrio.libs.android.foundation.material.SliderFloatPresenter
 import com.hadisatrio.libs.android.foundation.material.SliderSelectionEventSource
 import com.hadisatrio.libs.android.foundation.widget.BackButtonCancellationEventSource
 import com.hadisatrio.libs.android.foundation.widget.EditTextInputEventSource
+import com.hadisatrio.libs.android.foundation.widget.PhotoCaptureEventSource
+import com.hadisatrio.libs.android.foundation.widget.PhotoSelectionEventSource
+import com.hadisatrio.libs.android.foundation.widget.RecyclerViewPresenter
 import com.hadisatrio.libs.android.foundation.widget.TextViewStringPresenter
 import com.hadisatrio.libs.android.foundation.widget.ViewClickEventSource
 import com.hadisatrio.libs.kotlin.foundation.ExecutorDispatchingUseCase
@@ -77,6 +84,24 @@ class EditAMomentActivity : AppCompatActivity() {
                         AdaptingPresenter(
                             origin = SliderFloatPresenter(findViewById(R.id.sentiment_slider)),
                             adapter = { moment -> moment.sentiment.value }
+                        ),
+                        AdaptingPresenter(
+                            origin = RecyclerViewPresenter(
+                                recyclerView = findViewById(R.id.photo_grid),
+                                layoutManager = GridLayoutManager(this, PHOTO_GRID_SPAN_COUNT),
+                                viewFactory = { parent, _ ->
+                                    ImageView(parent.context).apply {
+                                        layoutParams = RecyclerView.LayoutParams(
+                                            RecyclerView.LayoutParams.WRAP_CONTENT,
+                                            RecyclerView.LayoutParams.WRAP_CONTENT
+                                        )
+                                    }
+                                },
+                                viewRenderer = { view, item ->
+                                    Glide.with(view).load(item.path).centerCrop().into(view as ImageView)
+                                }
+                            ),
+                            adapter = { moment -> moment.attachments }
                         )
                     )
                 ),
@@ -109,6 +134,12 @@ class EditAMomentActivity : AppCompatActivity() {
                             slider = findViewById(R.id.sentiment_slider),
                             selectionKind = "sentiment"
                         ),
+                        PhotoCaptureEventSource(
+                            triggerView = findViewById(R.id.photo_capturer_button)
+                        ),
+                        PhotoSelectionEventSource(
+                            triggerView = findViewById(R.id.photo_picker_button)
+                        ),
                         BackButtonCancellationEventSource(this)
                     )
                 ),
@@ -119,5 +150,10 @@ class EditAMomentActivity : AppCompatActivity() {
                 clock = journal3Application.clock
             )
         )()
+    }
+
+    companion object {
+
+        private const val PHOTO_GRID_SPAN_COUNT = 3
     }
 }
