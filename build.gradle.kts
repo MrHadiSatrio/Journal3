@@ -32,6 +32,7 @@ allprojects {
         google()
         mavenLocal()
         mavenCentral()
+        maven(url = "https://repo.repsy.io/mvn/chrynan/public")
     }
     configurations.all {
         resolutionStrategy {

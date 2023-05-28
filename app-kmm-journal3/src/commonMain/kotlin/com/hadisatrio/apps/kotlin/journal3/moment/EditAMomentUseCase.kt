@@ -18,6 +18,8 @@
 package com.hadisatrio.apps.kotlin.journal3.moment
 
 import com.benasher44.uuid.uuidFrom
+import com.chrynan.uri.core.Uri
+import com.chrynan.uri.core.fromString
 import com.hadisatrio.apps.kotlin.journal3.datetime.Timestamp
 import com.hadisatrio.apps.kotlin.journal3.id.TargetId
 import com.hadisatrio.apps.kotlin.journal3.moment.datetime.ClockRespectingMoments
@@ -116,6 +118,7 @@ class EditAMomentUseCase(
             "timestamp" -> currentTarget.update(Timestamp(identifier))
             "sentiment" -> currentTarget.update(Sentiment(identifier))
             "place" -> currentTarget.update(places.findPlace(uuidFrom(identifier)).first())
+            "attachments" -> currentTarget.update(identifier.split(',').map { Uri.fromString(it) })
         }
     }
 

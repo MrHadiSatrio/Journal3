@@ -16,33 +16,41 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                api(project(":lib-kmm-foundation"))
-                api(project(":lib-kmm-io"))
-                api(project(":lib-kmm-json"))
-                api(project(":lib-kmm-geography"))
-                api(Dependencies.Commons.DATETIME)
+                api(Dependencies.Commons.OKIO)
+                api(Dependencies.Commons.URI)
             }
         }
         val commonTest by getting {
             dependencies {
                 implementation(kotlin("test"))
-                implementation(Dependencies.TestUtility.COROUTINES_TEST)
                 implementation(Dependencies.TestUtility.KOTEST_ASSERTIONS)
                 implementation(Dependencies.TestDouble.OKIO_FAKE_FS)
-                implementation(Dependencies.TestDouble.MOCKK)
             }
         }
         val androidMain by getting
-        val androidTest by getting
+        val androidTest by getting {
+            dependencies {
+                implementation(Dependencies.TestRuntime.ANDROID_JUNIT_4)
+                implementation(Dependencies.TestFramework.JUNIT_4)
+                implementation(Dependencies.TestUtility.KOTEST_ASSERTIONS)
+                implementation(Dependencies.TestUtility.ROBOLECTRIC)
+                implementation(Dependencies.TestDouble.MOCKK)
+            }
+        }
     }
 }
 
 android {
-    compileSdk = Dependencies.AndroidSdk.COMPILE
+    compileSdk = 32
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
     defaultConfig {
-        minSdk = Dependencies.AndroidSdk.MINIMUM
-        targetSdk = Dependencies.AndroidSdk.TARGET
+        minSdk = 23
+        targetSdk = 32
+    }
+    testOptions {
+        unitTests {
+            isIncludeAndroidResources = true
+        }
     }
 }
 
@@ -74,10 +82,11 @@ detekt {
         "src/commonMain/kotlin",
         "src/commonTest/kotlin",
         "src/androidMain/kotlin",
-        "src/androidTest/kotlin"
+        "src/androidTest/kotlin",
+        "src/iosMain/kotlin"
     )
 }
 
 dependencies {
-    detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.23.0")
+    detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.21.0")
 }

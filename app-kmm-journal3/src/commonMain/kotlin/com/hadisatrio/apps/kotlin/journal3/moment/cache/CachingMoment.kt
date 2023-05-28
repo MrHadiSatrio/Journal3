@@ -18,6 +18,7 @@
 package com.hadisatrio.apps.kotlin.journal3.moment.cache
 
 import com.benasher44.uuid.Uuid
+import com.chrynan.uri.core.Uri
 import com.hadisatrio.apps.kotlin.journal3.datetime.Timestamp
 import com.hadisatrio.apps.kotlin.journal3.moment.Moment
 import com.hadisatrio.apps.kotlin.journal3.sentiment.Sentiment
@@ -32,6 +33,7 @@ class CachingMoment(
     override val sentiment: Sentiment,
     override val impliedSentiment: Sentiment,
     override val place: Place,
+    override val attachments: Iterable<Uri>,
     private val origin: Moment
 ) : Moment by origin {
 
@@ -42,6 +44,7 @@ class CachingMoment(
         origin.sentiment,
         origin.impliedSentiment,
         origin.place,
+        origin.attachments,
         origin
     )
 }

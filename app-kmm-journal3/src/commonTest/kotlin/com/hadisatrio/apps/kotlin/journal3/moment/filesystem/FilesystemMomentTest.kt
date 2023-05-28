@@ -25,13 +25,20 @@ import com.hadisatrio.apps.kotlin.journal3.token.Token
 import com.hadisatrio.apps.kotlin.journal3.token.TokenableString
 import com.hadisatrio.libs.kotlin.geography.NullIsland
 import com.hadisatrio.libs.kotlin.geography.fake.FakePlace
+import com.hadisatrio.libs.kotlin.io.filesystem.FileSystemSources
+import com.hadisatrio.libs.kotlin.io.uri.toUri
+import com.hadisatrio.libs.kotlin.json.JsonFile
 import io.kotest.matchers.booleans.shouldBeFalse
+import io.kotest.matchers.collections.shouldBeEmpty
+import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.ints.shouldBeNegative
 import io.kotest.matchers.ints.shouldBePositive
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.string.shouldNotContain
 import kotlinx.datetime.Instant
+import kotlinx.serialization.json.JsonPrimitive
+import okio.Path
 import okio.Path.Companion.toPath
 import okio.buffer
 import okio.fakefilesystem.FakeFileSystem
@@ -44,7 +51,10 @@ class FilesystemMomentTest {
     private val fileSystem = FakeFileSystem()
     private val places = FilesystemMemorablePlaces(fileSystem, "content/places".toPath())
     private val people = FilesystemMentionedPeople(fileSystem, "content/people".toPath())
-    private val stories = FilesystemStories(fileSystem, "content".toPath(), MemorablesCollection(places, people))
+    private val sources = FileSystemSources(fileSystem)
+    private val attachments = FilesystemMemorableFiles(sources, fileSystem, "content/attachments".toPath())
+    private val memorables = MemorablesCollection(places, people, attachments)
+    private val stories = FilesystemStories(fileSystem, "content".toPath(), memorables)
     private val story = stories.new()
     private val moments = story.moments
 
@@ -61,6 +71,7 @@ class FilesystemMomentTest {
         moment.description.shouldBe(TokenableString(""))
         moment.sentiment.shouldBe(Sentiment(0.123456789F))
         moment.place.shouldBe(NullIsland)
+        moment.attachments.shouldBeEmpty()
     }
 
     @Test
@@ -130,6 +141,21 @@ class FilesystemMomentTest {
         moment.update(TokenableString(("Going to the park with @nahlito!")))
 
         personFileContent().shouldContain(moment.id.toString())
+    }
+
+    @Test
+    fun `Write attachment updates to the filesystem`() {
+        val moment = moments.new()
+        val arbitraryExternalFilePath: Path by lazy {
+            ("foo".toPath()).apply {
+                JsonFile(fileSystem, this).put("foo", JsonPrimitive("bar"))
+            }
+        }
+        val uri = arbitraryExternalFilePath.toUri()
+
+        moment.update(listOf(uri))
+
+        attachments.relevantTo(moment.id).shouldHaveSize(1)
     }
 
     @Test
