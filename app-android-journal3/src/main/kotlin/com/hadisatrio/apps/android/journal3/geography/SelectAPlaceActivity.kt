@@ -27,7 +27,7 @@ import com.hadisatrio.libs.android.foundation.activity.ActivityCompletionEventSi
 import com.hadisatrio.libs.android.foundation.lifecycle.LifecycleTriggeredEventSource
 import com.hadisatrio.libs.android.foundation.widget.BackButtonCancellationEventSource
 import com.hadisatrio.libs.android.foundation.widget.RecyclerViewItemSelectionEventSource
-import com.hadisatrio.libs.android.foundation.widget.StringRecyclerViewPresenter
+import com.hadisatrio.libs.android.foundation.widget.RecyclerViewPresenter
 import com.hadisatrio.libs.kotlin.foundation.ExecutorDispatchingUseCase
 import com.hadisatrio.libs.kotlin.foundation.event.CancellationEvent
 import com.hadisatrio.libs.kotlin.foundation.event.EventSinks
@@ -52,7 +52,7 @@ class SelectAPlaceActivity : AppCompatActivity() {
                 presenter = AdaptingPresenter(
                     origin = ExecutorDispatchingPresenter(
                         executor = journal3Application.foregroundExecutor,
-                        origin = StringRecyclerViewPresenter(findViewById(R.id.places_list))
+                        origin = RecyclerViewPresenter(findViewById(R.id.places_list))
                     ),
                     adapter = { places -> places.map { it.name } }
                 ),
