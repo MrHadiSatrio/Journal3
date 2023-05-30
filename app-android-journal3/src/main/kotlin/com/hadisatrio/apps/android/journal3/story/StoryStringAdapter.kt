@@ -34,11 +34,12 @@ class StoryStringAdapter(
         return when (key) {
             "title" -> thing.title
             "synopsis" -> thing.synopsis.toString()
+            "attachment_count" -> thing.moments.sumOf { it.attachments.count() }.toString() + " attachment(s)"
             else -> throw UnsupportedOperationException("Unknown key '$key'.")
         }
     }
 
     companion object {
-        private val SUPPORTED_KEYS = arrayOf("title", "synopsis")
+        private val SUPPORTED_KEYS = arrayOf("title", "synopsis", "attachment_count")
     }
 }

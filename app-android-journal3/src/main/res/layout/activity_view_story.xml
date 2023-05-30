@@ -44,13 +44,24 @@
         app:layout_constraintTop_toBottomOf="@id/title_label"
         tools:text="@tools:sample/lorem" />
 
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/attachment_count_label"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/margin"
+        android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/synopsis_label"
+        tools:text="@tools:sample/lorem" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/moments_list"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="@dimen/margin"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/synopsis_label" />
+        app:layout_constraintTop_toBottomOf="@id/attachment_count_label" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/add_button"
