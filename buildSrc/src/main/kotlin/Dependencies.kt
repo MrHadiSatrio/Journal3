@@ -50,7 +50,7 @@ object Dependencies {
     }
 
     object Commons {
-        const val UUID = "com.benasher44:uuid:0.7.0"
+        const val UUID = "com.benasher44:uuid:0.7.1"
         const val URI = "com.chrynan.uri:uri-core:0.4.0"
         const val DATETIME = "org.jetbrains.kotlinx:kotlinx-datetime:0.4.0"
         const val KOTLINX_JSON_OKIO = "org.jetbrains.kotlinx:kotlinx-serialization-json-okio:1.5.1"
