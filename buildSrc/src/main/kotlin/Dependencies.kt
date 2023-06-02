@@ -23,6 +23,10 @@ object Dependencies {
         const val APPCOMPAT = "androidx.appcompat:appcompat:1.6.1"
     }
 
+    object AndroidFramework {
+        const val GLIDE = "com.github.bumptech.glide:glide:4.15.1"
+    }
+
     object AndroidNetwork {
         const val KTOR = "io.ktor:ktor-client-android:2.3.0"
     }
@@ -47,6 +51,7 @@ object Dependencies {
 
     object Commons {
         const val UUID = "com.benasher44:uuid:0.7.0"
+        const val URI = "com.chrynan.uri:uri-core:0.4.0"
         const val DATETIME = "org.jetbrains.kotlinx:kotlinx-datetime:0.4.0"
         const val KOTLINX_JSON_OKIO = "org.jetbrains.kotlinx:kotlinx-serialization-json-okio:1.5.1"
         const val OKIO = "com.squareup.okio:okio:3.3.0"

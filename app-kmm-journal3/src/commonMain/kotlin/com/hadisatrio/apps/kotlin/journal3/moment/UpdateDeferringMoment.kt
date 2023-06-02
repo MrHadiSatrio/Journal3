@@ -17,6 +17,7 @@
 
 package com.hadisatrio.apps.kotlin.journal3.moment
 
+import com.chrynan.uri.core.Uri
 import com.hadisatrio.apps.kotlin.journal3.datetime.Timestamp
 import com.hadisatrio.apps.kotlin.journal3.sentiment.Sentiment
 import com.hadisatrio.apps.kotlin.journal3.token.TokenableString
@@ -30,6 +31,7 @@ class UpdateDeferringMoment(
     private var descriptionInEdit: TokenableString = origin.description
     private var sentimentInEdit: Sentiment = origin.sentiment
     private var placeInEdit: Place = origin.place
+    private var attachmentsInEdit: Iterable<Uri> = origin.attachments
 
     override val timestamp: Timestamp get() = timestampInEdit
     override val description: TokenableString get() = descriptionInEdit
@@ -52,6 +54,10 @@ class UpdateDeferringMoment(
         placeInEdit = place
     }
 
+    override fun update(attachments: Iterable<Uri>) {
+        attachmentsInEdit = attachments.toList()
+    }
+
     override fun compareTo(other: Moment): Int {
         return timestampInEdit.compareTo(other.timestamp)
     }
@@ -60,7 +66,8 @@ class UpdateDeferringMoment(
         return timestampInEdit != origin.timestamp ||
             descriptionInEdit != origin.description ||
             sentimentInEdit != origin.sentiment ||
-            placeInEdit != origin.place
+            placeInEdit != origin.place ||
+            attachmentsInEdit != origin.attachments
     }
 
     fun commit() {
@@ -68,5 +75,6 @@ class UpdateDeferringMoment(
         origin.update(descriptionInEdit)
         origin.update(sentimentInEdit)
         origin.update(placeInEdit)
+        origin.update(attachmentsInEdit)
     }
 }

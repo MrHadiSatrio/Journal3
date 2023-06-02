@@ -19,7 +19,9 @@ package com.hadisatrio.apps.kotlin.journal3.moment.filesystem
 
 import com.benasher44.uuid.Uuid
 import com.benasher44.uuid.uuidFrom
+import com.chrynan.uri.core.Uri
 import com.hadisatrio.apps.kotlin.journal3.datetime.Timestamp
+import com.hadisatrio.apps.kotlin.journal3.moment.MemorableFile
 import com.hadisatrio.apps.kotlin.journal3.moment.Memorables
 import com.hadisatrio.apps.kotlin.journal3.moment.Moment
 import com.hadisatrio.apps.kotlin.journal3.sentiment.DumbSentimentAnalyst
@@ -62,6 +64,11 @@ class FilesystemMoment(
         return relevantReferables.filterIsInstance<Place>().firstOrNull() ?: NullIsland
     }
 
+    override val attachments: Iterable<Uri> get() {
+        val relevantItems = memorables.relevantTo(this.id)
+        return relevantItems.asSequence().filterIsInstance<MemorableFile>().map { it.uri }.toList()
+    }
+
     constructor(fileSystem: FileSystem, parentDirectory: Path, id: Uuid, memorables: Memorables) : this(
         fileSystem = fileSystem,
         path = parentDirectory / id.toString(),
@@ -88,6 +95,10 @@ class FilesystemMoment(
 
     override fun update(place: Place) {
         memorables.relate(id, place)
+    }
+
+    override fun update(attachments: Iterable<Uri>) {
+        memorables.relate(id, attachments)
     }
 
     override fun forget() {

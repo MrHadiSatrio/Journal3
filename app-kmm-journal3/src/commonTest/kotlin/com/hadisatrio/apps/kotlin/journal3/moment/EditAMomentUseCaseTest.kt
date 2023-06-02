@@ -68,6 +68,7 @@ class EditAMomentUseCaseTest {
                 SelectionEvent("timestamp", Timestamp(Instant.DISTANT_FUTURE).toString()),
                 SelectionEvent("sentiment", Sentiment(0.75F).toString()),
                 SelectionEvent("place", place.id.toString()),
+                SelectionEvent("attachments", "content://foo,content://bar"),
                 CompletionEvent()
             ),
             eventSink = mockk(relaxed = true),
@@ -79,6 +80,7 @@ class EditAMomentUseCaseTest {
         moment.timestamp.shouldBe(Timestamp(Instant.DISTANT_FUTURE))
         moment.sentiment.shouldBe(Sentiment(0.75F))
         moment.place.id.shouldBe(place.id)
+        moment.attachments.shouldHaveSize(2)
     }
 
     @Test

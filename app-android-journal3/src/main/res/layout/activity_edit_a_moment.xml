@@ -63,6 +63,33 @@
         app:layout_constraintStart_toStartOf="@+id/timestamp_selector_button"
         app:layout_constraintTop_toBottomOf="@id/description_text_layout" />
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/photo_grid"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintEnd_toEndOf="@+id/timestamp_selector_button"
+        app:layout_constraintStart_toStartOf="@+id/timestamp_selector_button"
+        app:layout_constraintTop_toBottomOf="@id/sentiment_slider"
+        app:layout_constraintBottom_toTopOf="@id/photo_picker_button" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/photo_capturer_button"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Take Photo"
+        app:layout_constraintEnd_toEndOf="@+id/timestamp_selector_button"
+        app:layout_constraintStart_toStartOf="@+id/timestamp_selector_button"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/photo_picker_button"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Pick Photos"
+        app:layout_constraintEnd_toEndOf="@+id/timestamp_selector_button"
+        app:layout_constraintStart_toStartOf="@+id/timestamp_selector_button"
+        app:layout_constraintBottom_toTopOf="@id/photo_capturer_button" />
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/add_button"
         android:layout_width="wrap_content"

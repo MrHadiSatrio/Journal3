@@ -28,7 +28,7 @@ import com.hadisatrio.apps.kotlin.journal3.story.ShowStoryUseCase
 import com.hadisatrio.apps.kotlin.journal3.story.cache.CachingStoryPresenter
 import com.hadisatrio.libs.android.foundation.lifecycle.LifecycleTriggeredEventSource
 import com.hadisatrio.libs.android.foundation.widget.RecyclerViewItemSelectionEventSource
-import com.hadisatrio.libs.android.foundation.widget.StringRecyclerViewPresenter
+import com.hadisatrio.libs.android.foundation.widget.RecyclerViewPresenter
 import com.hadisatrio.libs.android.foundation.widget.TextViewStringPresenter
 import com.hadisatrio.libs.android.foundation.widget.ViewClickEventSource
 import com.hadisatrio.libs.kotlin.foundation.ExecutorDispatchingUseCase
@@ -68,10 +68,16 @@ class ViewStoryActivity : AppCompatActivity() {
                                     adapter = StoryStringAdapter("synopsis")
                                 ),
                                 AdaptingPresenter(
-                                    origin = StringRecyclerViewPresenter(findViewById(R.id.moments_list)),
+                                    origin = TextViewStringPresenter(findViewById(R.id.attachment_count_label)),
+                                    adapter = StoryStringAdapter("attachment_count")
+                                ),
+                                AdaptingPresenter(
+                                    origin = RecyclerViewPresenter(findViewById(R.id.moments_list)),
                                     adapter = { story ->
                                         story.moments.sortedDescending().map {
-                                            "${it.timestamp}\n${it.description}\n${it.sentiment}\n${it.place.name}"
+                                            "${it.timestamp}\n${it.description}\n" +
+                                                "${it.sentiment}\n${it.place.name}\n" +
+                                                "${it.attachments.count()} attachment(s)"
                                         }
                                     }
                                 )

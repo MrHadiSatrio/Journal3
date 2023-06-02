@@ -18,6 +18,7 @@
 package com.hadisatrio.apps.kotlin.journal3.moment.fake
 
 import com.benasher44.uuid.Uuid
+import com.chrynan.uri.core.Uri
 import com.hadisatrio.apps.kotlin.journal3.datetime.Timestamp
 import com.hadisatrio.apps.kotlin.journal3.moment.Moment
 import com.hadisatrio.apps.kotlin.journal3.sentiment.Sentiment
@@ -42,6 +43,8 @@ class FakeMoment(
         private set
     override var place: Place = NullIsland
         private set
+    override var attachments: Iterable<Uri> = mutableListOf()
+        private set
 
     override fun update(timestamp: Timestamp) {
         require(!isForgotten) { "This moment has already been forgotten." }
@@ -61,6 +64,11 @@ class FakeMoment(
     override fun update(place: Place) {
         require(!isForgotten) { "This moment has already been forgotten." }
         this.place = place
+    }
+
+    override fun update(attachments: Iterable<Uri>) {
+        require(!isForgotten) { "This moment has already been forgotten." }
+        this.attachments = attachments
     }
 
     override fun forget() {

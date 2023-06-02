@@ -26,11 +26,11 @@ import org.junit.runner.RunWith
 import org.robolectric.RuntimeEnvironment
 
 @RunWith(AndroidJUnit4::class)
-class StringRecyclerViewPresenterTest {
+class RecyclerViewPresenterTest {
 
     private val recyclerView = RecyclerView(RuntimeEnvironment.getApplication())
     private val strings = listOf("Foo", "Bar", "Fizz", "Buzz")
-    private val presenter = StringRecyclerViewPresenter(recyclerView)
+    private val presenter = RecyclerViewPresenter<String>(recyclerView)
 
     @Test
     fun `Renders the given strings onto the RecyclerView`() {

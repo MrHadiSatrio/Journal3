@@ -28,7 +28,7 @@ import com.hadisatrio.apps.kotlin.journal3.story.cache.CachingStoriesPresenter
 import com.hadisatrio.libs.android.foundation.activity.ActivityCompletionEventSink
 import com.hadisatrio.libs.android.foundation.lifecycle.LifecycleTriggeredEventSource
 import com.hadisatrio.libs.android.foundation.widget.RecyclerViewItemSelectionEventSource
-import com.hadisatrio.libs.android.foundation.widget.StringRecyclerViewPresenter
+import com.hadisatrio.libs.android.foundation.widget.RecyclerViewPresenter
 import com.hadisatrio.libs.android.foundation.widget.ViewClickEventSource
 import com.hadisatrio.libs.kotlin.foundation.ExecutorDispatchingUseCase
 import com.hadisatrio.libs.kotlin.foundation.event.CancellationEvent
@@ -56,7 +56,7 @@ class ViewStoriesActivity : AppCompatActivity() {
                         origin = ExecutorDispatchingPresenter(
                             executor = journal3Application.foregroundExecutor,
                             origin = AdaptingPresenter(
-                                origin = StringRecyclerViewPresenter(recyclerView = findViewById(R.id.stories_list)),
+                                origin = RecyclerViewPresenter(recyclerView = findViewById(R.id.stories_list)),
                                 adapter = { stories -> stories.map { "${it.title}\n${it.synopsis}" } }
                             )
                         )

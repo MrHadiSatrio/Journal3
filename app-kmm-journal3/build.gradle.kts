@@ -17,10 +17,10 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 api(project(":lib-kmm-foundation"))
+                api(project(":lib-kmm-io"))
                 api(project(":lib-kmm-json"))
                 api(project(":lib-kmm-geography"))
                 api(Dependencies.Commons.DATETIME)
-                api(Dependencies.Commons.OKIO)
             }
         }
         val commonTest by getting {
