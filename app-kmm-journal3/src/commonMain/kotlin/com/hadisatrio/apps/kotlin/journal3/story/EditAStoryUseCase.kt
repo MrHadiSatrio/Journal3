@@ -124,6 +124,7 @@ class EditAStoryUseCase(
             modalPresenter.present(modal)
         } else {
             isEditCancelled = true
+            completionEvents.emit(CompletionEvent())
         }
     }
 }
