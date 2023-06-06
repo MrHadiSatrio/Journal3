@@ -150,6 +150,7 @@ class EditAMomentUseCase(
             modalPresenter.present(modal)
         } else {
             isEditCancelled = true
+            completionEvents.emit(CompletionEvent())
         }
     }
 }

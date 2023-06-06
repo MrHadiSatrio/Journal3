@@ -140,8 +140,7 @@ class EditAStoryUseCaseTest {
                 TextInputEvent("synopsis", "Bar"),
                 TextInputEvent("title", ""),
                 TextInputEvent("synopsis", ""),
-                CancellationEvent("user"),
-                CompletionEvent()
+                CancellationEvent("user")
             ),
             eventSink = mockk(relaxed = true)
         )()

@@ -169,8 +169,7 @@ class EditAMomentUseCaseTest {
                 TextInputEvent("description", ""),
                 SelectionEvent("sentiment", Sentiment(0.75F).toString()),
                 SelectionEvent("sentiment", Sentiment.DEFAULT.toString()),
-                CancellationEvent("user"),
-                CompletionEvent()
+                CancellationEvent("user")
             ),
             eventSink = mockk(relaxed = true),
             clock = Clock.System
