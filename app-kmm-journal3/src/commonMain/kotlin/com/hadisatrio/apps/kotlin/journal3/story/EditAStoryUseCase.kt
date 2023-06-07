@@ -17,6 +17,7 @@
 
 package com.hadisatrio.apps.kotlin.journal3.story
 
+import com.hadisatrio.apps.kotlin.journal3.event.RefreshRequestEvent
 import com.hadisatrio.apps.kotlin.journal3.id.TargetId
 import com.hadisatrio.apps.kotlin.journal3.token.TokenableString
 import com.hadisatrio.libs.kotlin.foundation.UseCase
@@ -25,6 +26,7 @@ import com.hadisatrio.libs.kotlin.foundation.event.CompletionEvent
 import com.hadisatrio.libs.kotlin.foundation.event.Event
 import com.hadisatrio.libs.kotlin.foundation.event.EventSink
 import com.hadisatrio.libs.kotlin.foundation.event.EventSource
+import com.hadisatrio.libs.kotlin.foundation.event.SelectionEvent
 import com.hadisatrio.libs.kotlin.foundation.event.TextInputEvent
 import com.hadisatrio.libs.kotlin.foundation.modal.BinaryConfirmationModal
 import com.hadisatrio.libs.kotlin.foundation.modal.Modal
@@ -51,16 +53,16 @@ class EditAStoryUseCase(
     private var isTargetNew: Boolean = false
     private var isEditCancelled: Boolean = false
 
-    override operator fun invoke() {
+    override operator fun invoke() = runBlocking {
         identifyTarget()
-        presentInitialState()
+        present()
         observeEvents()
     }
 
     private fun identifyTarget() {
         currentTarget = UpdateDeferringStory(
             if (targetId.isValid()) {
-                stories.find { it.id == targetId.asUuid() }!!
+                stories.findStory(targetId.asUuid()).first()
             } else {
                 isTargetNew = true
                 stories.new()
@@ -68,11 +70,16 @@ class EditAStoryUseCase(
         )
     }
 
-    private fun presentInitialState() {
-        presenter.present(currentTarget)
+    private suspend fun present() {
+        if (!stories.containsStory(targetId.asUuid()) && !isTargetNew) {
+            isEditCancelled = true
+            completionEvents.emit(CompletionEvent())
+        } else {
+            presenter.present(currentTarget)
+        }
     }
 
-    private fun observeEvents() = runBlocking {
+    private suspend fun observeEvents() {
         merge(eventSource.events(), completionEvents)
             .onEach { eventSink.sink(it) }
             .takeWhile { event -> (event as? CompletionEvent)?.also { handleCompletion() } == null }
@@ -82,8 +89,10 @@ class EditAStoryUseCase(
     private suspend fun handle(event: Event) {
         when (event) {
             is TextInputEvent -> handleTextInput(event)
+            is SelectionEvent -> handleSelection()
             is ModalApprovalEvent -> handleModalApproval(event)
             is CancellationEvent -> handleCancellation(event)
+            is RefreshRequestEvent -> present()
         }
     }
 
@@ -94,6 +103,16 @@ class EditAStoryUseCase(
         }
 
         presenter.present(currentTarget)
+    }
+
+    private fun handleSelection() {
+        eventSink.sink(
+            SelectionEvent(
+                "action",
+                "delete_story",
+                "story_id" to currentTarget.id.toString()
+            )
+        )
     }
 
     private suspend fun handleModalApproval(event: ModalApprovalEvent) {

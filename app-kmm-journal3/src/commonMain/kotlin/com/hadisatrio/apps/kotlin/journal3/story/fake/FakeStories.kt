@@ -35,6 +35,10 @@ class FakeStories(
         return story
     }
 
+    override fun containsStory(id: Uuid): Boolean {
+        return findStory(id).count() > 0
+    }
+
     override fun findStory(id: Uuid): Iterable<Story> {
         return filter { it.id == id }
     }

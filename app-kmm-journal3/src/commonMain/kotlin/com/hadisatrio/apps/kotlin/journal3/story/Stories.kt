@@ -23,6 +23,8 @@ import com.hadisatrio.apps.kotlin.journal3.moment.Moment
 interface Stories : Iterable<Story> {
     fun new(): Story
 
+    fun containsStory(id: Uuid): Boolean
+
     fun findStory(id: Uuid): Iterable<Story>
 
     fun hasMoments(): Boolean

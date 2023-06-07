@@ -23,6 +23,14 @@ class FakePresenter<T> : Presenter<T> {
 
     private val presented = mutableListOf<T>()
 
+    fun presentedCount(): Int {
+        return presented.size
+    }
+
+    fun hasPresented(thingThat: (T) -> Boolean): Boolean {
+        return presented.any(thingThat)
+    }
+
     override fun present(thing: T) {
         presented += thing
     }
