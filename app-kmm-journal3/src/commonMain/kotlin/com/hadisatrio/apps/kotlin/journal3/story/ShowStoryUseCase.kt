@@ -43,17 +43,21 @@ class ShowStoryUseCase(
 
     private val completionEvents by lazy { MutableSharedFlow<CompletionEvent>(extraBufferCapacity = 1) }
 
-    override fun invoke() {
+    override fun invoke() = runBlocking {
         presentState()
         observeEvents()
     }
 
-    private fun presentState() {
-        val story = stories.findStory(targetId.asUuid()).first()
-        presenter.present(story)
+    private suspend fun presentState() {
+        val story = stories.findStory(targetId.asUuid()).firstOrNull()
+        if (story == null) {
+            completionEvents.emit(CompletionEvent())
+        } else {
+            presenter.present(story)
+        }
     }
 
-    private fun observeEvents() = runBlocking {
+    private suspend fun observeEvents() {
         merge(eventSource.events(), completionEvents)
             .onEach { eventSink.sink(it) }
             .takeWhile { event -> (event as? CompletionEvent) == null }
@@ -74,28 +78,24 @@ class ShowStoryUseCase(
         val story = stories.findStory(targetId.asUuid()).first()
         when (kind) {
             "item_position" -> handleItemPositionSelectionEvent(story, identifier)
-            "action" -> when (identifier) {
-                "edit" -> {
-                    eventSink.sink(
-                        SelectionEvent(
-                            selectionKind = "action",
-                            selectedIdentifier = "edit_story",
-                            "story_id" to story.id.toString()
-                        )
-                    )
-                }
-
-                "add" -> {
-                    eventSink.sink(
-                        SelectionEvent(
-                            selectionKind = "action",
-                            selectedIdentifier = "add_moment",
-                            "story_id" to story.id.toString()
-                        )
-                    )
-                }
-            }
+            "action" -> handleActionSelectionEvent(identifier, story)
         }
+    }
+
+    private fun handleActionSelectionEvent(identifier: String, story: Story) {
+        val actionIdentifier = when (identifier) {
+            "edit" -> "edit_story"
+            "delete" -> "delete_story"
+            "add" -> "add_moment"
+            else -> return
+        }
+        eventSink.sink(
+            SelectionEvent(
+                selectionKind = "action",
+                selectedIdentifier = actionIdentifier,
+                "story_id" to story.id.toString()
+            )
+        )
     }
 
     private fun handleItemPositionSelectionEvent(story: Story, identifier: String) {

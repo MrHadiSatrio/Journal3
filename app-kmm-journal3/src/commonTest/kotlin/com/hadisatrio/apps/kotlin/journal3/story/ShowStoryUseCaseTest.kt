@@ -109,6 +109,35 @@ class ShowStoryUseCaseTest {
     }
 
     @Test
+    fun `Forwards to the sink when action 'delete' is selected`() {
+        val story = stories.first()
+        val targetId = FakeTargetId(story.id)
+        val eventSink = mockk<EventSink>(relaxed = true)
+
+        ShowStoryUseCase(
+            targetId = targetId,
+            stories = stories,
+            presenter = mockk(relaxed = true),
+            eventSource = RecordedEventSource(
+                SelectionEvent("action", "delete"),
+                CompletionEvent()
+            ),
+            eventSink = eventSink
+        )()
+
+        verify(exactly = 1) {
+            eventSink.sink(
+                withArg { event ->
+                    event["name"].shouldBe("Selection Event")
+                    event["selection_kind"].shouldBe("action")
+                    event["selected_id"].shouldBe("delete_story")
+                    event["story_id"].shouldBe(story.id.toString())
+                }
+            )
+        }
+    }
+
+    @Test
     fun `Forwards to the sink when action 'edit' is selected`() {
         val story = stories.first()
         val targetId = FakeTargetId(story.id)
@@ -194,6 +223,8 @@ class ShowStoryUseCaseTest {
             stories = stories,
             presenter = mockk(relaxed = true),
             eventSource = RecordedEventSource(
+                SelectionEvent("foo", "foo"),
+                SelectionEvent("action", "foo"),
                 UnsupportedEvent(),
                 CompletionEvent()
             ),

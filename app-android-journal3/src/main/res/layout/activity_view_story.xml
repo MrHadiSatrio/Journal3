@@ -69,6 +69,15 @@
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/margin"
         android:src="@drawable/ic_add"
+        app:layout_constraintBottom_toTopOf="@id/delete_button"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/delete_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin"
+        android:src="@drawable/ic_delete"
         app:layout_constraintBottom_toTopOf="@id/edit_button"
         app:layout_constraintEnd_toEndOf="parent" />
 

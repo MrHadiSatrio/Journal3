@@ -70,6 +70,15 @@ class FilesystemStoriesTest {
     }
 
     @Test
+    fun `Reports whether or not it contains a story basing on its ID`() {
+        val stories = SelfPopulatingStories(noOfStories = 1, noOfMoments = 1, stories)
+        val story = stories.first()
+
+        stories.containsStory(story.id).shouldBeTrue()
+        stories.containsStory(uuid4()).shouldBeFalse()
+    }
+
+    @Test
     fun `Finds a story by its ID`() {
         val stories = SelfPopulatingStories(noOfStories = 1, noOfMoments = 1, stories)
         val story = stories.first()

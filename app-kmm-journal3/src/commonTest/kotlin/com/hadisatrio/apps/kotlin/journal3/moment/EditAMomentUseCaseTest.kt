@@ -21,7 +21,7 @@ import com.hadisatrio.apps.kotlin.journal3.datetime.Timestamp
 import com.hadisatrio.apps.kotlin.journal3.event.RecordedEventSource
 import com.hadisatrio.apps.kotlin.journal3.event.UnsupportedEvent
 import com.hadisatrio.apps.kotlin.journal3.id.FakeTargetId
-import com.hadisatrio.apps.kotlin.journal3.id.TargetId
+import com.hadisatrio.apps.kotlin.journal3.id.InvalidTargetId
 import com.hadisatrio.apps.kotlin.journal3.sentiment.Sentiment
 import com.hadisatrio.apps.kotlin.journal3.story.SelfPopulatingStories
 import com.hadisatrio.apps.kotlin.journal3.story.fake.FakeStories
@@ -39,7 +39,6 @@ import com.hadisatrio.libs.kotlin.geography.fake.FakePlaces
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
-import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.datetime.Clock
@@ -85,14 +84,12 @@ class EditAMomentUseCaseTest {
 
     @Test
     fun `Updates a new moment when target ID is invalid`() {
-        val targetId = mockk<TargetId>()
         val places = SelfPopulatingPlaces(noOfPlaces = 1, origin = FakePlaces())
         val stories = SelfPopulatingStories(noOfStories = 1, noOfMoments = 0, origin = FakeStories())
         val story = stories.first()
-        every { targetId.isValid() } returns false
 
         EditAMomentUseCase(
-            targetId = targetId,
+            targetId = InvalidTargetId,
             storyId = FakeTargetId(story.id),
             stories = stories,
             places = places,
@@ -116,16 +113,14 @@ class EditAMomentUseCaseTest {
 
     @Test
     fun `Prevents accidental cancellation by the user when a meaningful edit has been made`() {
-        val targetId = mockk<TargetId>()
         val places = SelfPopulatingPlaces(noOfPlaces = 1, origin = FakePlaces())
         val stories = SelfPopulatingStories(noOfStories = 1, noOfMoments = 0, origin = FakeStories())
         val place = places.first()
         val story = stories.first()
         val modalPresenter = mockk<Presenter<Modal>>(relaxed = true)
-        every { targetId.isValid() } returns false
 
         EditAMomentUseCase(
-            targetId = targetId,
+            targetId = InvalidTargetId,
             storyId = FakeTargetId(story.id),
             stories = stories,
             places = places,
@@ -151,14 +146,12 @@ class EditAMomentUseCaseTest {
 
     @Test
     fun `Does not prevent accidental cancellation by the user when a meaningful edit has not been made`() {
-        val targetId = mockk<TargetId>()
         val stories = SelfPopulatingStories(noOfStories = 1, noOfMoments = 0, origin = FakeStories())
         val story = stories.first()
         val modalPresenter = mockk<Presenter<Modal>>(relaxed = true)
-        every { targetId.isValid() } returns false
 
         EditAMomentUseCase(
-            targetId = targetId,
+            targetId = InvalidTargetId,
             storyId = FakeTargetId(story.id),
             stories = stories,
             places = FakePlaces(),
@@ -183,14 +176,12 @@ class EditAMomentUseCaseTest {
 
     @Test
     fun `Deletes the moment-in-edit when it is a new one and the user cancels without editing`() {
-        val targetId = mockk<TargetId>()
         val stories = SelfPopulatingStories(noOfStories = 1, noOfMoments = 0, origin = FakeStories())
         val story = stories.first()
         val modalPresenter = mockk<Presenter<Modal>>(relaxed = true)
-        every { targetId.isValid() } returns false
 
         EditAMomentUseCase(
-            targetId = targetId,
+            targetId = InvalidTargetId,
             storyId = FakeTargetId(story.id),
             stories = stories,
             places = FakePlaces(),
@@ -264,14 +255,12 @@ class EditAMomentUseCaseTest {
 
     @Test
     fun `Ignores unknown events without repercussions`() {
-        val targetId = mockk<TargetId>()
         val places = SelfPopulatingPlaces(noOfPlaces = 1, origin = FakePlaces())
         val stories = SelfPopulatingStories(noOfStories = 1, noOfMoments = 0, origin = FakeStories())
         val story = stories.first()
-        every { targetId.isValid() } returns false
 
         EditAMomentUseCase(
-            targetId = targetId,
+            targetId = InvalidTargetId,
             storyId = FakeTargetId(story.id),
             stories = stories,
             places = places,

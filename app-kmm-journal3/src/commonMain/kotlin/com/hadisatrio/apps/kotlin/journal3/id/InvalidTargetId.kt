@@ -15,23 +15,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.hadisatrio.libs.kotlin.foundation.presentation.fake
+package com.hadisatrio.apps.kotlin.journal3.id
 
-import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
+import com.benasher44.uuid.Uuid
+import com.benasher44.uuid.uuidFrom
 
-class FakePresenter<T> : Presenter<T> {
+object InvalidTargetId : TargetId {
 
-    private val presented = mutableListOf<T>()
-
-    fun presentedCount(): Int {
-        return presented.size
+    override fun asUuid(): Uuid {
+        return uuidFrom("00000000-0000-0000-0000-000000000000")
     }
 
-    fun hasPresented(thingThat: (T) -> Boolean): Boolean {
-        return presented.any(thingThat)
-    }
-
-    override fun present(thing: T) {
-        presented += thing
+    override fun isValid(): Boolean {
+        return false
     }
 }

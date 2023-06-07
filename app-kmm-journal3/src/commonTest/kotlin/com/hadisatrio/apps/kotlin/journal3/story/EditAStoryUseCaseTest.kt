@@ -22,7 +22,7 @@ import com.hadisatrio.apps.kotlin.journal3.datetime.Timestamp
 import com.hadisatrio.apps.kotlin.journal3.event.RecordedEventSource
 import com.hadisatrio.apps.kotlin.journal3.event.UnsupportedEvent
 import com.hadisatrio.apps.kotlin.journal3.id.FakeTargetId
-import com.hadisatrio.apps.kotlin.journal3.id.TargetId
+import com.hadisatrio.apps.kotlin.journal3.id.InvalidTargetId
 import com.hadisatrio.apps.kotlin.journal3.sentiment.Sentiment
 import com.hadisatrio.apps.kotlin.journal3.story.fake.FakeStories
 import com.hadisatrio.apps.kotlin.journal3.story.fake.FakeStory
@@ -38,7 +38,6 @@ import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
-import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.datetime.Instant
@@ -71,12 +70,10 @@ class EditAStoryUseCaseTest {
 
     @Test
     fun `Updates a new story when target ID is invalid`() {
-        val targetId = mockk<TargetId>()
         val stories = FakeStories()
-        every { targetId.isValid() } returns false
 
         EditAStoryUseCase(
-            targetId = targetId,
+            targetId = InvalidTargetId,
             stories = stories,
             presenter = mockk(relaxed = true),
             modalPresenter = mockk(relaxed = true),
@@ -95,13 +92,11 @@ class EditAStoryUseCaseTest {
 
     @Test
     fun `Prevents accidental cancellation by the user when a meaningful edit has been made`() {
-        val targetId = mockk<TargetId>()
         val stories = FakeStories()
         val modalPresenter = mockk<Presenter<Modal>>(relaxed = true)
-        every { targetId.isValid() } returns false
 
         EditAStoryUseCase(
-            targetId = targetId,
+            targetId = InvalidTargetId,
             stories = stories,
             presenter = mockk(relaxed = true),
             modalPresenter = modalPresenter,
@@ -125,13 +120,11 @@ class EditAStoryUseCaseTest {
 
     @Test
     fun `Does not prevent accidental cancellation by the user when a meaningful edit has not been made`() {
-        val targetId = mockk<TargetId>()
         val stories = FakeStories()
         val modalPresenter = mockk<Presenter<Modal>>(relaxed = true)
-        every { targetId.isValid() } returns false
 
         EditAStoryUseCase(
-            targetId = targetId,
+            targetId = InvalidTargetId,
             stories = stories,
             presenter = mockk(relaxed = true),
             modalPresenter = modalPresenter,
@@ -153,13 +146,11 @@ class EditAStoryUseCaseTest {
 
     @Test
     fun `Deletes the story-in-edit when it is a new one and the user cancels without editing`() {
-        val targetId = mockk<TargetId>()
         val stories = FakeStories()
         val modalPresenter = mockk<Presenter<Modal>>(relaxed = true)
-        every { targetId.isValid() } returns false
 
         EditAStoryUseCase(
-            targetId = targetId,
+            targetId = InvalidTargetId,
             stories = stories,
             presenter = mockk(relaxed = true),
             modalPresenter = modalPresenter,
@@ -207,13 +198,11 @@ class EditAStoryUseCaseTest {
 
     @Test(timeout = 5_000)
     fun `Stops upon receiving cancellation events`() {
-        val targetId = mockk<TargetId>()
         val stories = FakeStories()
-        every { targetId.isValid() } returns false
 
         listOf(CancellationEvent("system")).forEach { event ->
             EditAStoryUseCase(
-                targetId = targetId,
+                targetId = InvalidTargetId,
                 stories = stories,
                 presenter = mockk(relaxed = true),
                 modalPresenter = mockk(relaxed = true),
@@ -225,12 +214,10 @@ class EditAStoryUseCaseTest {
 
     @Test(timeout = 5_000)
     fun `Ignores unknown events without repercussions`() {
-        val targetId = mockk<TargetId>()
         val stories = FakeStories()
-        every { targetId.isValid() } returns false
 
         EditAStoryUseCase(
-            targetId = targetId,
+            targetId = InvalidTargetId,
             stories = stories,
             presenter = mockk(relaxed = true),
             modalPresenter = mockk(relaxed = true),

@@ -44,6 +44,10 @@ class FilesystemStories(
         return FilesystemStory(fileSystem, path, uuid4(), memorables)
     }
 
+    override fun containsStory(id: Uuid): Boolean {
+        return findStory(id).count() > 0
+    }
+
     override fun findStory(id: Uuid): Iterable<Story> {
         val candidatePath = path / id.toString()
         if (fileSystem.exists(candidatePath)) {
