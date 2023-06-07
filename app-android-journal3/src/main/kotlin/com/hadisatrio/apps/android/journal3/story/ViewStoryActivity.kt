@@ -26,6 +26,7 @@ import com.hadisatrio.apps.android.journal3.journal3Application
 import com.hadisatrio.apps.kotlin.journal3.event.RefreshRequestEvent
 import com.hadisatrio.apps.kotlin.journal3.story.ShowStoryUseCase
 import com.hadisatrio.apps.kotlin.journal3.story.cache.CachingStoryPresenter
+import com.hadisatrio.libs.android.foundation.activity.ActivityCompletionEventSink
 import com.hadisatrio.libs.android.foundation.lifecycle.LifecycleTriggeredEventSource
 import com.hadisatrio.libs.android.foundation.widget.RecyclerViewItemSelectionEventSource
 import com.hadisatrio.libs.android.foundation.widget.RecyclerViewPresenter
@@ -33,6 +34,7 @@ import com.hadisatrio.libs.android.foundation.widget.TextViewStringPresenter
 import com.hadisatrio.libs.android.foundation.widget.ViewClickEventSource
 import com.hadisatrio.libs.kotlin.foundation.ExecutorDispatchingUseCase
 import com.hadisatrio.libs.kotlin.foundation.event.CancellationEvent
+import com.hadisatrio.libs.kotlin.foundation.event.EventSinks
 import com.hadisatrio.libs.kotlin.foundation.event.EventSources
 import com.hadisatrio.libs.kotlin.foundation.event.ExecutorDispatchingEventSource
 import com.hadisatrio.libs.kotlin.foundation.event.SelectionEvent
@@ -107,12 +109,19 @@ class ViewStoryActivity : AppCompatActivity() {
                             view = findViewById(R.id.edit_button),
                             eventFactory = { SelectionEvent("action", "edit") }
                         ),
+                        ViewClickEventSource(
+                            view = findViewById(R.id.delete_button),
+                            eventFactory = { SelectionEvent("action", "delete") }
+                        ),
                         RecyclerViewItemSelectionEventSource(
                             recyclerView = findViewById(R.id.moments_list)
                         )
                     )
                 ),
-                eventSink = journal3Application.globalEventSink
+                eventSink = EventSinks(
+                    journal3Application.globalEventSink,
+                    ActivityCompletionEventSink(this)
+                )
             )
         )()
     }

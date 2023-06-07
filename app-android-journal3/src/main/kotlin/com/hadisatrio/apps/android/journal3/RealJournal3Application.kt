@@ -120,7 +120,7 @@ class RealJournal3Application : Journal3Application() {
     }
 
     override val backgroundExecutor: Executor by lazy {
-        Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors())
+        Executors.newCachedThreadPool()
     }
 
     override val foregroundExecutor: Executor by lazy {

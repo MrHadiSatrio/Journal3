@@ -21,6 +21,7 @@ import android.app.Activity
 import android.content.Intent
 import com.hadisatrio.apps.android.journal3.geography.SelectAPlaceActivity
 import com.hadisatrio.apps.android.journal3.moment.EditAMomentActivity
+import com.hadisatrio.apps.android.journal3.story.DeleteAStoryActivity
 import com.hadisatrio.apps.android.journal3.story.EditAStoryActivity
 import com.hadisatrio.apps.android.journal3.story.ViewStoryActivity
 import com.hadisatrio.libs.android.foundation.activity.CurrentActivity
@@ -39,6 +40,7 @@ class ActivityRoutingEventSink(
         when (identifier) {
             "add_story" -> activity.startActivity(Intent(activity, EditAStoryActivity::class.java))
             "edit_story" -> activity.startEditAStoryActivity(event)
+            "delete_story" -> activity.startDeleteAStoryActivity(event)
             "view_story" -> activity.startViewStoryActivity(event)
             "add_moment" -> activity.startAddAMomentActivity(event)
             "edit_moment" -> activity.startEditAMomentActivity(event)
@@ -54,6 +56,12 @@ class ActivityRoutingEventSink(
 
     private fun Activity.startEditAStoryActivity(event: SelectionEvent) {
         val intent = Intent(this, EditAStoryActivity::class.java)
+        intent.putExtra("target_id", event["story_id"])
+        startActivity(intent)
+    }
+
+    private fun Activity.startDeleteAStoryActivity(event: SelectionEvent) {
+        val intent = Intent(this, DeleteAStoryActivity::class.java)
         intent.putExtra("target_id", event["story_id"])
         startActivity(intent)
     }

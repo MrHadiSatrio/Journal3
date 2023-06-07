@@ -72,6 +72,9 @@
 
         <activity android:name=".story.EditAStoryActivity" />
 
+        <activity android:name=".story.DeleteAStoryActivity"
+            android:theme="@style/Theme.Journal3.Translucent" />
+
         <activity android:name=".moment.EditAMomentActivity" />
 
         <activity android:name=".geography.SelectAPlaceActivity" />
