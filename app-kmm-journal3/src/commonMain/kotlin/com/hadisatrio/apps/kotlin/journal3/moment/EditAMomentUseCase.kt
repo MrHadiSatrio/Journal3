@@ -21,6 +21,7 @@ import com.benasher44.uuid.uuidFrom
 import com.chrynan.uri.core.Uri
 import com.chrynan.uri.core.fromString
 import com.hadisatrio.apps.kotlin.journal3.datetime.Timestamp
+import com.hadisatrio.apps.kotlin.journal3.event.RefreshRequestEvent
 import com.hadisatrio.apps.kotlin.journal3.id.TargetId
 import com.hadisatrio.apps.kotlin.journal3.moment.datetime.ClockRespectingMoments
 import com.hadisatrio.apps.kotlin.journal3.sentiment.Sentiment
@@ -46,7 +47,10 @@ import kotlinx.coroutines.flow.takeWhile
 import kotlinx.coroutines.runBlocking
 import kotlinx.datetime.Clock
 
-@Suppress("LongParameterList")
+@Suppress(
+    "LongParameterList",
+    "TooManyFunctions"
+)
 class EditAMomentUseCase(
     private val targetId: TargetId,
     private val storyId: TargetId,
@@ -64,9 +68,9 @@ class EditAMomentUseCase(
     private var isTargetNew: Boolean = false
     private var isEditCancelled: Boolean = false
 
-    override operator fun invoke() {
+    override operator fun invoke() = runBlocking {
         identifyTarget()
-        presentInitialState()
+        present()
         observeEvents()
     }
 
@@ -83,8 +87,13 @@ class EditAMomentUseCase(
         )
     }
 
-    private fun presentInitialState() {
-        presenter.present(currentTarget)
+    private suspend fun present() {
+        if (!stories.containsMoment(targetId.asUuid()) && !isTargetNew) {
+            isEditCancelled = true
+            completionEvents.emit(CompletionEvent())
+        } else {
+            presenter.present(currentTarget)
+        }
     }
 
     private fun observeEvents() = runBlocking {
@@ -98,16 +107,15 @@ class EditAMomentUseCase(
         when (event) {
             is TextInputEvent -> handleTextInput(event)
             is SelectionEvent -> handleSelection(event)
+            is RefreshRequestEvent -> present()
             is ModalApprovalEvent -> handleModalApproval(event)
             is CancellationEvent -> handleCancellation(event)
         }
     }
 
     private fun handleTextInput(event: TextInputEvent) {
-        when (event.inputKind) {
-            "description" -> currentTarget.update(TokenableString(event.inputValue))
-        }
-
+        if (event.inputKind != "description") return
+        currentTarget.update(TokenableString(event.inputValue))
         presenter.present(currentTarget)
     }
 
@@ -119,7 +127,19 @@ class EditAMomentUseCase(
             "sentiment" -> currentTarget.update(Sentiment(identifier))
             "place" -> currentTarget.update(places.findPlace(uuidFrom(identifier)).first())
             "attachments" -> currentTarget.update(identifier.split(',').map { Uri.fromString(it) })
+            "action" -> handleActionSelection(event)
         }
+    }
+
+    private fun handleActionSelection(event: SelectionEvent) {
+        if (event.selectedIdentifier != "delete") return
+        eventSink.sink(
+            SelectionEvent(
+                selectionKind = "action",
+                selectedIdentifier = "delete_moment",
+                "moment_id" to currentTarget.id.toString()
+            )
+        )
     }
 
     private suspend fun handleModalApproval(event: ModalApprovalEvent) {

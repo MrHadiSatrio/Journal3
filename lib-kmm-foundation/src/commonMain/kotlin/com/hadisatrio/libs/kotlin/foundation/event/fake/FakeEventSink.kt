@@ -30,6 +30,10 @@ class FakeEventSink(
         return sunkEvents.size
     }
 
+    fun hasSunk(thingThat: (Event) -> Boolean): Boolean {
+        return sunkEvents.any(thingThat)
+    }
+
     override fun sink(event: Event) {
         sunkEvents.add(event)
     }

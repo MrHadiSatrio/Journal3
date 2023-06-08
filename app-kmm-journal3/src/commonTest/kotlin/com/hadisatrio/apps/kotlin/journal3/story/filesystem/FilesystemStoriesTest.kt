@@ -60,10 +60,11 @@ class FilesystemStoriesTest {
     fun `Tells whether or not it contains any moments within`() {
         val empty = FilesystemStories(fileSystem, "Foo", MemorablesCollection(places, people))
         val nonEmpty = SelfPopulatingStories(
-            noOfStories = 1,
+            noOfStories = 2,
             noOfMoments = 1,
             FilesystemStories(fileSystem, "Bar", MemorablesCollection(places, people))
         )
+        nonEmpty.first().moments.first().forget()
 
         empty.hasMoments().shouldBeFalse()
         nonEmpty.hasMoments().shouldBeTrue()
@@ -94,6 +95,15 @@ class FilesystemStoriesTest {
         val found = stories.findStory(uuid4())
 
         found.shouldBeEmpty()
+    }
+
+    @Test
+    fun `Reports whether or not it contains a moment basing on its ID`() {
+        val stories = SelfPopulatingStories(noOfStories = 1, noOfMoments = 1, stories)
+        val moment = stories.first().moments.first()
+
+        stories.containsMoment(moment.id).shouldBeTrue()
+        stories.containsMoment(uuid4()).shouldBeFalse()
     }
 
     @Test
