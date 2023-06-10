@@ -37,6 +37,7 @@ class UpdateDeferringMoment(
     override val description: TokenableString get() = descriptionInEdit
     override val sentiment: Sentiment get() = sentimentInEdit
     override val place: Place get() = placeInEdit
+    override val attachments: Iterable<Uri> get() = attachmentsInEdit
 
     override fun update(timestamp: Timestamp) {
         timestampInEdit = timestamp
