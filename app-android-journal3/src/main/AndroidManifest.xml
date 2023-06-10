@@ -77,6 +77,9 @@
 
         <activity android:name=".moment.EditAMomentActivity" />
 
+        <activity android:name=".moment.DeleteAMomentActivity"
+            android:theme="@style/Theme.Journal3.Translucent" />
+
         <activity android:name=".geography.SelectAPlaceActivity" />
 
     </application>
