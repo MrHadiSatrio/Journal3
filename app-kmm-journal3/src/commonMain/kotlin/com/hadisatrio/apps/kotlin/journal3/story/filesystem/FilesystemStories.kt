@@ -61,6 +61,10 @@ class FilesystemStories(
         return any { story -> story.moments.count() > 0 }
     }
 
+    override fun containsMoment(id: Uuid): Boolean {
+        return findMoment(id).count() > 0
+    }
+
     override fun findMoment(id: Uuid): Iterable<Moment> {
         return flatMap { it.moments.find(id) }
     }

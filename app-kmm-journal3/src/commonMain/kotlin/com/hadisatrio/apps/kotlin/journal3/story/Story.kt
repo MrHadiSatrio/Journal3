@@ -18,10 +18,11 @@
 package com.hadisatrio.apps.kotlin.journal3.story
 
 import com.benasher44.uuid.Uuid
+import com.hadisatrio.apps.kotlin.journal3.forgettable.Forgettable
 import com.hadisatrio.apps.kotlin.journal3.moment.Moments
 import com.hadisatrio.apps.kotlin.journal3.token.TokenableString
 
-interface Story {
+interface Story : Forgettable {
     val id: Uuid
     val title: String
     val synopsis: TokenableString
@@ -29,6 +30,4 @@ interface Story {
 
     fun update(title: String)
     fun update(synopsis: TokenableString)
-
-    fun forget()
 }

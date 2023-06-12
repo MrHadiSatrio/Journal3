@@ -15,17 +15,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.hadisatrio.apps.kotlin.journal3.story
+package com.hadisatrio.apps.kotlin.journal3.moment
 
 import com.hadisatrio.apps.kotlin.journal3.forgettable.DeleteForgettableUseCase
 import com.hadisatrio.apps.kotlin.journal3.forgettable.Forgettable
 import com.hadisatrio.apps.kotlin.journal3.id.TargetId
+import com.hadisatrio.apps.kotlin.journal3.story.Stories
 import com.hadisatrio.libs.kotlin.foundation.event.EventSink
 import com.hadisatrio.libs.kotlin.foundation.event.EventSource
 import com.hadisatrio.libs.kotlin.foundation.modal.Modal
 import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
 
-class DeleteStoryUseCase(
+class DeleteMomentUseCase(
     private val targetId: TargetId,
     private val stories: Stories,
     presenter: Presenter<Modal>,
@@ -34,6 +35,6 @@ class DeleteStoryUseCase(
 ) : DeleteForgettableUseCase(presenter, eventSource, eventSink) {
 
     override fun forgettable(): Forgettable? {
-        return stories.findStory(targetId.asUuid()).firstOrNull()
+        return stories.findMoment(targetId.asUuid()).firstOrNull()
     }
 }

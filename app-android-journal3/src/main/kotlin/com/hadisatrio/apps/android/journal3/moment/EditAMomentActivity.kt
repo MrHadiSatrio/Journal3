@@ -28,6 +28,7 @@ import com.hadisatrio.apps.android.journal3.R
 import com.hadisatrio.apps.android.journal3.datetime.TimestampSelectionEventSource
 import com.hadisatrio.apps.android.journal3.id.BundledTargetId
 import com.hadisatrio.apps.android.journal3.journal3Application
+import com.hadisatrio.apps.kotlin.journal3.event.RefreshRequestEvent
 import com.hadisatrio.apps.kotlin.journal3.moment.EditAMomentUseCase
 import com.hadisatrio.libs.android.foundation.activity.ActivityCompletionEventSink
 import com.hadisatrio.libs.android.foundation.lifecycle.LifecycleTriggeredEventSource
@@ -112,8 +113,17 @@ class EditAMomentActivity : AppCompatActivity() {
                         journal3Application.globalEventSource,
                         LifecycleTriggeredEventSource(
                             lifecycleOwner = this,
+                            lifecycleEvent = Lifecycle.Event.ON_RESUME,
+                            eventFactory = { RefreshRequestEvent("lifecycle") }
+                        ),
+                        LifecycleTriggeredEventSource(
+                            lifecycleOwner = this,
                             lifecycleEvent = Lifecycle.Event.ON_DESTROY,
                             eventFactory = { CancellationEvent("system") }
+                        ),
+                        ViewClickEventSource(
+                            view = findViewById(R.id.delete_button),
+                            eventFactory = { SelectionEvent("action", "delete") }
                         ),
                         ViewClickEventSource(
                             view = findViewById(R.id.add_button),
