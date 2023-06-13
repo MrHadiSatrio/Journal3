@@ -16,7 +16,12 @@
   -->
 
 <resources>
+
     <style name="Theme.Journal3" parent="Theme.Material3.DayNight" />
+
+    <style name="Theme.Journal3.NoActionBar" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:windowTranslucentStatus">true</item>
+    </style>
 
     <style name="Theme.Journal3.Translucent" parent="Theme.Journal3">
         <item name="android:windowIsTranslucent">true</item>
@@ -26,4 +31,5 @@
         <item name="android:windowIsFloating">true</item>
         <item name="android:backgroundDimEnabled">false</item>
     </style>
+
 </resources>

@@ -35,6 +35,7 @@ object Dependencies {
         const val RECYCLER_VIEW = "androidx.recyclerview:recyclerview:1.3.0"
         const val MATERIAL = "com.google.android.material:material:1.9.0"
         const val FLOW_BINDING = "io.github.reactivecircus.flowbinding:flowbinding-android:1.2.0"
+        const val RECYCLER_VIEW_SPACING_DECORATION = "com.github.grzegorzojdana:SpacingItemDecoration:1.1.0"
     }
 
     object AndroidPerformance {
