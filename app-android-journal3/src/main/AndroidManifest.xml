@@ -24,7 +24,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
         android:name=".RealJournal3Application"
@@ -33,7 +33,6 @@
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Journal3"
         tools:targetApi="31">
@@ -43,9 +42,11 @@
             android:authorities="${applicationId}.androidx-startup"
             android:exported="false"
             tools:node="merge">
-            <meta-data  android:name="com.hadisatrio.apps.android.journal3.notification.NotificationChannelInitializer"
+            <meta-data
+                android:name="com.hadisatrio.apps.android.journal3.notification.NotificationChannelInitializer"
                 android:value="androidx.startup" />
-            <meta-data  android:name="com.hadisatrio.apps.android.journal3.alert.InactivityAlertingWorkInitializer"
+            <meta-data
+                android:name="com.hadisatrio.apps.android.journal3.alert.InactivityAlertingWorkInitializer"
                 android:value="androidx.startup" />
         </provider>
 
@@ -72,12 +73,14 @@
 
         <activity android:name=".story.EditAStoryActivity" />
 
-        <activity android:name=".story.DeleteAStoryActivity"
+        <activity
+            android:name=".story.DeleteAStoryActivity"
             android:theme="@style/Theme.Journal3.Translucent" />
 
         <activity android:name=".moment.EditAMomentActivity" />
 
-        <activity android:name=".moment.DeleteAMomentActivity"
+        <activity
+            android:name=".moment.DeleteAMomentActivity"
             android:theme="@style/Theme.Journal3.Translucent" />
 
         <activity android:name=".geography.SelectAPlaceActivity" />
