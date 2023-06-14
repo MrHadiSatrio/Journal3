@@ -70,7 +70,9 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".story.ViewStoryActivity" />
+        <activity
+            android:name=".story.ViewStoryActivity"
+            android:theme="@style/Theme.Journal3.NoActionBar" />
 
         <activity android:name=".story.EditAStoryActivity" />
 

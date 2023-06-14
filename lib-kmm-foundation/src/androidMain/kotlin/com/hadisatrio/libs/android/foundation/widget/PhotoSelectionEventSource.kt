@@ -46,10 +46,10 @@ class PhotoSelectionEventSource internal constructor(
         triggerView.setOnClickListener { launcher.launch(PickVisualMediaRequest(PickVisualMedia.ImageOnly)) }
     }
 
-    constructor(triggerView: View) : this(
+    constructor(triggerView: View, activity: ComponentActivity) : this(
         triggerView,
-        triggerView.context as ComponentActivity,
-        (triggerView.context as ComponentActivity).activityResultRegistry
+        activity,
+        activity.activityResultRegistry
     )
 
     override fun events(): Flow<Event> {

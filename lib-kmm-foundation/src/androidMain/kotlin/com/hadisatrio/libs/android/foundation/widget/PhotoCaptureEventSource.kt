@@ -55,10 +55,10 @@ class PhotoCaptureEventSource internal constructor(
         }
     }
 
-    constructor(triggerView: View) : this(
+    constructor(triggerView: View, activity: ComponentActivity) : this(
         triggerView,
-        triggerView.context as ComponentActivity,
-        (triggerView.context as ComponentActivity).activityResultRegistry,
+        activity,
+        activity.activityResultRegistry,
         File(triggerView.context.cacheDir, "camera").apply { mkdirs() }
     )
 

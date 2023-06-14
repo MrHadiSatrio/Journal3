@@ -145,10 +145,12 @@ class EditAMomentActivity : AppCompatActivity() {
                             selectionKind = "sentiment"
                         ),
                         PhotoCaptureEventSource(
-                            triggerView = findViewById(R.id.photo_capturer_button)
+                            triggerView = findViewById(R.id.photo_capturer_button),
+                            activity = this
                         ),
                         PhotoSelectionEventSource(
-                            triggerView = findViewById(R.id.photo_picker_button)
+                            triggerView = findViewById(R.id.photo_picker_button),
+                            activity = this
                         ),
                         BackButtonCancellationEventSource(this)
                     )
