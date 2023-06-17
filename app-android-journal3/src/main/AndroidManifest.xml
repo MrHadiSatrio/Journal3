@@ -82,7 +82,9 @@
             android:name=".story.DeleteAStoryActivity"
             android:theme="@style/Theme.Journal3.Translucent" />
 
-        <activity android:name=".moment.EditAMomentActivity" />
+        <activity
+            android:name=".moment.EditAMomentActivity"
+            android:theme="@style/Theme.Journal3.NoActionBar" />
 
         <activity
             android:name=".moment.DeleteAMomentActivity"
