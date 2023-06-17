@@ -90,7 +90,9 @@
             android:name=".moment.DeleteAMomentActivity"
             android:theme="@style/Theme.Journal3.Translucent" />
 
-        <activity android:name=".geography.SelectAPlaceActivity" />
+        <activity
+            android:name=".geography.SelectAPlaceActivity"
+            android:theme="@style/Theme.Journal3.NoActionBar" />
 
     </application>
 
