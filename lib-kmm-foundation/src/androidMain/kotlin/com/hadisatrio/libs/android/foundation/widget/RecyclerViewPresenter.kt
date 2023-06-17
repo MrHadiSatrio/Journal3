@@ -62,6 +62,18 @@ class RecyclerViewPresenter<T>(
 
     constructor(
         recyclerView: RecyclerView,
+        viewFactory: ViewFactory,
+        viewRenderer: ViewRenderer<T>
+    ) : this(
+        recyclerView,
+        LinearLayoutManager(recyclerView.context, RecyclerView.VERTICAL, false),
+        viewFactory,
+        viewRenderer,
+        NaiveItemDiffer()
+    )
+
+    constructor(
+        recyclerView: RecyclerView,
         layoutManager: RecyclerView.LayoutManager,
         viewFactory: ViewFactory,
         viewRenderer: ViewRenderer<T>

@@ -17,15 +17,23 @@
 
 package com.hadisatrio.apps.android.journal3.story
 
+import android.graphics.Rect
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
+import androidx.recyclerview.widget.RecyclerView
+import com.grzegorzojdana.spacingitemdecoration.Spacing
+import com.grzegorzojdana.spacingitemdecoration.SpacingItemDecoration
 import com.hadisatrio.apps.android.journal3.R
 import com.hadisatrio.apps.android.journal3.id.BundledTargetId
 import com.hadisatrio.apps.android.journal3.journal3Application
 import com.hadisatrio.apps.kotlin.journal3.event.RefreshRequestEvent
 import com.hadisatrio.apps.kotlin.journal3.story.ShowStoryUseCase
+import com.hadisatrio.apps.kotlin.journal3.story.Story
 import com.hadisatrio.apps.kotlin.journal3.story.cache.CachingStoryPresenter
+import com.hadisatrio.libs.android.dimensions.dp
 import com.hadisatrio.libs.android.foundation.activity.ActivityCompletionEventSink
 import com.hadisatrio.libs.android.foundation.lifecycle.LifecycleTriggeredEventSource
 import com.hadisatrio.libs.android.foundation.widget.RecyclerViewItemSelectionEventSource
@@ -33,96 +41,139 @@ import com.hadisatrio.libs.android.foundation.widget.RecyclerViewPresenter
 import com.hadisatrio.libs.android.foundation.widget.TextViewStringPresenter
 import com.hadisatrio.libs.android.foundation.widget.ViewClickEventSource
 import com.hadisatrio.libs.kotlin.foundation.ExecutorDispatchingUseCase
+import com.hadisatrio.libs.kotlin.foundation.UseCase
 import com.hadisatrio.libs.kotlin.foundation.event.CancellationEvent
+import com.hadisatrio.libs.kotlin.foundation.event.EventSink
 import com.hadisatrio.libs.kotlin.foundation.event.EventSinks
+import com.hadisatrio.libs.kotlin.foundation.event.EventSource
 import com.hadisatrio.libs.kotlin.foundation.event.EventSources
 import com.hadisatrio.libs.kotlin.foundation.event.ExecutorDispatchingEventSource
 import com.hadisatrio.libs.kotlin.foundation.event.SelectionEvent
 import com.hadisatrio.libs.kotlin.foundation.presentation.AdaptingPresenter
 import com.hadisatrio.libs.kotlin.foundation.presentation.ExecutorDispatchingPresenter
+import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
 import com.hadisatrio.libs.kotlin.foundation.presentation.Presenters
 
 class ViewStoryActivity : AppCompatActivity() {
 
-    @Suppress("LongMethod")
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    private val presenter: Presenter<Story> by lazy {
+        ExecutorDispatchingPresenter(
+            executor = journal3Application.backgroundExecutor,
+            origin = CachingStoryPresenter(
+                origin = ExecutorDispatchingPresenter(
+                    executor = journal3Application.foregroundExecutor,
+                    origin = Presenters(
+                        AdaptingPresenter(
+                            adapter = StoryStringAdapter("title"),
+                            origin = TextViewStringPresenter(findViewById(R.id.title_label))
+                        ),
+                        AdaptingPresenter(
+                            adapter = StoryStringAdapter("synopsis"),
+                            origin = TextViewStringPresenter(findViewById(R.id.synopsis_label))
+                        ),
+                        AdaptingPresenter(
+                            adapter = StoryStringAdapter("attachment_count"),
+                            origin = TextViewStringPresenter(findViewById(R.id.attachment_count_label))
+                        ),
+                        AdaptingPresenter(
+                            adapter = { story -> story.moments.toList() },
+                            origin = RecyclerViewPresenter(
+                                recyclerView = findViewById(R.id.moments_list),
+                                viewFactory = { parent, _ ->
+                                    LayoutInflater.from(parent.context)
+                                        .inflate(R.layout.view_moment_snippet_card, parent, false)
+                                },
+                                viewRenderer = { view, item ->
+                                    view.findViewById<TextView>(R.id.date_and_place_label).text =
+                                        "${item.timestamp} at ${item.place.name}"
+                                    view.findViewById<TextView>(R.id.description_label).text =
+                                        item.description.toString()
+                                    view.findViewById<TextView>(R.id.mood_and_attachment_count_label).text =
+                                        "${item.sentiment.value} · ${item.attachments.count()} attachment(s)"
+                                }
+                            )
+                        )
+                    )
+                )
+            )
+        )
+    }
 
-        setContentView(R.layout.activity_view_story)
+    private val eventSource: EventSource by lazy {
+        ExecutorDispatchingEventSource(
+            executor = journal3Application.foregroundExecutor,
+            origin = EventSources(
+                journal3Application.globalEventSource,
+                LifecycleTriggeredEventSource(
+                    lifecycleOwner = this,
+                    lifecycleEvent = Lifecycle.Event.ON_RESUME,
+                    eventFactory = { RefreshRequestEvent("lifecycle") }
+                ),
+                LifecycleTriggeredEventSource(
+                    lifecycleOwner = this,
+                    lifecycleEvent = Lifecycle.Event.ON_DESTROY,
+                    eventFactory = { CancellationEvent("system") }
+                ),
+                ViewClickEventSource(
+                    view = findViewById(R.id.add_button),
+                    eventFactory = { SelectionEvent("action", "add") }
+                ),
+                ViewClickEventSource(
+                    view = findViewById(R.id.edit_button),
+                    eventFactory = { SelectionEvent("action", "edit") }
+                ),
+                ViewClickEventSource(
+                    view = findViewById(R.id.delete_button),
+                    eventFactory = { SelectionEvent("action", "delete") }
+                ),
+                ViewClickEventSource(
+                    view = findViewById(R.id.back_button),
+                    eventFactory = { CancellationEvent("user") }
+                ),
+                RecyclerViewItemSelectionEventSource(
+                    recyclerView = findViewById(R.id.moments_list)
+                )
+            )
+        )
+    }
 
+    private val eventSink: EventSink by lazy {
+        EventSinks(
+            journal3Application.globalEventSink,
+            ActivityCompletionEventSink(this)
+        )
+    }
+
+    private val useCase: UseCase by lazy {
         ExecutorDispatchingUseCase(
             executor = journal3Application.backgroundExecutor,
             origin = ShowStoryUseCase(
                 targetId = BundledTargetId(intent, "target_id"),
                 stories = journal3Application.stories,
-                presenter = ExecutorDispatchingPresenter(
-                    executor = mainExecutor,
-                    origin = CachingStoryPresenter(
-                        origin = ExecutorDispatchingPresenter(
-                            executor = journal3Application.foregroundExecutor,
-                            origin = Presenters(
-                                AdaptingPresenter(
-                                    origin = TextViewStringPresenter(findViewById(R.id.title_label)),
-                                    adapter = StoryStringAdapter("title")
-                                ),
-                                AdaptingPresenter(
-                                    origin = TextViewStringPresenter(findViewById(R.id.synopsis_label)),
-                                    adapter = StoryStringAdapter("synopsis")
-                                ),
-                                AdaptingPresenter(
-                                    origin = TextViewStringPresenter(findViewById(R.id.attachment_count_label)),
-                                    adapter = StoryStringAdapter("attachment_count")
-                                ),
-                                AdaptingPresenter(
-                                    origin = RecyclerViewPresenter(findViewById(R.id.moments_list)),
-                                    adapter = { story ->
-                                        story.moments.sortedDescending().map {
-                                            "${it.timestamp}\n${it.description}\n" +
-                                                "${it.sentiment}\n${it.place.name}\n" +
-                                                "${it.attachments.count()} attachment(s)"
-                                        }
-                                    }
-                                )
-                            )
-                        )
-                    )
-                ),
-                eventSource = ExecutorDispatchingEventSource(
-                    executor = journal3Application.foregroundExecutor,
-                    origin = EventSources(
-                        journal3Application.globalEventSource,
-                        LifecycleTriggeredEventSource(
-                            lifecycleOwner = this,
-                            lifecycleEvent = Lifecycle.Event.ON_RESUME,
-                            eventFactory = { RefreshRequestEvent("lifecycle") }
-                        ),
-                        LifecycleTriggeredEventSource(
-                            lifecycleOwner = this,
-                            lifecycleEvent = Lifecycle.Event.ON_DESTROY,
-                            eventFactory = { CancellationEvent("system") }
-                        ),
-                        ViewClickEventSource(
-                            view = findViewById(R.id.add_button),
-                            eventFactory = { SelectionEvent("action", "add") }
-                        ),
-                        ViewClickEventSource(
-                            view = findViewById(R.id.edit_button),
-                            eventFactory = { SelectionEvent("action", "edit") }
-                        ),
-                        ViewClickEventSource(
-                            view = findViewById(R.id.delete_button),
-                            eventFactory = { SelectionEvent("action", "delete") }
-                        ),
-                        RecyclerViewItemSelectionEventSource(
-                            recyclerView = findViewById(R.id.moments_list)
-                        )
-                    )
-                ),
-                eventSink = EventSinks(
-                    journal3Application.globalEventSink,
-                    ActivityCompletionEventSink(this)
+                presenter = presenter,
+                eventSource = eventSource,
+                eventSink = eventSink
+            )
+        )
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setupViews()
+        useCase()
+    }
+
+    private fun setupViews() {
+        setContentView(R.layout.activity_view_story)
+        setSupportActionBar(findViewById(R.id.bottom_bar))
+        findViewById<RecyclerView>(R.id.moments_list).addItemDecoration(
+            SpacingItemDecoration(
+                Spacing(
+                    edges = Rect(0.dp, 16.dp, 0.dp, 16.dp),
+                    horizontal = 16.dp,
+                    vertical = 8.dp
                 )
             )
-        )()
+        )
     }
 }

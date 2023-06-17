@@ -18,6 +18,7 @@
 package com.hadisatrio.apps.android.journal3
 
 import androidx.core.content.ContextCompat
+import com.google.android.material.color.DynamicColors
 import com.hadisatrio.apps.kotlin.journal3.moment.MemorablesCollection
 import com.hadisatrio.apps.kotlin.journal3.moment.filesystem.FilesystemMemorableFiles
 import com.hadisatrio.apps.kotlin.journal3.moment.filesystem.FilesystemMemorablePlaces
@@ -125,5 +126,10 @@ class RealJournal3Application : Journal3Application() {
 
     override val foregroundExecutor: Executor by lazy {
         ContextCompat.getMainExecutor(this)
+    }
+
+    override fun onCreate() {
+        super.onCreate()
+        DynamicColors.applyToActivitiesIfAvailable(this)
     }
 }

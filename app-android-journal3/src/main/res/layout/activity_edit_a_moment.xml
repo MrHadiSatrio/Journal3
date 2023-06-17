@@ -15,97 +15,134 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
 
-    <com.hadisatrio.apps.android.journal3.datetime.TimestampSelectorButton
-        android:id="@+id/timestamp_selector_button"
-        android:layout_width="0dp"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingStart="@dimen/margin"
+        android:paddingTop="@dimen/margin"
+        android:paddingEnd="@dimen/margin"
+        android:paddingBottom="100dp">
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/description_text_layout"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginBottom="@dimen/margin"
+            android:hint="Description"
+            app:layout_constraintBottom_toTopOf="@id/photo_grid"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/description_text_field"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="top" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/photo_grid"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginBottom="@dimen/gutter"
+            app:layout_constraintBottom_toTopOf="@id/sentiment_slider"
+            app:layout_constraintDimensionRatio="H,3:1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <com.google.android.material.slider.Slider
+            android:id="@+id/sentiment_slider"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/gutter"
+            android:valueFrom="0.0"
+            android:valueTo="1.0"
+            app:layout_constraintBottom_toTopOf="@id/timestamp_selector_button"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <com.hadisatrio.apps.android.journal3.datetime.TimestampSelectorButton
+            android:id="@+id/timestamp_selector_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/gutter"
+            app:layout_constraintBottom_toTopOf="@id/place_selector_button"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/place_selector_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/gutter"
+            app:layout_constraintBottom_toTopOf="@id/photo_capturer_button"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/photo_capturer_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/half_gutter"
+            android:text="Take Photo"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/photo_picker_button"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/photo_picker_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/half_gutter"
+            android:text="Pick Photos"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@id/photo_capturer_button" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <com.google.android.material.bottomappbar.BottomAppBar
+        android:id="@+id/bottom_bar"
+        style="@style/Widget.Material3.BottomAppBar"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/margin"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_gravity="bottom">
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/place_selector_button"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="@+id/timestamp_selector_button"
-        app:layout_constraintStart_toStartOf="@+id/timestamp_selector_button"
-        app:layout_constraintTop_toBottomOf="@+id/timestamp_selector_button" />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/back_button"
+            style="?attr/materialIconButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:focusable="true"
+            app:icon="@drawable/ic_back" />
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/description_text_layout"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:hint="Synopsis"
-        app:layout_constraintEnd_toEndOf="@+id/timestamp_selector_button"
-        app:layout_constraintStart_toStartOf="@+id/timestamp_selector_button"
-        app:layout_constraintTop_toBottomOf="@+id/place_selector_button">
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/delete_button"
+            style="?attr/materialIconButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:focusable="true"
+            app:icon="@drawable/ic_delete" />
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/description_text_field"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.slider.Slider
-        android:id="@+id/sentiment_slider"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:valueFrom="0.0"
-        android:valueTo="1.0"
-        app:layout_constraintEnd_toEndOf="@+id/timestamp_selector_button"
-        app:layout_constraintStart_toStartOf="@+id/timestamp_selector_button"
-        app:layout_constraintTop_toBottomOf="@id/description_text_layout" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/photo_grid"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintEnd_toEndOf="@+id/timestamp_selector_button"
-        app:layout_constraintStart_toStartOf="@+id/timestamp_selector_button"
-        app:layout_constraintTop_toBottomOf="@id/sentiment_slider"
-        app:layout_constraintBottom_toTopOf="@id/photo_picker_button" />
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/photo_capturer_button"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="Take Photo"
-        app:layout_constraintEnd_toEndOf="@+id/timestamp_selector_button"
-        app:layout_constraintStart_toStartOf="@+id/timestamp_selector_button"
-        app:layout_constraintBottom_toBottomOf="parent" />
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/photo_picker_button"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="Pick Photos"
-        app:layout_constraintEnd_toEndOf="@+id/timestamp_selector_button"
-        app:layout_constraintStart_toStartOf="@+id/timestamp_selector_button"
-        app:layout_constraintBottom_toTopOf="@id/photo_capturer_button" />
+    </com.google.android.material.bottomappbar.BottomAppBar>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/delete_button"
+        android:id="@+id/commit_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/margin"
-        android:src="@drawable/ic_delete"
-        app:layout_constraintBottom_toTopOf="@id/add_button"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/add_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/margin"
         android:src="@drawable/ic_pen_down"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_anchor="@id/bottom_bar" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

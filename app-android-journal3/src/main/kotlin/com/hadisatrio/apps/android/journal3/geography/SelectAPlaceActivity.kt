@@ -17,67 +17,120 @@
 
 package com.hadisatrio.apps.android.journal3.geography
 
+import android.graphics.Rect
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
+import androidx.recyclerview.widget.RecyclerView
+import com.grzegorzojdana.spacingitemdecoration.Spacing
+import com.grzegorzojdana.spacingitemdecoration.SpacingItemDecoration
 import com.hadisatrio.apps.android.journal3.R
 import com.hadisatrio.apps.android.journal3.journal3Application
 import com.hadisatrio.apps.kotlin.journal3.geography.SelectAPlaceUseCase
+import com.hadisatrio.libs.android.dimensions.dp
 import com.hadisatrio.libs.android.foundation.activity.ActivityCompletionEventSink
 import com.hadisatrio.libs.android.foundation.lifecycle.LifecycleTriggeredEventSource
 import com.hadisatrio.libs.android.foundation.widget.BackButtonCancellationEventSource
 import com.hadisatrio.libs.android.foundation.widget.RecyclerViewItemSelectionEventSource
 import com.hadisatrio.libs.android.foundation.widget.RecyclerViewPresenter
+import com.hadisatrio.libs.android.foundation.widget.ViewClickEventSource
 import com.hadisatrio.libs.kotlin.foundation.ExecutorDispatchingUseCase
+import com.hadisatrio.libs.kotlin.foundation.UseCase
 import com.hadisatrio.libs.kotlin.foundation.event.CancellationEvent
+import com.hadisatrio.libs.kotlin.foundation.event.EventSink
 import com.hadisatrio.libs.kotlin.foundation.event.EventSinks
+import com.hadisatrio.libs.kotlin.foundation.event.EventSource
 import com.hadisatrio.libs.kotlin.foundation.event.EventSources
 import com.hadisatrio.libs.kotlin.foundation.event.ExecutorDispatchingEventSource
 import com.hadisatrio.libs.kotlin.foundation.event.FilteringEventSink
 import com.hadisatrio.libs.kotlin.foundation.event.SelectionEvent
 import com.hadisatrio.libs.kotlin.foundation.presentation.AdaptingPresenter
 import com.hadisatrio.libs.kotlin.foundation.presentation.ExecutorDispatchingPresenter
+import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
+import com.hadisatrio.libs.kotlin.geography.Places
 
 class SelectAPlaceActivity : AppCompatActivity() {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    private val presenter: Presenter<Places> by lazy {
+        AdaptingPresenter(
+            adapter = { places -> places.map { it.name } },
+            origin = ExecutorDispatchingPresenter(
+                executor = journal3Application.foregroundExecutor,
+                origin = RecyclerViewPresenter(
+                    recyclerView = findViewById(R.id.places_list),
+                    viewFactory = { parent, _ ->
+                        LayoutInflater.from(parent.context)
+                            .inflate(R.layout.view_place_snippet_card, parent, false)
+                    },
+                    viewRenderer = { view, item ->
+                        view.findViewById<TextView>(R.id.name_label).text = item
+                    }
+                )
+            )
+        )
+    }
 
-        setContentView(R.layout.activity_select_a_place)
+    private val eventSource: EventSource by lazy {
+        ExecutorDispatchingEventSource(
+            executor = journal3Application.foregroundExecutor,
+            origin = EventSources(
+                journal3Application.globalEventSource,
+                LifecycleTriggeredEventSource(
+                    lifecycleOwner = this,
+                    lifecycleEvent = Lifecycle.Event.ON_DESTROY,
+                    eventFactory = { CancellationEvent("system") }
+                ),
+                ViewClickEventSource(
+                    view = findViewById(R.id.back_button),
+                    eventFactory = { CancellationEvent("user") }
+                ),
+                RecyclerViewItemSelectionEventSource(findViewById(R.id.places_list)),
+                BackButtonCancellationEventSource(this)
+            )
+        )
+    }
 
+    private val eventSink: EventSink by lazy {
+        EventSinks(
+            ActivityCompletionEventSink(this),
+            FilteringEventSink(
+                predicate = { it is SelectionEvent && it.selectionKind == "place" },
+                origin = journal3Application.globalEventSource
+            ),
+            journal3Application.globalEventSink
+        )
+    }
+
+    private val useCase: UseCase by lazy {
         ExecutorDispatchingUseCase(
             executor = journal3Application.backgroundExecutor,
             origin = SelectAPlaceUseCase(
                 places = journal3Application.places,
-                presenter = AdaptingPresenter(
-                    origin = ExecutorDispatchingPresenter(
-                        executor = journal3Application.foregroundExecutor,
-                        origin = RecyclerViewPresenter(findViewById(R.id.places_list))
-                    ),
-                    adapter = { places -> places.map { it.name } }
-                ),
-                eventSource = ExecutorDispatchingEventSource(
-                    executor = journal3Application.foregroundExecutor,
-                    origin = EventSources(
-                        journal3Application.globalEventSource,
-                        LifecycleTriggeredEventSource(
-                            lifecycleOwner = this,
-                            lifecycleEvent = Lifecycle.Event.ON_DESTROY,
-                            eventFactory = { CancellationEvent("system") }
-                        ),
-                        RecyclerViewItemSelectionEventSource(findViewById(R.id.places_list)),
-                        BackButtonCancellationEventSource(this)
-                    )
-                ),
-                eventSink = EventSinks(
-                    ActivityCompletionEventSink(this),
-                    FilteringEventSink(
-                        predicate = { it is SelectionEvent && it.selectionKind == "place" },
-                        origin = journal3Application.globalEventSource
-                    ),
-                    journal3Application.globalEventSink
+                presenter = presenter,
+                eventSource = eventSource,
+                eventSink = eventSink
+            )
+        )
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setupViews()
+        useCase()
+    }
+
+    private fun setupViews() {
+        setContentView(R.layout.activity_select_a_place)
+        setSupportActionBar(findViewById(R.id.bottom_bar))
+        findViewById<RecyclerView>(R.id.places_list).addItemDecoration(
+            SpacingItemDecoration(
+                Spacing(
+                    edges = Rect(16.dp, 16.dp, 16.dp, 16.dp),
+                    vertical = 8.dp
                 )
             )
-        )()
+        )
     }
 }
