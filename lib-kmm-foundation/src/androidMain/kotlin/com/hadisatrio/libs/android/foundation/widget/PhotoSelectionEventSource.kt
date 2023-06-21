@@ -17,6 +17,8 @@
 
 package com.hadisatrio.libs.android.foundation.widget
 
+import android.content.ContentResolver
+import android.content.Intent
 import android.view.View
 import androidx.activity.ComponentActivity
 import androidx.activity.result.ActivityResultRegistry
@@ -32,14 +34,20 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 class PhotoSelectionEventSource internal constructor(
     triggerView: View,
     activity: ComponentActivity,
-    registry: ActivityResultRegistry
+    registry: ActivityResultRegistry,
+    contentResolver: ContentResolver
 ) : EventSource {
 
     private val events = MutableSharedFlow<Event>(extraBufferCapacity = 1)
     private val launcher = activity.registerForActivityResult(PickMultipleVisualMedia(), registry) { uris ->
         if (uris.isNullOrEmpty()) return@registerForActivityResult
-        val csv = uris.joinToString(",")
-        events.tryEmit(SelectionEvent("attachments", csv))
+        val csv = StringBuilder()
+        uris.forEachIndexed { index, uri ->
+            contentResolver.takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            csv.append(uri.toString())
+            if (index != uris.lastIndex) csv.append(',')
+        }
+        events.tryEmit(SelectionEvent("attachments", csv.toString()))
     }
 
     init {
@@ -49,7 +57,8 @@ class PhotoSelectionEventSource internal constructor(
     constructor(triggerView: View, activity: ComponentActivity) : this(
         triggerView,
         activity,
-        activity.activityResultRegistry
+        activity.activityResultRegistry,
+        activity.contentResolver
     )
 
     override fun events(): Flow<Event> {
