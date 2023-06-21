@@ -17,10 +17,13 @@
 
 <resources>
 
-    <style name="Theme.Journal3" parent="Theme.Material3.DayNight" />
+    <style name="Theme.Journal3" parent="Theme.Material3.DayNight">
+        <item name="android:windowSoftInputMode">adjustPan</item>
+    </style>
 
     <style name="Theme.Journal3.NoActionBar" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowSoftInputMode">adjustPan</item>
     </style>
 
     <style name="Theme.Journal3.Translucent" parent="Theme.Journal3">
