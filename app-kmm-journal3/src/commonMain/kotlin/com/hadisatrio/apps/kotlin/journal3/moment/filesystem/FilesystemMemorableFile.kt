@@ -53,7 +53,17 @@ class FilesystemMemorableFile(
 
     override val uri: Uri
         get() {
-            return Uri.fromParts(scheme = "file", path = path.toString())
+            return Uri.fromParts(
+                scheme = "file",
+                // The following is a hack to overcome the fact that Uri, the class, doesn't allow
+                // empty host. Uri will always honor the original RFC when it comes to the '://' part.
+                // That is, it won't add the '//' part if the host is empty, which don't play well with
+                // the 'file' scheme.
+                // The method internally would only do a substringAfter("://") when it's sanitizing
+                // the host part, hence the following.
+                host = "://",
+                path = path.toString()
+            )
         }
 
     override fun link(momentId: Uuid) {

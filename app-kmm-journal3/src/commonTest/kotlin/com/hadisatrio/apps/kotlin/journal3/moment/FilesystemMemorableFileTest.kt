@@ -27,6 +27,7 @@ import com.hadisatrio.libs.kotlin.json.JsonFile
 import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldHaveSize
+import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
 import kotlinx.serialization.json.JsonPrimitive
 import okio.Path
@@ -108,5 +109,10 @@ class FilesystemMemorableFileTest {
         file.unlink(oneMomentId)
         file.unlink(otherMomentId)
         files.shouldBeEmpty()
+    }
+
+    @Test
+    fun `Produces a valid URI of itself`() {
+        file.uri.uriString.shouldBe("file:///$internalDirPath/${file.id}")
     }
 }
