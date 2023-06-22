@@ -46,7 +46,7 @@ class PhotoSelectionEventSourceTest {
     fun `Produces SelectionEvent upon positive activity result`() = runTest {
         val expectedResult = listOf(Uri.parse("content://foo"), Uri.parse("content://bar"))
         val registry = immediateReturningRegistry(expectedResult)
-        val source = PhotoSelectionEventSource(triggerView, activity, registry)
+        val source = PhotoSelectionEventSource(triggerView, activity, registry, activity.contentResolver)
         val events = mutableListOf<Event>()
         activity.setContentView(triggerView)
         activityController.setup().visible()
@@ -64,7 +64,7 @@ class PhotoSelectionEventSourceTest {
     @Test
     fun `Does not produce SelectionEvent upon negative activity result`() = runTest {
         val registry = immediateReturningRegistry(emptyList<Uri>())
-        val source = PhotoSelectionEventSource(triggerView, activity, registry)
+        val source = PhotoSelectionEventSource(triggerView, activity, registry, activity.contentResolver)
         val events = mutableListOf<Event>()
         activity.setContentView(triggerView)
         activityController.setup().visible()
