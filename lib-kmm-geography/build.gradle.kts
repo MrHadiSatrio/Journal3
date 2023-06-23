@@ -7,8 +7,6 @@ plugins {
     id("io.gitlab.arturbosch.detekt")
 }
 
-version = ext.get("gitVersionName")!!
-
 kotlin {
     jvm()
     android()

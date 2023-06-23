@@ -10,6 +10,12 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Decode Keystore
+        env:
+          KEYSTORE_BASE64: ${{ secrets.RELEASE_KEY_STORE }}
+        run: |
+          echo $KEYSTORE_BASE64 | base64 -di > app-android-journal3/release_signing.jks
+
       - name: Set up JDK 11
         uses: actions/setup-java@v3
         with:
@@ -24,4 +30,17 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          RELEASE_KEY_STORE: ${{ secrets.RELEASE_KEY_STORE }}
+          RELEASE_KEY_STORE_PASSWORD: ${{ secrets.RELEASE_KEY_STORE_PASSWORD }}
+          RELEASE_KEY_ALIAS: ${{ secrets.RELEASE_KEY_ALIAS }}
+          RELEASE_KEY_PASSWORD: ${{ secrets.RELEASE_KEY_PASSWORD }}
+          RELEASE_KEY_HERE_API: ${{ secrets.RELEASE_KEY_HERE_API }}
+          DEBUG_KEY_HERE_API: ${{ secrets.DEBUG_KEY_HERE_API }}
         run: ./gradlew clean build sonarqube
+
+      - name: Archive build reports
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-report-artifacts
+          path: |
+            **/build/reports

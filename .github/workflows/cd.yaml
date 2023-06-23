@@ -1,11 +1,12 @@
-name: CI
+name: CD
 
 on:
   push:
-    branches: [ develop ]
+    tags:
+      - "v*.*.*"
 
 jobs:
-  integrate:
+  deploy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -28,21 +29,18 @@ jobs:
 
       - name: Build with Gradle and SonarCloud
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           RELEASE_KEY_STORE: ${{ secrets.RELEASE_KEY_STORE }}
           RELEASE_KEY_STORE_PASSWORD: ${{ secrets.RELEASE_KEY_STORE_PASSWORD }}
           RELEASE_KEY_ALIAS: ${{ secrets.RELEASE_KEY_ALIAS }}
           RELEASE_KEY_PASSWORD: ${{ secrets.RELEASE_KEY_PASSWORD }}
           RELEASE_KEY_HERE_API: ${{ secrets.RELEASE_KEY_HERE_API }}
           DEBUG_KEY_HERE_API: ${{ secrets.DEBUG_KEY_HERE_API }}
-        run: ./gradlew clean build sonarqube
+        run: ./gradlew clean build
 
-      - name: Archive built APKs and their mapping files
-        uses: actions/upload-artifact@v3
+      - name: Create a new GitHub Release
+        uses: softprops/action-gh-release@v1
         with:
-          name: apk-and-mapping-artifacts
-          path: |
-            app-android-journal3/build/outputs/apk/debug
-            app-android-journal3/build/outputs/apk/release
-            app-android-journal3/build/outputs/mapping/release
+          fail_on_unmatched_files: true
+          files: |
+            app-android-journal3/build/outputs/apk/release/app-android-journal3-release.apk
+            app-android-journal3/build/outputs/mapping/release/mapping.txt
