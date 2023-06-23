@@ -3,13 +3,12 @@ import plugin.AndroidAppConfigurationPlugin
 apply<AndroidAppConfigurationPlugin>()
 apply("$rootDir/gradle/script-ext.gradle")
 
-val version = ext.get("gitVersionName")
-
 plugins {
     id("com.android.application")
     kotlin("android")
     kotlin("kapt")
     id("io.gitlab.arturbosch.detekt")
+    id("io.github.reactivecircus.app-versioning").version("1.3.1")
 }
 
 android {
