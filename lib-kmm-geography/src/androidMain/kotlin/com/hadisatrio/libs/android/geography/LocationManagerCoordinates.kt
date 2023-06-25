@@ -23,14 +23,12 @@ import android.content.Context
 import android.location.Criteria
 import android.location.Location
 import android.location.LocationManager
-import android.os.Build
 import android.os.Handler
 import android.os.HandlerThread
 import androidx.annotation.RequiresPermission
 import com.hadisatrio.libs.kotlin.geography.Coordinates
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
-import java.util.concurrent.Executor
 import kotlin.time.Duration.Companion.seconds
 
 class LocationManagerCoordinates(
@@ -59,7 +57,6 @@ class LocationManagerCoordinates(
     private var lastFetchInstant: Instant? = null
 
     @Synchronized
-    @Suppress("DEPRECATION")
     @RequiresPermission(allOf = [ ACCESS_COARSE_LOCATION, ACCESS_FINE_LOCATION ])
     private fun location(): Location {
         val lastFetchInstant = this.lastFetchInstant
@@ -69,38 +66,23 @@ class LocationManagerCoordinates(
         if (updateRequired) {
             val provider = this.provider
             checkNotNull(provider) { "No location providers available." }
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                manager.getCurrentLocation(provider, null, CurrentThreadExecutor) { location ->
-                    this.lastDeviceLocation = location
-                    this.lastFetchInstant = clock.now()
-                }
-            } else {
-                val thread = HandlerThread("AndroidCoordinates").also { it.start() }
-                val handler = Handler(thread.looper)
-                handler.post {
-                    manager.requestSingleUpdate(
-                        /* provider = */
-                        provider,
-                        /* listener = */
-                        { location ->
-                            this@LocationManagerCoordinates.lastDeviceLocation = location
-                            this@LocationManagerCoordinates.lastFetchInstant = clock.now()
-                            thread.quit()
-                        },
-                        /* looper = */
-                        null
-                    )
-                }
-                thread.join()
+
+            val thread = HandlerThread("LocationManagerCoordinates").also { it.start() }
+            val handler = Handler(thread.looper)
+            val callback: (location: Location) -> Unit = { location ->
+                this@LocationManagerCoordinates.lastDeviceLocation = location
+                this@LocationManagerCoordinates.lastFetchInstant = clock.now()
+                thread.quit()
             }
+
+            // LocationManager#requestSingleUpdate() is deprecated, but its replacement doesn't play well
+            // with the synchronous nature of this class. LocationManager#getCurrentLocation() internally
+            // enforces the fetching to happen on a different thread; providing threading control only for
+            // the callback.
+            handler.post { manager.requestSingleUpdate(provider, callback, null) }
+            thread.join()
         }
 
         return this.lastDeviceLocation!!
-    }
-
-    private object CurrentThreadExecutor : Executor {
-        override fun execute(command: Runnable) {
-            command.run()
-        }
     }
 }
