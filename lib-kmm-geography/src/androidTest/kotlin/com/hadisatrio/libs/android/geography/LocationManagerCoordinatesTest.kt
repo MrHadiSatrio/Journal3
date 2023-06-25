@@ -20,27 +20,35 @@ package com.hadisatrio.libs.android.geography
 import android.content.Context
 import android.location.Location
 import android.location.LocationManager
+import android.os.Build
 import androidx.test.runner.AndroidJUnit4
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.shouldBe
 import io.mockk.spyk
 import io.mockk.verify
 import org.junit.After
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RuntimeEnvironment
 import org.robolectric.Shadows
+import org.robolectric.annotation.Config
 import org.robolectric.shadows.ShadowLocationManager
 import kotlin.time.Duration.Companion.seconds
 
 @RunWith(AndroidJUnit4::class)
+@Config(sdk = [Build.VERSION_CODES.Q])
 class LocationManagerCoordinatesTest {
+
+    @get:Rule
+    val retryRule = RetryRule(retryCount = 5)
 
     private val application = RuntimeEnvironment.getApplication()
     private val locationManager = spyk(application.getSystemService(Context.LOCATION_SERVICE) as LocationManager)
     private val shadowLocationManager = Shadows.shadowOf(locationManager)
     private val gpsLocation = Location(LocationManager.GPS_PROVIDER)
     private val clock = TestClock()
+    private val coordinates = LocationManagerCoordinates(locationManager, clock)
 
     @After
     fun `Resets shadows`() {
@@ -52,13 +60,12 @@ class LocationManagerCoordinatesTest {
         var lat = 0.0
         var lng = 0.0
         val thread = Thread {
-            val coordinates = LocationManagerCoordinates(locationManager, clock)
             lat = coordinates.latitude
             lng = coordinates.longitude
         }
 
         thread.start()
-        shadowLocationManager.simulateLocation(gpsLocation)
+        shadowLocationManager.enqueueSimulateLocation(gpsLocation)
         thread.join()
 
         lat.shouldBe(gpsLocation.latitude)
@@ -68,7 +75,6 @@ class LocationManagerCoordinatesTest {
     @Test(timeout = 10_000)
     fun `Prevents spamming the LocationManager on rapid requests`() {
         val thread = Thread {
-            val coordinates = LocationManagerCoordinates(locationManager, clock)
             repeat(10) { coordinates.latitude }
             repeat(10) { coordinates.longitude }
             clock.advanceBy(11.seconds)
@@ -77,25 +83,25 @@ class LocationManagerCoordinatesTest {
         }
 
         thread.start()
-        shadowLocationManager.simulateLocation(gpsLocation)
+        shadowLocationManager.enqueueSimulateLocation(gpsLocation)
+        shadowLocationManager.enqueueSimulateLocation(gpsLocation)
         thread.join()
 
-        verify(exactly = 2) { locationManager.getCurrentLocation(any(), any(), any(), any()) }
+        verify(exactly = 2) { locationManager.requestSingleUpdate(any<String>(), any(), any()) }
     }
 
     @Test(timeout = 10_000)
     fun `Prevents spamming the LocationManager on multi-threaded requests`() {
-        val coordinates = LocationManagerCoordinates(locationManager, clock)
         val threads = mutableSetOf<Thread>()
         repeat(2) {
             threads.add(Thread { coordinates.latitude; coordinates.longitude })
         }
 
         threads.forEach { it.start() }
-        shadowLocationManager.simulateLocation(gpsLocation)
+        shadowLocationManager.enqueueSimulateLocation(gpsLocation)
         threads.forEach { it.join() }
 
-        verify(exactly = 1) { locationManager.getCurrentLocation(any(), any(), any(), any()) }
+        verify(exactly = 1) { locationManager.requestSingleUpdate(any<String>(), any(), any()) }
     }
 
     @Test(timeout = 10_000)
@@ -103,13 +109,17 @@ class LocationManagerCoordinatesTest {
         shadowLocationManager.setProviderEnabled(LocationManager.GPS_PROVIDER, false)
         shadowLocationManager.setProviderEnabled(LocationManager.PASSIVE_PROVIDER, false)
         val thread = Thread {
-            val coordinates = LocationManagerCoordinates(locationManager, clock)
             shouldThrow<IllegalStateException> { coordinates.latitude }
             shouldThrow<IllegalStateException> { coordinates.longitude }
         }
 
         thread.start()
-        shadowLocationManager.simulateLocation(gpsLocation)
+        shadowLocationManager.enqueueSimulateLocation(gpsLocation)
         thread.join()
+    }
+
+    private fun ShadowLocationManager.enqueueSimulateLocation(location: Location) {
+        Thread.sleep(100L)
+        simulateLocation(location)
     }
 }
