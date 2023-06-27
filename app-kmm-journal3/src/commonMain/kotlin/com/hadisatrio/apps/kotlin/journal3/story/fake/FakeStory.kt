@@ -51,4 +51,8 @@ class FakeStory(
         isForgotten = true
         group.remove(this)
     }
+
+    override fun compareTo(other: Story): Int {
+        return title.compareTo(other.title)
+    }
 }

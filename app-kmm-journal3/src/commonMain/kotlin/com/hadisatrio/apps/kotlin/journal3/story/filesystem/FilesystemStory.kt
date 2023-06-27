@@ -80,4 +80,8 @@ class FilesystemStory(
     override fun forget() {
         fileSystem.deleteRecursively(directory)
     }
+
+    override fun compareTo(other: Story): Int {
+        return title.compareTo(other.title)
+    }
 }
