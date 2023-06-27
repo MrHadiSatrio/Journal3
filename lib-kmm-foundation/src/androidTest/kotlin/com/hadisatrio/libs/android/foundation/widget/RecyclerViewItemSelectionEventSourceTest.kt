@@ -90,6 +90,54 @@ class RecyclerViewItemSelectionEventSourceTest {
     }
 
     @Test
+    fun `Doesn't do anything if touch happens outside of child's boundaries`() = runTest {
+        val recyclerView = RecyclerView(RuntimeEnvironment.getApplication())
+        val events = mutableListOf<Event>()
+        recyclerView.layoutManager = LinearLayoutManager(RuntimeEnvironment.getApplication())
+        recyclerView.adapter = Adapter(listOf("Foo", "Bar", "Fizz", "Buzz"))
+        recyclerView.measure(0, 0)
+        recyclerView.layout(0, 0, 1000, 1000)
+
+        val collectJob = launch(UnconfinedTestDispatcher()) {
+            RecyclerViewItemSelectionEventSource(recyclerView).events().toList(events)
+        }
+        recyclerView.dispatchTouchEvent(
+            MotionEvent.obtain(
+                /* downTime = */
+                System.currentTimeMillis(),
+                /* eventTime = */
+                System.currentTimeMillis(),
+                /* action = */
+                MotionEvent.ACTION_DOWN,
+                /* x = */
+                recyclerView.getChildAt(0).x,
+                /* y = */
+                recyclerView.getChildAt(0).y + 800F,
+                /* metaState = */
+                0
+            )
+        )
+        recyclerView.dispatchTouchEvent(
+            MotionEvent.obtain(
+                /* downTime = */
+                System.currentTimeMillis(),
+                /* eventTime = */
+                System.currentTimeMillis(),
+                /* action = */
+                MotionEvent.ACTION_UP,
+                /* x = */
+                recyclerView.getChildAt(0).x,
+                /* y = */
+                recyclerView.getChildAt(0).y + 800F,
+                /* metaState = */
+                0
+            )
+        )
+
+        collectJob.cancel()
+    }
+
+    @Test
     fun `Tolerates slight movement whilst registering click events`() = runTest {
         val recyclerView = RecyclerView(RuntimeEnvironment.getApplication())
         val events = mutableListOf<Event>()
