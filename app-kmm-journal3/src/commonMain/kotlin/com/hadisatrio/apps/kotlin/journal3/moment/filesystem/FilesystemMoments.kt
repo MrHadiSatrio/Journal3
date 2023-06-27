@@ -55,6 +55,9 @@ class FilesystemMoments(
 
     override fun iterator(): Iterator<Moment> {
         fileSystem.createDirectories(dir = path, mustCreate = false)
-        return fileSystem.list(path).map { path -> FilesystemMoment(fileSystem, path, memorables) }.iterator()
+        val paths = fileSystem.list(path).asSequence()
+        val moments = paths.map { path -> FilesystemMoment(fileSystem, path, memorables) }
+        val sorted = moments.sortedDescending()
+        return sorted.iterator()
     }
 }
