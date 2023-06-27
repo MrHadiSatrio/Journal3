@@ -22,10 +22,12 @@ import com.hadisatrio.apps.kotlin.journal3.moment.MemorablesCollection
 import com.hadisatrio.apps.kotlin.journal3.moment.filesystem.FilesystemMemorablePlaces
 import com.hadisatrio.apps.kotlin.journal3.moment.filesystem.FilesystemMentionedPeople
 import com.hadisatrio.apps.kotlin.journal3.story.SelfPopulatingStories
+import com.hadisatrio.apps.kotlin.journal3.story.Story
 import io.kotest.matchers.booleans.shouldBeFalse
 import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldHaveSize
+import io.kotest.matchers.ints.shouldBeGreaterThanOrEqual
 import io.kotest.matchers.ints.shouldBeLessThan
 import io.kotest.matchers.shouldBe
 import okio.Path.Companion.toPath
@@ -38,7 +40,8 @@ class FilesystemStoriesTest {
     private val fileSystem = FakeFileSystem()
     private val places = FilesystemMemorablePlaces(fileSystem, "content/places".toPath())
     private val people = FilesystemMentionedPeople(fileSystem, "content/people".toPath())
-    private val stories = FilesystemStories(fileSystem, "content".toPath(), MemorablesCollection(places, people))
+    private val memorables = MemorablesCollection(places, people)
+    private val stories = FilesystemStories(fileSystem, "content/stories".toPath(), memorables)
 
     @AfterTest
     fun `Closes all file streams`() {
@@ -53,16 +56,16 @@ class FilesystemStoriesTest {
 
         stories.shouldHaveSize(1)
         story.title.shouldBe("Foo")
-        fileSystem.metadata("content/${story.id}".toPath()).isDirectory.shouldBeTrue()
+        fileSystem.metadata("content/stories/${story.id}".toPath()).isDirectory.shouldBeTrue()
     }
 
     @Test
     fun `Tells whether or not it contains any moments within`() {
-        val empty = FilesystemStories(fileSystem, "Foo", MemorablesCollection(places, people))
+        val empty = FilesystemStories(fileSystem, "Foo", memorables)
         val nonEmpty = SelfPopulatingStories(
             noOfStories = 2,
             noOfMoments = 1,
-            FilesystemStories(fileSystem, "Bar", MemorablesCollection(places, people))
+            FilesystemStories(fileSystem, "Bar", memorables)
         )
         nonEmpty.first().moments.first().forget()
 
@@ -135,6 +138,20 @@ class FilesystemStoriesTest {
 
         stories.flatMap { it.moments }.filterNot { it.id == mostRecentMoment.id }.forEach { other ->
             other.timestamp.compareTo(mostRecentMoment.timestamp).shouldBeLessThan(0)
+        }
+    }
+
+    @Test
+    fun `Iterates through moments by ascending order of their titles`() {
+        repeat(10) {
+            val randomTitle = uuid4().toString()
+            stories.new().apply { update(randomTitle) }
+        }
+
+        var previous: Story? = null
+        stories.forEach { current ->
+            if (previous != null) current.compareTo(previous!!).shouldBeGreaterThanOrEqual(0)
+            previous = current
         }
     }
 }

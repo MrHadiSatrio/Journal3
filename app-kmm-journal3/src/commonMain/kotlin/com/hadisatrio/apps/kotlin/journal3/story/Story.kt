@@ -22,7 +22,7 @@ import com.hadisatrio.apps.kotlin.journal3.forgettable.Forgettable
 import com.hadisatrio.apps.kotlin.journal3.moment.Moments
 import com.hadisatrio.apps.kotlin.journal3.token.TokenableString
 
-interface Story : Forgettable {
+interface Story : Forgettable, Comparable<Story> {
     val id: Uuid
     val title: String
     val synopsis: TokenableString

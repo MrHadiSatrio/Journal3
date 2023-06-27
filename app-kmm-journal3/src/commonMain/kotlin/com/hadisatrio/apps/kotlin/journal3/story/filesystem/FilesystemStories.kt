@@ -80,6 +80,9 @@ class FilesystemStories(
 
     override fun iterator(): Iterator<Story> {
         fileSystem.createDirectories(dir = path, mustCreate = false)
-        return fileSystem.list(path).map { path -> FilesystemStory(fileSystem, path, memorables) }.iterator()
+        val paths = fileSystem.list(path).asSequence()
+        val stories = paths.map { path -> FilesystemStory(fileSystem, path, memorables) }
+        val sorted = stories.sorted()
+        return sorted.iterator()
     }
 }

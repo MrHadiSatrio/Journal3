@@ -20,6 +20,7 @@ package com.hadisatrio.apps.kotlin.journal3.moment.filesystem
 import com.benasher44.uuid.uuid4
 import com.hadisatrio.apps.kotlin.journal3.datetime.Timestamp
 import com.hadisatrio.apps.kotlin.journal3.moment.MemorablesCollection
+import com.hadisatrio.apps.kotlin.journal3.moment.Moment
 import com.hadisatrio.apps.kotlin.journal3.sentiment.Sentiment
 import com.hadisatrio.apps.kotlin.journal3.story.SelfPopulatingStories
 import com.hadisatrio.apps.kotlin.journal3.story.filesystem.FilesystemStories
@@ -29,7 +30,9 @@ import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.ints.shouldBeLessThan
+import io.kotest.matchers.ints.shouldBeLessThanOrEqual
 import io.kotest.matchers.shouldBe
+import kotlinx.datetime.Instant
 import okio.Path.Companion.toPath
 import okio.fakefilesystem.FakeFileSystem
 import kotlin.test.AfterTest
@@ -40,7 +43,8 @@ class FilesystemMomentsTest {
     private val fileSystem = FakeFileSystem()
     private val places = FilesystemMemorablePlaces(fileSystem, "content/places".toPath())
     private val people = FilesystemMentionedPeople(fileSystem, "content/people".toPath())
-    private val stories = FilesystemStories(fileSystem, "content".toPath(), MemorablesCollection(places, people))
+    private val memorables = MemorablesCollection(places, people)
+    private val stories = FilesystemStories(fileSystem, "content/stories".toPath(), memorables)
 
     @AfterTest
     fun `Closes all file streams`() {
@@ -60,7 +64,7 @@ class FilesystemMomentsTest {
         moment.description.shouldBe(TokenableString("FizzBuzz"))
         moment.sentiment.shouldBe(Sentiment(1.0F))
         moment.timestamp.shouldBe(Timestamp("2019-07-07T20:00:00+07:00"))
-        fileSystem.metadata("content/${story.id}/moments/${moment.id}".toPath()).isRegularFile.shouldBeTrue()
+        fileSystem.metadata("content/stories/${story.id}/moments/${moment.id}".toPath()).isRegularFile.shouldBeTrue()
     }
 
     @Test
@@ -112,7 +116,22 @@ class FilesystemMomentsTest {
 
         moment.forget()
 
-        fileSystem.exists("content/${story.id}".toPath()).shouldBeTrue()
-        fileSystem.exists("content/${story.id}/moments/${moment.id}".toPath()).shouldBeFalse()
+        fileSystem.exists("content/stories/${story.id}".toPath()).shouldBeTrue()
+        fileSystem.exists("content/stories/${story.id}/moments/${moment.id}".toPath()).shouldBeFalse()
+    }
+
+    @Test
+    fun `Iterates through moments by descending order of their written dates`() {
+        val moments = stories.new().moments
+        repeat(10) {
+            val randomInstant = Instant.fromEpochMilliseconds((0..Long.MAX_VALUE).random())
+            moments.new().apply { update(Timestamp(randomInstant)) }
+        }
+
+        var previous: Moment? = null
+        moments.forEach { current ->
+            if (previous != null) current.compareTo(previous!!).shouldBeLessThanOrEqual(0)
+            previous = current
+        }
     }
 }
