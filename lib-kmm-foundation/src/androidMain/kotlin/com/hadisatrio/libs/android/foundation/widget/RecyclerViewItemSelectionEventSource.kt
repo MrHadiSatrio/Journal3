@@ -48,7 +48,8 @@ class RecyclerViewItemSelectionEventSource(
                         }
                         event.action == MotionEvent.ACTION_UP && isBeingPressed -> {
                             markEndOfPress()
-                            val touched = view.findChildViewUnder(event.x, event.y)!!
+                            val touched = view.findChildViewUnder(event.x, event.y)
+                            if (touched == null) return super.onInterceptTouchEvent(view, event)
                             val position = view.getChildAdapterPosition(touched)
                             trySend(SelectionEvent("item_position", position.toString()))
                         }
