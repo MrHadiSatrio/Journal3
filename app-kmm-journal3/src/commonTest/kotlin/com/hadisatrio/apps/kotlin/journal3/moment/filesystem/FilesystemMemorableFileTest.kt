@@ -15,12 +15,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.hadisatrio.apps.kotlin.journal3.moment
+package com.hadisatrio.apps.kotlin.journal3.moment.filesystem
 
 import com.benasher44.uuid.uuid4
 import com.chrynan.uri.core.Uri
-import com.hadisatrio.apps.kotlin.journal3.moment.filesystem.FilesystemMemorableFile
-import com.hadisatrio.apps.kotlin.journal3.moment.filesystem.FilesystemMemorableFiles
 import com.hadisatrio.libs.kotlin.io.filesystem.FileSystemSources
 import com.hadisatrio.libs.kotlin.io.uri.toUri
 import com.hadisatrio.libs.kotlin.json.JsonFile
