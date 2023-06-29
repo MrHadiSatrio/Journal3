@@ -47,7 +47,7 @@ object Dependencies {
     }
 
     object Asynchrony {
-        const val COROUTINES = "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1"
+        const val COROUTINES = "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.2"
     }
 
     object Commons {
