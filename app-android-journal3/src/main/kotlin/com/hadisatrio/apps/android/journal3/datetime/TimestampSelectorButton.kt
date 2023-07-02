@@ -26,11 +26,11 @@ import android.util.AttributeSet
 import android.view.View
 import androidx.core.os.bundleOf
 import androidx.fragment.app.DialogFragment
-import androidx.fragment.app.FragmentActivity
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.hadisatrio.apps.kotlin.journal3.datetime.Timestamp
+import com.hadisatrio.libs.android.fragment.supportFragmentManager
 import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
@@ -70,7 +70,7 @@ class TimestampSelectorButton @JvmOverloads constructor(
     override fun onClick(p0: View?) {
         if (activePicker != null) return
 
-        val fragmentManager = (context as? FragmentActivity)?.supportFragmentManager ?: return
+        val fragmentManager = this.supportFragmentManager ?: return
         val datePicker = MaterialDatePicker.Builder.datePicker()
             .setSelection(this.selection.toEpochMilliseconds())
             .build()
@@ -112,7 +112,7 @@ class TimestampSelectorButton @JvmOverloads constructor(
             state.getLong(STATE_SELECTION).let(::applySelection)
 
             if (state.getBoolean(STATE_HAS_ACTIVE_PICKER)) {
-                val fragmentManager = (context as? FragmentActivity)?.supportFragmentManager ?: return
+                val fragmentManager = this.supportFragmentManager ?: return
                 val fragmentTransaction = fragmentManager.beginTransaction()
                 val picker = fragmentManager.findFragmentByTag(FRAGMENT_TAG_PICKER)
                 if (picker != null) fragmentTransaction.remove(picker)
