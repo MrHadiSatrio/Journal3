@@ -131,7 +131,7 @@ class TimestampSelectorButton @JvmOverloads constructor(
         applySelection(Timestamp(instant))
     }
 
-    private fun applySelection(timestamp: Timestamp) {
+    internal fun applySelection(timestamp: Timestamp) {
         selection = timestamp
         text = timestamp.toString()
         listener?.onTimeStampSelected(timestamp)
