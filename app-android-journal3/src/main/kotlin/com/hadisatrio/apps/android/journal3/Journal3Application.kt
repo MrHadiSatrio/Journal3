@@ -21,8 +21,8 @@ import android.app.Application
 import android.content.Context
 import com.hadisatrio.apps.kotlin.journal3.story.Stories
 import com.hadisatrio.libs.android.foundation.activity.CurrentActivity
-import com.hadisatrio.libs.kotlin.foundation.event.EventHub
 import com.hadisatrio.libs.kotlin.foundation.event.EventSink
+import com.hadisatrio.libs.kotlin.foundation.event.EventSource
 import com.hadisatrio.libs.kotlin.foundation.modal.Modal
 import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
 import com.hadisatrio.libs.kotlin.geography.Places
@@ -36,7 +36,7 @@ abstract class Journal3Application : Application() {
     abstract val modalPresenter: Presenter<Modal>
     abstract val currentActivity: CurrentActivity
     abstract val globalEventSink: EventSink
-    abstract val globalEventSource: EventHub
+    abstract val globalEventSource: EventSource
     abstract val inactivityAlertThreshold: Duration
     abstract val clock: Clock
     abstract val backgroundExecutor: Executor

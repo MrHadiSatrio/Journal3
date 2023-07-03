@@ -24,6 +24,7 @@ import com.hadisatrio.apps.kotlin.journal3.story.fake.FakeStories
 import com.hadisatrio.libs.android.foundation.activity.CurrentActivity
 import com.hadisatrio.libs.kotlin.foundation.event.EventHub
 import com.hadisatrio.libs.kotlin.foundation.event.EventSink
+import com.hadisatrio.libs.kotlin.foundation.event.EventSource
 import com.hadisatrio.libs.kotlin.foundation.event.fake.FakeEventSink
 import com.hadisatrio.libs.kotlin.foundation.modal.Modal
 import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
@@ -45,7 +46,7 @@ class FakeJournal3Application : Journal3Application() {
     override val modalPresenter: Presenter<Modal> by lazy { FakePresenter() }
     override val currentActivity: CurrentActivity by lazy { CurrentActivity(this) }
     override val globalEventSink: EventSink by lazy { FakeEventSink() }
-    override val globalEventSource: EventHub by lazy { EventHub(MutableSharedFlow(extraBufferCapacity = 1)) }
+    override val globalEventSource: EventSource by lazy { EventHub(MutableSharedFlow(extraBufferCapacity = 1)) }
     override val inactivityAlertThreshold: Duration by lazy { 3.hours }
     override val clock: Clock by lazy { Clock.System }
     override val backgroundExecutor: Executor by lazy { Executors.newFixedThreadPool(1) }

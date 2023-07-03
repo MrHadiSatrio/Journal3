@@ -31,6 +31,7 @@ import com.hadisatrio.apps.android.journal3.journal3Application
 import com.hadisatrio.apps.kotlin.journal3.geography.SelectAPlaceUseCase
 import com.hadisatrio.libs.android.dimensions.dp
 import com.hadisatrio.libs.android.foundation.activity.ActivityCompletionEventSink
+import com.hadisatrio.libs.android.foundation.activity.ActivityResultSettingEventSink
 import com.hadisatrio.libs.android.foundation.lifecycle.LifecycleTriggeredEventSource
 import com.hadisatrio.libs.android.foundation.widget.BackButtonCancellationEventSource
 import com.hadisatrio.libs.android.foundation.widget.RecyclerViewItemSelectionEventSource
@@ -44,7 +45,6 @@ import com.hadisatrio.libs.kotlin.foundation.event.EventSinks
 import com.hadisatrio.libs.kotlin.foundation.event.EventSource
 import com.hadisatrio.libs.kotlin.foundation.event.EventSources
 import com.hadisatrio.libs.kotlin.foundation.event.ExecutorDispatchingEventSource
-import com.hadisatrio.libs.kotlin.foundation.event.FilteringEventSink
 import com.hadisatrio.libs.kotlin.foundation.event.SelectionEvent
 import com.hadisatrio.libs.kotlin.foundation.presentation.AdaptingPresenter
 import com.hadisatrio.libs.kotlin.foundation.presentation.ExecutorDispatchingPresenter
@@ -94,12 +94,18 @@ class SelectAPlaceActivity : AppCompatActivity() {
 
     private val eventSink: EventSink by lazy {
         EventSinks(
-            ActivityCompletionEventSink(this),
-            FilteringEventSink(
-                predicate = { it is SelectionEvent && it.selectionKind == "place" },
-                origin = journal3Application.globalEventSource
+            journal3Application.globalEventSink,
+            ActivityResultSettingEventSink(
+                activity = this,
+                adapter = { event ->
+                    val values = mutableMapOf<String, Any>()
+                    if (event is SelectionEvent && event.selectionKind == "place") {
+                        values["place"] = event.selectedIdentifier
+                    }
+                    values
+                }
             ),
-            journal3Application.globalEventSink
+            ActivityCompletionEventSink(this)
         )
     }
 

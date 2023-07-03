@@ -27,6 +27,7 @@ import com.bumptech.glide.Glide
 import com.hadisatrio.apps.android.journal3.R
 import com.hadisatrio.apps.android.journal3.datetime.TimestampSelectionEventSource
 import com.hadisatrio.apps.android.journal3.datetime.TimestampSelectorButtonPresenter
+import com.hadisatrio.apps.android.journal3.geography.PlaceSelectionEventSource
 import com.hadisatrio.apps.android.journal3.id.BundledTargetId
 import com.hadisatrio.apps.android.journal3.journal3Application
 import com.hadisatrio.apps.kotlin.journal3.event.RefreshRequestEvent
@@ -134,9 +135,9 @@ class EditAMomentActivity : AppCompatActivity() {
                     view = findViewById(R.id.commit_button),
                     eventFactory = { CompletionEvent() }
                 ),
-                ViewClickEventSource(
-                    view = findViewById(R.id.place_selector_button),
-                    eventFactory = { SelectionEvent("action", "select_place") }
+                PlaceSelectionEventSource(
+                    triggerView = findViewById(R.id.place_selector_button),
+                    activity = this
                 ),
                 TimestampSelectionEventSource(
                     button = findViewById(R.id.timestamp_selector_button)
