@@ -26,6 +26,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.hadisatrio.apps.android.journal3.R
 import com.hadisatrio.apps.android.journal3.datetime.TimestampSelectionEventSource
+import com.hadisatrio.apps.android.journal3.datetime.TimestampSelectorButtonPresenter
 import com.hadisatrio.apps.android.journal3.id.BundledTargetId
 import com.hadisatrio.apps.android.journal3.journal3Application
 import com.hadisatrio.apps.kotlin.journal3.event.RefreshRequestEvent
@@ -69,8 +70,8 @@ class EditAMomentActivity : AppCompatActivity() {
             executor = journal3Application.foregroundExecutor,
             origin = Presenters(
                 AdaptingPresenter(
-                    origin = TextViewStringPresenter(findViewById(R.id.timestamp_selector_button)),
-                    adapter = { moment -> moment.timestamp.toString() }
+                    origin = TimestampSelectorButtonPresenter(findViewById(R.id.timestamp_selector_button)),
+                    adapter = { moment -> moment.timestamp }
                 ),
                 AdaptingPresenter(
                     origin = TextViewStringPresenter(findViewById(R.id.place_selector_button)),
