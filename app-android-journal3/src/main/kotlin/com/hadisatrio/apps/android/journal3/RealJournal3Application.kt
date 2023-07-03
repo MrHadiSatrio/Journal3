@@ -34,6 +34,7 @@ import com.hadisatrio.libs.android.io.content.ContentResolverSources
 import com.hadisatrio.libs.kotlin.foundation.event.EventHub
 import com.hadisatrio.libs.kotlin.foundation.event.EventSink
 import com.hadisatrio.libs.kotlin.foundation.event.EventSinks
+import com.hadisatrio.libs.kotlin.foundation.event.EventSource
 import com.hadisatrio.libs.kotlin.foundation.modal.Modal
 import com.hadisatrio.libs.kotlin.foundation.presentation.ExecutorDispatchingPresenter
 import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
@@ -93,7 +94,7 @@ class RealJournal3Application : Journal3Application() {
     override val modalPresenter: Presenter<Modal> by lazy {
         ExecutorDispatchingPresenter(
             executor = foregroundExecutor,
-            origin = AlertDialogModalPresenter(currentActivity, globalEventSource)
+            origin = AlertDialogModalPresenter(currentActivity, globalEventSource as EventHub)
         )
     }
 
@@ -108,7 +109,7 @@ class RealJournal3Application : Journal3Application() {
         )
     }
 
-    override val globalEventSource: EventHub by lazy {
+    override val globalEventSource: EventSource by lazy {
         EventHub(MutableSharedFlow(extraBufferCapacity = 1))
     }
 
