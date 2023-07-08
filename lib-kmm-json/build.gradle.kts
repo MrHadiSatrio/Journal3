@@ -9,7 +9,7 @@ plugins {
 
 kotlin {
     jvm()
-    android()
+    androidTarget()
 
     sourceSets {
         val commonMain by getting {
@@ -26,7 +26,7 @@ kotlin {
             }
         }
         val androidMain by getting
-        val androidTest by getting
+        val androidUnitTest by getting
     }
 }
 
@@ -72,7 +72,7 @@ detekt {
         "src/commonMain/kotlin",
         "src/commonTest/kotlin",
         "src/androidMain/kotlin",
-        "src/androidTest/kotlin"
+        "src/androidUnitTest/kotlin"
     )
 }
 
