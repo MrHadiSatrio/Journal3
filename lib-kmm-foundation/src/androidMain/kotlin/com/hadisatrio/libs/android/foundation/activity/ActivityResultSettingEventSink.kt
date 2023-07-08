@@ -17,6 +17,7 @@
 
 package com.hadisatrio.libs.android.foundation.activity
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
@@ -38,6 +39,12 @@ class ActivityResultSettingEventSink(
         activity.setResult(Activity.RESULT_OK, intent)
     }
 
+    // Lint raises false-positive warning about the usage of forEach() within this function.
+    // This is a recurring bug from Lint wherein it fails to read the metadata of newer Kotlin
+    // binaries. This is possibly addressed in newer versions of Lint, but since it means we'd
+    // have to upgrade the entire Android Gradle Plugin, we'll just suppress the warning for now.
+    // See https://issuetracker.google.com/issues/175334545 for more details.
+    @SuppressLint("NewApi")
     private fun Map<String, Any>.toBundle(): Bundle {
         val bundle = Bundle()
         forEach { (key, value) ->
