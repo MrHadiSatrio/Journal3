@@ -9,7 +9,7 @@ plugins {
 
 kotlin {
     jvm()
-    android()
+    androidTarget()
 
     sourceSets {
         val commonMain by getting {
@@ -33,7 +33,7 @@ kotlin {
                 api(Dependencies.AndroidUi.FLOW_BINDING)
             }
         }
-        val androidTest by getting {
+        val androidUnitTest by getting {
             dependencies {
                 implementation(Dependencies.TestRuntime.ANDROID_JUNIT_4)
                 implementation(Dependencies.TestFramework.JUNIT_4)
@@ -87,7 +87,7 @@ detekt {
         "src/commonMain/kotlin",
         "src/commonTest/kotlin",
         "src/androidMain/kotlin",
-        "src/androidTest/kotlin"
+        "src/androidUnitTest/kotlin"
     )
 }
 

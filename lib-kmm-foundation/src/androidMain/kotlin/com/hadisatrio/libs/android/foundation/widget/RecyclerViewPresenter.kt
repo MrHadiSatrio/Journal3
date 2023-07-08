@@ -29,7 +29,7 @@ import androidx.recyclerview.widget.RecyclerView.LayoutParams.WRAP_CONTENT
 import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
 import kotlin.math.roundToInt
 
-class RecyclerViewPresenter<T>(
+class RecyclerViewPresenter<T : Any>(
     private val recyclerView: RecyclerView,
     private val layoutManager: RecyclerView.LayoutManager,
     private val viewFactory: ViewFactory,
@@ -107,7 +107,7 @@ class RecyclerViewPresenter<T>(
         override fun areContentsTheSame(oldItem: T, newItem: T): Boolean = oldItem == newItem
     }
 
-    private class Adapter<T>(
+    private class Adapter<T : Any>(
         private val viewFactory: ViewFactory,
         private val viewRenderer: ViewRenderer<T>,
         private val differ: ItemDiffer<T>
@@ -124,7 +124,7 @@ class RecyclerViewPresenter<T>(
 
     private class ViewHolder(val view: View) : RecyclerView.ViewHolder(view)
 
-    private class DiffCallback<T>(private val differ: ItemDiffer<T>) : DiffUtil.ItemCallback<T>() {
+    private class DiffCallback<T : Any>(private val differ: ItemDiffer<T>) : DiffUtil.ItemCallback<T>() {
 
         override fun areItemsTheSame(oldItem: T, newItem: T): Boolean {
             return differ.areItemsTheSame(oldItem, newItem)
