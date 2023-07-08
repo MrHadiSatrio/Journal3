@@ -55,7 +55,7 @@ object Dependencies {
         const val URI = "com.chrynan.uri:uri-core:0.4.0"
         const val DATETIME = "org.jetbrains.kotlinx:kotlinx-datetime:0.4.0"
         const val KOTLINX_JSON_OKIO = "org.jetbrains.kotlinx:kotlinx-serialization-json-okio:1.5.1"
-        const val OKIO = "com.squareup.okio:okio:3.3.0"
+        const val OKIO = "com.squareup.okio:okio:3.4.0"
     }
 
     object Network {
