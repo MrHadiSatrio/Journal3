@@ -17,12 +17,12 @@
 
 package com.hadisatrio.apps.kotlin.journal3.story
 
-import com.hadisatrio.apps.kotlin.journal3.event.RecordedEventSource
 import com.hadisatrio.apps.kotlin.journal3.event.UnsupportedEvent
 import com.hadisatrio.apps.kotlin.journal3.id.FakeTargetId
 import com.hadisatrio.apps.kotlin.journal3.id.InvalidTargetId
 import com.hadisatrio.apps.kotlin.journal3.story.fake.FakeStories
 import com.hadisatrio.libs.kotlin.foundation.event.CompletionEvent
+import com.hadisatrio.libs.kotlin.foundation.event.RecordedEventSource
 import com.hadisatrio.libs.kotlin.foundation.event.fake.FakeEventSink
 import com.hadisatrio.libs.kotlin.foundation.modal.Modal
 import com.hadisatrio.libs.kotlin.foundation.modal.ModalApprovalEvent

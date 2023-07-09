@@ -15,10 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.hadisatrio.apps.kotlin.journal3.event
+package com.hadisatrio.libs.kotlin.foundation.event
 
-import com.hadisatrio.libs.kotlin.foundation.event.Event
-import com.hadisatrio.libs.kotlin.foundation.event.EventSource
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow

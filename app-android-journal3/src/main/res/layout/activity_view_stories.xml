@@ -21,8 +21,9 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/stories_list"
+    <fragment
+        android:id="@+id/stories_list_fragment"
+        android:name="com.hadisatrio.apps.android.journal3.story.StoriesListFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
