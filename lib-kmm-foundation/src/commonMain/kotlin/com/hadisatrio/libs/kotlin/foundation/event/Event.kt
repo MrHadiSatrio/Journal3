@@ -39,6 +39,10 @@ abstract class Event {
         fun create(): Event
     }
 
+    fun interface ArgumentedFactory<T> {
+        fun create(argument: T): Event
+    }
+
     companion object {
         private val WORD_CASE_SPLITTER_REGEX by lazy { Regex("(?=\\p{Lu})") }
     }

@@ -43,11 +43,18 @@ class ActivityRoutingEventSink(
             "edit_story" -> activity.startEditAStoryActivity(event)
             "delete_story" -> activity.startDeleteAStoryActivity(event)
             "view_story" -> activity.startViewStoryActivity(event)
+            "view_stories" -> activity.startViewStoriesActivity()
             "add_moment" -> activity.startAddAMomentActivity(event)
             "edit_moment" -> activity.startEditAMomentActivity(event)
             "delete_moment" -> activity.startDeleteAMomentActivity(event)
             "select_place" -> activity.startActivity(Intent(activity, SelectAPlaceActivity::class.java))
         }
+    }
+
+    private fun Activity.startViewStoriesActivity() {
+        val intent = Intent(this, RootActivity::class.java)
+        intent.setAction("view_stories")
+        startActivity(intent)
     }
 
     private fun Activity.startViewStoryActivity(event: SelectionEvent) {

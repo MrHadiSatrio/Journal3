@@ -58,6 +58,7 @@ dependencies {
     implementation(Dependencies.AndroidAsynchrony.WORKMANAGER)
     implementation(Dependencies.AndroidFramework.GLIDE)
     implementation(Dependencies.AndroidNetwork.KTOR)
+    implementation(Dependencies.AndroidUi.VIEWPAGER)
     implementation(Dependencies.AndroidUi.RECYCLER_VIEW_SPACING_DECORATION)
 }
 
