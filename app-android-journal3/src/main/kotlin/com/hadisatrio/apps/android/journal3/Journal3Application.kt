@@ -19,6 +19,7 @@ package com.hadisatrio.apps.android.journal3
 
 import android.app.Application
 import android.content.Context
+import androidx.fragment.app.Fragment
 import com.hadisatrio.apps.kotlin.journal3.story.Stories
 import com.hadisatrio.libs.android.foundation.activity.CurrentActivity
 import com.hadisatrio.libs.kotlin.foundation.event.EventSink
@@ -45,3 +46,6 @@ abstract class Journal3Application : Application() {
 
 val Context.journal3Application: Journal3Application
     get() = applicationContext as Journal3Application
+
+val Fragment.journal3Application: Journal3Application
+    get() = requireContext().journal3Application

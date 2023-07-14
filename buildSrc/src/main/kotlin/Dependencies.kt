@@ -9,6 +9,7 @@ object Dependencies {
     }
 
     object AndroidArchitecture {
+        const val FRAGMENT = "androidx.fragment:fragment-ktx:1.5.7"
         const val VIEWMODEL = "androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1"
         const val LIFECYCLE = "androidx.lifecycle:lifecycle-runtime-ktx:2.6.1"
         const val STARTUP = "androidx.startup:startup-runtime:1.1.1"
@@ -33,6 +34,7 @@ object Dependencies {
 
     object AndroidUi {
         const val RECYCLER_VIEW = "androidx.recyclerview:recyclerview:1.3.0"
+        const val VIEWPAGER = "androidx.viewpager2:viewpager2:1.0.0"
         const val MATERIAL = "com.google.android.material:material:1.9.0"
         const val FLOW_BINDING = "io.github.reactivecircus.flowbinding:flowbinding-android:1.2.0"
         const val RECYCLER_VIEW_SPACING_DECORATION = "com.github.grzegorzojdana:SpacingItemDecoration:1.1.0"

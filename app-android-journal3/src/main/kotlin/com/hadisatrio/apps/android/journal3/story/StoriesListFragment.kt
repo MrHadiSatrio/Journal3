@@ -20,8 +20,10 @@ package com.hadisatrio.apps.android.journal3.story
 import android.graphics.Rect
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.RecyclerView
 import com.grzegorzojdana.spacingitemdecoration.Spacing
@@ -37,7 +39,6 @@ import com.hadisatrio.libs.android.foundation.activity.ActivityCompletionEventSi
 import com.hadisatrio.libs.android.foundation.lifecycle.LifecycleTriggeredEventSource
 import com.hadisatrio.libs.android.foundation.widget.RecyclerViewItemSelectionEventSource
 import com.hadisatrio.libs.android.foundation.widget.RecyclerViewPresenter
-import com.hadisatrio.libs.android.foundation.widget.ViewClickEventSource
 import com.hadisatrio.libs.kotlin.foundation.ExecutorDispatchingUseCase
 import com.hadisatrio.libs.kotlin.foundation.UseCase
 import com.hadisatrio.libs.kotlin.foundation.event.CancellationEvent
@@ -46,15 +47,14 @@ import com.hadisatrio.libs.kotlin.foundation.event.EventSinks
 import com.hadisatrio.libs.kotlin.foundation.event.EventSource
 import com.hadisatrio.libs.kotlin.foundation.event.EventSources
 import com.hadisatrio.libs.kotlin.foundation.event.ExecutorDispatchingEventSource
-import com.hadisatrio.libs.kotlin.foundation.event.SelectionEvent
 import com.hadisatrio.libs.kotlin.foundation.presentation.AdaptingPresenter
 import com.hadisatrio.libs.kotlin.foundation.presentation.ExecutorDispatchingPresenter
 import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
 
-class ViewStoriesActivity : AppCompatActivity() {
+class StoriesListFragment : Fragment() {
 
     private val storiesListView: RecyclerView by lazy {
-        findViewById(R.id.stories_list)
+        requireView().findViewById(R.id.stories_list)
     }
 
     private val presenter: Presenter<Stories> by lazy {
@@ -97,10 +97,6 @@ class ViewStoriesActivity : AppCompatActivity() {
                     lifecycleEvent = Lifecycle.Event.ON_DESTROY,
                     eventFactory = { CancellationEvent("system") }
                 ),
-                ViewClickEventSource(
-                    view = findViewById(R.id.add_button),
-                    eventFactory = { SelectionEvent("action", "add_story") }
-                ),
                 RecyclerViewItemSelectionEventSource(
                     recyclerView = storiesListView
                 )
@@ -111,7 +107,7 @@ class ViewStoriesActivity : AppCompatActivity() {
     private val eventSink: EventSink by lazy {
         EventSinks(
             journal3Application.globalEventSink,
-            ActivityCompletionEventSink(this)
+            ActivityCompletionEventSink(requireActivity())
         )
     }
 
@@ -127,15 +123,16 @@ class ViewStoriesActivity : AppCompatActivity() {
         )
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.fragment_view_stories, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         setupViews()
         useCase()
     }
 
     private fun setupViews() {
-        setContentView(R.layout.activity_view_stories)
-        setSupportActionBar(findViewById(R.id.bottom_bar))
         storiesListView.addItemDecoration(
             SpacingItemDecoration(
                 Spacing(

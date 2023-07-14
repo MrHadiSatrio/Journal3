@@ -61,8 +61,9 @@
         </provider>
 
         <activity
-            android:name=".story.ViewStoriesActivity"
+            android:name=".RootActivity"
             android:exported="true"
+            android:launchMode="singleTop"
             android:theme="@style/Theme.Journal3.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

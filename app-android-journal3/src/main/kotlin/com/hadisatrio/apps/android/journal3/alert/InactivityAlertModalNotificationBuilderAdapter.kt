@@ -23,8 +23,8 @@ import android.content.Intent
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import com.hadisatrio.apps.android.journal3.R
+import com.hadisatrio.apps.android.journal3.RootActivity
 import com.hadisatrio.apps.android.journal3.notification.NotificationChannel
-import com.hadisatrio.apps.android.journal3.story.ViewStoriesActivity
 import com.hadisatrio.libs.android.foundation.modal.NotificationModalPresenter.NotificationBuilderFactory
 import com.hadisatrio.libs.kotlin.foundation.modal.Modal
 import com.hadisatrio.libs.kotlin.foundation.presentation.Adapter
@@ -53,7 +53,7 @@ class InactivityAlertModalNotificationBuilderAdapter(
                         /* requestCode = */
                         0,
                         /* intent = */
-                        Intent(context, ViewStoriesActivity::class.java),
+                        Intent(context, RootActivity::class.java),
                         /* flags = */
                         pendingIntentFlags
                     )

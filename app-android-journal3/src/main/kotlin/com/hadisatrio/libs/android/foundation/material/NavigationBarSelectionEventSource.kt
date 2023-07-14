@@ -15,26 +15,31 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.hadisatrio.apps.kotlin.journal3.event
+package com.hadisatrio.libs.android.foundation.material
 
+import com.google.android.material.navigation.NavigationBarView
 import com.hadisatrio.libs.kotlin.foundation.event.Event
 import com.hadisatrio.libs.kotlin.foundation.event.EventSource
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.asFlow
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.merge
+import kotlinx.coroutines.flow.callbackFlow
 
-class RecordedEventSource(
-    private val events: List<Event>
+class NavigationBarSelectionEventSource(
+    private val view: NavigationBarView,
+    private val eventFactory: Event.ArgumentedFactory<Int>
 ) : EventSource {
 
-    constructor(vararg event: Event) : this(event.toList())
+    private val events: Flow<Event> by lazy {
+        callbackFlow {
+            val listener = NavigationBarView.OnItemSelectedListener { item ->
+                trySend(eventFactory.create(item.itemId)).isSuccess
+            }
+            view.setOnItemSelectedListener(listener)
+            awaitClose { view.setOnItemSelectedListener(null) }
+        }
+    }
 
     override fun events(): Flow<Event> {
-        return merge(
-            events.asFlow(),
-            flow { delay(Long.MAX_VALUE) } // ...to prevent the flow from completing.
-        )
+        return events
     }
 }
