@@ -28,6 +28,7 @@ class ActivityCompletionEventSink(
 
     override fun sink(event: Event) {
         if (event !is CompletionEvent) return
+        if (activity.isFinishing || activity.isChangingConfigurations) return
         activity.finish()
     }
 }

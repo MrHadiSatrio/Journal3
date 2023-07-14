@@ -24,8 +24,9 @@ import com.hadisatrio.libs.kotlin.foundation.event.CompletionEvent
 import com.hadisatrio.libs.kotlin.foundation.event.SelectionEvent
 import com.hadisatrio.libs.kotlin.foundation.event.TextInputEvent
 import com.hadisatrio.libs.kotlin.foundation.modal.ModalApprovalEvent
-import io.kotest.matchers.booleans.shouldBeFalse
-import io.kotest.matchers.booleans.shouldBeTrue
+import io.mockk.every
+import io.mockk.spyk
+import io.mockk.verify
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -35,7 +36,8 @@ import org.robolectric.Robolectric
 class ActivityCompletionEventSinkTest {
 
     private val activityController = Robolectric.buildActivity(ComponentActivity::class.java)
-    private val eventSink = ActivityCompletionEventSink(activityController.get())
+    private val activity = spyk(activityController.get())
+    private val eventSink = ActivityCompletionEventSink(activity)
 
     @Before
     fun `Starts activity`() {
@@ -45,7 +47,21 @@ class ActivityCompletionEventSinkTest {
     @Test
     fun `Finishes the activity upon receiving a completion event`() {
         eventSink.sink(CompletionEvent())
-        activityController.get().isFinishing.shouldBeTrue()
+        verify(exactly = 1) { activity.finish() }
+    }
+
+    @Test
+    fun `Does not try to finish if the activity is already finishing`() {
+        activity.finish()
+        eventSink.sink(CompletionEvent())
+        verify(exactly = 1) { activity.finish() }
+    }
+
+    @Test
+    fun `Does not try to finish if the activity is changing configurations`() {
+        every { activity.isChangingConfigurations }.returns(true)
+        eventSink.sink(CompletionEvent())
+        verify(inverse = true) { activity.finish() }
     }
 
     @Test
@@ -56,6 +72,6 @@ class ActivityCompletionEventSinkTest {
             ModalApprovalEvent("lorem"),
             CancellationEvent("system"),
         ).forEach { event -> eventSink.sink(event) }
-        activityController.get().isFinishing.shouldBeFalse()
+        verify(inverse = true) { activity.finish() }
     }
 }
