@@ -49,6 +49,12 @@ class FilesystemStoriesTest {
     }
 
     @Test
+    fun `Collects moments from each of its stories`() {
+        val stories = SelfPopulatingStories(noOfStories = 2, noOfMoments = 5, stories)
+        stories.moments.shouldHaveSize(10)
+    }
+
+    @Test
     fun `Writes new stories to the filesystem`() {
         val story = stories.new()
 

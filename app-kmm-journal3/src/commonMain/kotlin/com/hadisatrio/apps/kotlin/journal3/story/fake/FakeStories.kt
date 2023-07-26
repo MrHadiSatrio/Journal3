@@ -19,13 +19,17 @@ package com.hadisatrio.apps.kotlin.journal3.story.fake
 
 import com.benasher44.uuid.Uuid
 import com.benasher44.uuid.uuid4
+import com.hadisatrio.apps.kotlin.journal3.moment.MergedMoments
 import com.hadisatrio.apps.kotlin.journal3.moment.Moment
+import com.hadisatrio.apps.kotlin.journal3.moment.Moments
 import com.hadisatrio.apps.kotlin.journal3.story.Stories
 import com.hadisatrio.apps.kotlin.journal3.story.Story
 
 class FakeStories(
     private val stories: MutableList<Story>
 ) : Stories {
+
+    override val moments: Moments get() = MergedMoments(map { it.moments })
 
     constructor(vararg stories: Story) : this(stories.toMutableList())
 
