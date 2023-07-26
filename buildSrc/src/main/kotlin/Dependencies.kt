@@ -66,12 +66,12 @@ object Dependencies {
 
     object TestRuntime {
         const val ANDROID_JUNIT_4 = "androidx.test:runner:1.5.2"
-        const val JUNIT_5 = "org.junit.jupiter:junit-jupiter-engine:5.9.3"
+        const val JUNIT_5 = "org.junit.jupiter:junit-jupiter-engine:5.10.0"
     }
 
     object TestFramework {
         const val JUNIT_4 = "junit:junit:4.13.2"
-        const val JUNIT_5 = "org.junit.jupiter:junit-jupiter-api:5.9.3"
+        const val JUNIT_5 = "org.junit.jupiter:junit-jupiter-api:5.10.0"
         const val ANDROID_JUNIT = "androidx.test.ext:junit:1.1.5"
     }
 
