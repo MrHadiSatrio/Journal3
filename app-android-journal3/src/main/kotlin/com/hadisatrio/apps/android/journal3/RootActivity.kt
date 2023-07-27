@@ -23,6 +23,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.navigation.NavigationBarView
+import com.hadisatrio.apps.android.journal3.story.ReflectionsListFragment
 import com.hadisatrio.apps.android.journal3.story.StoriesListFragment
 import com.hadisatrio.libs.android.foundation.lifecycle.LifecycleTriggeredEventSource
 import com.hadisatrio.libs.android.foundation.material.NavigationBarSelectionEventSource
@@ -64,7 +65,16 @@ class RootActivity : AppCompatActivity() {
                 ),
                 NavigationBarSelectionEventSource(
                     view = bottomBar,
-                    eventFactory = { SelectionEvent("action", "view_stories") }
+                    eventFactory = { itemId ->
+                        SelectionEvent(
+                            "action",
+                            when (itemId) {
+                                R.id.view_reflections_menu_item -> "view_reflections"
+                                R.id.view_stories_menu_item -> "view_stories"
+                                else -> throw IllegalArgumentException("Unknown menu ID of \"$itemId\".")
+                            }
+                        )
+                    }
                 )
             )
         )
@@ -89,13 +99,18 @@ class RootActivity : AppCompatActivity() {
     private fun setupViews() {
         setContentView(R.layout.activity_root)
         pager.isUserInputEnabled = false
-        pager.adapter = SimpleFragmentPagerAdapter(this, FragmentFactory { StoriesListFragment() })
+        pager.adapter = SimpleFragmentPagerAdapter(
+            activity = this,
+            FragmentFactory { ReflectionsListFragment() },
+            FragmentFactory { StoriesListFragment() }
+        )
     }
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
         val (menuId, pagerItem) = when (intent?.action) {
-            "view_stories" -> R.id.view_stories_menu_item to 0
+            "view_reflections" -> R.id.view_reflections_menu_item to 0
+            "view_stories" -> R.id.view_stories_menu_item to 1
             else -> return
         }
         if (bottomBar.selectedItemId != menuId) bottomBar.selectedItemId = menuId

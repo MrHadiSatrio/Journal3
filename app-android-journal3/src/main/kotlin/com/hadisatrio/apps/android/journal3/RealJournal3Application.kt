@@ -19,12 +19,25 @@ package com.hadisatrio.apps.android.journal3
 
 import androidx.core.content.ContextCompat
 import com.google.android.material.color.DynamicColors
+import com.hadisatrio.apps.kotlin.journal3.datetime.Timestamp
+import com.hadisatrio.apps.kotlin.journal3.moment.CountLimitingMoments
 import com.hadisatrio.apps.kotlin.journal3.moment.MergedMemorables
+import com.hadisatrio.apps.kotlin.journal3.moment.OrderRandomizingMoments
+import com.hadisatrio.apps.kotlin.journal3.moment.SentimentRangedMoments
+import com.hadisatrio.apps.kotlin.journal3.moment.TimeRangedMoments
+import com.hadisatrio.apps.kotlin.journal3.moment.VicinityMoments
 import com.hadisatrio.apps.kotlin.journal3.moment.filesystem.FilesystemMemorableFiles
 import com.hadisatrio.apps.kotlin.journal3.moment.filesystem.FilesystemMemorablePlaces
 import com.hadisatrio.apps.kotlin.journal3.moment.filesystem.FilesystemMentionedPeople
+import com.hadisatrio.apps.kotlin.journal3.sentiment.NegativeishSentimentRange
+import com.hadisatrio.apps.kotlin.journal3.sentiment.PositiveishSentimentRange
+import com.hadisatrio.apps.kotlin.journal3.sentiment.VeryPositiveSentimentRange
+import com.hadisatrio.apps.kotlin.journal3.story.MomentfulStories
+import com.hadisatrio.apps.kotlin.journal3.story.Reflection
 import com.hadisatrio.apps.kotlin.journal3.story.Stories
+import com.hadisatrio.apps.kotlin.journal3.story.fake.FakeStories
 import com.hadisatrio.apps.kotlin.journal3.story.filesystem.FilesystemStories
+import com.hadisatrio.apps.kotlin.journal3.token.TokenableString
 import com.hadisatrio.libs.android.foundation.activity.CurrentActivity
 import com.hadisatrio.libs.android.foundation.modal.AlertDialogModalPresenter
 import com.hadisatrio.libs.android.foundation.os.SystemLog
@@ -50,16 +63,14 @@ import okio.Path.Companion.toPath
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.hours
 
 class RealJournal3Application : Journal3Application() {
 
     override val places: Places by lazy {
         HereNearbyPlaces(
-            coordinates = PermissionAwareCoordinates(
-                currentActivity = currentActivity,
-                origin = LocationManagerCoordinates(this, clock)
-            ),
+            coordinates = coordinates,
             limit = 100,
             apiKey = BuildConfig.KEY_HERE_API,
             httpClient = HttpClient()
@@ -85,6 +96,69 @@ class RealJournal3Application : Journal3Application() {
                     sources = SchemeWiseSources(
                         "file" to FileSystemSources(FileSystem.SYSTEM),
                         "content" to ContentResolverSources(contentResolver)
+                    )
+                )
+            )
+        )
+    }
+
+    override val reflections: Stories by lazy {
+        MomentfulStories(
+            FakeStories(
+                Reflection(
+                    title = "Around the Corner",
+                    synopsis = TokenableString("Rediscover moments from nearby places."),
+                    moments = CountLimitingMoments(
+                        limit = 10,
+                        origin = OrderRandomizingMoments(
+                            origin = VicinityMoments(
+                                coordinates = coordinates,
+                                distanceLimitInM = 100.0,
+                                origin = stories.moments
+                            )
+                        )
+                    )
+                ),
+                Reflection(
+                    title = "Recent Wins",
+                    synopsis = TokenableString("Celebrate positive moments of the week."),
+                    moments = CountLimitingMoments(
+                        limit = 10,
+                        origin = OrderRandomizingMoments(
+                            origin = TimeRangedMoments(
+                                timeRange = Timestamp(clock.now() - 7.days)..Timestamp(clock.now()),
+                                origin = SentimentRangedMoments(
+                                    sentimentRange = PositiveishSentimentRange,
+                                    origin = stories.moments
+                                )
+                            )
+                        )
+                    )
+                ),
+                Reflection(
+                    title = "Positivity Overload",
+                    synopsis = TokenableString("Immerse in incredibly positive moments."),
+                    moments = CountLimitingMoments(
+                        limit = 10,
+                        origin = OrderRandomizingMoments(
+                            origin = SentimentRangedMoments(
+                                sentimentRange = VeryPositiveSentimentRange,
+                                origin = stories.moments
+                            )
+                        )
+                    )
+                ),
+                Reflection(
+                    title = "Shadows & Light",
+                    synopsis = TokenableString("Reflect on deeply emotional moments."),
+                    moments = CountLimitingMoments(
+                        limit = 5,
+                        origin = OrderRandomizingMoments(
+                            origin = SentimentRangedMoments(
+                                sentimentRange = NegativeishSentimentRange,
+                                origin = stories.moments
+                            )
+                        )
                     )
                 )
             )
@@ -119,6 +193,13 @@ class RealJournal3Application : Journal3Application() {
 
     override val clock: Clock by lazy {
         Clock.System
+    }
+
+    private val coordinates by lazy {
+        PermissionAwareCoordinates(
+            currentActivity = currentActivity,
+            origin = LocationManagerCoordinates(this, clock)
+        )
     }
 
     override val backgroundExecutor: Executor by lazy {
