@@ -25,6 +25,7 @@ import com.hadisatrio.apps.kotlin.journal3.moment.Moment
 import com.hadisatrio.apps.kotlin.journal3.moment.Moments
 import com.hadisatrio.apps.kotlin.journal3.moment.filesystem.FilesystemMoment
 import com.hadisatrio.apps.kotlin.journal3.moment.filesystem.FilesystemMoments
+import com.hadisatrio.apps.kotlin.journal3.story.EditableStory
 import com.hadisatrio.apps.kotlin.journal3.story.Story
 import com.hadisatrio.apps.kotlin.journal3.token.TokenableString
 import com.hadisatrio.libs.kotlin.json.JsonFile
@@ -38,7 +39,7 @@ class FilesystemStory(
     private val detailsFile: JsonFile,
     private val momentsDirectory: Path,
     private val memorables: Memorables
-) : Story {
+) : EditableStory {
 
     override val id: Uuid get() {
         return uuidFrom(directory.name)

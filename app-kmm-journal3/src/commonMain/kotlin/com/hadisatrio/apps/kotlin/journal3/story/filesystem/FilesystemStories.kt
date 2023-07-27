@@ -23,8 +23,8 @@ import com.hadisatrio.apps.kotlin.journal3.moment.Memorables
 import com.hadisatrio.apps.kotlin.journal3.moment.MergedMoments
 import com.hadisatrio.apps.kotlin.journal3.moment.Moment
 import com.hadisatrio.apps.kotlin.journal3.moment.Moments
+import com.hadisatrio.apps.kotlin.journal3.story.EditableStory
 import com.hadisatrio.apps.kotlin.journal3.story.Stories
-import com.hadisatrio.apps.kotlin.journal3.story.Story
 import okio.FileSystem
 import okio.Path
 import okio.Path.Companion.toPath
@@ -43,7 +43,7 @@ class FilesystemStories(
         memorables: Memorables
     ) : this(fileSystem, path.toPath(), memorables)
 
-    override fun new(): Story {
+    override fun new(): EditableStory {
         fileSystem.createDirectories(dir = path, mustCreate = false)
         return FilesystemStory(fileSystem, path, uuid4(), memorables)
     }
@@ -52,7 +52,7 @@ class FilesystemStories(
         return findStory(id).count() > 0
     }
 
-    override fun findStory(id: Uuid): Iterable<Story> {
+    override fun findStory(id: Uuid): Iterable<EditableStory> {
         val candidatePath = path / id.toString()
         if (fileSystem.exists(candidatePath)) {
             return listOf(FilesystemStory(fileSystem, candidatePath, memorables))
@@ -82,7 +82,7 @@ class FilesystemStories(
         return recentMoments.maxBy { it.timestamp }
     }
 
-    override fun iterator(): Iterator<Story> {
+    override fun iterator(): Iterator<EditableStory> {
         fileSystem.createDirectories(dir = path, mustCreate = false)
         val paths = fileSystem.list(path).asSequence()
         val stories = paths.map { path -> FilesystemStory(fileSystem, path, memorables) }

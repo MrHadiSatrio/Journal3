@@ -28,13 +28,13 @@ import org.junit.Test
 
 class UpdateDeferringStoryTest {
 
-    private lateinit var original: Story
+    private lateinit var original: EditableStory
     private lateinit var updateDeferring: UpdateDeferringStory
 
     @Before
     fun `Inits subjects`() {
         val stories = SelfPopulatingStories(noOfStories = 1, noOfMoments = 1, origin = FakeStories())
-        original = stories.first()
+        original = stories.first() as EditableStory
         updateDeferring = UpdateDeferringStory(original)
     }
 

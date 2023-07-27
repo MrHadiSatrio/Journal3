@@ -19,13 +19,13 @@ package com.hadisatrio.apps.kotlin.journal3.story.datetime
 
 import com.hadisatrio.apps.kotlin.journal3.datetime.Timestamp
 import com.hadisatrio.apps.kotlin.journal3.moment.Moment
-import com.hadisatrio.apps.kotlin.journal3.story.Story
+import com.hadisatrio.apps.kotlin.journal3.story.EditableStory
 import kotlinx.datetime.Clock
 
 class ClockRespectingStory(
     private val clock: Clock,
-    private val origin: Story
-) : Story by origin {
+    private val origin: EditableStory
+) : EditableStory by origin {
 
     override fun new(): Moment {
         val moment = origin.new()

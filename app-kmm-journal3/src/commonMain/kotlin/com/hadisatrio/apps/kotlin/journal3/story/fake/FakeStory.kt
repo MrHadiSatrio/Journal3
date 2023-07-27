@@ -23,13 +23,14 @@ import com.hadisatrio.apps.kotlin.journal3.moment.Moment
 import com.hadisatrio.apps.kotlin.journal3.moment.Moments
 import com.hadisatrio.apps.kotlin.journal3.moment.fake.FakeMoment
 import com.hadisatrio.apps.kotlin.journal3.moment.fake.FakeMoments
+import com.hadisatrio.apps.kotlin.journal3.story.EditableStory
 import com.hadisatrio.apps.kotlin.journal3.story.Story
 import com.hadisatrio.apps.kotlin.journal3.token.TokenableString
 
 class FakeStory(
     override val id: Uuid,
     private val group: MutableList<Story>
-) : Story {
+) : EditableStory {
 
     private var isForgotten: Boolean = false
     private val rawMoments: MutableList<Moment> = mutableListOf()

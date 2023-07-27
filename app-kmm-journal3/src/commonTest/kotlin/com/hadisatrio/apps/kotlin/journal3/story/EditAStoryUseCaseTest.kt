@@ -170,7 +170,7 @@ class EditAStoryUseCaseTest {
     @Test
     fun `Does not delete the story-in-edit when it is an existing one even if the user cancels without editing`() {
         val stories = SelfPopulatingStories(noOfStories = 1, noOfMoments = 0, origin = FakeStories())
-        val story = stories.first()
+        val story = stories.first() as EditableStory
         val targetId = FakeTargetId(story.id)
         val modalPresenter = mockk<Presenter<Modal>>(relaxed = true)
 

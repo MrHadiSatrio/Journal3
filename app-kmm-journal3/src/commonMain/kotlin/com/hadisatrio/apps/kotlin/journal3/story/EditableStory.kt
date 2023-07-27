@@ -17,24 +17,12 @@
 
 package com.hadisatrio.apps.kotlin.journal3.story
 
-import com.benasher44.uuid.Uuid
+import com.hadisatrio.apps.kotlin.journal3.forgettable.Forgettable
 import com.hadisatrio.apps.kotlin.journal3.moment.Moment
-import com.hadisatrio.apps.kotlin.journal3.moment.Moments
+import com.hadisatrio.apps.kotlin.journal3.token.TokenableString
 
-interface Stories : Iterable<Story> {
-    val moments: Moments
-
-    fun new(): EditableStory
-
-    fun containsStory(id: Uuid): Boolean
-
-    fun findStory(id: Uuid): Iterable<Story>
-
-    fun hasMoments(): Boolean
-
-    fun containsMoment(id: Uuid): Boolean
-
-    fun findMoment(id: Uuid): Iterable<Moment>
-
-    fun mostRecentMoment(): Moment
+interface EditableStory : Story, Forgettable {
+    fun update(title: String)
+    fun update(synopsis: TokenableString)
+    fun new(): Moment
 }
