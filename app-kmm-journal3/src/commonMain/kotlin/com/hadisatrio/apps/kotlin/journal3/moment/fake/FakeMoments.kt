@@ -18,7 +18,6 @@
 package com.hadisatrio.apps.kotlin.journal3.moment.fake
 
 import com.benasher44.uuid.Uuid
-import com.benasher44.uuid.uuid4
 import com.hadisatrio.apps.kotlin.journal3.moment.Moment
 import com.hadisatrio.apps.kotlin.journal3.moment.Moments
 
@@ -27,12 +26,6 @@ class FakeMoments(
 ) : Moments {
 
     constructor(vararg moment: Moment) : this(moment.toMutableList())
-
-    override fun new(): Moment {
-        val moment = FakeMoment(uuid4(), moments)
-        moments.add(moment)
-        return moment
-    }
 
     override fun count(): Int {
         return moments.size

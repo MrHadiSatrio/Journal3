@@ -15,10 +15,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.hadisatrio.apps.kotlin.journal3.moment.datetime
+package com.hadisatrio.apps.kotlin.journal3.story.datetime
 
+import com.benasher44.uuid.uuid4
 import com.hadisatrio.apps.kotlin.journal3.datetime.Timestamp
-import com.hadisatrio.apps.kotlin.journal3.moment.fake.FakeMoments
+import com.hadisatrio.apps.kotlin.journal3.story.fake.FakeStory
 import io.kotest.matchers.shouldBe
 import io.mockk.every
 import io.mockk.mockk
@@ -26,13 +27,13 @@ import kotlinx.datetime.Clock
 import kotlin.test.Test
 import kotlin.time.Duration
 
-class ClockRespectingMomentsTest {
+class ClockRespectingStoryTest {
 
     @Test
     fun `Ensures newly-created moments are updated with current timestamp`() {
         val clock = mockk<Clock>()
-        val origin = FakeMoments()
-        val moments = ClockRespectingMoments(clock, origin)
+        val origin = FakeStory(uuid4(), mutableListOf())
+        val moments = ClockRespectingStory(clock, origin)
         val current = Clock.System.now()
         val currentTimestamp = Timestamp(current)
         every { clock.now() } returns current

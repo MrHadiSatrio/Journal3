@@ -54,7 +54,7 @@ class FilesystemMomentsTest {
     @Test
     fun `Writes new moments to the filesystem`() {
         val story = stories.new()
-        val moment = story.moments.new()
+        val moment = story.new()
 
         moment.update(TokenableString("FizzBuzz"))
         moment.update(Sentiment(1.0F))
@@ -71,7 +71,7 @@ class FilesystemMomentsTest {
     fun `Counts its moments`() {
         val story = stories.new()
 
-        repeat(10) { story.moments.new().update(TokenableString("Foo")) }
+        repeat(10) { story.new().update(TokenableString("Foo")) }
 
         story.moments.shouldHaveSize(10)
     }
@@ -112,7 +112,7 @@ class FilesystemMomentsTest {
     @Test
     fun `Deletes forgotten moments from the filesystem`() {
         val story = stories.new()
-        val moment = story.moments.new()
+        val moment = story.new()
 
         moment.forget()
 
@@ -122,14 +122,14 @@ class FilesystemMomentsTest {
 
     @Test
     fun `Iterates through moments by descending order of their written dates`() {
-        val moments = stories.new().moments
+        val story = stories.new()
         repeat(10) {
             val randomInstant = Instant.fromEpochMilliseconds((0..Long.MAX_VALUE).random())
-            moments.new().apply { update(Timestamp(randomInstant)) }
+            story.new().apply { update(Timestamp(randomInstant)) }
         }
 
         var previous: Moment? = null
-        moments.forEach { current ->
+        story.moments.forEach { current ->
             if (previous != null) current.compareTo(previous!!).shouldBeLessThanOrEqual(0)
             previous = current
         }

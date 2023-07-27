@@ -17,7 +17,7 @@
 
 package com.hadisatrio.apps.kotlin.journal3.moment.filesystem
 
-import com.hadisatrio.apps.kotlin.journal3.moment.fake.FakeMoments
+import com.benasher44.uuid.uuid4
 import com.hadisatrio.libs.kotlin.geography.LiteralCoordinates
 import com.hadisatrio.libs.kotlin.geography.fake.FakePlace
 import io.kotest.matchers.booleans.shouldBeFalse
@@ -63,9 +63,9 @@ class FilesystemMemorablePlaceTest {
 
     @Test
     fun `Reports relevancy for moments`() {
-        val oneMomentId = FakeMoments().new().id
-        val otherMomentId = FakeMoments().new().id
-        val momentId = FakeMoments().new().id
+        val oneMomentId = uuid4()
+        val otherMomentId = uuid4()
+        val momentId = uuid4()
 
         memorablePlace.link(oneMomentId)
         memorablePlace.link(otherMomentId)

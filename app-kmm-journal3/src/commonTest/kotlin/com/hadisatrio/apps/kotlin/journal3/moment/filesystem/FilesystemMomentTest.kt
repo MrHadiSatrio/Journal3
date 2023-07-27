@@ -56,7 +56,6 @@ class FilesystemMomentTest {
     private val memorables = MergedMemorables(places, people, attachments)
     private val stories = FilesystemStories(fileSystem, "content".toPath(), memorables)
     private val story = stories.new()
-    private val moments = story.moments
 
     @AfterTest
     fun `Closes all file streams`() {
@@ -65,7 +64,7 @@ class FilesystemMomentTest {
 
     @Test
     fun `Returns expected default values`() {
-        val moment = moments.new()
+        val moment = story.new()
 
         moment.timestamp.shouldBe(Timestamp(Instant.fromEpochMilliseconds(0)))
         moment.description.shouldBe(TokenableString(""))
@@ -76,7 +75,7 @@ class FilesystemMomentTest {
 
     @Test
     fun `Writes details updates to the filesystem`() {
-        val moment = moments.new()
+        val moment = story.new()
 
         moment.update(timestamp = Timestamp(Instant.fromEpochMilliseconds(1000)))
         moment.update(description = TokenableString("Foo"))
@@ -93,7 +92,7 @@ class FilesystemMomentTest {
 
     @Test
     fun `Writes place updates to the filesystem`() {
-        val moment = moments.new()
+        val moment = story.new()
         val firstPlace = FakePlace()
         val secondPlace = FakePlace()
         val firstPlaceFileContent = {
@@ -131,7 +130,7 @@ class FilesystemMomentTest {
 
     @Test
     fun `Writes mention updates to the filesystem`() {
-        val moment = moments.new()
+        val moment = story.new()
         val person = people.remember(Token(("@nahlito")))
         val personFileContent = {
             val path = "content/people/${person.id}".toPath()
@@ -145,7 +144,7 @@ class FilesystemMomentTest {
 
     @Test
     fun `Write attachment updates to the filesystem`() {
-        val moment = moments.new()
+        val moment = story.new()
         val arbitraryExternalFilePath: Path by lazy {
             ("foo".toPath()).apply {
                 JsonFile(fileSystem, this).put("foo", JsonPrimitive("bar"))
@@ -160,7 +159,7 @@ class FilesystemMomentTest {
 
     @Test
     fun `Deletes itself from the filesystem`() {
-        val moment = moments.new()
+        val moment = story.new()
 
         moment.forget()
 
@@ -170,9 +169,9 @@ class FilesystemMomentTest {
 
     @Test
     fun `Compares itself to others based on timestamp`() {
-        val self = moments.new()
-        val newer = moments.new().apply { update(Timestamp(Instant.DISTANT_FUTURE)) }
-        val older = moments.new().apply { update(Timestamp(Instant.DISTANT_PAST)) }
+        val self = story.new()
+        val newer = story.new().apply { update(Timestamp(Instant.DISTANT_FUTURE)) }
+        val older = story.new().apply { update(Timestamp(Instant.DISTANT_PAST)) }
 
         self.compareTo(newer).shouldBeNegative()
         self.compareTo(older).shouldBePositive()

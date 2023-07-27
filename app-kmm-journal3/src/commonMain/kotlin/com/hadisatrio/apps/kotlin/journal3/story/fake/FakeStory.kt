@@ -18,7 +18,10 @@
 package com.hadisatrio.apps.kotlin.journal3.story.fake
 
 import com.benasher44.uuid.Uuid
+import com.benasher44.uuid.uuid4
+import com.hadisatrio.apps.kotlin.journal3.moment.Moment
 import com.hadisatrio.apps.kotlin.journal3.moment.Moments
+import com.hadisatrio.apps.kotlin.journal3.moment.fake.FakeMoment
 import com.hadisatrio.apps.kotlin.journal3.moment.fake.FakeMoments
 import com.hadisatrio.apps.kotlin.journal3.story.Story
 import com.hadisatrio.apps.kotlin.journal3.token.TokenableString
@@ -29,12 +32,13 @@ class FakeStory(
 ) : Story {
 
     private var isForgotten: Boolean = false
+    private val rawMoments: MutableList<Moment> = mutableListOf()
 
     override var title: String = ""
         private set
     override var synopsis: TokenableString = TokenableString.EMPTY
         private set
-    override var moments: Moments = FakeMoments(mutableListOf())
+    override var moments: Moments = FakeMoments(rawMoments)
         private set
 
     override fun update(title: String) {
@@ -45,6 +49,12 @@ class FakeStory(
     override fun update(synopsis: TokenableString) {
         require(!isForgotten) { "This story has already been forgotten." }
         this.synopsis = synopsis
+    }
+
+    override fun new(): Moment {
+        val moment = FakeMoment(uuid4(), rawMoments)
+        rawMoments.add(moment)
+        return moment
     }
 
     override fun forget() {

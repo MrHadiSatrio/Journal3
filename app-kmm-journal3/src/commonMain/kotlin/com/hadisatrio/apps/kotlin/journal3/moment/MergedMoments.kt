@@ -23,10 +23,6 @@ class MergedMoments(private val moments: Iterable<Moments>) : Moments {
 
     constructor(vararg moments: Moments) : this(moments.toList())
 
-    override fun new(): Moment {
-        return moments.first().new()
-    }
-
     override fun count(): Int {
         return toList().size
     }

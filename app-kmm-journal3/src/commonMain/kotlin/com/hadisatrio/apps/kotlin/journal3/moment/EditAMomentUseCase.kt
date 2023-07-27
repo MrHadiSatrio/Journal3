@@ -23,9 +23,9 @@ import com.chrynan.uri.core.fromString
 import com.hadisatrio.apps.kotlin.journal3.datetime.Timestamp
 import com.hadisatrio.apps.kotlin.journal3.event.RefreshRequestEvent
 import com.hadisatrio.apps.kotlin.journal3.id.TargetId
-import com.hadisatrio.apps.kotlin.journal3.moment.datetime.ClockRespectingMoments
 import com.hadisatrio.apps.kotlin.journal3.sentiment.Sentiment
 import com.hadisatrio.apps.kotlin.journal3.story.Stories
+import com.hadisatrio.apps.kotlin.journal3.story.datetime.ClockRespectingStory
 import com.hadisatrio.apps.kotlin.journal3.token.TokenableString
 import com.hadisatrio.libs.kotlin.foundation.UseCase
 import com.hadisatrio.libs.kotlin.foundation.event.CancellationEvent
@@ -80,9 +80,9 @@ class EditAMomentUseCase(
                 stories.findMoment(targetId.asUuid()).first()
             } else {
                 val story = stories.findStory(storyId.asUuid()).first()
-                val moments = ClockRespectingMoments(clock, story.moments)
+                val clockRespecting = ClockRespectingStory(clock, story)
                 isTargetNew = true
-                moments.new()
+                clockRespecting.new()
             }
         )
     }
