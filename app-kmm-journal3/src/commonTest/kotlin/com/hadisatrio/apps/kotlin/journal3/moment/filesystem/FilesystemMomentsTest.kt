@@ -19,7 +19,7 @@ package com.hadisatrio.apps.kotlin.journal3.moment.filesystem
 
 import com.benasher44.uuid.uuid4
 import com.hadisatrio.apps.kotlin.journal3.datetime.Timestamp
-import com.hadisatrio.apps.kotlin.journal3.moment.MemorablesCollection
+import com.hadisatrio.apps.kotlin.journal3.moment.MergedMemorables
 import com.hadisatrio.apps.kotlin.journal3.moment.Moment
 import com.hadisatrio.apps.kotlin.journal3.sentiment.Sentiment
 import com.hadisatrio.apps.kotlin.journal3.story.SelfPopulatingStories
@@ -43,7 +43,7 @@ class FilesystemMomentsTest {
     private val fileSystem = FakeFileSystem()
     private val places = FilesystemMemorablePlaces(fileSystem, "content/places".toPath())
     private val people = FilesystemMentionedPeople(fileSystem, "content/people".toPath())
-    private val memorables = MemorablesCollection(places, people)
+    private val memorables = MergedMemorables(places, people)
     private val stories = FilesystemStories(fileSystem, "content/stories".toPath(), memorables)
 
     @AfterTest

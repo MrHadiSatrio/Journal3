@@ -18,7 +18,7 @@
 package com.hadisatrio.apps.kotlin.journal3.moment.filesystem
 
 import com.hadisatrio.apps.kotlin.journal3.datetime.Timestamp
-import com.hadisatrio.apps.kotlin.journal3.moment.MemorablesCollection
+import com.hadisatrio.apps.kotlin.journal3.moment.MergedMemorables
 import com.hadisatrio.apps.kotlin.journal3.sentiment.Sentiment
 import com.hadisatrio.apps.kotlin.journal3.story.filesystem.FilesystemStories
 import com.hadisatrio.apps.kotlin.journal3.token.Token
@@ -53,7 +53,7 @@ class FilesystemMomentTest {
     private val people = FilesystemMentionedPeople(fileSystem, "content/people".toPath())
     private val sources = FileSystemSources(fileSystem)
     private val attachments = FilesystemMemorableFiles(sources, fileSystem, "content/attachments".toPath())
-    private val memorables = MemorablesCollection(places, people, attachments)
+    private val memorables = MergedMemorables(places, people, attachments)
     private val stories = FilesystemStories(fileSystem, "content".toPath(), memorables)
     private val story = stories.new()
     private val moments = story.moments

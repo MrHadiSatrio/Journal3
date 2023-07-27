@@ -19,7 +19,7 @@ package com.hadisatrio.apps.android.journal3
 
 import androidx.core.content.ContextCompat
 import com.google.android.material.color.DynamicColors
-import com.hadisatrio.apps.kotlin.journal3.moment.MemorablesCollection
+import com.hadisatrio.apps.kotlin.journal3.moment.MergedMemorables
 import com.hadisatrio.apps.kotlin.journal3.moment.filesystem.FilesystemMemorableFiles
 import com.hadisatrio.apps.kotlin.journal3.moment.filesystem.FilesystemMemorablePlaces
 import com.hadisatrio.apps.kotlin.journal3.moment.filesystem.FilesystemMentionedPeople
@@ -70,7 +70,7 @@ class RealJournal3Application : Journal3Application() {
         FilesystemStories(
             fileSystem = FileSystem.SYSTEM,
             path = filesDir.absolutePath.toPath() / "content" / "stories",
-            memorables = MemorablesCollection(
+            memorables = MergedMemorables(
                 FilesystemMemorablePlaces(
                     fileSystem = FileSystem.SYSTEM,
                     path = filesDir.absolutePath.toPath() / "content" / "places",
