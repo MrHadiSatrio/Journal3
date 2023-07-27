@@ -15,32 +15,23 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.hadisatrio.apps.kotlin.journal3.sentiment
+package com.hadisatrio.apps.kotlin.journal3.story
 
-import kotlin.jvm.JvmInline
+import com.benasher44.uuid.Uuid
+import com.hadisatrio.apps.kotlin.journal3.moment.Moments
+import com.hadisatrio.apps.kotlin.journal3.token.TokenableString
 
-@JvmInline
-value class Sentiment(val value: Float) : Comparable<Sentiment> {
+class Reflection(
+    override val title: String,
+    override val synopsis: TokenableString,
+    override val moments: Moments
+) : Story {
 
-    constructor(value: String) : this(value.toFloat())
+    constructor(title: String, moments: Moments) : this(title, TokenableString.EMPTY, moments)
 
-    constructor(others: Iterable<Sentiment>) : this(others.map { it.value }.average().toFloat())
+    override val id: Uuid by lazy { Uuid.nameUUIDFromBytes(title.toByteArray()) }
 
-    init {
-        require(value in 0.0F..1.0F) {
-            "Sentiment value must be between 0.0 and 1.0; given was $value."
-        }
-    }
-
-    override fun toString(): String {
-        return value.toString()
-    }
-
-    override fun compareTo(other: Sentiment): Int {
-        return value.compareTo(other.value)
-    }
-
-    companion object {
-        val DEFAULT = Sentiment(0.123456789F)
+    override fun compareTo(other: Story): Int {
+        return title.compareTo(other.title)
     }
 }

@@ -15,32 +15,30 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.hadisatrio.apps.kotlin.journal3.sentiment
+package com.hadisatrio.apps.kotlin.journal3.moment
 
-import kotlin.jvm.JvmInline
+import com.benasher44.uuid.Uuid
+import com.hadisatrio.apps.kotlin.journal3.datetime.Timestamp
 
-@JvmInline
-value class Sentiment(val value: Float) : Comparable<Sentiment> {
+class TimeRangedMoments(
+    private val timeRange: ClosedRange<Timestamp>,
+    private val origin: Moments
+) : Moments {
 
-    constructor(value: String) : this(value.toFloat())
-
-    constructor(others: Iterable<Sentiment>) : this(others.map { it.value }.average().toFloat())
-
-    init {
-        require(value in 0.0F..1.0F) {
-            "Sentiment value must be between 0.0 and 1.0; given was $value."
-        }
+    override fun count(): Int {
+        return toList().size
     }
 
-    override fun toString(): String {
-        return value.toString()
+    override fun find(id: Uuid): Iterable<Moment> {
+        return filter { it.id == id }
     }
 
-    override fun compareTo(other: Sentiment): Int {
-        return value.compareTo(other.value)
+    override fun mostRecent(): Moment {
+        return maxBy { it.timestamp }
     }
 
-    companion object {
-        val DEFAULT = Sentiment(0.123456789F)
+    override fun iterator(): Iterator<Moment> {
+        val moments = origin.asSequence().filter { it.timestamp in timeRange }
+        return moments.iterator()
     }
 }
