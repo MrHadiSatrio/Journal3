@@ -23,8 +23,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.navigation.NavigationBarView
-import com.hadisatrio.apps.android.journal3.story.ReflectionsListFragment
-import com.hadisatrio.apps.android.journal3.story.StoriesListFragment
+import com.hadisatrio.apps.android.journal3.story.ReflectionStoriesListFragment
+import com.hadisatrio.apps.android.journal3.story.UserStoriesListFragment
 import com.hadisatrio.libs.android.foundation.lifecycle.LifecycleTriggeredEventSource
 import com.hadisatrio.libs.android.foundation.material.NavigationBarSelectionEventSource
 import com.hadisatrio.libs.android.foundation.widget.ViewClickEventSource
@@ -101,8 +101,8 @@ class RootActivity : AppCompatActivity() {
         pager.isUserInputEnabled = false
         pager.adapter = SimpleFragmentPagerAdapter(
             activity = this,
-            FragmentFactory { ReflectionsListFragment() },
-            FragmentFactory { StoriesListFragment() }
+            FragmentFactory { ReflectionStoriesListFragment() },
+            FragmentFactory { UserStoriesListFragment() }
         )
     }
 

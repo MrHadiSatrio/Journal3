@@ -18,13 +18,8 @@
 package com.hadisatrio.apps.android.journal3.story
 
 import android.content.res.Resources
-import android.graphics.Rect
-import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.widget.TextView
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -34,20 +29,14 @@ import com.hadisatrio.apps.android.journal3.R
 import com.hadisatrio.apps.android.journal3.journal3Application
 import com.hadisatrio.apps.kotlin.journal3.event.RefreshRequestEvent
 import com.hadisatrio.apps.kotlin.journal3.moment.Moment
-import com.hadisatrio.apps.kotlin.journal3.story.ShowStoriesUseCase
 import com.hadisatrio.apps.kotlin.journal3.story.Stories
 import com.hadisatrio.apps.kotlin.journal3.story.Story
 import com.hadisatrio.apps.kotlin.journal3.story.cache.CachingStoriesPresenter
 import com.hadisatrio.libs.android.dimensions.GOLDEN_RATIO
 import com.hadisatrio.libs.android.dimensions.dp
-import com.hadisatrio.libs.android.foundation.activity.ActivityCompletionEventSink
 import com.hadisatrio.libs.android.foundation.lifecycle.LifecycleTriggeredEventSource
 import com.hadisatrio.libs.android.foundation.widget.RecyclerViewPresenter
-import com.hadisatrio.libs.kotlin.foundation.ExecutorDispatchingUseCase
-import com.hadisatrio.libs.kotlin.foundation.UseCase
 import com.hadisatrio.libs.kotlin.foundation.event.CancellationEvent
-import com.hadisatrio.libs.kotlin.foundation.event.EventSink
-import com.hadisatrio.libs.kotlin.foundation.event.EventSinks
 import com.hadisatrio.libs.kotlin.foundation.event.EventSource
 import com.hadisatrio.libs.kotlin.foundation.event.EventSources
 import com.hadisatrio.libs.kotlin.foundation.event.ExecutorDispatchingEventSource
@@ -56,13 +45,9 @@ import com.hadisatrio.libs.kotlin.foundation.presentation.ExecutorDispatchingPre
 import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
 import kotlin.math.roundToInt
 
-class ReflectionsListFragment : Fragment() {
+class ReflectionStoriesListFragment : StoriesListFragment() {
 
-    private val storiesListView: RecyclerView by lazy {
-        requireView().findViewById(R.id.stories_list)
-    }
-
-    private val presenter: Presenter<Stories> by lazy {
+    override val presenter: Presenter<Stories> by lazy {
         val subItemViewFactory = RecyclerViewPresenter.ViewFactory { parent, _ ->
             val inflater = LayoutInflater.from(parent.context)
             val view = inflater.inflate(R.layout.view_moment_snippet_card, parent, false)
@@ -117,7 +102,7 @@ class ReflectionsListFragment : Fragment() {
         )
     }
 
-    private val eventSource: EventSource by lazy {
+    override val eventSource: EventSource by lazy {
         ExecutorDispatchingEventSource(
             executor = journal3Application.foregroundExecutor,
             origin = EventSources(
@@ -131,46 +116,6 @@ class ReflectionsListFragment : Fragment() {
                     lifecycleOwner = this,
                     lifecycleEvent = Lifecycle.Event.ON_DESTROY,
                     eventFactory = { CancellationEvent("system") }
-                )
-            )
-        )
-    }
-
-    private val eventSink: EventSink by lazy {
-        EventSinks(
-            journal3Application.globalEventSink,
-            ActivityCompletionEventSink(requireActivity())
-        )
-    }
-
-    private val useCase: UseCase by lazy {
-        ExecutorDispatchingUseCase(
-            executor = journal3Application.backgroundExecutor,
-            origin = ShowStoriesUseCase(
-                stories = journal3Application.reflections,
-                presenter = presenter,
-                eventSource = eventSource,
-                eventSink = eventSink
-            )
-        )
-    }
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_view_stories, container, false)
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        setupViews()
-        useCase()
-    }
-
-    private fun setupViews() {
-        storiesListView.addItemDecoration(
-            SpacingItemDecoration(
-                Spacing(
-                    edges = Rect(16.dp, 16.dp, 16.dp, 16.dp),
-                    horizontal = 16.dp,
-                    vertical = 16.dp
                 )
             )
         )
