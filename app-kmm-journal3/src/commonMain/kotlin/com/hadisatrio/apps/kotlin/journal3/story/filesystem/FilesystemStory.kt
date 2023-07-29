@@ -18,10 +18,14 @@
 package com.hadisatrio.apps.kotlin.journal3.story.filesystem
 
 import com.benasher44.uuid.Uuid
+import com.benasher44.uuid.uuid4
 import com.benasher44.uuid.uuidFrom
 import com.hadisatrio.apps.kotlin.journal3.moment.Memorables
+import com.hadisatrio.apps.kotlin.journal3.moment.Moment
 import com.hadisatrio.apps.kotlin.journal3.moment.Moments
+import com.hadisatrio.apps.kotlin.journal3.moment.filesystem.FilesystemMoment
 import com.hadisatrio.apps.kotlin.journal3.moment.filesystem.FilesystemMoments
+import com.hadisatrio.apps.kotlin.journal3.story.EditableStory
 import com.hadisatrio.apps.kotlin.journal3.story.Story
 import com.hadisatrio.apps.kotlin.journal3.token.TokenableString
 import com.hadisatrio.libs.kotlin.json.JsonFile
@@ -35,7 +39,7 @@ class FilesystemStory(
     private val detailsFile: JsonFile,
     private val momentsDirectory: Path,
     private val memorables: Memorables
-) : Story {
+) : EditableStory {
 
     override val id: Uuid get() {
         return uuidFrom(directory.name)
@@ -75,6 +79,11 @@ class FilesystemStory(
     override fun update(synopsis: TokenableString) {
         fileSystem.createDirectories(dir = directory, mustCreate = false)
         detailsFile.put("synopsis", JsonPrimitive(synopsis.toString()))
+    }
+
+    override fun new(): Moment {
+        fileSystem.createDirectories(dir = momentsDirectory, mustCreate = false)
+        return FilesystemMoment(fileSystem, momentsDirectory, uuid4(), memorables)
     }
 
     override fun forget() {

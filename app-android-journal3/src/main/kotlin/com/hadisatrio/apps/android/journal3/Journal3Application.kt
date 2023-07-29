@@ -34,6 +34,7 @@ import kotlin.time.Duration
 abstract class Journal3Application : Application() {
     abstract val places: Places
     abstract val stories: Stories
+    abstract val reflections: Stories
     abstract val modalPresenter: Presenter<Modal>
     abstract val currentActivity: CurrentActivity
     abstract val globalEventSink: EventSink

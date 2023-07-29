@@ -36,7 +36,7 @@ class SelfPopulatingStories(
             update("Story #$rep")
             update(TokenableString("This is a story."))
             repeat(noOfMoments) { rep2 ->
-                moments.new().apply {
+                new().apply {
                     update(TokenableString("This is a moment (#$rep-$rep2)."))
                     update(Timestamp(Clock.System.now()))
                 }

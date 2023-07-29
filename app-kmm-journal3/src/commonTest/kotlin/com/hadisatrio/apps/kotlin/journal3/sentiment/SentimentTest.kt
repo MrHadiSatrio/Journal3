@@ -19,6 +19,9 @@ package com.hadisatrio.apps.kotlin.journal3.sentiment
 
 import io.kotest.assertions.throwables.shouldNotThrow
 import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.matchers.ints.shouldBeNegative
+import io.kotest.matchers.ints.shouldBePositive
+import io.kotest.matchers.ints.shouldBeZero
 import io.kotest.matchers.shouldBe
 import kotlin.test.Test
 
@@ -46,5 +49,12 @@ class SentimentTest {
 
         val averageValue = rawSentiments.map { it.value }.average()
         sentiment.value.shouldBe(averageValue)
+    }
+
+    @Test
+    fun `Compares itself to other sentiment on basis of value`() {
+        Sentiment(1.0F).compareTo(Sentiment(0.5F)).shouldBePositive()
+        Sentiment(1.0F).compareTo(Sentiment(1.0F)).shouldBeZero()
+        Sentiment(0.5F).compareTo(Sentiment(1.0F)).shouldBeNegative()
     }
 }

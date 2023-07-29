@@ -19,7 +19,7 @@ package com.hadisatrio.apps.kotlin.journal3.moment
 
 import com.benasher44.uuid.Uuid
 
-class MemorablesCollection(
+class MergedMemorables(
     private val collection: Iterable<Memorables>
 ) : Memorables {
 

@@ -18,7 +18,6 @@
 package com.hadisatrio.apps.kotlin.journal3.moment.filesystem
 
 import com.benasher44.uuid.Uuid
-import com.benasher44.uuid.uuid4
 import com.hadisatrio.apps.kotlin.journal3.moment.Memorables
 import com.hadisatrio.apps.kotlin.journal3.moment.Moment
 import com.hadisatrio.apps.kotlin.journal3.moment.Moments
@@ -30,11 +29,6 @@ class FilesystemMoments(
     private val path: Path,
     private val memorables: Memorables
 ) : Moments {
-
-    override fun new(): Moment {
-        fileSystem.createDirectories(dir = path, mustCreate = false)
-        return FilesystemMoment(fileSystem, path, uuid4(), memorables)
-    }
 
     override fun count(): Int {
         return if (fileSystem.exists(path).not()) 0 else fileSystem.list(path).size

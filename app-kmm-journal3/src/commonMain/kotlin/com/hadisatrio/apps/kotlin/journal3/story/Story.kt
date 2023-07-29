@@ -18,16 +18,12 @@
 package com.hadisatrio.apps.kotlin.journal3.story
 
 import com.benasher44.uuid.Uuid
-import com.hadisatrio.apps.kotlin.journal3.forgettable.Forgettable
 import com.hadisatrio.apps.kotlin.journal3.moment.Moments
 import com.hadisatrio.apps.kotlin.journal3.token.TokenableString
 
-interface Story : Forgettable, Comparable<Story> {
+interface Story : Comparable<Story> {
     val id: Uuid
     val title: String
     val synopsis: TokenableString
     val moments: Moments
-
-    fun update(title: String)
-    fun update(synopsis: TokenableString)
 }

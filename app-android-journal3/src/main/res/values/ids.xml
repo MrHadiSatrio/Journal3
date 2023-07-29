@@ -1,4 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?><!--
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
   ~ Copyright (C) 2022 Hadi Satrio
   ~
   ~ This program is free software: you can redistribute it and/or modify
@@ -15,18 +17,6 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
-
-    <item
-        android:id="@+id/view_reflections_menu_item"
-        android:enabled="true"
-        android:icon="@drawable/ic_reflections"
-        android:title="Reflections" />
-
-    <item
-        android:id="@+id/view_stories_menu_item"
-        android:enabled="true"
-        android:icon="@drawable/ic_stories"
-        android:title="Stories" />
-
-</menu>
+<resources>
+    <item name="presenter_view_tag" type="id" />
+</resources>

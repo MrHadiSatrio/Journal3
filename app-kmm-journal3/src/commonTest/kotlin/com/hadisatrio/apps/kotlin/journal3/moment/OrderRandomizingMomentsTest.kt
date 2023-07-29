@@ -17,13 +17,20 @@
 
 package com.hadisatrio.apps.kotlin.journal3.moment
 
-import com.benasher44.uuid.Uuid
+import com.hadisatrio.apps.kotlin.journal3.story.SelfPopulatingStories
+import com.hadisatrio.apps.kotlin.journal3.story.fake.FakeStories
+import io.kotest.matchers.equals.shouldNotBeEqual
+import kotlin.test.Test
 
-interface Moments : Iterable<Moment> {
+class OrderRandomizingMomentsTest {
 
-    fun count(): Int
+    private val origin: Moments = SelfPopulatingStories(noOfStories = 1, noOfMoments = 10, FakeStories()).moments
+    private val moments: OrderRandomizingMoments = OrderRandomizingMoments(origin)
 
-    fun find(id: Uuid): Iterable<Moment>
-
-    fun mostRecent(): Moment
+    @Test
+    fun `Randomizes the order of origin moments`() {
+        val originalIds = origin.map { it.id }.toList()
+        val randomizedIds = moments.map { it.id }.toList()
+        originalIds.shouldNotBeEqual(randomizedIds)
+    }
 }

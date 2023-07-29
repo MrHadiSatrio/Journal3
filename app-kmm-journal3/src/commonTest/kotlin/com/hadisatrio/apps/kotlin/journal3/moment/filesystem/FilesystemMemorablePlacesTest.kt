@@ -19,7 +19,6 @@ package com.hadisatrio.apps.kotlin.journal3.moment.filesystem
 
 import com.benasher44.uuid.uuid4
 import com.hadisatrio.apps.kotlin.journal3.moment.Memorable
-import com.hadisatrio.apps.kotlin.journal3.moment.fake.FakeMoments
 import com.hadisatrio.libs.kotlin.geography.fake.FakePlace
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.booleans.shouldBeTrue
@@ -92,7 +91,7 @@ class FilesystemMemorablePlacesTest {
 
     @Test
     fun `Finds a place relevant to given moment`() {
-        val momentId = FakeMoments().new().id
+        val momentId = uuid4()
         val places = FilesystemMemorablePlaces(fileSystem, "content".toPath())
         repeat(10) { places.remember(FakePlace()) }
         val randomized = places.toList().random()
@@ -105,18 +104,18 @@ class FilesystemMemorablePlacesTest {
 
     @Test
     fun `Returns empty iterable when asked to find a place relevant to an unknown moment`() {
-        val momentId = FakeMoments().new().id
+        val momentId = uuid4()
         val places = FilesystemMemorablePlaces(fileSystem, "content".toPath())
         repeat(10) { places.remember(FakePlace()).link(momentId) }
 
-        val found = places.relevantTo(FakeMoments().new().id)
+        val found = places.relevantTo(uuid4())
 
         found.shouldBeEmpty()
     }
 
     @Test
     fun `Throws when asked to relate an unknown referable`() {
-        val momentId = FakeMoments().new().id
+        val momentId = uuid4()
         val places = FilesystemMemorablePlaces(fileSystem, "content".toPath())
 
         shouldThrow<IllegalArgumentException> { places.relate(momentId, mockk<Memorable>()) }

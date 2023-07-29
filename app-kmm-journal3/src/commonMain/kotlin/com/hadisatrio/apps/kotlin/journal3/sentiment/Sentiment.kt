@@ -20,7 +20,7 @@ package com.hadisatrio.apps.kotlin.journal3.sentiment
 import kotlin.jvm.JvmInline
 
 @JvmInline
-value class Sentiment(val value: Float) {
+value class Sentiment(val value: Float) : Comparable<Sentiment> {
 
     constructor(value: String) : this(value.toFloat())
 
@@ -34,6 +34,10 @@ value class Sentiment(val value: Float) {
 
     override fun toString(): String {
         return value.toString()
+    }
+
+    override fun compareTo(other: Sentiment): Int {
+        return value.compareTo(other.value)
     }
 
     companion object {

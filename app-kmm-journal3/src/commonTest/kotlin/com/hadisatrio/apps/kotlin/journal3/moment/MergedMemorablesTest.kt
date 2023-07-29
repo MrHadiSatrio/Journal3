@@ -8,9 +8,9 @@ import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldHaveSize
 import org.junit.Test
 
-class MemorablesCollectionTest {
+class MergedMemorablesTest {
 
-    private val collection = MemorablesCollection(
+    private val collection = MergedMemorables(
         FakeMemorables("places"),
         FakeMemorables("people")
     )

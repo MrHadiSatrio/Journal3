@@ -17,24 +17,12 @@
 
 package com.hadisatrio.apps.kotlin.journal3.story
 
-import com.benasher44.uuid.Uuid
-import com.hadisatrio.apps.kotlin.journal3.moment.Moment
-import com.hadisatrio.apps.kotlin.journal3.moment.Moments
+class MomentfulStories(
+    private val origin: Stories
+) : Stories by origin {
 
-interface Stories : Iterable<Story> {
-    val moments: Moments
-
-    fun new(): EditableStory
-
-    fun containsStory(id: Uuid): Boolean
-
-    fun findStory(id: Uuid): Iterable<Story>
-
-    fun hasMoments(): Boolean
-
-    fun containsMoment(id: Uuid): Boolean
-
-    fun findMoment(id: Uuid): Iterable<Moment>
-
-    fun mostRecentMoment(): Moment
+    override fun iterator(): Iterator<Story> {
+        val momentful = origin.asSequence().filter { it.moments.count() > 0 }
+        return momentful.iterator()
+    }
 }

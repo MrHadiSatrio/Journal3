@@ -20,8 +20,8 @@ package com.hadisatrio.apps.kotlin.journal3.story
 import com.hadisatrio.apps.kotlin.journal3.token.TokenableString
 
 class UpdateDeferringStory(
-    private val origin: Story
-) : Story by origin {
+    private val origin: EditableStory
+) : EditableStory by origin {
 
     private var titleInEdit: String = origin.title
     private var synopsisInEdit: TokenableString = origin.synopsis

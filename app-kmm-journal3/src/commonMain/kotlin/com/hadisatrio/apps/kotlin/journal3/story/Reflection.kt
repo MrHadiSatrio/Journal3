@@ -18,23 +18,20 @@
 package com.hadisatrio.apps.kotlin.journal3.story
 
 import com.benasher44.uuid.Uuid
-import com.hadisatrio.apps.kotlin.journal3.moment.Moment
 import com.hadisatrio.apps.kotlin.journal3.moment.Moments
+import com.hadisatrio.apps.kotlin.journal3.token.TokenableString
 
-interface Stories : Iterable<Story> {
-    val moments: Moments
+class Reflection(
+    override val title: String,
+    override val synopsis: TokenableString,
+    override val moments: Moments
+) : Story {
 
-    fun new(): EditableStory
+    constructor(title: String, moments: Moments) : this(title, TokenableString.EMPTY, moments)
 
-    fun containsStory(id: Uuid): Boolean
+    override val id: Uuid by lazy { Uuid.nameUUIDFromBytes(title.toByteArray()) }
 
-    fun findStory(id: Uuid): Iterable<Story>
-
-    fun hasMoments(): Boolean
-
-    fun containsMoment(id: Uuid): Boolean
-
-    fun findMoment(id: Uuid): Iterable<Moment>
-
-    fun mostRecentMoment(): Moment
+    override fun compareTo(other: Story): Int {
+        return title.compareTo(other.title)
+    }
 }

@@ -43,6 +43,7 @@ class FakeJournal3Application : Journal3Application() {
 
     override val places: Places by lazy { SelfPopulatingPlaces(10, FakePlaces()) }
     override val stories: Stories by lazy { SelfPopulatingStories(10, 10, FakeStories()) }
+    override val reflections: Stories by lazy { FakeStories() }
     override val modalPresenter: Presenter<Modal> by lazy { FakePresenter() }
     override val currentActivity: CurrentActivity by lazy { CurrentActivity(this) }
     override val globalEventSink: EventSink by lazy { FakeEventSink() }

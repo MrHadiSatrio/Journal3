@@ -15,20 +15,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.hadisatrio.apps.kotlin.journal3.moment.fake
+package com.hadisatrio.apps.kotlin.journal3.moment
 
 import com.benasher44.uuid.Uuid
-import com.hadisatrio.apps.kotlin.journal3.moment.Moment
-import com.hadisatrio.apps.kotlin.journal3.moment.Moments
+import com.hadisatrio.libs.kotlin.geography.Coordinates
+import com.hadisatrio.libs.kotlin.geography.NullIsland
 
-class FakeMoments(
-    private val moments: MutableList<Moment>
+class VicinityMoments(
+    private val coordinates: Coordinates,
+    private val distanceLimitInM: Double,
+    private val origin: Moments
 ) : Moments {
 
-    constructor(vararg moment: Moment) : this(moment.toMutableList())
-
     override fun count(): Int {
-        return moments.size
+        return toList().size
     }
 
     override fun find(id: Uuid): Iterable<Moment> {
@@ -40,6 +40,8 @@ class FakeMoments(
     }
 
     override fun iterator(): Iterator<Moment> {
-        return moments.iterator()
+        val hasPlace = origin.asSequence().filterNot { it.place is NullIsland }
+        val nearby = hasPlace.filter { it.place.distanceTo(coordinates).value <= distanceLimitInM }
+        return nearby.iterator()
     }
 }

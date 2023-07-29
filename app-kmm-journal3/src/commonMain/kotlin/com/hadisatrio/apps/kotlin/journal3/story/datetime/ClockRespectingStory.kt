@@ -15,30 +15,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.hadisatrio.apps.kotlin.journal3.moment.datetime
+package com.hadisatrio.apps.kotlin.journal3.story.datetime
 
 import com.hadisatrio.apps.kotlin.journal3.datetime.Timestamp
-import com.hadisatrio.apps.kotlin.journal3.moment.fake.FakeMoments
-import io.kotest.matchers.shouldBe
-import io.mockk.every
-import io.mockk.mockk
+import com.hadisatrio.apps.kotlin.journal3.moment.Moment
+import com.hadisatrio.apps.kotlin.journal3.story.EditableStory
 import kotlinx.datetime.Clock
-import kotlin.test.Test
-import kotlin.time.Duration
 
-class ClockRespectingMomentsTest {
+class ClockRespectingStory(
+    private val clock: Clock,
+    private val origin: EditableStory
+) : EditableStory by origin {
 
-    @Test
-    fun `Ensures newly-created moments are updated with current timestamp`() {
-        val clock = mockk<Clock>()
-        val origin = FakeMoments()
-        val moments = ClockRespectingMoments(clock, origin)
-        val current = Clock.System.now()
-        val currentTimestamp = Timestamp(current)
-        every { clock.now() } returns current
-
-        val moment = moments.new()
-
-        moment.timestamp.difference(currentTimestamp).shouldBe(Duration.ZERO)
+    override fun new(): Moment {
+        val moment = origin.new()
+        moment.update(Timestamp(clock.now()))
+        return moment
     }
 }

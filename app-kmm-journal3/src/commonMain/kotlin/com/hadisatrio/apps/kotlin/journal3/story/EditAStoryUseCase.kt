@@ -62,7 +62,7 @@ class EditAStoryUseCase(
     private fun identifyTarget() {
         currentTarget = UpdateDeferringStory(
             if (targetId.isValid()) {
-                stories.findStory(targetId.asUuid()).first()
+                stories.findStory(targetId.asUuid()).first() as EditableStory
             } else {
                 isTargetNew = true
                 stories.new()

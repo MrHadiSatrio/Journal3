@@ -40,7 +40,7 @@ class AlertInactivityUseCaseTest {
     private val presenter = mockk<Presenter<Modal>>(relaxed = true)
     private val stories = FakeStories()
     private val story = stories.new()
-    private val moment = story.moments.new()
+    private val moment = story.new()
     private val eventSink = mockk<EventSink>(relaxed = true)
 
     @Test

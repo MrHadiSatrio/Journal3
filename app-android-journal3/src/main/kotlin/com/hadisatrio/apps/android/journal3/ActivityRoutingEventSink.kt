@@ -39,6 +39,7 @@ class ActivityRoutingEventSink(
         val identifier = event.selectedIdentifier
         val activity = currentActivity.acquire()
         when (identifier) {
+            "view_reflections" -> activity.startViewReflectionsActivity()
             "add_story" -> activity.startActivity(Intent(activity, EditAStoryActivity::class.java))
             "edit_story" -> activity.startEditAStoryActivity(event)
             "delete_story" -> activity.startDeleteAStoryActivity(event)
@@ -49,6 +50,12 @@ class ActivityRoutingEventSink(
             "delete_moment" -> activity.startDeleteAMomentActivity(event)
             "select_place" -> activity.startActivity(Intent(activity, SelectAPlaceActivity::class.java))
         }
+    }
+
+    private fun Activity.startViewReflectionsActivity() {
+        val intent = Intent(this, RootActivity::class.java)
+        intent.setAction("view_reflections")
+        startActivity(intent)
     }
 
     private fun Activity.startViewStoriesActivity() {

@@ -15,26 +15,27 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.hadisatrio.apps.kotlin.journal3.story
+package com.hadisatrio.apps.kotlin.journal3.moment
 
 import com.benasher44.uuid.Uuid
-import com.hadisatrio.apps.kotlin.journal3.moment.Moment
-import com.hadisatrio.apps.kotlin.journal3.moment.Moments
 
-interface Stories : Iterable<Story> {
-    val moments: Moments
+class MergedMoments(private val moments: Iterable<Moments>) : Moments {
 
-    fun new(): EditableStory
+    constructor(vararg moments: Moments) : this(moments.toList())
 
-    fun containsStory(id: Uuid): Boolean
+    override fun count(): Int {
+        return toList().size
+    }
 
-    fun findStory(id: Uuid): Iterable<Story>
+    override fun find(id: Uuid): Iterable<Moment> {
+        return filter { it.id == id }
+    }
 
-    fun hasMoments(): Boolean
+    override fun mostRecent(): Moment {
+        return maxBy { it.timestamp }
+    }
 
-    fun containsMoment(id: Uuid): Boolean
-
-    fun findMoment(id: Uuid): Iterable<Moment>
-
-    fun mostRecentMoment(): Moment
+    override fun iterator(): Iterator<Moment> {
+        return moments.flatten().iterator()
+    }
 }

@@ -17,24 +17,18 @@
 
 package com.hadisatrio.apps.kotlin.journal3.story
 
-import com.benasher44.uuid.Uuid
-import com.hadisatrio.apps.kotlin.journal3.moment.Moment
-import com.hadisatrio.apps.kotlin.journal3.moment.Moments
+import com.hadisatrio.apps.kotlin.journal3.story.fake.FakeStories
+import io.kotest.matchers.collections.shouldHaveSize
+import kotlin.test.Test
 
-interface Stories : Iterable<Story> {
-    val moments: Moments
+class MomentfulStoriesTest {
 
-    fun new(): EditableStory
+    @Test
+    fun `Filters out stories that has no moments`() {
+        val origin = SelfPopulatingStories(noOfStories = 2, noOfMoments = 1, FakeStories())
+        val momentful = MomentfulStories(origin)
+        origin.first().moments.first().forget()
 
-    fun containsStory(id: Uuid): Boolean
-
-    fun findStory(id: Uuid): Iterable<Story>
-
-    fun hasMoments(): Boolean
-
-    fun containsMoment(id: Uuid): Boolean
-
-    fun findMoment(id: Uuid): Iterable<Moment>
-
-    fun mostRecentMoment(): Moment
+        momentful.shouldHaveSize(1)
+    }
 }

@@ -66,7 +66,7 @@ class FilesystemStoryTest {
     fun `Deletes itself from the filesystem`() {
         val story = stories.new()
 
-        story.moments.new()
+        story.new()
         story.forget()
 
         val path = "content/${story.id}".toPath()

@@ -34,6 +34,6 @@ class DeleteStoryUseCase(
 ) : DeleteForgettableUseCase(presenter, eventSource, eventSink) {
 
     override fun forgettable(): Forgettable? {
-        return stories.findStory(targetId.asUuid()).firstOrNull()
+        return stories.findStory(targetId.asUuid()).firstOrNull() as? EditableStory
     }
 }
