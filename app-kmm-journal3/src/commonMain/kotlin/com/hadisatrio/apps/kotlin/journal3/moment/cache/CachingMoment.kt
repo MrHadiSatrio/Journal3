@@ -24,6 +24,7 @@ import com.hadisatrio.apps.kotlin.journal3.moment.Moment
 import com.hadisatrio.apps.kotlin.journal3.sentiment.Sentiment
 import com.hadisatrio.apps.kotlin.journal3.token.TokenableString
 import com.hadisatrio.libs.kotlin.geography.Place
+import com.hadisatrio.libs.kotlin.geography.cache.CachingPlace
 
 @Suppress("LongParameterList")
 class CachingMoment(
@@ -43,7 +44,7 @@ class CachingMoment(
         origin.description,
         origin.sentiment,
         origin.impliedSentiment,
-        origin.place,
+        CachingPlace(origin.place),
         origin.attachments,
         origin
     )
