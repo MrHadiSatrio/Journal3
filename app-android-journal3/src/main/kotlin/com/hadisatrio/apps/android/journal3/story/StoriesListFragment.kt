@@ -22,87 +22,34 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.RecyclerView
 import com.grzegorzojdana.spacingitemdecoration.Spacing
 import com.grzegorzojdana.spacingitemdecoration.SpacingItemDecoration
 import com.hadisatrio.apps.android.journal3.R
 import com.hadisatrio.apps.android.journal3.journal3Application
-import com.hadisatrio.apps.kotlin.journal3.event.RefreshRequestEvent
 import com.hadisatrio.apps.kotlin.journal3.story.ShowStoriesUseCase
 import com.hadisatrio.apps.kotlin.journal3.story.Stories
-import com.hadisatrio.apps.kotlin.journal3.story.cache.CachingStoriesPresenter
 import com.hadisatrio.libs.android.dimensions.dp
 import com.hadisatrio.libs.android.foundation.activity.ActivityCompletionEventSink
-import com.hadisatrio.libs.android.foundation.lifecycle.LifecycleTriggeredEventSource
-import com.hadisatrio.libs.android.foundation.widget.RecyclerViewItemSelectionEventSource
-import com.hadisatrio.libs.android.foundation.widget.RecyclerViewPresenter
 import com.hadisatrio.libs.kotlin.foundation.ExecutorDispatchingUseCase
 import com.hadisatrio.libs.kotlin.foundation.UseCase
-import com.hadisatrio.libs.kotlin.foundation.event.CancellationEvent
 import com.hadisatrio.libs.kotlin.foundation.event.EventSink
 import com.hadisatrio.libs.kotlin.foundation.event.EventSinks
 import com.hadisatrio.libs.kotlin.foundation.event.EventSource
-import com.hadisatrio.libs.kotlin.foundation.event.EventSources
-import com.hadisatrio.libs.kotlin.foundation.event.ExecutorDispatchingEventSource
-import com.hadisatrio.libs.kotlin.foundation.presentation.AdaptingPresenter
-import com.hadisatrio.libs.kotlin.foundation.presentation.ExecutorDispatchingPresenter
 import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
 
-class StoriesListFragment : Fragment() {
+abstract class StoriesListFragment : Fragment() {
 
-    private val storiesListView: RecyclerView by lazy {
+    protected val storiesListView: RecyclerView by lazy {
         requireView().findViewById(R.id.stories_list)
     }
 
-    private val presenter: Presenter<Stories> by lazy {
-        ExecutorDispatchingPresenter(
-            executor = journal3Application.backgroundExecutor,
-            origin = CachingStoriesPresenter(
-                origin = ExecutorDispatchingPresenter(
-                    executor = journal3Application.foregroundExecutor,
-                    origin = AdaptingPresenter(
-                        origin = RecyclerViewPresenter(
-                            recyclerView = storiesListView,
-                            viewFactory = { parent, _ ->
-                                LayoutInflater.from(parent.context)
-                                    .inflate(R.layout.view_story_snippet_card, parent, false)
-                            },
-                            viewRenderer = { view, item ->
-                                view.findViewById<TextView>(R.id.title_label).text = item.title
-                                view.findViewById<TextView>(R.id.synopsis_label).text = item.synopsis.toString()
-                            }
-                        ),
-                        adapter = { stories -> stories.toList() }
-                    )
-                )
-            )
-        )
-    }
+    abstract val presenter: Presenter<Stories>
 
-    private val eventSource: EventSource by lazy {
-        ExecutorDispatchingEventSource(
-            executor = journal3Application.foregroundExecutor,
-            origin = EventSources(
-                journal3Application.globalEventSource,
-                LifecycleTriggeredEventSource(
-                    lifecycleOwner = this,
-                    lifecycleEvent = Lifecycle.Event.ON_START,
-                    eventFactory = { RefreshRequestEvent("lifecycle") }
-                ),
-                LifecycleTriggeredEventSource(
-                    lifecycleOwner = this,
-                    lifecycleEvent = Lifecycle.Event.ON_DESTROY,
-                    eventFactory = { CancellationEvent("system") }
-                ),
-                RecyclerViewItemSelectionEventSource(
-                    recyclerView = storiesListView
-                )
-            )
-        )
-    }
+    abstract val eventSource: EventSource
+
+    abstract val stories: Stories
 
     private val eventSink: EventSink by lazy {
         EventSinks(
@@ -115,7 +62,7 @@ class StoriesListFragment : Fragment() {
         ExecutorDispatchingUseCase(
             executor = journal3Application.backgroundExecutor,
             origin = ShowStoriesUseCase(
-                stories = journal3Application.stories,
+                stories = stories,
                 presenter = presenter,
                 eventSource = eventSource,
                 eventSink = eventSink
@@ -123,11 +70,15 @@ class StoriesListFragment : Fragment() {
         )
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    final override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.fragment_view_stories, container, false)
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    final override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         setupViews()
         useCase()
     }
@@ -138,7 +89,7 @@ class StoriesListFragment : Fragment() {
                 Spacing(
                     edges = Rect(16.dp, 16.dp, 16.dp, 16.dp),
                     horizontal = 16.dp,
-                    vertical = 8.dp
+                    vertical = 16.dp
                 )
             )
         )
