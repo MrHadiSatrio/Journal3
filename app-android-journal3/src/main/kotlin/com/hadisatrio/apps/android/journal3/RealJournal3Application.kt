@@ -32,6 +32,7 @@ import com.hadisatrio.apps.kotlin.journal3.moment.filesystem.FilesystemMentioned
 import com.hadisatrio.apps.kotlin.journal3.sentiment.NegativeishSentimentRange
 import com.hadisatrio.apps.kotlin.journal3.sentiment.PositiveishSentimentRange
 import com.hadisatrio.apps.kotlin.journal3.sentiment.VeryPositiveSentimentRange
+import com.hadisatrio.apps.kotlin.journal3.story.InitDeferringStories
 import com.hadisatrio.apps.kotlin.journal3.story.MomentfulStories
 import com.hadisatrio.apps.kotlin.journal3.story.Reflection
 import com.hadisatrio.apps.kotlin.journal3.story.Stories
@@ -103,66 +104,68 @@ class RealJournal3Application : Journal3Application() {
     }
 
     override val reflections: Stories by lazy {
-        MomentfulStories(
-            FakeStories(
-                Reflection(
-                    title = "Around the Corner",
-                    synopsis = TokenableString("Rediscover moments from nearby places."),
-                    moments = CountLimitingMoments(
-                        limit = 10,
-                        origin = OrderRandomizingMoments(
-                            origin = VicinityMoments(
-                                coordinates = coordinates,
-                                distanceLimitInM = 100.0,
-                                origin = stories.moments
+        InitDeferringStories {
+            MomentfulStories(
+                FakeStories(
+                    Reflection(
+                        title = "Around the Corner",
+                        synopsis = TokenableString("Rediscover moments from nearby places."),
+                        moments = CountLimitingMoments(
+                            limit = 10,
+                            origin = OrderRandomizingMoments(
+                                origin = VicinityMoments(
+                                    coordinates = coordinates,
+                                    distanceLimitInM = 100.0,
+                                    origin = stories.moments
+                                )
                             )
                         )
-                    )
-                ),
-                Reflection(
-                    title = "Recent Wins",
-                    synopsis = TokenableString("Celebrate positive moments of the week."),
-                    moments = CountLimitingMoments(
-                        limit = 10,
-                        origin = OrderRandomizingMoments(
-                            origin = TimeRangedMoments(
-                                timeRange = Timestamp(clock.now() - 7.days)..Timestamp(clock.now()),
+                    ),
+                    Reflection(
+                        title = "Recent Wins",
+                        synopsis = TokenableString("Celebrate positive moments of the week."),
+                        moments = CountLimitingMoments(
+                            limit = 10,
+                            origin = OrderRandomizingMoments(
+                                origin = TimeRangedMoments(
+                                    timeRange = Timestamp(clock.now() - 7.days)..Timestamp(clock.now()),
+                                    origin = SentimentRangedMoments(
+                                        sentimentRange = PositiveishSentimentRange,
+                                        origin = stories.moments
+                                    )
+                                )
+                            )
+                        )
+                    ),
+                    Reflection(
+                        title = "Positivity Overload",
+                        synopsis = TokenableString("Immerse in incredibly positive moments."),
+                        moments = CountLimitingMoments(
+                            limit = 10,
+                            origin = OrderRandomizingMoments(
                                 origin = SentimentRangedMoments(
-                                    sentimentRange = PositiveishSentimentRange,
+                                    sentimentRange = VeryPositiveSentimentRange,
+                                    origin = stories.moments
+                                )
+                            )
+                        )
+                    ),
+                    Reflection(
+                        title = "Shadows & Light",
+                        synopsis = TokenableString("Reflect on deeply emotional moments."),
+                        moments = CountLimitingMoments(
+                            limit = 5,
+                            origin = OrderRandomizingMoments(
+                                origin = SentimentRangedMoments(
+                                    sentimentRange = NegativeishSentimentRange,
                                     origin = stories.moments
                                 )
                             )
                         )
                     )
-                ),
-                Reflection(
-                    title = "Positivity Overload",
-                    synopsis = TokenableString("Immerse in incredibly positive moments."),
-                    moments = CountLimitingMoments(
-                        limit = 10,
-                        origin = OrderRandomizingMoments(
-                            origin = SentimentRangedMoments(
-                                sentimentRange = VeryPositiveSentimentRange,
-                                origin = stories.moments
-                            )
-                        )
-                    )
-                ),
-                Reflection(
-                    title = "Shadows & Light",
-                    synopsis = TokenableString("Reflect on deeply emotional moments."),
-                    moments = CountLimitingMoments(
-                        limit = 5,
-                        origin = OrderRandomizingMoments(
-                            origin = SentimentRangedMoments(
-                                sentimentRange = NegativeishSentimentRange,
-                                origin = stories.moments
-                            )
-                        )
-                    )
                 )
             )
-        )
+        }
     }
 
     override val modalPresenter: Presenter<Modal> by lazy {
