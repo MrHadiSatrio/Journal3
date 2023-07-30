@@ -34,7 +34,10 @@ class MergedMomentsTest {
 
     @BeforeTest
     fun `Populate moments`() {
-        repeat(10) { firstStory.new(); secondStory.new() }
+        repeat(10) {
+            firstStory.new()
+            secondStory.new()
+        }
     }
 
     @Test
