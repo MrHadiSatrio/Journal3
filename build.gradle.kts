@@ -23,7 +23,7 @@ buildscript {
         classpath("org.jetbrains.dokka:dokka-gradle-plugin:1.8.20")
         classpath("org.jfrog.buildinfo:build-info-extractor-gradle:5.0.3")
         classpath("org.jetbrains.kotlinx:kover:0.6.1")
-        classpath("io.gitlab.arturbosch.detekt:detekt-gradle-plugin:1.23.0")
+        classpath("io.gitlab.arturbosch.detekt:detekt-gradle-plugin:1.23.1")
     }
 }
 
