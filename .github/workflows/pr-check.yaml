@@ -36,7 +36,7 @@ jobs:
           RELEASE_KEY_PASSWORD: ${{ secrets.RELEASE_KEY_PASSWORD }}
           RELEASE_KEY_HERE_API: ${{ secrets.RELEASE_KEY_HERE_API }}
           DEBUG_KEY_HERE_API: ${{ secrets.DEBUG_KEY_HERE_API }}
-        run: ./gradlew clean build sonarqube
+        run: ./gradlew clean build sonar
 
       - name: Archive build reports
         uses: actions/upload-artifact@v3
