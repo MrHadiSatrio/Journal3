@@ -57,7 +57,10 @@ class FilesystemMentionedPerson(
 
     override fun link(momentId: Uuid) {
         val idPrimitive = JsonPrimitive(momentId.toString())
-        val newIds = buildJsonArray { momentIds.forEach(::add); add(idPrimitive) }
+        val newIds = buildJsonArray {
+            momentIds.forEach(::add)
+            add(idPrimitive)
+        }
         file.put("moment_ids", newIds)
     }
 

@@ -27,7 +27,10 @@ class InitDeferringStoriesTest {
     @Test
     fun `Defers the initialization of its origin`() {
         var isInitialized = false
-        val origin = { isInitialized = true; FakeStories() }
+        val origin = {
+            isInitialized = true
+            FakeStories()
+        }
         val deferred = InitDeferringStories(origin)
 
         isInitialized.shouldBeFalse()

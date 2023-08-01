@@ -94,7 +94,12 @@ class LocationManagerCoordinatesTest {
     fun `Prevents spamming the LocationManager on multi-threaded requests`() {
         val threads = mutableSetOf<Thread>()
         repeat(2) {
-            threads.add(Thread { coordinates.latitude; coordinates.longitude })
+            threads.add(
+                Thread {
+                    coordinates.latitude
+                    coordinates.longitude
+                }
+            )
         }
 
         threads.forEach { it.start() }
