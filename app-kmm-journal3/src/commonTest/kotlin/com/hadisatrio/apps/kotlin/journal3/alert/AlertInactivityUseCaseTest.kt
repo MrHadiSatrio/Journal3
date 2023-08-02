@@ -17,7 +17,7 @@
 
 package com.hadisatrio.apps.kotlin.journal3.alert
 
-import com.hadisatrio.apps.kotlin.journal3.datetime.Timestamp
+import com.hadisatrio.apps.kotlin.journal3.datetime.LiteralTimestamp
 import com.hadisatrio.apps.kotlin.journal3.event.UnsupportedEvent
 import com.hadisatrio.apps.kotlin.journal3.story.fake.FakeStories
 import com.hadisatrio.libs.kotlin.foundation.event.CancellationEvent
@@ -45,7 +45,7 @@ class AlertInactivityUseCaseTest {
 
     @Test
     fun `Presents a modal should last written moment timestamp exceeds threshold`() {
-        moment.update(Timestamp(Clock.System.now() - 1.days))
+        moment.update(LiteralTimestamp(Clock.System.now() - 1.days))
 
         AlertInactivityUseCase(
             threshold = 3.hours,
@@ -77,7 +77,7 @@ class AlertInactivityUseCaseTest {
 
     @Test
     fun `Does nothing should last written moment timestamp is under threshold`() {
-        moment.update(Timestamp(Clock.System.now() - 1.hours))
+        moment.update(LiteralTimestamp(Clock.System.now() - 1.hours))
 
         AlertInactivityUseCase(
             threshold = 3.hours,
@@ -94,7 +94,7 @@ class AlertInactivityUseCaseTest {
 
     @Test
     fun `Routes to the moment editor when receiving modal approval for 'inactivity_alert'`() {
-        moment.update(Timestamp(Clock.System.now() - 1.days))
+        moment.update(LiteralTimestamp(Clock.System.now() - 1.days))
 
         AlertInactivityUseCase(
             threshold = 3.hours,
@@ -121,7 +121,7 @@ class AlertInactivityUseCaseTest {
 
     @Test(timeout = 5_000)
     fun `Stops upon receiving cancellation events`() {
-        moment.update(Timestamp(Clock.System.now() - 1.days))
+        moment.update(LiteralTimestamp(Clock.System.now() - 1.days))
 
         listOf(CancellationEvent("user"), CancellationEvent("system")).forEach { event ->
             AlertInactivityUseCase(
@@ -136,7 +136,7 @@ class AlertInactivityUseCaseTest {
 
     @Test
     fun `Ignores unknown events without repercussions`() {
-        moment.update(Timestamp(Clock.System.now() - 1.days))
+        moment.update(LiteralTimestamp(Clock.System.now() - 1.days))
 
         AlertInactivityUseCase(
             threshold = 3.hours,

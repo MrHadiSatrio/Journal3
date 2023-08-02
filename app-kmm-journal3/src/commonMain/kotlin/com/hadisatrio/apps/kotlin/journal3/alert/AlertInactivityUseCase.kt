@@ -17,7 +17,7 @@
 
 package com.hadisatrio.apps.kotlin.journal3.alert
 
-import com.hadisatrio.apps.kotlin.journal3.datetime.Timestamp
+import com.hadisatrio.apps.kotlin.journal3.datetime.LiteralTimestamp
 import com.hadisatrio.apps.kotlin.journal3.story.Stories
 import com.hadisatrio.libs.kotlin.foundation.UseCase
 import com.hadisatrio.libs.kotlin.foundation.event.CancellationEvent
@@ -56,7 +56,7 @@ class AlertInactivityUseCase(
 
     private fun isAlertNecessary(): Boolean {
         if (!stories.hasMoments()) return true
-        val currentTimestamp = Timestamp(Clock.System.now())
+        val currentTimestamp = LiteralTimestamp(Clock.System.now())
         val mostRecentTimestamp = stories.mostRecentMoment().timestamp
         return currentTimestamp.difference(mostRecentTimestamp) > threshold
     }

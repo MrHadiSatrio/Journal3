@@ -17,7 +17,7 @@
 
 package com.hadisatrio.apps.kotlin.journal3.story
 
-import com.hadisatrio.apps.kotlin.journal3.datetime.Timestamp
+import com.hadisatrio.apps.kotlin.journal3.datetime.LiteralTimestamp
 import com.hadisatrio.apps.kotlin.journal3.token.TokenableString
 import kotlinx.datetime.Clock
 
@@ -38,7 +38,7 @@ class SelfPopulatingStories(
             repeat(noOfMoments) { rep2 ->
                 new().apply {
                     update(TokenableString("This is a moment (#$rep-$rep2)."))
-                    update(Timestamp(Clock.System.now()))
+                    update(LiteralTimestamp(Clock.System.now()))
                 }
             }
         }

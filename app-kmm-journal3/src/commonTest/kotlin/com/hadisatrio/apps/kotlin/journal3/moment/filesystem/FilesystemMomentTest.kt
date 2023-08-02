@@ -17,7 +17,8 @@
 
 package com.hadisatrio.apps.kotlin.journal3.moment.filesystem
 
-import com.hadisatrio.apps.kotlin.journal3.datetime.Timestamp
+import com.hadisatrio.apps.kotlin.journal3.datetime.LiteralTimestamp
+import com.hadisatrio.apps.kotlin.journal3.datetime.UnixEpoch
 import com.hadisatrio.apps.kotlin.journal3.moment.MergedMemorables
 import com.hadisatrio.apps.kotlin.journal3.sentiment.Sentiment
 import com.hadisatrio.apps.kotlin.journal3.story.filesystem.FilesystemStories
@@ -66,7 +67,7 @@ class FilesystemMomentTest {
     fun `Returns expected default values`() {
         val moment = story.new()
 
-        moment.timestamp.shouldBe(Timestamp(Instant.fromEpochMilliseconds(0)))
+        moment.timestamp.shouldBe(UnixEpoch)
         moment.description.shouldBe(TokenableString(""))
         moment.sentiment.shouldBe(Sentiment(0.123456789F))
         moment.place.shouldBe(NullIsland)
@@ -77,7 +78,7 @@ class FilesystemMomentTest {
     fun `Writes details updates to the filesystem`() {
         val moment = story.new()
 
-        moment.update(timestamp = Timestamp(Instant.fromEpochMilliseconds(1000)))
+        moment.update(timestamp = LiteralTimestamp(1000))
         moment.update(description = TokenableString("Foo"))
         moment.update(sentiment = Sentiment(0.5F))
 
@@ -85,7 +86,7 @@ class FilesystemMomentTest {
         val fileContent = fileSystem.source(path).buffer().use { it.readUtf8() }
         fileContent.shouldContain("Foo")
         fileContent.shouldContain("0.5")
-        moment.timestamp.shouldBe(Timestamp(Instant.fromEpochMilliseconds(1000)))
+        moment.timestamp.shouldBe(LiteralTimestamp(1000))
         moment.description.shouldBe(TokenableString("Foo"))
         moment.sentiment.shouldBe(Sentiment(0.5F))
     }
@@ -170,8 +171,8 @@ class FilesystemMomentTest {
     @Test
     fun `Compares itself to others based on timestamp`() {
         val self = story.new()
-        val newer = story.new().apply { update(Timestamp(Instant.DISTANT_FUTURE)) }
-        val older = story.new().apply { update(Timestamp(Instant.DISTANT_PAST)) }
+        val newer = story.new().apply { update(LiteralTimestamp(Instant.DISTANT_FUTURE)) }
+        val older = story.new().apply { update(LiteralTimestamp(Instant.DISTANT_PAST)) }
 
         self.compareTo(newer).shouldBeNegative()
         self.compareTo(older).shouldBePositive()

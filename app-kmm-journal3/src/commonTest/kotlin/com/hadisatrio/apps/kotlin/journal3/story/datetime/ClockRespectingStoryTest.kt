@@ -18,7 +18,7 @@
 package com.hadisatrio.apps.kotlin.journal3.story.datetime
 
 import com.benasher44.uuid.uuid4
-import com.hadisatrio.apps.kotlin.journal3.datetime.Timestamp
+import com.hadisatrio.apps.kotlin.journal3.datetime.LiteralTimestamp
 import com.hadisatrio.apps.kotlin.journal3.story.fake.FakeStory
 import io.kotest.matchers.shouldBe
 import io.mockk.every
@@ -35,7 +35,7 @@ class ClockRespectingStoryTest {
         val origin = FakeStory(uuid4(), mutableListOf())
         val moments = ClockRespectingStory(clock, origin)
         val current = Clock.System.now()
-        val currentTimestamp = Timestamp(current)
+        val currentTimestamp = LiteralTimestamp(current)
         every { clock.now() } returns current
 
         val moment = moments.new()

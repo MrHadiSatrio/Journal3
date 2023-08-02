@@ -18,23 +18,28 @@
 package com.hadisatrio.apps.kotlin.journal3.datetime
 
 import kotlinx.datetime.Instant
-import kotlin.time.Duration
 
-interface Timestamp : Comparable<Timestamp> {
+class LiteralTimestamp(
+    override val value: Instant
+) : Timestamp {
 
-    val value: Instant
+    constructor(iso8601: String) : this(Instant.parse(iso8601))
 
-    fun toEpochMilliseconds(): Long {
-        return value.toEpochMilliseconds()
+    constructor(epochMilliseconds: Long) : this(Instant.fromEpochMilliseconds(epochMilliseconds))
+
+    override fun toString(): String {
+        return value.toString()
     }
 
-    fun difference(other: Timestamp): Duration {
-        return this.value - other.value
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other == null) return false
+        if (this::class != other::class) return false
+        other as LiteralTimestamp
+        return value == other.value
     }
 
-    override fun compareTo(other: Timestamp): Int {
-        return value.compareTo(other.value)
+    override fun hashCode(): Int {
+        return value.hashCode()
     }
-
-    override fun toString(): String
 }
