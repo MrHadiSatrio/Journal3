@@ -85,7 +85,7 @@ object Dependencies {
     object TestDouble {
         const val MOCKK = "io.mockk:mockk:1.13.5"
         const val OKIO_FAKE_FS = "com.squareup.okio:okio-fakefilesystem:3.4.0"
-        const val KTOR_MOCK_ENGINE = "io.ktor:ktor-client-mock:2.3.2"
+        const val KTOR_MOCK_ENGINE = "io.ktor:ktor-client-mock:2.3.3"
     }
 }
 
