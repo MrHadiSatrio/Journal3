@@ -17,7 +17,7 @@
 
 package com.hadisatrio.apps.kotlin.journal3.geography
 
-import com.hadisatrio.apps.kotlin.journal3.datetime.Timestamp
+import com.hadisatrio.apps.kotlin.journal3.datetime.LiteralTimestamp
 import com.hadisatrio.apps.kotlin.journal3.event.UnsupportedEvent
 import com.hadisatrio.apps.kotlin.journal3.sentiment.Sentiment
 import com.hadisatrio.libs.kotlin.foundation.event.CancellationEvent
@@ -106,7 +106,7 @@ class SelectAPlaceUseCaseTest {
             presenter = mockk(relaxed = true),
             eventSource = RecordedEventSource(
                 TextInputEvent("foo", "Bar"),
-                SelectionEvent("fizz", Timestamp(Instant.DISTANT_FUTURE).toString()),
+                SelectionEvent("fizz", LiteralTimestamp(Instant.DISTANT_FUTURE).toString()),
                 SelectionEvent("buzz", Sentiment(0.75F).toString()),
                 ModalApprovalEvent("lorem"),
                 CancellationEvent("system"),

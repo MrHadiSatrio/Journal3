@@ -17,7 +17,7 @@
 
 package com.hadisatrio.apps.kotlin.journal3.moment
 
-import com.hadisatrio.apps.kotlin.journal3.datetime.Timestamp
+import com.hadisatrio.apps.kotlin.journal3.datetime.LiteralTimestamp
 import com.hadisatrio.apps.kotlin.journal3.event.RefreshRequestEvent
 import com.hadisatrio.apps.kotlin.journal3.event.UnsupportedEvent
 import com.hadisatrio.apps.kotlin.journal3.id.FakeTargetId
@@ -70,7 +70,7 @@ class EditAMomentUseCaseTest {
             modalPresenter = modalPresenter,
             eventSource = RecordedEventSource(
                 TextInputEvent("description", "Foo"),
-                SelectionEvent("timestamp", Timestamp(Instant.DISTANT_FUTURE).toString()),
+                SelectionEvent("timestamp", LiteralTimestamp(Instant.DISTANT_FUTURE).toString()),
                 SelectionEvent("sentiment", Sentiment(0.75F).toString()),
                 SelectionEvent("place", place.id.toString()),
                 SelectionEvent("attachments", "content://foo,content://bar"),
@@ -82,7 +82,7 @@ class EditAMomentUseCaseTest {
 
         story.moments.shouldHaveSize(1)
         moment.description.toString().shouldBe("Foo")
-        moment.timestamp.shouldBe(Timestamp(Instant.DISTANT_FUTURE))
+        moment.timestamp.shouldBe(LiteralTimestamp(Instant.DISTANT_FUTURE))
         moment.sentiment.shouldBe(Sentiment(0.75F))
         moment.place.id.shouldBe(place.id)
         moment.attachments.shouldHaveSize(2)
@@ -102,7 +102,7 @@ class EditAMomentUseCaseTest {
             modalPresenter = modalPresenter,
             eventSource = RecordedEventSource(
                 TextInputEvent("description", "Foo"),
-                SelectionEvent("timestamp", Timestamp(Instant.DISTANT_FUTURE).toString()),
+                SelectionEvent("timestamp", LiteralTimestamp(Instant.DISTANT_FUTURE).toString()),
                 SelectionEvent("sentiment", Sentiment(0.75F).toString()),
                 CompletionEvent()
             ),
@@ -112,7 +112,7 @@ class EditAMomentUseCaseTest {
 
         story.moments.shouldHaveSize(1)
         story.moments.first().description.toString().shouldBe("Foo")
-        story.moments.first().timestamp.shouldBe(Timestamp(Instant.DISTANT_FUTURE))
+        story.moments.first().timestamp.shouldBe(LiteralTimestamp(Instant.DISTANT_FUTURE))
         story.moments.first().sentiment.shouldBe(Sentiment(0.75F))
     }
 
@@ -316,7 +316,7 @@ class EditAMomentUseCaseTest {
             eventSource = RecordedEventSource(
                 TextInputEvent("foo", "Bar"),
                 SelectionEvent("action", "foo"),
-                SelectionEvent("fizz", Timestamp(Instant.DISTANT_FUTURE).toString()),
+                SelectionEvent("fizz", LiteralTimestamp(Instant.DISTANT_FUTURE).toString()),
                 SelectionEvent("buzz", Sentiment(0.75F).toString()),
                 ModalApprovalEvent("lorem"),
                 CancellationEvent("system"),

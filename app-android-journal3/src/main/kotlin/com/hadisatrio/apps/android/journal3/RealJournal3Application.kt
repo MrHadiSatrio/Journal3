@@ -19,6 +19,8 @@ package com.hadisatrio.apps.android.journal3
 
 import androidx.core.content.ContextCompat
 import com.google.android.material.color.DynamicColors
+import com.hadisatrio.apps.kotlin.journal3.datetime.FormattedTimestamp
+import com.hadisatrio.apps.kotlin.journal3.datetime.LiteralTimestamp
 import com.hadisatrio.apps.kotlin.journal3.datetime.Timestamp
 import com.hadisatrio.apps.kotlin.journal3.moment.CountLimitingMoments
 import com.hadisatrio.apps.kotlin.journal3.moment.MergedMemorables
@@ -128,7 +130,7 @@ class RealJournal3Application : Journal3Application() {
                             limit = 10,
                             origin = OrderRandomizingMoments(
                                 origin = TimeRangedMoments(
-                                    timeRange = Timestamp(clock.now() - 7.days)..Timestamp(clock.now()),
+                                    timeRange = LiteralTimestamp(clock.now() - 7.days)..LiteralTimestamp(clock.now()),
                                     origin = SentimentRangedMoments(
                                         sentimentRange = PositiveishSentimentRange,
                                         origin = stories.moments
@@ -188,6 +190,10 @@ class RealJournal3Application : Journal3Application() {
 
     override val globalEventSource: EventSource by lazy {
         EventHub(MutableSharedFlow(extraBufferCapacity = 1))
+    }
+
+    override val timestampDecor: Timestamp.Decor by lazy {
+        Timestamp.Decor { FormattedTimestamp("EEEE, d MMMM yyyy '·' hh:mm aa", it) }
     }
 
     override val inactivityAlertThreshold: Duration by lazy {

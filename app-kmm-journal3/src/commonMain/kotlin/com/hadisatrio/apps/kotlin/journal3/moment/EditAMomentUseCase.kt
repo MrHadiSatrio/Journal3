@@ -20,7 +20,7 @@ package com.hadisatrio.apps.kotlin.journal3.moment
 import com.benasher44.uuid.uuidFrom
 import com.chrynan.uri.core.Uri
 import com.chrynan.uri.core.fromString
-import com.hadisatrio.apps.kotlin.journal3.datetime.Timestamp
+import com.hadisatrio.apps.kotlin.journal3.datetime.LiteralTimestamp
 import com.hadisatrio.apps.kotlin.journal3.event.RefreshRequestEvent
 import com.hadisatrio.apps.kotlin.journal3.id.TargetId
 import com.hadisatrio.apps.kotlin.journal3.sentiment.Sentiment
@@ -124,7 +124,7 @@ class EditAMomentUseCase(
         val kind = event.selectionKind
         val identifier = event.selectedIdentifier
         when (kind) {
-            "timestamp" -> currentTarget.update(Timestamp(identifier))
+            "timestamp" -> currentTarget.update(LiteralTimestamp(identifier))
             "sentiment" -> currentTarget.update(Sentiment(identifier))
             "place" -> currentTarget.update(places.findPlace(uuidFrom(identifier)).first())
             "attachments" -> currentTarget.update(identifier.split(',').map { Uri.fromString(it) })

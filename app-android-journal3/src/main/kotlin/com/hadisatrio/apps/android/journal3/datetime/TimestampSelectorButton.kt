@@ -29,7 +29,10 @@ import androidx.fragment.app.DialogFragment
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.timepicker.MaterialTimePicker
+import com.hadisatrio.apps.android.journal3.journal3Application
+import com.hadisatrio.apps.kotlin.journal3.datetime.LiteralTimestamp
 import com.hadisatrio.apps.kotlin.journal3.datetime.Timestamp
+import com.hadisatrio.apps.kotlin.journal3.datetime.UnixEpoch
 import com.hadisatrio.libs.android.fragment.supportFragmentManager
 import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
@@ -44,7 +47,7 @@ class TimestampSelectorButton @JvmOverloads constructor(
 ) : MaterialButton(context, attrs),
     View.OnClickListener {
 
-    private var selection: Timestamp = Timestamp.DEFAULT
+    private var selection: Timestamp = UnixEpoch
     private var activePicker: DialogFragment? = null
     private var listener: OnTimestampSelectedListener? = null
 
@@ -128,12 +131,12 @@ class TimestampSelectorButton @JvmOverloads constructor(
     }
 
     private fun applySelection(instant: Instant) {
-        applySelection(Timestamp(instant))
+        applySelection(LiteralTimestamp(instant))
     }
 
     internal fun applySelection(timestamp: Timestamp) {
         selection = timestamp
-        text = timestamp.toString()
+        text = journal3Application.timestampDecor.apply(timestamp).toString()
         listener?.onTimeStampSelected(timestamp)
     }
 
