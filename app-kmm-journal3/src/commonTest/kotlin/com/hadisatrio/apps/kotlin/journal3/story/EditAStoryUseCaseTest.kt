@@ -18,7 +18,7 @@
 package com.hadisatrio.apps.kotlin.journal3.story
 
 import com.benasher44.uuid.uuid4
-import com.hadisatrio.apps.kotlin.journal3.datetime.Timestamp
+import com.hadisatrio.apps.kotlin.journal3.datetime.LiteralTimestamp
 import com.hadisatrio.apps.kotlin.journal3.event.UnsupportedEvent
 import com.hadisatrio.apps.kotlin.journal3.id.FakeTargetId
 import com.hadisatrio.apps.kotlin.journal3.id.InvalidTargetId
@@ -223,7 +223,7 @@ class EditAStoryUseCaseTest {
             modalPresenter = mockk(relaxed = true),
             eventSource = RecordedEventSource(
                 TextInputEvent("foo", "Bar"),
-                SelectionEvent("fizz", Timestamp(Instant.DISTANT_FUTURE).toString()),
+                SelectionEvent("fizz", LiteralTimestamp(Instant.DISTANT_FUTURE).toString()),
                 SelectionEvent("buzz", Sentiment(0.75F).toString()),
                 ModalApprovalEvent("lorem"),
                 CancellationEvent("system"),

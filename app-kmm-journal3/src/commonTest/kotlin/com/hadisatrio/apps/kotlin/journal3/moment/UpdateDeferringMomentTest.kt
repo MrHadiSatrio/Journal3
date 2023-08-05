@@ -19,7 +19,7 @@ package com.hadisatrio.apps.kotlin.journal3.moment
 
 import com.chrynan.uri.core.Uri
 import com.chrynan.uri.core.fromString
-import com.hadisatrio.apps.kotlin.journal3.datetime.Timestamp
+import com.hadisatrio.apps.kotlin.journal3.datetime.LiteralTimestamp
 import com.hadisatrio.apps.kotlin.journal3.sentiment.Sentiment
 import com.hadisatrio.apps.kotlin.journal3.story.SelfPopulatingStories
 import com.hadisatrio.apps.kotlin.journal3.story.fake.FakeStories
@@ -48,7 +48,7 @@ class UpdateDeferringMomentTest {
 
     @Test
     fun `Defers updates to the original until its committed`() {
-        updateDeferring.update(Timestamp(Instant.DISTANT_FUTURE))
+        updateDeferring.update(LiteralTimestamp(Instant.DISTANT_FUTURE))
         updateDeferring.update(TokenableString("foo"))
         updateDeferring.update(Sentiment(0.75F))
         updateDeferring.update(FakePlace())
@@ -75,7 +75,7 @@ class UpdateDeferringMomentTest {
             updatesMade().shouldBeFalse()
         }
         UpdateDeferringMoment(original).run {
-            update(Timestamp(Instant.DISTANT_FUTURE))
+            update(LiteralTimestamp(Instant.DISTANT_FUTURE))
             updatesMade().shouldBeTrue()
         }
         UpdateDeferringMoment(original).run {
@@ -98,7 +98,7 @@ class UpdateDeferringMomentTest {
 
     @Test
     fun `Compares based on edited timestamp, even prior to committing`() {
-        updateDeferring.update(Timestamp(Instant.DISTANT_FUTURE))
+        updateDeferring.update(LiteralTimestamp(Instant.DISTANT_FUTURE))
         updateDeferring.compareTo(original).shouldBe(1)
     }
 }

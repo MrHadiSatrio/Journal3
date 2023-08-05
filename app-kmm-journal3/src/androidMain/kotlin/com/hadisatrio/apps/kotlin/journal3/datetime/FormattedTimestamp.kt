@@ -17,28 +17,26 @@
 
 package com.hadisatrio.apps.kotlin.journal3.datetime
 
-import kotlinx.datetime.Instant
-import kotlin.time.Duration
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+import java.util.TimeZone
 
-interface Timestamp : Comparable<Timestamp> {
+class FormattedTimestamp(
+    private val locale: Locale,
+    private val timeZone: TimeZone,
+    private val format: String,
+    private val origin: Timestamp
+) : Timestamp by origin {
 
-    val value: Instant
+    private val formatter = ThreadLocal<SimpleDateFormat>()
 
-    fun toEpochMilliseconds(): Long {
-        return value.toEpochMilliseconds()
-    }
+    constructor(format: String, origin: Timestamp) : this(Locale.getDefault(), TimeZone.getDefault(), format, origin)
 
-    fun difference(other: Timestamp): Duration {
-        return this.value - other.value
-    }
-
-    override fun compareTo(other: Timestamp): Int {
-        return value.compareTo(other.value)
-    }
-
-    override fun toString(): String
-
-    fun interface Decor {
-        fun apply(origin: Timestamp): Timestamp
+    override fun toString(): String {
+        val localFormatter = formatter.get() ?: SimpleDateFormat(format, locale)
+        localFormatter.timeZone = timeZone
+        formatter.set(localFormatter)
+        return localFormatter.format(Date(value.toEpochMilliseconds()))
     }
 }

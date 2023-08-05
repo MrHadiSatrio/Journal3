@@ -20,7 +20,9 @@ package com.hadisatrio.apps.kotlin.journal3.moment.filesystem
 import com.benasher44.uuid.Uuid
 import com.benasher44.uuid.uuidFrom
 import com.chrynan.uri.core.Uri
+import com.hadisatrio.apps.kotlin.journal3.datetime.LiteralTimestamp
 import com.hadisatrio.apps.kotlin.journal3.datetime.Timestamp
+import com.hadisatrio.apps.kotlin.journal3.datetime.UnixEpoch
 import com.hadisatrio.apps.kotlin.journal3.moment.MemorableFile
 import com.hadisatrio.apps.kotlin.journal3.moment.Memorables
 import com.hadisatrio.apps.kotlin.journal3.moment.Moment
@@ -44,7 +46,7 @@ class FilesystemMoment(
     }
 
     override val timestamp: Timestamp get() {
-        return Timestamp(file.getRaw("timestamp") ?: return Timestamp.DEFAULT)
+        return LiteralTimestamp(file.getRaw("timestamp") ?: return UnixEpoch)
     }
 
     override val description: TokenableString get() {

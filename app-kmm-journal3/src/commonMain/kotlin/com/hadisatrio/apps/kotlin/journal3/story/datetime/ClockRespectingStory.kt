@@ -17,7 +17,7 @@
 
 package com.hadisatrio.apps.kotlin.journal3.story.datetime
 
-import com.hadisatrio.apps.kotlin.journal3.datetime.Timestamp
+import com.hadisatrio.apps.kotlin.journal3.datetime.LiteralTimestamp
 import com.hadisatrio.apps.kotlin.journal3.moment.Moment
 import com.hadisatrio.apps.kotlin.journal3.story.EditableStory
 import kotlinx.datetime.Clock
@@ -29,7 +29,7 @@ class ClockRespectingStory(
 
     override fun new(): Moment {
         val moment = origin.new()
-        moment.update(Timestamp(clock.now()))
+        moment.update(LiteralTimestamp(clock.now()))
         return moment
     }
 }

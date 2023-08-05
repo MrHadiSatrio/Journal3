@@ -18,7 +18,7 @@
 package com.hadisatrio.apps.kotlin.journal3.moment.filesystem
 
 import com.benasher44.uuid.uuid4
-import com.hadisatrio.apps.kotlin.journal3.datetime.Timestamp
+import com.hadisatrio.apps.kotlin.journal3.datetime.LiteralTimestamp
 import com.hadisatrio.apps.kotlin.journal3.moment.MergedMemorables
 import com.hadisatrio.apps.kotlin.journal3.moment.Moment
 import com.hadisatrio.apps.kotlin.journal3.sentiment.Sentiment
@@ -58,12 +58,12 @@ class FilesystemMomentsTest {
 
         moment.update(TokenableString("FizzBuzz"))
         moment.update(Sentiment(1.0F))
-        moment.update(Timestamp("2019-07-07T20:00:00+07:00"))
+        moment.update(LiteralTimestamp("2019-07-07T20:00:00+07:00"))
 
         story.moments.shouldHaveSize(1)
         moment.description.shouldBe(TokenableString("FizzBuzz"))
         moment.sentiment.shouldBe(Sentiment(1.0F))
-        moment.timestamp.shouldBe(Timestamp("2019-07-07T20:00:00+07:00"))
+        moment.timestamp.shouldBe(LiteralTimestamp("2019-07-07T20:00:00+07:00"))
         fileSystem.metadata("content/stories/${story.id}/moments/${moment.id}".toPath()).isRegularFile.shouldBeTrue()
     }
 
@@ -125,7 +125,7 @@ class FilesystemMomentsTest {
         val story = stories.new()
         repeat(10) {
             val randomInstant = Instant.fromEpochMilliseconds((0..Long.MAX_VALUE).random())
-            story.new().apply { update(Timestamp(randomInstant)) }
+            story.new().apply { update(LiteralTimestamp(randomInstant)) }
         }
 
         var previous: Moment? = null

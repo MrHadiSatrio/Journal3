@@ -17,6 +17,7 @@
 
 package com.hadisatrio.apps.kotlin.journal3.moment
 
+import com.hadisatrio.apps.kotlin.journal3.datetime.LiteralTimestamp
 import com.hadisatrio.apps.kotlin.journal3.datetime.Timestamp
 import com.hadisatrio.apps.kotlin.journal3.story.SelfPopulatingStories
 import com.hadisatrio.apps.kotlin.journal3.story.fake.FakeStories
@@ -31,13 +32,15 @@ class TimeRangedMomentsTest {
 
     private val currentInstant: Instant = Clock.System.now()
     private val origin: Moments = SelfPopulatingStories(noOfStories = 1, noOfMoments = 10, FakeStories()).moments
-    private val timeRange: ClosedRange<Timestamp> = Timestamp(currentInstant - 3.days)..Timestamp(currentInstant)
+    private val timeRange: ClosedRange<Timestamp> = LiteralTimestamp(currentInstant - 3.days)..LiteralTimestamp(
+        currentInstant
+    )
     private val moments: TimeRangedMoments = TimeRangedMoments(timeRange, origin)
 
     @BeforeTest
     fun `Init moments`() {
         origin.forEachIndexed { index, moment ->
-            moment.update(Timestamp(currentInstant - index.days))
+            moment.update(LiteralTimestamp(currentInstant - index.days))
         }
     }
 

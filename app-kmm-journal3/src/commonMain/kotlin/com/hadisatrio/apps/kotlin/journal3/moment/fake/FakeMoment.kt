@@ -20,6 +20,7 @@ package com.hadisatrio.apps.kotlin.journal3.moment.fake
 import com.benasher44.uuid.Uuid
 import com.chrynan.uri.core.Uri
 import com.hadisatrio.apps.kotlin.journal3.datetime.Timestamp
+import com.hadisatrio.apps.kotlin.journal3.datetime.UnixEpoch
 import com.hadisatrio.apps.kotlin.journal3.moment.Moment
 import com.hadisatrio.apps.kotlin.journal3.sentiment.Sentiment
 import com.hadisatrio.apps.kotlin.journal3.token.TokenableString
@@ -33,7 +34,7 @@ class FakeMoment(
 
     private var isForgotten: Boolean = false
 
-    override var timestamp: Timestamp = Timestamp.DEFAULT
+    override var timestamp: Timestamp = UnixEpoch
         private set
     override var description: TokenableString = TokenableString.EMPTY
         private set
