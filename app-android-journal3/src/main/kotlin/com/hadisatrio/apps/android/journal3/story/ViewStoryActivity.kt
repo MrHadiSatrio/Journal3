@@ -30,6 +30,7 @@ import com.hadisatrio.apps.android.journal3.R
 import com.hadisatrio.apps.android.journal3.id.BundledTargetId
 import com.hadisatrio.apps.android.journal3.journal3Application
 import com.hadisatrio.apps.kotlin.journal3.event.RefreshRequestEvent
+import com.hadisatrio.apps.kotlin.journal3.moment.Moment
 import com.hadisatrio.apps.kotlin.journal3.story.ShowStoryUseCase
 import com.hadisatrio.apps.kotlin.journal3.story.Story
 import com.hadisatrio.apps.kotlin.journal3.story.cache.CachingStoryPresenter
@@ -57,43 +58,43 @@ import com.hadisatrio.libs.kotlin.foundation.presentation.Presenters
 class ViewStoryActivity : AppCompatActivity() {
 
     private val presenter: Presenter<Story> by lazy {
+        val titlePresenter = AdaptingPresenter(
+            adapter = StoryStringAdapter("title"),
+            origin = TextViewStringPresenter(findViewById(R.id.title_label))
+        )
+        val synopsisPresenter = AdaptingPresenter(
+            adapter = StoryStringAdapter("synopsis"),
+            origin = TextViewStringPresenter(findViewById(R.id.synopsis_label))
+        )
+        val attachmentPresenter = AdaptingPresenter(
+            adapter = StoryStringAdapter("attachment_count"),
+            origin = TextViewStringPresenter(findViewById(R.id.attachment_count_label))
+        )
+        val momentsPresenter = AdaptingPresenter<Story, Iterable<Moment>>(
+            adapter = { story -> story.moments.toList() },
+            origin = RecyclerViewPresenter(
+                recyclerView = findViewById(R.id.moments_list),
+                viewFactory = { parent, _ ->
+                    LayoutInflater.from(parent.context)
+                        .inflate(R.layout.view_moment_snippet_card, parent, false)
+                },
+                viewRenderer = { view, item ->
+                    view.findViewById<TextView>(R.id.date_and_place_label).text =
+                        "${journal3Application.timestampDecor.apply(item.timestamp)} · ${item.place.name}"
+                    view.findViewById<TextView>(R.id.description_label).text =
+                        item.description.toString()
+                    view.findViewById<TextView>(R.id.mood_and_attachment_count_label).text =
+                        "${item.sentiment.value} · ${item.attachments.count()} attachment(s)"
+                }
+            )
+        )
+
         ExecutorDispatchingPresenter(
             executor = journal3Application.backgroundExecutor,
             origin = CachingStoryPresenter(
                 origin = ExecutorDispatchingPresenter(
                     executor = journal3Application.foregroundExecutor,
-                    origin = Presenters(
-                        AdaptingPresenter(
-                            adapter = StoryStringAdapter("title"),
-                            origin = TextViewStringPresenter(findViewById(R.id.title_label))
-                        ),
-                        AdaptingPresenter(
-                            adapter = StoryStringAdapter("synopsis"),
-                            origin = TextViewStringPresenter(findViewById(R.id.synopsis_label))
-                        ),
-                        AdaptingPresenter(
-                            adapter = StoryStringAdapter("attachment_count"),
-                            origin = TextViewStringPresenter(findViewById(R.id.attachment_count_label))
-                        ),
-                        AdaptingPresenter(
-                            adapter = { story -> story.moments.toList() },
-                            origin = RecyclerViewPresenter(
-                                recyclerView = findViewById(R.id.moments_list),
-                                viewFactory = { parent, _ ->
-                                    LayoutInflater.from(parent.context)
-                                        .inflate(R.layout.view_moment_snippet_card, parent, false)
-                                },
-                                viewRenderer = { view, item ->
-                                    view.findViewById<TextView>(R.id.date_and_place_label).text =
-                                        "${item.timestamp} at ${item.place.name}"
-                                    view.findViewById<TextView>(R.id.description_label).text =
-                                        item.description.toString()
-                                    view.findViewById<TextView>(R.id.mood_and_attachment_count_label).text =
-                                        "${item.sentiment.value} · ${item.attachments.count()} attachment(s)"
-                                }
-                            )
-                        )
-                    )
+                    origin = Presenters(titlePresenter, synopsisPresenter, attachmentPresenter, momentsPresenter)
                 )
             )
         )

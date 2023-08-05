@@ -37,4 +37,8 @@ interface Timestamp : Comparable<Timestamp> {
     }
 
     override fun toString(): String
+
+    fun interface Decor {
+        fun apply(origin: Timestamp): Timestamp
+    }
 }

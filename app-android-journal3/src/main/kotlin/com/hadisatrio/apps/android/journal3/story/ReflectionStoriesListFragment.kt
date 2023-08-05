@@ -62,7 +62,7 @@ class ReflectionStoriesListFragment : StoriesListFragment() {
         }
         val subItemViewRenderer = RecyclerViewPresenter.ViewRenderer<Moment> { view, item ->
             view.findViewById<TextView>(R.id.date_and_place_label).text =
-                "${item.timestamp} at ${item.place.name}"
+                "${journal3Application.timestampDecor.apply(item.timestamp)} · ${item.place.name}"
             view.findViewById<TextView>(R.id.description_label).text =
                 item.description.toString()
             view.findViewById<TextView>(R.id.mood_and_attachment_count_label).text =
