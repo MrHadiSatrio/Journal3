@@ -18,6 +18,7 @@
 package com.hadisatrio.apps.android.journal3
 
 import androidx.core.content.ContextCompat
+import com.hadisatrio.apps.kotlin.journal3.datetime.Timestamp
 import com.hadisatrio.apps.kotlin.journal3.story.SelfPopulatingStories
 import com.hadisatrio.apps.kotlin.journal3.story.Stories
 import com.hadisatrio.apps.kotlin.journal3.story.fake.FakeStories
@@ -48,6 +49,7 @@ class FakeJournal3Application : Journal3Application() {
     override val currentActivity: CurrentActivity by lazy { CurrentActivity(this) }
     override val globalEventSink: EventSink by lazy { FakeEventSink() }
     override val globalEventSource: EventSource by lazy { EventHub(MutableSharedFlow(extraBufferCapacity = 1)) }
+    override val timestampDecor: Timestamp.Decor by lazy { Timestamp.Decor { it } }
     override val inactivityAlertThreshold: Duration by lazy { 3.hours }
     override val clock: Clock by lazy { Clock.System }
     override val backgroundExecutor: Executor by lazy { Executors.newFixedThreadPool(1) }

@@ -19,7 +19,9 @@ package com.hadisatrio.apps.android.journal3
 
 import android.app.Application
 import android.content.Context
+import android.view.View
 import androidx.fragment.app.Fragment
+import com.hadisatrio.apps.kotlin.journal3.datetime.Timestamp
 import com.hadisatrio.apps.kotlin.journal3.story.Stories
 import com.hadisatrio.libs.android.foundation.activity.CurrentActivity
 import com.hadisatrio.libs.kotlin.foundation.event.EventSink
@@ -39,6 +41,7 @@ abstract class Journal3Application : Application() {
     abstract val currentActivity: CurrentActivity
     abstract val globalEventSink: EventSink
     abstract val globalEventSource: EventSource
+    abstract val timestampDecor: Timestamp.Decor
     abstract val inactivityAlertThreshold: Duration
     abstract val clock: Clock
     abstract val backgroundExecutor: Executor
@@ -50,3 +53,6 @@ val Context.journal3Application: Journal3Application
 
 val Fragment.journal3Application: Journal3Application
     get() = requireContext().journal3Application
+
+val View.journal3Application: Journal3Application
+    get() = context.journal3Application
