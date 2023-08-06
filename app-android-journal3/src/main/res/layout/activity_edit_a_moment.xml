@@ -125,7 +125,7 @@
             android:layout_height="wrap_content"
             android:clickable="true"
             android:focusable="true"
-            app:icon="@drawable/ic_back" />
+            app:icon="@drawable/ic24_back" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/delete_button"
@@ -134,7 +134,7 @@
             android:layout_height="wrap_content"
             android:clickable="true"
             android:focusable="true"
-            app:icon="@drawable/ic_delete" />
+            app:icon="@drawable/ic24_delete" />
 
     </com.google.android.material.bottomappbar.BottomAppBar>
 
@@ -142,7 +142,7 @@
         android:id="@+id/commit_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_pen_down"
+        android:src="@drawable/ic24_pen_down"
         app:layout_anchor="@id/bottom_bar" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

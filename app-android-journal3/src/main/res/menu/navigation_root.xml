@@ -20,13 +20,13 @@
     <item
         android:id="@+id/view_reflections_menu_item"
         android:enabled="true"
-        android:icon="@drawable/ic_reflections"
+        android:icon="@drawable/ic24_reflections"
         android:title="Reflections" />
 
     <item
         android:id="@+id/view_stories_menu_item"
         android:enabled="true"
-        android:icon="@drawable/ic_stories"
+        android:icon="@drawable/ic24_stories"
         android:title="Stories" />
 
 </menu>
