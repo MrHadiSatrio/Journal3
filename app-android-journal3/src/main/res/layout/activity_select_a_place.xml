@@ -46,7 +46,7 @@
             android:layout_height="wrap_content"
             android:clickable="true"
             android:focusable="true"
-            app:icon="@drawable/ic_back" />
+            app:icon="@drawable/ic24_back" />
 
     </com.google.android.material.bottomappbar.BottomAppBar>
 

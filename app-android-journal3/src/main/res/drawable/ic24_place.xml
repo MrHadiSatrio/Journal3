@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><!--
+<!--
   ~ Copyright (C) 2022 Hadi Satrio
   ~
   ~ This program is free software: you can redistribute it and/or modify
@@ -15,18 +15,15 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="16dp"
+    android:height="16dp"
+    android:tint="#000000"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
 
-    <item
-        android:id="@+id/view_reflections_menu_item"
-        android:enabled="true"
-        android:icon="@drawable/ic24_reflections"
-        android:title="Reflections" />
+    <path
+        android:fillColor="@android:color/white"
+        android:pathData="M12,2C8.13,2 5,5.13 5,9c0,5.25 7,13 7,13s7,-7.75 7,-13c0,-3.87 -3.13,-7 -7,-7zM12,11.5c-1.38,0 -2.5,-1.12 -2.5,-2.5s1.12,-2.5 2.5,-2.5 2.5,1.12 2.5,2.5 -1.12,2.5 -2.5,2.5z" />
 
-    <item
-        android:id="@+id/view_stories_menu_item"
-        android:enabled="true"
-        android:icon="@drawable/ic24_stories"
-        android:title="Stories" />
-
-</menu>
+</vector>

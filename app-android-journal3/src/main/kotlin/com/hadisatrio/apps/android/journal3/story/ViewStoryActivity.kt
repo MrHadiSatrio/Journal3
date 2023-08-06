@@ -20,7 +20,6 @@ package com.hadisatrio.apps.android.journal3.story
 import android.graphics.Rect
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.RecyclerView
@@ -29,6 +28,8 @@ import com.grzegorzojdana.spacingitemdecoration.SpacingItemDecoration
 import com.hadisatrio.apps.android.journal3.R
 import com.hadisatrio.apps.android.journal3.id.BundledTargetId
 import com.hadisatrio.apps.android.journal3.journal3Application
+import com.hadisatrio.apps.android.journal3.moment.MomentCardViewRenderer
+import com.hadisatrio.apps.android.journal3.sentiment.TextViewColorSentimentPresenter
 import com.hadisatrio.apps.kotlin.journal3.event.RefreshRequestEvent
 import com.hadisatrio.apps.kotlin.journal3.moment.Moment
 import com.hadisatrio.apps.kotlin.journal3.story.ShowStoryUseCase
@@ -70,22 +71,22 @@ class ViewStoryActivity : AppCompatActivity() {
             adapter = StoryStringAdapter("attachment_count"),
             origin = TextViewStringPresenter(findViewById(R.id.attachment_count_label))
         )
+        val momentsViewFactory = RecyclerViewPresenter.ViewFactory { parent, _ ->
+            val inflater = LayoutInflater.from(parent.context)
+            val view = inflater.inflate(R.layout.view_moment_horz_card, parent, false)
+            val width = RecyclerView.LayoutParams.MATCH_PARENT
+            val height = RecyclerView.LayoutParams.WRAP_CONTENT
+            val sentimentPresenter = TextViewColorSentimentPresenter(view.findViewById(R.id.sentiment_indicator))
+            view.layoutParams = RecyclerView.LayoutParams(width, height)
+            view.setTag(R.id.presenter_view_tag, sentimentPresenter)
+            view
+        }
         val momentsPresenter = AdaptingPresenter<Story, Iterable<Moment>>(
             adapter = { story -> story.moments.toList() },
             origin = RecyclerViewPresenter(
                 recyclerView = findViewById(R.id.moments_list),
-                viewFactory = { parent, _ ->
-                    LayoutInflater.from(parent.context)
-                        .inflate(R.layout.view_moment_snippet_card, parent, false)
-                },
-                viewRenderer = { view, item ->
-                    view.findViewById<TextView>(R.id.date_and_place_label).text =
-                        "${journal3Application.timestampDecor.apply(item.timestamp)} · ${item.place.name}"
-                    view.findViewById<TextView>(R.id.description_label).text =
-                        item.description.toString()
-                    view.findViewById<TextView>(R.id.mood_and_attachment_count_label).text =
-                        "${item.sentiment.value} · ${item.attachments.count()} attachment(s)"
-                }
+                viewFactory = momentsViewFactory,
+                viewRenderer = MomentCardViewRenderer
             )
         )
 

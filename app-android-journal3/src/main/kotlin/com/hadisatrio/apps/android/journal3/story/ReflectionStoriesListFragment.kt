@@ -27,6 +27,8 @@ import com.grzegorzojdana.spacingitemdecoration.Spacing
 import com.grzegorzojdana.spacingitemdecoration.SpacingItemDecoration
 import com.hadisatrio.apps.android.journal3.R
 import com.hadisatrio.apps.android.journal3.journal3Application
+import com.hadisatrio.apps.android.journal3.moment.MomentCardViewRenderer
+import com.hadisatrio.apps.android.journal3.sentiment.TextViewColorSentimentPresenter
 import com.hadisatrio.apps.kotlin.journal3.event.RefreshRequestEvent
 import com.hadisatrio.apps.kotlin.journal3.moment.Moment
 import com.hadisatrio.apps.kotlin.journal3.story.Stories
@@ -54,19 +56,13 @@ class ReflectionStoriesListFragment : StoriesListFragment() {
     override val presenter: Presenter<Stories> by lazy {
         val subItemViewFactory = RecyclerViewPresenter.ViewFactory { parent, _ ->
             val inflater = LayoutInflater.from(parent.context)
-            val view = inflater.inflate(R.layout.view_moment_snippet_card, parent, false)
+            val view = inflater.inflate(R.layout.view_moment_vert_card, parent, false)
             val width = (Resources.getSystem().displayMetrics.widthPixels / GOLDEN_RATIO).roundToInt()
             val height = (width * GOLDEN_RATIO).roundToInt()
+            val sentimentPresenter = TextViewColorSentimentPresenter(view.findViewById(R.id.sentiment_indicator))
             view.layoutParams = RecyclerView.LayoutParams(width, height)
+            view.setTag(R.id.presenter_view_tag, sentimentPresenter)
             view
-        }
-        val subItemViewRenderer = RecyclerViewPresenter.ViewRenderer<Moment> { view, item ->
-            view.findViewById<TextView>(R.id.date_and_place_label).text =
-                "${journal3Application.timestampDecor.apply(item.timestamp)} · ${item.place.name}"
-            view.findViewById<TextView>(R.id.description_label).text =
-                item.description.toString()
-            view.findViewById<TextView>(R.id.mood_and_attachment_count_label).text =
-                "${item.sentiment.value} · ${item.attachments.count()} attachment(s)"
         }
         val itemViewFactory = RecyclerViewPresenter.ViewFactory { parent, _ ->
             val inflater = LayoutInflater.from(parent.context)
@@ -75,7 +71,7 @@ class ReflectionStoriesListFragment : StoriesListFragment() {
             val carouselPresenter = RecyclerViewPresenter(
                 recyclerView = carousel,
                 viewFactory = subItemViewFactory,
-                viewRenderer = subItemViewRenderer,
+                viewRenderer = MomentCardViewRenderer,
                 layoutManager = LinearLayoutManager(parent.context, LinearLayoutManager.HORIZONTAL, false)
             )
             carousel.addItemDecoration(SpacingItemDecoration(Spacing(horizontal = 8.dp)))
@@ -85,7 +81,7 @@ class ReflectionStoriesListFragment : StoriesListFragment() {
         val itemViewRenderer = RecyclerViewPresenter.ViewRenderer<Story> { view, item ->
             view.findViewById<TextView>(R.id.title_label).text = item.title
             view.findViewById<TextView>(R.id.synopsis_label).text = item.synopsis.toString()
-            (view.getTag(R.id.presenter_view_tag) as RecyclerViewPresenter<Moment>).present(item.moments)
+            (view.getTag(R.id.presenter_view_tag) as Presenter<Iterable<Moment>>).present(item.moments)
         }
 
         ExecutorDispatchingPresenter(
