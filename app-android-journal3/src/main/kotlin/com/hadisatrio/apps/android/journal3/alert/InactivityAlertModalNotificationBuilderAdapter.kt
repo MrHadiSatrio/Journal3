@@ -58,7 +58,7 @@ class InactivityAlertModalNotificationBuilderAdapter(
                         pendingIntentFlags
                     )
                     setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                    setSmallIcon(R.drawable.ic_notification)
+                    setSmallIcon(R.drawable.ic24_notification)
                     setContentTitle(context.getString(R.string.notifTitle_inactivityAlert))
                     setContentText(context.getString(R.string.notifMessage_inactivityAlert))
                     setContentIntent(pendingIntent)

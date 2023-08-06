@@ -92,7 +92,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin"
-            android:drawableStart="@drawable/ic_place"
+            android:drawableStart="@drawable/ic24_place"
             android:drawablePadding="@dimen/gutter"
             android:drawableTint="@color/material_on_surface_emphasis_high_type"
             android:ellipsize="end"
