@@ -35,10 +35,11 @@ import com.hadisatrio.apps.kotlin.journal3.datetime.Timestamp
 import com.hadisatrio.apps.kotlin.journal3.datetime.UnixEpoch
 import com.hadisatrio.libs.android.fragment.supportFragmentManager
 import kotlinx.datetime.Instant
+import kotlinx.datetime.LocalTime
 import kotlinx.datetime.TimeZone
+import kotlinx.datetime.atTime
+import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
-import kotlin.time.Duration.Companion.hours
-import kotlin.time.Duration.Companion.minutes
 import kotlin.time.ExperimentalTime
 
 class TimestampSelectorButton @JvmOverloads constructor(
@@ -73,30 +74,32 @@ class TimestampSelectorButton @JvmOverloads constructor(
     override fun onClick(p0: View?) {
         if (activePicker != null) return
 
+        val timeZone = TimeZone.currentSystemDefault()
+        val localSelection = this.selection.value.toLocalDateTime(timeZone)
         val fragmentManager = this.supportFragmentManager ?: return
         val datePicker = MaterialDatePicker.Builder.datePicker()
             .setSelection(this.selection.toEpochMilliseconds())
             .build()
+        val timePicker by lazy {
+            MaterialTimePicker.Builder()
+                .setHour(localSelection.hour)
+                .setMinute(localSelection.minute)
+                .build()
+        }
 
         datePicker.addOnPositiveButtonClickListener {
-            applySelection(it)
-
-            val dateSelection = Instant.fromEpochMilliseconds(it)
-            val timePicker = MaterialTimePicker.Builder()
-                .setHour(dateSelection.toLocalDateTime(TimeZone.currentSystemDefault()).hour)
-                .setMinute(dateSelection.toLocalDateTime(TimeZone.currentSystemDefault()).minute)
-                .build()
-
+            var newSelection = it
+            applySelection(newSelection)
             timePicker.addOnPositiveButtonClickListener {
-                val dateTimeSelection = dateSelection.plus(timePicker.hour.hours)
-                    .plus(timePicker.minute.minutes)
-
-                applySelection(dateTimeSelection)
+                val localDate = Instant.fromEpochMilliseconds(newSelection).toLocalDateTime(timeZone)
+                val localTime = LocalTime(timePicker.hour, timePicker.minute)
+                newSelection = localDate.date.atTime(localTime).toInstant(timeZone).toEpochMilliseconds()
+                applySelection(newSelection)
+                activePicker = null
             }
             timePicker.show(fragmentManager, FRAGMENT_TAG_PICKER)
             activePicker = timePicker
         }
-
         datePicker.show(fragmentManager, FRAGMENT_TAG_PICKER)
         activePicker = datePicker
     }
