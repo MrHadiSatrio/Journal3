@@ -15,8 +15,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-@file:OptIn(ExperimentalTime::class)
-
 package com.hadisatrio.apps.android.journal3.datetime
 
 import android.content.Context
@@ -40,7 +38,6 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.atTime
 import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
-import kotlin.time.ExperimentalTime
 
 class TimestampSelectorButton @JvmOverloads constructor(
     context: Context,
