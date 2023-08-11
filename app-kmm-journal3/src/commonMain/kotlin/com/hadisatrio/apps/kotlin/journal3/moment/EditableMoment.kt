@@ -15,21 +15,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.hadisatrio.apps.kotlin.journal3.story.datetime
+package com.hadisatrio.apps.kotlin.journal3.moment
 
-import com.hadisatrio.apps.kotlin.journal3.datetime.LiteralTimestamp
-import com.hadisatrio.apps.kotlin.journal3.moment.EditableMoment
-import com.hadisatrio.apps.kotlin.journal3.story.EditableStory
-import kotlinx.datetime.Clock
+import com.chrynan.uri.core.Uri
+import com.hadisatrio.apps.kotlin.journal3.datetime.Timestamp
+import com.hadisatrio.apps.kotlin.journal3.sentiment.Sentiment
+import com.hadisatrio.apps.kotlin.journal3.token.TokenableString
+import com.hadisatrio.libs.kotlin.geography.Place
 
-class ClockRespectingStory(
-    private val clock: Clock,
-    private val origin: EditableStory
-) : EditableStory by origin {
-
-    override fun new(): EditableMoment {
-        val moment = origin.new()
-        moment.update(LiteralTimestamp(clock.now()))
-        return moment
-    }
+interface EditableMoment : Moment {
+    fun update(timestamp: Timestamp)
+    fun update(description: TokenableString)
+    fun update(sentiment: Sentiment)
+    fun update(place: Place)
+    fun update(attachments: Iterable<Uri>)
 }

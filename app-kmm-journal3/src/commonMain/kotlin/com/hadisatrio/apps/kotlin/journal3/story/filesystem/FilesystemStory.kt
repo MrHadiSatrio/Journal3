@@ -20,8 +20,8 @@ package com.hadisatrio.apps.kotlin.journal3.story.filesystem
 import com.benasher44.uuid.Uuid
 import com.benasher44.uuid.uuid4
 import com.benasher44.uuid.uuidFrom
+import com.hadisatrio.apps.kotlin.journal3.moment.EditableMoment
 import com.hadisatrio.apps.kotlin.journal3.moment.Memorables
-import com.hadisatrio.apps.kotlin.journal3.moment.Moment
 import com.hadisatrio.apps.kotlin.journal3.moment.Moments
 import com.hadisatrio.apps.kotlin.journal3.moment.filesystem.FilesystemMoment
 import com.hadisatrio.apps.kotlin.journal3.moment.filesystem.FilesystemMoments
@@ -81,7 +81,7 @@ class FilesystemStory(
         detailsFile.put("synopsis", JsonPrimitive(synopsis.toString()))
     }
 
-    override fun new(): Moment {
+    override fun new(): EditableMoment {
         fileSystem.createDirectories(dir = momentsDirectory, mustCreate = false)
         return FilesystemMoment(fileSystem, momentsDirectory, uuid4(), memorables)
     }

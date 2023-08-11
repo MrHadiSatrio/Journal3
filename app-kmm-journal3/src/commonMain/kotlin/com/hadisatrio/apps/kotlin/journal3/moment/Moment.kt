@@ -33,10 +33,4 @@ interface Moment : Comparable<Moment>, Forgettable {
     val impliedSentiment: Sentiment
     val place: Place
     val attachments: Iterable<Uri>
-
-    fun update(timestamp: Timestamp)
-    fun update(description: TokenableString)
-    fun update(sentiment: Sentiment)
-    fun update(place: Place)
-    fun update(attachments: Iterable<Uri>)
 }

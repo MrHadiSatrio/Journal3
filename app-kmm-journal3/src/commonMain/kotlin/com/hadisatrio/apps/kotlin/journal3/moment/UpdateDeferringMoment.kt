@@ -24,8 +24,8 @@ import com.hadisatrio.apps.kotlin.journal3.token.TokenableString
 import com.hadisatrio.libs.kotlin.geography.Place
 
 class UpdateDeferringMoment(
-    private val origin: Moment
-) : Moment by origin {
+    private val origin: EditableMoment
+) : EditableMoment by origin {
 
     private var timestampInEdit: Timestamp = origin.timestamp
     private var descriptionInEdit: TokenableString = origin.description

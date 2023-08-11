@@ -23,6 +23,7 @@ import com.chrynan.uri.core.Uri
 import com.hadisatrio.apps.kotlin.journal3.datetime.LiteralTimestamp
 import com.hadisatrio.apps.kotlin.journal3.datetime.Timestamp
 import com.hadisatrio.apps.kotlin.journal3.datetime.UnixEpoch
+import com.hadisatrio.apps.kotlin.journal3.moment.EditableMoment
 import com.hadisatrio.apps.kotlin.journal3.moment.MemorableFile
 import com.hadisatrio.apps.kotlin.journal3.moment.Memorables
 import com.hadisatrio.apps.kotlin.journal3.moment.Moment
@@ -39,7 +40,7 @@ import okio.Path
 class FilesystemMoment(
     private val file: JsonFile,
     private val memorables: Memorables
-) : Moment {
+) : EditableMoment {
 
     override val id: Uuid get() {
         return uuidFrom(file.name)

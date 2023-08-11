@@ -78,7 +78,7 @@ class EditAMomentUseCase(
     private fun identifyTarget() {
         currentTarget = UpdateDeferringMoment(
             if (targetId.isValid()) {
-                stories.findMoment(targetId.asUuid()).first()
+                stories.findMoment(targetId.asUuid()).first() as EditableMoment
             } else {
                 val story = stories.findStory(storyId.asUuid()).first() as EditableStory
                 val clockRespecting = ClockRespectingStory(clock, story)

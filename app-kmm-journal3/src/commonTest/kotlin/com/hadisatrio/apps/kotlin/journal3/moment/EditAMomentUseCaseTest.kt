@@ -201,7 +201,7 @@ class EditAMomentUseCaseTest {
     fun `Does not delete the moment-in-edit when it is an existing one even if the user cancels without editing`() {
         val stories = SelfPopulatingStories(noOfStories = 1, noOfMoments = 1, origin = FakeStories())
         val story = stories.first()
-        val moment = story.moments.first()
+        val moment = story.moments.first() as EditableMoment
         val targetId = FakeTargetId(moment.id)
 
         moment.update(TokenableString("Fizz"))

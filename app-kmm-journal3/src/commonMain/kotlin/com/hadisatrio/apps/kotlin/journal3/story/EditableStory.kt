@@ -18,11 +18,11 @@
 package com.hadisatrio.apps.kotlin.journal3.story
 
 import com.hadisatrio.apps.kotlin.journal3.forgettable.Forgettable
-import com.hadisatrio.apps.kotlin.journal3.moment.Moment
+import com.hadisatrio.apps.kotlin.journal3.moment.EditableMoment
 import com.hadisatrio.apps.kotlin.journal3.token.TokenableString
 
 interface EditableStory : Story, Forgettable {
     fun update(title: String)
     fun update(synopsis: TokenableString)
-    fun new(): Moment
+    fun new(): EditableMoment
 }
