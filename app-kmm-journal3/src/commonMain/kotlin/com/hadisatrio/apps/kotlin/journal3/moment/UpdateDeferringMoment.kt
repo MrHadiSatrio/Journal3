@@ -25,7 +25,7 @@ import com.hadisatrio.libs.kotlin.geography.Place
 
 class UpdateDeferringMoment(
     private val origin: EditableMoment
-) : EditableMoment by origin {
+) : MomentInEdit, EditableMoment by origin {
 
     private var timestampInEdit: Timestamp = origin.timestamp
     private var descriptionInEdit: TokenableString = origin.description
@@ -63,7 +63,7 @@ class UpdateDeferringMoment(
         return timestampInEdit.compareTo(other.timestamp)
     }
 
-    fun updatesMade(): Boolean {
+    override fun updatesMade(): Boolean {
         return timestampInEdit != origin.timestamp ||
             descriptionInEdit != origin.description ||
             sentimentInEdit != origin.sentiment ||
@@ -71,7 +71,7 @@ class UpdateDeferringMoment(
             attachmentsInEdit != origin.attachments
     }
 
-    fun commit() {
+    override fun commit() {
         origin.update(timestampInEdit)
         origin.update(descriptionInEdit)
         origin.update(sentimentInEdit)

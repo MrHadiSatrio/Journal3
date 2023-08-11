@@ -65,7 +65,7 @@ class EditAMomentUseCase(
 ) : UseCase {
 
     private val completionEvents by lazy { MutableSharedFlow<CompletionEvent>(extraBufferCapacity = 1) }
-    private lateinit var currentTarget: UpdateDeferringMoment
+    private lateinit var currentTarget: MomentInEdit
     private var isTargetNew: Boolean = false
     private var isEditCancelled: Boolean = false
 
