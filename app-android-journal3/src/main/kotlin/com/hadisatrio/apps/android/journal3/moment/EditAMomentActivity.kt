@@ -33,6 +33,7 @@ import com.hadisatrio.apps.android.journal3.journal3Application
 import com.hadisatrio.apps.kotlin.journal3.event.RefreshRequestEvent
 import com.hadisatrio.apps.kotlin.journal3.moment.EditAMomentUseCase
 import com.hadisatrio.apps.kotlin.journal3.moment.Moment
+import com.hadisatrio.apps.kotlin.journal3.sentiment.DumbSentimentAnalyst
 import com.hadisatrio.libs.android.foundation.activity.ActivityCompletionEventSink
 import com.hadisatrio.libs.android.foundation.lifecycle.LifecycleTriggeredEventSource
 import com.hadisatrio.libs.android.foundation.material.SliderFloatPresenter
@@ -182,6 +183,7 @@ class EditAMomentActivity : AppCompatActivity() {
                 modalPresenter = journal3Application.modalPresenter,
                 eventSource = eventSource,
                 eventSink = eventSink,
+                analyst = DumbSentimentAnalyst,
                 clock = journal3Application.clock
             )
         )
