@@ -41,8 +41,6 @@ class FakeMoment(
         private set
     override var sentiment: Sentiment = Sentiment.DEFAULT
         private set
-    override var impliedSentiment: Sentiment = Sentiment.DEFAULT
-        private set
     override var place: Place = NullIsland
         private set
     override var attachments: Iterable<Uri> = mutableListOf()

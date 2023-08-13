@@ -41,7 +41,7 @@ class SentimentAnalyzingMoment(
     }
 
     override fun commit() {
-        if (isSentimentOverridden) analyst.train(setOf(this))
+        if (isSentimentOverridden) analyst.train(mapOf(origin.description.toString() to origin.sentiment))
         origin.commit()
     }
 }

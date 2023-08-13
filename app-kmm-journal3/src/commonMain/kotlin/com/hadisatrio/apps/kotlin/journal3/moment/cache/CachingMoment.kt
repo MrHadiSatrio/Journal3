@@ -32,7 +32,6 @@ class CachingMoment(
     override val timestamp: Timestamp,
     override val description: TokenableString,
     override val sentiment: Sentiment,
-    override val impliedSentiment: Sentiment,
     override val place: Place,
     override val attachments: Iterable<Uri>,
     private val origin: Moment
@@ -43,7 +42,6 @@ class CachingMoment(
         origin.timestamp,
         origin.description,
         origin.sentiment,
-        origin.impliedSentiment,
         CachingPlace(origin.place),
         origin.attachments,
         origin

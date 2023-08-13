@@ -30,7 +30,6 @@ interface Moment : Comparable<Moment>, Forgettable {
     val timestamp: Timestamp
     val description: TokenableString
     val sentiment: Sentiment
-    val impliedSentiment: Sentiment
     val place: Place
     val attachments: Iterable<Uri>
 }

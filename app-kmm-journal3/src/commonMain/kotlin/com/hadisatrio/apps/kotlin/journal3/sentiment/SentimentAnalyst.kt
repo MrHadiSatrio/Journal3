@@ -17,9 +17,7 @@
 
 package com.hadisatrio.apps.kotlin.journal3.sentiment
 
-import com.hadisatrio.apps.kotlin.journal3.moment.Moment
-
 interface SentimentAnalyst {
-    fun train(moments: Set<Moment>)
+    fun train(relationships: Map<String, Sentiment>)
     fun analyze(string: String): Sentiment
 }

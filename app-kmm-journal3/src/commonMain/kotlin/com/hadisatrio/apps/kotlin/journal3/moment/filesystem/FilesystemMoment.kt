@@ -27,7 +27,6 @@ import com.hadisatrio.apps.kotlin.journal3.moment.EditableMoment
 import com.hadisatrio.apps.kotlin.journal3.moment.MemorableFile
 import com.hadisatrio.apps.kotlin.journal3.moment.Memorables
 import com.hadisatrio.apps.kotlin.journal3.moment.Moment
-import com.hadisatrio.apps.kotlin.journal3.sentiment.DumbSentimentAnalyst
 import com.hadisatrio.apps.kotlin.journal3.sentiment.Sentiment
 import com.hadisatrio.apps.kotlin.journal3.token.TokenableString
 import com.hadisatrio.libs.kotlin.geography.NullIsland
@@ -56,10 +55,6 @@ class FilesystemMoment(
 
     override val sentiment: Sentiment get() {
         return Sentiment(file.getRaw("sentiment") ?: return Sentiment.DEFAULT)
-    }
-
-    override val impliedSentiment: Sentiment get() {
-        return DumbSentimentAnalyst.analyze(description.toString())
     }
 
     override val place: Place get() {
