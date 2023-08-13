@@ -183,7 +183,7 @@ class EditAMomentActivity : AppCompatActivity() {
                 modalPresenter = journal3Application.modalPresenter,
                 eventSource = eventSource,
                 eventSink = eventSink,
-                analyst = DumbSentimentAnalyst,
+                analyst = journal3Application.sentimentAnalyst,
                 clock = journal3Application.clock
             )
         )
