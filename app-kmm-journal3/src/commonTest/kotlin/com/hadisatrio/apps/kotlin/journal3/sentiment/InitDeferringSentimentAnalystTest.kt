@@ -15,21 +15,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.hadisatrio.apps.kotlin.journal3.moment
+package com.hadisatrio.apps.kotlin.journal3.sentiment
 
-import com.benasher44.uuid.Uuid
-import com.chrynan.uri.core.Uri
-import com.hadisatrio.apps.kotlin.journal3.datetime.Timestamp
-import com.hadisatrio.apps.kotlin.journal3.forgettable.Forgettable
-import com.hadisatrio.apps.kotlin.journal3.sentiment.Sentiment
-import com.hadisatrio.apps.kotlin.journal3.token.TokenableString
-import com.hadisatrio.libs.kotlin.geography.Place
+import io.kotest.matchers.booleans.shouldBeFalse
+import io.kotest.matchers.booleans.shouldBeTrue
+import io.mockk.mockk
+import kotlin.test.Test
 
-interface Moment : Comparable<Moment>, Forgettable {
-    val id: Uuid
-    val timestamp: Timestamp
-    val description: TokenableString
-    val sentiment: Sentiment
-    val place: Place
-    val attachments: Iterable<Uri>
+class InitDeferringSentimentAnalystTest {
+
+    @Test
+    fun `Defers the initialization of its origin`() {
+        var isInitialized = false
+        val origin = {
+            isInitialized = true
+            mockk<SentimentAnalyst>(relaxed = true)
+        }
+        val deferred = InitDeferringSentimentAnalyst(origin)
+
+        isInitialized.shouldBeFalse()
+        deferred.train(emptyMap())
+        isInitialized.shouldBeTrue()
+    }
 }

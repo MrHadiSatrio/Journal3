@@ -39,12 +39,10 @@ class CachingMomentsTest {
         repeat(times = 10) { cachedMoment.timestamp }
         repeat(times = 10) { cachedMoment.description }
         repeat(times = 10) { cachedMoment.sentiment }
-        repeat(times = 10) { cachedMoment.impliedSentiment }
 
         verify(exactly = 1) { moment.id }
         verify(exactly = 1) { moment.timestamp }
         verify(exactly = 1) { moment.description }
         verify(exactly = 1) { moment.sentiment }
-        verify(exactly = 1) { moment.impliedSentiment }
     }
 }

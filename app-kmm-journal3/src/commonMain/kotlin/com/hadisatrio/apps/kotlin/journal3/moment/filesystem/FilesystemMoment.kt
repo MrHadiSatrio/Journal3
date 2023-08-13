@@ -23,10 +23,10 @@ import com.chrynan.uri.core.Uri
 import com.hadisatrio.apps.kotlin.journal3.datetime.LiteralTimestamp
 import com.hadisatrio.apps.kotlin.journal3.datetime.Timestamp
 import com.hadisatrio.apps.kotlin.journal3.datetime.UnixEpoch
+import com.hadisatrio.apps.kotlin.journal3.moment.EditableMoment
 import com.hadisatrio.apps.kotlin.journal3.moment.MemorableFile
 import com.hadisatrio.apps.kotlin.journal3.moment.Memorables
 import com.hadisatrio.apps.kotlin.journal3.moment.Moment
-import com.hadisatrio.apps.kotlin.journal3.sentiment.DumbSentimentAnalyst
 import com.hadisatrio.apps.kotlin.journal3.sentiment.Sentiment
 import com.hadisatrio.apps.kotlin.journal3.token.TokenableString
 import com.hadisatrio.libs.kotlin.geography.NullIsland
@@ -39,7 +39,7 @@ import okio.Path
 class FilesystemMoment(
     private val file: JsonFile,
     private val memorables: Memorables
-) : Moment {
+) : EditableMoment {
 
     override val id: Uuid get() {
         return uuidFrom(file.name)
@@ -55,10 +55,6 @@ class FilesystemMoment(
 
     override val sentiment: Sentiment get() {
         return Sentiment(file.getRaw("sentiment") ?: return Sentiment.DEFAULT)
-    }
-
-    override val impliedSentiment: Sentiment get() {
-        return DumbSentimentAnalyst.analyze(description.toString())
     }
 
     override val place: Place get() {

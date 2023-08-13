@@ -17,8 +17,6 @@
 
 package com.hadisatrio.apps.kotlin.journal3.sentiment
 
-import com.hadisatrio.apps.kotlin.journal3.moment.Moment
-
 object DumbSentimentAnalyst : SentimentAnalyst {
 
     private val positiveWords: Set<String> = setOf(
@@ -36,7 +34,7 @@ object DumbSentimentAnalyst : SentimentAnalyst {
         "saddened"
     )
 
-    override fun train(moments: Set<Moment>) {
+    override fun train(relationships: Map<String, Sentiment>) {
         // Do nothing. I'm dumb.
     }
 

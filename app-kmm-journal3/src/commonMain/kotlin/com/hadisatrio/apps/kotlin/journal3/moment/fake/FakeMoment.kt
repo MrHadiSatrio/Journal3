@@ -21,6 +21,7 @@ import com.benasher44.uuid.Uuid
 import com.chrynan.uri.core.Uri
 import com.hadisatrio.apps.kotlin.journal3.datetime.Timestamp
 import com.hadisatrio.apps.kotlin.journal3.datetime.UnixEpoch
+import com.hadisatrio.apps.kotlin.journal3.moment.EditableMoment
 import com.hadisatrio.apps.kotlin.journal3.moment.Moment
 import com.hadisatrio.apps.kotlin.journal3.sentiment.Sentiment
 import com.hadisatrio.apps.kotlin.journal3.token.TokenableString
@@ -30,7 +31,7 @@ import com.hadisatrio.libs.kotlin.geography.Place
 class FakeMoment(
     override val id: Uuid,
     private val group: MutableList<Moment>
-) : Moment {
+) : EditableMoment {
 
     private var isForgotten: Boolean = false
 
@@ -39,8 +40,6 @@ class FakeMoment(
     override var description: TokenableString = TokenableString.EMPTY
         private set
     override var sentiment: Sentiment = Sentiment.DEFAULT
-        private set
-    override var impliedSentiment: Sentiment = Sentiment.DEFAULT
         private set
     override var place: Place = NullIsland
         private set

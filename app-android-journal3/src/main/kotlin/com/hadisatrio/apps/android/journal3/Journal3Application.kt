@@ -22,6 +22,7 @@ import android.content.Context
 import android.view.View
 import androidx.fragment.app.Fragment
 import com.hadisatrio.apps.kotlin.journal3.datetime.Timestamp
+import com.hadisatrio.apps.kotlin.journal3.sentiment.SentimentAnalyst
 import com.hadisatrio.apps.kotlin.journal3.story.Stories
 import com.hadisatrio.libs.android.foundation.activity.CurrentActivity
 import com.hadisatrio.libs.kotlin.foundation.event.EventSink
@@ -43,6 +44,7 @@ abstract class Journal3Application : Application() {
     abstract val globalEventSource: EventSource
     abstract val timestampDecor: Timestamp.Decor
     abstract val inactivityAlertThreshold: Duration
+    abstract val sentimentAnalyst: SentimentAnalyst
     abstract val clock: Clock
     abstract val backgroundExecutor: Executor
     abstract val foregroundExecutor: Executor

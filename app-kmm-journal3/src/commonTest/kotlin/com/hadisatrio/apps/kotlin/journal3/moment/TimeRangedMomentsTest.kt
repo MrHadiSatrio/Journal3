@@ -40,6 +40,7 @@ class TimeRangedMomentsTest {
     @BeforeTest
     fun `Init moments`() {
         origin.forEachIndexed { index, moment ->
+            moment as EditableMoment
             moment.update(LiteralTimestamp(currentInstant - index.days))
         }
     }

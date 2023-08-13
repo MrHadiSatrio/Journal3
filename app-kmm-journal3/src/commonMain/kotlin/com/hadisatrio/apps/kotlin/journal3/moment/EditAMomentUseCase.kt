@@ -24,6 +24,7 @@ import com.hadisatrio.apps.kotlin.journal3.datetime.LiteralTimestamp
 import com.hadisatrio.apps.kotlin.journal3.event.RefreshRequestEvent
 import com.hadisatrio.apps.kotlin.journal3.id.TargetId
 import com.hadisatrio.apps.kotlin.journal3.sentiment.Sentiment
+import com.hadisatrio.apps.kotlin.journal3.sentiment.SentimentAnalyst
 import com.hadisatrio.apps.kotlin.journal3.story.EditableStory
 import com.hadisatrio.apps.kotlin.journal3.story.Stories
 import com.hadisatrio.apps.kotlin.journal3.story.datetime.ClockRespectingStory
@@ -61,11 +62,12 @@ class EditAMomentUseCase(
     private val modalPresenter: Presenter<Modal>,
     private val eventSource: EventSource,
     private val eventSink: EventSink,
+    private val analyst: SentimentAnalyst,
     private val clock: Clock
 ) : UseCase {
 
     private val completionEvents by lazy { MutableSharedFlow<CompletionEvent>(extraBufferCapacity = 1) }
-    private lateinit var currentTarget: UpdateDeferringMoment
+    private lateinit var currentTarget: MomentInEdit
     private var isTargetNew: Boolean = false
     private var isEditCancelled: Boolean = false
 
@@ -76,15 +78,18 @@ class EditAMomentUseCase(
     }
 
     private fun identifyTarget() {
-        currentTarget = UpdateDeferringMoment(
-            if (targetId.isValid()) {
-                stories.findMoment(targetId.asUuid()).first()
-            } else {
-                val story = stories.findStory(storyId.asUuid()).first() as EditableStory
-                val clockRespecting = ClockRespectingStory(clock, story)
-                isTargetNew = true
-                clockRespecting.new()
-            }
+        currentTarget = SentimentAnalyzingMoment(
+            analyst = analyst,
+            origin = UpdateDeferringMoment(
+                if (targetId.isValid()) {
+                    stories.findMoment(targetId.asUuid()).first() as EditableMoment
+                } else {
+                    val story = stories.findStory(storyId.asUuid()).first() as EditableStory
+                    val clockRespecting = ClockRespectingStory(clock, story)
+                    isTargetNew = true
+                    clockRespecting.new()
+                }
+            )
         )
     }
 

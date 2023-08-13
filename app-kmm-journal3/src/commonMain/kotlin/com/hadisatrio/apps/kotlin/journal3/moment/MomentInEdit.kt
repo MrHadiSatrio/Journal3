@@ -17,19 +17,7 @@
 
 package com.hadisatrio.apps.kotlin.journal3.moment
 
-import com.benasher44.uuid.Uuid
-import com.chrynan.uri.core.Uri
-import com.hadisatrio.apps.kotlin.journal3.datetime.Timestamp
-import com.hadisatrio.apps.kotlin.journal3.forgettable.Forgettable
-import com.hadisatrio.apps.kotlin.journal3.sentiment.Sentiment
-import com.hadisatrio.apps.kotlin.journal3.token.TokenableString
-import com.hadisatrio.libs.kotlin.geography.Place
-
-interface Moment : Comparable<Moment>, Forgettable {
-    val id: Uuid
-    val timestamp: Timestamp
-    val description: TokenableString
-    val sentiment: Sentiment
-    val place: Place
-    val attachments: Iterable<Uri>
+interface MomentInEdit : EditableMoment {
+    fun updatesMade(): Boolean
+    fun commit()
 }

@@ -22,6 +22,7 @@ import com.hadisatrio.apps.kotlin.journal3.event.RefreshRequestEvent
 import com.hadisatrio.apps.kotlin.journal3.event.UnsupportedEvent
 import com.hadisatrio.apps.kotlin.journal3.id.FakeTargetId
 import com.hadisatrio.apps.kotlin.journal3.id.InvalidTargetId
+import com.hadisatrio.apps.kotlin.journal3.sentiment.DumbSentimentAnalyst
 import com.hadisatrio.apps.kotlin.journal3.sentiment.Sentiment
 import com.hadisatrio.apps.kotlin.journal3.story.SelfPopulatingStories
 import com.hadisatrio.apps.kotlin.journal3.story.fake.FakeStories
@@ -77,6 +78,7 @@ class EditAMomentUseCaseTest {
                 CompletionEvent()
             ),
             eventSink = eventSink,
+            analyst = DumbSentimentAnalyst,
             clock = Clock.System
         )()
 
@@ -107,6 +109,7 @@ class EditAMomentUseCaseTest {
                 CompletionEvent()
             ),
             eventSink = eventSink,
+            analyst = DumbSentimentAnalyst,
             clock = Clock.System
         )()
 
@@ -138,6 +141,7 @@ class EditAMomentUseCaseTest {
                 CompletionEvent()
             ),
             eventSink = eventSink,
+            analyst = DumbSentimentAnalyst,
             clock = Clock.System
         )()
 
@@ -166,6 +170,7 @@ class EditAMomentUseCaseTest {
                 CancellationEvent("user")
             ),
             eventSink = eventSink,
+            analyst = DumbSentimentAnalyst,
             clock = Clock.System
         )()
 
@@ -190,6 +195,7 @@ class EditAMomentUseCaseTest {
                 ModalApprovalEvent("edit_cancellation_confirmation")
             ),
             eventSink = eventSink,
+            analyst = DumbSentimentAnalyst,
             clock = Clock.System
         )()
 
@@ -201,7 +207,7 @@ class EditAMomentUseCaseTest {
     fun `Does not delete the moment-in-edit when it is an existing one even if the user cancels without editing`() {
         val stories = SelfPopulatingStories(noOfStories = 1, noOfMoments = 1, origin = FakeStories())
         val story = stories.first()
-        val moment = story.moments.first()
+        val moment = story.moments.first() as EditableMoment
         val targetId = FakeTargetId(moment.id)
 
         moment.update(TokenableString("Fizz"))
@@ -218,6 +224,7 @@ class EditAMomentUseCaseTest {
                 ModalApprovalEvent("edit_cancellation_confirmation")
             ),
             eventSink = eventSink,
+            analyst = DumbSentimentAnalyst,
             clock = Clock.System
         )()
 
@@ -245,6 +252,7 @@ class EditAMomentUseCaseTest {
                 CompletionEvent()
             ),
             eventSink = eventSink,
+            analyst = DumbSentimentAnalyst,
             clock = Clock.System
         )()
 
@@ -270,6 +278,7 @@ class EditAMomentUseCaseTest {
                 CompletionEvent()
             ),
             eventSink = eventSink,
+            analyst = DumbSentimentAnalyst,
             clock = Clock.System
         )()
 
@@ -296,6 +305,7 @@ class EditAMomentUseCaseTest {
                 modalPresenter = modalPresenter,
                 eventSource = RecordedEventSource(event),
                 eventSink = eventSink,
+                analyst = DumbSentimentAnalyst,
                 clock = Clock.System
             )()
         }
@@ -324,6 +334,7 @@ class EditAMomentUseCaseTest {
                 CompletionEvent()
             ),
             eventSink = eventSink,
+            analyst = DumbSentimentAnalyst,
             clock = Clock.System
         )()
     }

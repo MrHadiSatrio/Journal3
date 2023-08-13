@@ -19,6 +19,7 @@ package com.hadisatrio.apps.kotlin.journal3.story.fake
 
 import com.benasher44.uuid.Uuid
 import com.benasher44.uuid.uuid4
+import com.hadisatrio.apps.kotlin.journal3.moment.EditableMoment
 import com.hadisatrio.apps.kotlin.journal3.moment.Moment
 import com.hadisatrio.apps.kotlin.journal3.moment.Moments
 import com.hadisatrio.apps.kotlin.journal3.moment.fake.FakeMoment
@@ -52,7 +53,7 @@ class FakeStory(
         this.synopsis = synopsis
     }
 
-    override fun new(): Moment {
+    override fun new(): EditableMoment {
         val moment = FakeMoment(uuid4(), rawMoments)
         rawMoments.add(moment)
         return moment

@@ -33,6 +33,7 @@ class SentimentRangedMomentsTest {
     @BeforeTest
     fun `Init moments`() {
         origin.forEachIndexed { index, moment ->
+            moment as EditableMoment
             if (index % 2 == 0) {
                 moment.update(Sentiment(0.0F))
             } else {

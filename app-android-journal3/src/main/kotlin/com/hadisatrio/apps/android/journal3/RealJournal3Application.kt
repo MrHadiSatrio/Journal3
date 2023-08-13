@@ -19,6 +19,7 @@ package com.hadisatrio.apps.android.journal3
 
 import androidx.core.content.ContextCompat
 import com.google.android.material.color.DynamicColors
+import com.hadisatrio.apps.android.journal3.sentiment.TfliteSentimentAnalyst
 import com.hadisatrio.apps.kotlin.journal3.datetime.FormattedTimestamp
 import com.hadisatrio.apps.kotlin.journal3.datetime.LiteralTimestamp
 import com.hadisatrio.apps.kotlin.journal3.datetime.Timestamp
@@ -31,8 +32,10 @@ import com.hadisatrio.apps.kotlin.journal3.moment.VicinityMoments
 import com.hadisatrio.apps.kotlin.journal3.moment.filesystem.FilesystemMemorableFiles
 import com.hadisatrio.apps.kotlin.journal3.moment.filesystem.FilesystemMemorablePlaces
 import com.hadisatrio.apps.kotlin.journal3.moment.filesystem.FilesystemMentionedPeople
+import com.hadisatrio.apps.kotlin.journal3.sentiment.InitDeferringSentimentAnalyst
 import com.hadisatrio.apps.kotlin.journal3.sentiment.NegativeishSentimentRange
 import com.hadisatrio.apps.kotlin.journal3.sentiment.PositiveishSentimentRange
+import com.hadisatrio.apps.kotlin.journal3.sentiment.SentimentAnalyst
 import com.hadisatrio.apps.kotlin.journal3.sentiment.VeryPositiveSentimentRange
 import com.hadisatrio.apps.kotlin.journal3.story.InitDeferringStories
 import com.hadisatrio.apps.kotlin.journal3.story.MomentfulStories
@@ -63,6 +66,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.datetime.Clock
 import okio.FileSystem
 import okio.Path.Companion.toPath
+import java.io.File
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors
 import kotlin.time.Duration
@@ -198,6 +202,18 @@ class RealJournal3Application : Journal3Application() {
 
     override val inactivityAlertThreshold: Duration by lazy {
         3.hours
+    }
+
+    override val sentimentAnalyst: SentimentAnalyst by lazy {
+        InitDeferringSentimentAnalyst {
+            val modelFile = File(cacheDir, "text_classification.tflite")
+            if (!modelFile.exists()) {
+                val inStream = assets.open("text_classification.tflite")
+                val outStream = modelFile.outputStream()
+                inStream.use { outStream.use { inStream.copyTo(outStream) } }
+            }
+            TfliteSentimentAnalyst(modelFile)
+        }
     }
 
     override val clock: Clock by lazy {
