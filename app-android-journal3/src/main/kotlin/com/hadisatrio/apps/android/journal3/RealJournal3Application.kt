@@ -32,6 +32,7 @@ import com.hadisatrio.apps.kotlin.journal3.moment.VicinityMoments
 import com.hadisatrio.apps.kotlin.journal3.moment.filesystem.FilesystemMemorableFiles
 import com.hadisatrio.apps.kotlin.journal3.moment.filesystem.FilesystemMemorablePlaces
 import com.hadisatrio.apps.kotlin.journal3.moment.filesystem.FilesystemMentionedPeople
+import com.hadisatrio.apps.kotlin.journal3.sentiment.InitDeferringSentimentAnalyst
 import com.hadisatrio.apps.kotlin.journal3.sentiment.NegativeishSentimentRange
 import com.hadisatrio.apps.kotlin.journal3.sentiment.PositiveishSentimentRange
 import com.hadisatrio.apps.kotlin.journal3.sentiment.SentimentAnalyst
@@ -204,13 +205,15 @@ class RealJournal3Application : Journal3Application() {
     }
 
     override val sentimentAnalyst: SentimentAnalyst by lazy {
-        val modelFile = File(cacheDir, "text_classification.tflite")
-        if (!modelFile.exists()) {
-            val inStream = assets.open("text_classification.tflite")
-            val outStream = modelFile.outputStream()
-            inStream.use { outStream.use { inStream.copyTo(outStream) } }
+        InitDeferringSentimentAnalyst {
+            val modelFile = File(cacheDir, "text_classification.tflite")
+            if (!modelFile.exists()) {
+                val inStream = assets.open("text_classification.tflite")
+                val outStream = modelFile.outputStream()
+                inStream.use { outStream.use { inStream.copyTo(outStream) } }
+            }
+            TfliteSentimentAnalyst(modelFile)
         }
-        TfliteSentimentAnalyst(modelFile)
     }
 
     override val clock: Clock by lazy {
