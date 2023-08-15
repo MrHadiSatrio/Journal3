@@ -29,6 +29,7 @@ import com.hadisatrio.apps.android.journal3.R
 import com.hadisatrio.apps.android.journal3.id.BundledTargetId
 import com.hadisatrio.apps.android.journal3.journal3Application
 import com.hadisatrio.apps.android.journal3.moment.MomentCardViewRenderer
+import com.hadisatrio.apps.android.journal3.moment.MomentItemDiffer
 import com.hadisatrio.apps.android.journal3.sentiment.TextViewColorSentimentPresenter
 import com.hadisatrio.apps.kotlin.journal3.event.RefreshRequestEvent
 import com.hadisatrio.apps.kotlin.journal3.moment.Moment
@@ -86,7 +87,8 @@ class ViewStoryActivity : AppCompatActivity() {
             origin = RecyclerViewPresenter(
                 recyclerView = findViewById(R.id.moments_list),
                 viewFactory = momentsViewFactory,
-                viewRenderer = MomentCardViewRenderer
+                viewRenderer = MomentCardViewRenderer,
+                differ = MomentItemDiffer
             )
         )
 
