@@ -32,54 +32,14 @@ import kotlin.math.roundToInt
 
 class RecyclerViewPresenter<T : Any>(
     private val recyclerView: RecyclerView,
-    private val layoutManager: RecyclerView.LayoutManager,
-    private val viewFactory: ViewFactory,
-    private val viewRenderer: ViewRenderer<T>,
-    private val differ: ItemDiffer<T>
+    private val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(recyclerView.context),
+    private val viewFactory: ViewFactory = NaiveViewFactory,
+    private val viewRenderer: ViewRenderer<T> = NaiveViewRenderer(),
+    private val differ: ItemDiffer<T> = NaiveItemDiffer()
 ) : Presenter<Iterable<T>> {
 
     private val adapter: Adapter<T> by lazy { Adapter(viewFactory, viewRenderer, differ) }
     private val isSetupRequired: AtomicBoolean = AtomicBoolean(true)
-
-    constructor(recyclerView: RecyclerView) : this(
-        recyclerView,
-        LinearLayoutManager(recyclerView.context, RecyclerView.VERTICAL, false),
-        ViewFactory { parent, _ ->
-            TextView(parent.context).apply {
-                val density = recyclerView.resources.displayMetrics.density
-                val itemPadding = (density * DEFAULT_ITEM_PADDING).roundToInt()
-                layoutParams = RecyclerView.LayoutParams(MATCH_PARENT, WRAP_CONTENT).apply {
-                    setMargins(itemPadding, itemPadding, itemPadding, itemPadding)
-                }
-            }
-        },
-        ViewRenderer { view, item ->
-            (view as TextView).text = item.toString()
-        },
-        object : ItemDiffer<T> {
-            override fun areItemsTheSame(oldItem: T, newItem: T): Boolean = oldItem == newItem
-            override fun areContentsTheSame(oldItem: T, newItem: T): Boolean = oldItem == newItem
-        }
-    )
-
-    constructor(
-        recyclerView: RecyclerView,
-        viewFactory: ViewFactory,
-        viewRenderer: ViewRenderer<T>
-    ) : this(
-        recyclerView,
-        LinearLayoutManager(recyclerView.context, RecyclerView.VERTICAL, false),
-        viewFactory,
-        viewRenderer,
-        NaiveItemDiffer()
-    )
-
-    constructor(
-        recyclerView: RecyclerView,
-        layoutManager: RecyclerView.LayoutManager,
-        viewFactory: ViewFactory,
-        viewRenderer: ViewRenderer<T>
-    ) : this(recyclerView, layoutManager, viewFactory, viewRenderer, NaiveItemDiffer())
 
     override fun present(thing: Iterable<T>) {
         if (isSetupRequired.getAndSet(false)) setupRecyclerView()
@@ -102,6 +62,26 @@ class RecyclerViewPresenter<T : Any>(
     interface ItemDiffer<T> {
         fun areItemsTheSame(oldItem: T, newItem: T): Boolean
         fun areContentsTheSame(oldItem: T, newItem: T): Boolean
+    }
+
+    private object NaiveViewFactory : ViewFactory {
+
+        override fun create(parent: ViewGroup, viewType: Int): View {
+            return TextView(parent.context).apply {
+                val density = parent.resources.displayMetrics.density
+                val itemPadding = (density * DEFAULT_ITEM_PADDING).roundToInt()
+                layoutParams = RecyclerView.LayoutParams(MATCH_PARENT, WRAP_CONTENT).apply {
+                    setMargins(itemPadding, itemPadding, itemPadding, itemPadding)
+                }
+            }
+        }
+    }
+
+    private class NaiveViewRenderer<T> : ViewRenderer<T> {
+
+        override fun render(view: View, item: T) {
+            (view as TextView).text = item.toString()
+        }
     }
 
     private class NaiveItemDiffer<T> : ItemDiffer<T> {
