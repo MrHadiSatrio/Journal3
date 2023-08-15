@@ -28,6 +28,7 @@ import com.grzegorzojdana.spacingitemdecoration.SpacingItemDecoration
 import com.hadisatrio.apps.android.journal3.R
 import com.hadisatrio.apps.android.journal3.journal3Application
 import com.hadisatrio.apps.android.journal3.moment.MomentCardViewRenderer
+import com.hadisatrio.apps.android.journal3.moment.MomentItemDiffer
 import com.hadisatrio.apps.android.journal3.sentiment.TextViewColorSentimentPresenter
 import com.hadisatrio.apps.kotlin.journal3.event.RefreshRequestEvent
 import com.hadisatrio.apps.kotlin.journal3.moment.Moment
@@ -72,7 +73,8 @@ class ReflectionStoriesListFragment : StoriesListFragment() {
                 recyclerView = carousel,
                 viewFactory = subItemViewFactory,
                 viewRenderer = MomentCardViewRenderer,
-                layoutManager = LinearLayoutManager(parent.context, LinearLayoutManager.HORIZONTAL, false)
+                layoutManager = LinearLayoutManager(parent.context, LinearLayoutManager.HORIZONTAL, false),
+                differ = MomentItemDiffer
             )
             carousel.addItemDecoration(SpacingItemDecoration(Spacing(horizontal = 8.dp)))
             view.setTag(R.id.presenter_view_tag, carouselPresenter)
@@ -94,7 +96,8 @@ class ReflectionStoriesListFragment : StoriesListFragment() {
                         origin = RecyclerViewPresenter(
                             recyclerView = storiesListView,
                             viewFactory = itemViewFactory,
-                            viewRenderer = itemViewRenderer
+                            viewRenderer = itemViewRenderer,
+                            differ = StoryItemDiffer
                         )
                     )
                 )

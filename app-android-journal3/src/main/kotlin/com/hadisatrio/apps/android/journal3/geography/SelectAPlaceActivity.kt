@@ -49,24 +49,32 @@ import com.hadisatrio.libs.kotlin.foundation.event.SelectionEvent
 import com.hadisatrio.libs.kotlin.foundation.presentation.AdaptingPresenter
 import com.hadisatrio.libs.kotlin.foundation.presentation.ExecutorDispatchingPresenter
 import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
+import com.hadisatrio.libs.kotlin.geography.Place
 import com.hadisatrio.libs.kotlin.geography.Places
 
 class SelectAPlaceActivity : AppCompatActivity() {
 
     private val presenter: Presenter<Places> by lazy {
-        AdaptingPresenter(
-            adapter = { places -> places.map { it.name } },
-            origin = ExecutorDispatchingPresenter(
-                executor = journal3Application.foregroundExecutor,
-                origin = RecyclerViewPresenter(
-                    recyclerView = findViewById(R.id.places_list),
-                    viewFactory = { parent, _ ->
-                        LayoutInflater.from(parent.context)
-                            .inflate(R.layout.view_place_snippet_card, parent, false)
-                    },
-                    viewRenderer = { view, item ->
-                        view.findViewById<TextView>(R.id.name_label).text = item
-                    }
+        val viewFactory = RecyclerViewPresenter.ViewFactory { parent, _ ->
+            LayoutInflater.from(parent.context)
+                .inflate(R.layout.view_place_snippet_card, parent, false)
+        }
+        val viewRenderer = RecyclerViewPresenter.ViewRenderer<Place> { view, item ->
+            view.findViewById<TextView>(R.id.name_label).text = item.name
+        }
+
+        ExecutorDispatchingPresenter(
+            executor = journal3Application.backgroundExecutor,
+            origin = AdaptingPresenter(
+                adapter = { it.toList() },
+                origin = ExecutorDispatchingPresenter(
+                    executor = journal3Application.foregroundExecutor,
+                    origin = RecyclerViewPresenter(
+                        recyclerView = findViewById(R.id.places_list),
+                        viewFactory = viewFactory,
+                        viewRenderer = viewRenderer,
+                        differ = PlaceItemDiffer
+                    ),
                 )
             )
         )

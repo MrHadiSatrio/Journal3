@@ -21,6 +21,8 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.test.runner.AndroidJUnit4
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
+import io.mockk.spyk
+import io.mockk.verify
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RuntimeEnvironment
@@ -28,7 +30,7 @@ import org.robolectric.RuntimeEnvironment
 @RunWith(AndroidJUnit4::class)
 class RecyclerViewPresenterTest {
 
-    private val recyclerView = RecyclerView(RuntimeEnvironment.getApplication())
+    private val recyclerView = spyk(RecyclerView(RuntimeEnvironment.getApplication()))
     private val strings = listOf("Foo", "Bar", "Fizz", "Buzz")
     private val presenter = RecyclerViewPresenter<String>(recyclerView)
 
@@ -38,5 +40,12 @@ class RecyclerViewPresenterTest {
         recyclerView.layoutManager.shouldNotBeNull()
         recyclerView.adapter.shouldNotBeNull()
         recyclerView.adapter!!.itemCount.shouldBe(strings.size)
+    }
+
+    @Test
+    fun `Shares the adapter and layout manager for all presentation calls`() {
+        repeat(10) { presenter.present(strings) }
+        verify(exactly = 1) { recyclerView.setAdapter(any()) }
+        verify(exactly = 1) { recyclerView.setLayoutManager(any()) }
     }
 }

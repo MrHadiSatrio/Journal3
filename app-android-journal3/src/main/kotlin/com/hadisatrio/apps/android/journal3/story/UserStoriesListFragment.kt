@@ -58,7 +58,8 @@ class UserStoriesListFragment : StoriesListFragment() {
                             viewRenderer = { view, item ->
                                 view.findViewById<TextView>(R.id.title_label).text = item.title
                                 view.findViewById<TextView>(R.id.synopsis_label).text = item.synopsis.toString()
-                            }
+                            },
+                            differ = StoryItemDiffer
                         ),
                         adapter = { stories -> stories.toList() }
                     )

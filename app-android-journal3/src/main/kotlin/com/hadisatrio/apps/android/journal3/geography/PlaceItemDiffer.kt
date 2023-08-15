@@ -15,23 +15,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.hadisatrio.libs.kotlin.geography.fake
+package com.hadisatrio.apps.android.journal3.geography
 
-import com.benasher44.uuid.Uuid
-import com.benasher44.uuid.uuid4
-import com.hadisatrio.libs.kotlin.geography.Coordinates
-import com.hadisatrio.libs.kotlin.geography.LiteralCoordinates
+import com.hadisatrio.libs.android.foundation.widget.RecyclerViewPresenter
 import com.hadisatrio.libs.kotlin.geography.Place
-import kotlin.random.Random
 
-@Suppress("MagicNumber")
-class FakePlace(
-    override val id: Uuid =
-        uuid4(),
-    override val name: String =
-        "Fake Building ${Random.nextInt(100, 999)}",
-    override val address: String =
-        "${Random.nextInt(1, 999)} Fake Street, Phonytown, FK ${Random.nextInt(10000, 99999)}",
-    override val coordinates: Coordinates =
-        LiteralCoordinates("${Random.nextDouble(-90.0, 90.0)},${Random.nextDouble(-180.0, 180.0)}")
-) : Place
+object PlaceItemDiffer : RecyclerViewPresenter.ItemDiffer<Place> {
+
+    override fun areItemsTheSame(oldItem: Place, newItem: Place): Boolean {
+        return oldItem.id == newItem.id
+    }
+
+    override fun areContentsTheSame(oldItem: Place, newItem: Place): Boolean {
+        return oldItem.name == newItem.name &&
+            oldItem.address == newItem.address &&
+            oldItem.coordinates == newItem.coordinates
+    }
+}
