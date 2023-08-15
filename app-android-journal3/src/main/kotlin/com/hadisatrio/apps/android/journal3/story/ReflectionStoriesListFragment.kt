@@ -94,7 +94,8 @@ class ReflectionStoriesListFragment : StoriesListFragment() {
                         origin = RecyclerViewPresenter(
                             recyclerView = storiesListView,
                             viewFactory = itemViewFactory,
-                            viewRenderer = itemViewRenderer
+                            viewRenderer = itemViewRenderer,
+                            differ = StoryItemDiffer
                         )
                     )
                 )
