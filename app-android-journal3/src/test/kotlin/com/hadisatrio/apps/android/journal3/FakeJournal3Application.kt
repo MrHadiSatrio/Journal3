@@ -55,6 +55,6 @@ class FakeJournal3Application : Journal3Application() {
     override val inactivityAlertThreshold: Duration by lazy { 3.hours }
     override val sentimentAnalyst: SentimentAnalyst by lazy { DumbSentimentAnalyst }
     override val clock: Clock by lazy { Clock.System }
-    override val backgroundExecutor: Executor by lazy { Executors.newFixedThreadPool(1) }
+    override val backgroundExecutor: Executor by lazy { Executors.newFixedThreadPool(2) }
     override val foregroundExecutor: Executor by lazy { ContextCompat.getMainExecutor(this) }
 }
