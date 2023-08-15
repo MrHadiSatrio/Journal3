@@ -27,6 +27,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.LayoutParams.MATCH_PARENT
 import androidx.recyclerview.widget.RecyclerView.LayoutParams.WRAP_CONTENT
 import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
+import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.math.roundToInt
 
 class RecyclerViewPresenter<T : Any>(
@@ -38,6 +39,7 @@ class RecyclerViewPresenter<T : Any>(
 ) : Presenter<Iterable<T>> {
 
     private val adapter: Adapter<T> by lazy { Adapter(viewFactory, viewRenderer, differ) }
+    private val isSetupRequired: AtomicBoolean = AtomicBoolean(true)
 
     constructor(recyclerView: RecyclerView) : this(
         recyclerView,
@@ -80,7 +82,7 @@ class RecyclerViewPresenter<T : Any>(
     ) : this(recyclerView, layoutManager, viewFactory, viewRenderer, NaiveItemDiffer())
 
     override fun present(thing: Iterable<T>) {
-        setupRecyclerView()
+        if (isSetupRequired.getAndSet(false)) setupRecyclerView()
         adapter.submitList(thing.toList())
     }
 
