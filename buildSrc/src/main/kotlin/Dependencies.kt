@@ -25,7 +25,7 @@ object Dependencies {
     }
 
     object AndroidFramework {
-        const val GLIDE = "com.github.bumptech.glide:glide:4.15.1"
+        const val GLIDE = "com.github.bumptech.glide:glide:4.16.0"
         const val TFLITE = "org.tensorflow:tensorflow-lite-task-text:0.4.4"
     }
 
