@@ -35,6 +35,7 @@ android {
             signingConfig = signingConfigs.getByName("debug")
             applicationIdSuffix = "canary"
             buildConfigField("String", "KEY_HERE_API", "\"${System.getenv("DEBUG_KEY_HERE_API")}\"")
+            buildConfigField("String", "KEY_OAI_API", "\"${System.getenv("DEBUG_KEY_OAI_API")}\"")
         }
         release {
             isDebuggable = false
@@ -43,6 +44,7 @@ android {
             signingConfig = signingConfigs.getByName("release")
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
             buildConfigField("String", "KEY_HERE_API", "\"${System.getenv("RELEASE_KEY_HERE_API")}\"")
+            buildConfigField("String", "KEY_OAI_API", "\"${System.getenv("RELEASE_KEY_OAI_API")}\"")
         }
     }
 

@@ -28,7 +28,6 @@ import com.hadisatrio.apps.kotlin.journal3.story.SelfPopulatingStories
 import com.hadisatrio.apps.kotlin.journal3.story.fake.FakeStories
 import com.hadisatrio.apps.kotlin.journal3.token.TokenableString
 import com.hadisatrio.libs.kotlin.foundation.event.CancellationEvent
-import com.hadisatrio.libs.kotlin.foundation.event.CompletionEvent
 import com.hadisatrio.libs.kotlin.foundation.event.RecordedEventSource
 import com.hadisatrio.libs.kotlin.foundation.event.SelectionEvent
 import com.hadisatrio.libs.kotlin.foundation.event.TextInputEvent
@@ -39,11 +38,14 @@ import com.hadisatrio.libs.kotlin.foundation.modal.ModalDismissalEvent
 import com.hadisatrio.libs.kotlin.foundation.presentation.fake.FakePresenter
 import com.hadisatrio.libs.kotlin.geography.SelfPopulatingPlaces
 import com.hadisatrio.libs.kotlin.geography.fake.FakePlaces
+import com.hadisatrio.libs.kotlin.paraphrase.DumbParaphraser
 import io.kotest.matchers.booleans.shouldBeFalse
 import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
+import io.mockk.spyk
+import io.mockk.verify
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import kotlin.test.Test
@@ -75,10 +77,11 @@ class EditAMomentUseCaseTest {
                 SelectionEvent("sentiment", Sentiment(0.75F).toString()),
                 SelectionEvent("place", place.id.toString()),
                 SelectionEvent("attachments", "content://foo,content://bar"),
-                CompletionEvent()
+                SelectionEvent("action", "commit")
             ),
             eventSink = eventSink,
             analyst = DumbSentimentAnalyst,
+            paraphraser = DumbParaphraser,
             clock = Clock.System
         )()
 
@@ -106,10 +109,11 @@ class EditAMomentUseCaseTest {
                 TextInputEvent("description", "Foo"),
                 SelectionEvent("timestamp", LiteralTimestamp(Instant.DISTANT_FUTURE).toString()),
                 SelectionEvent("sentiment", Sentiment(0.75F).toString()),
-                CompletionEvent()
+                SelectionEvent("action", "commit")
             ),
             eventSink = eventSink,
             analyst = DumbSentimentAnalyst,
+            paraphraser = DumbParaphraser,
             clock = Clock.System
         )()
 
@@ -138,10 +142,11 @@ class EditAMomentUseCaseTest {
                 CancellationEvent("user"),
                 ModalDismissalEvent("edit_cancellation_confirmation"),
                 TextInputEvent("description", "Fizz"),
-                CompletionEvent()
+                SelectionEvent("action", "commit")
             ),
             eventSink = eventSink,
             analyst = DumbSentimentAnalyst,
+            paraphraser = DumbParaphraser,
             clock = Clock.System
         )()
 
@@ -171,6 +176,7 @@ class EditAMomentUseCaseTest {
             ),
             eventSink = eventSink,
             analyst = DumbSentimentAnalyst,
+            paraphraser = DumbParaphraser,
             clock = Clock.System
         )()
 
@@ -196,6 +202,7 @@ class EditAMomentUseCaseTest {
             ),
             eventSink = eventSink,
             analyst = DumbSentimentAnalyst,
+            paraphraser = DumbParaphraser,
             clock = Clock.System
         )()
 
@@ -225,6 +232,7 @@ class EditAMomentUseCaseTest {
             ),
             eventSink = eventSink,
             analyst = DumbSentimentAnalyst,
+            paraphraser = DumbParaphraser,
             clock = Clock.System
         )()
 
@@ -249,10 +257,11 @@ class EditAMomentUseCaseTest {
                 RefreshRequestEvent("test"),
                 RefreshRequestEvent("test"),
                 RefreshRequestEvent("test"),
-                CompletionEvent()
+                SelectionEvent("action", "commit")
             ),
             eventSink = eventSink,
             analyst = DumbSentimentAnalyst,
+            paraphraser = DumbParaphraser,
             clock = Clock.System
         )()
 
@@ -275,10 +284,11 @@ class EditAMomentUseCaseTest {
             modalPresenter = modalPresenter,
             eventSource = RecordedEventSource(
                 SelectionEvent("action", "delete"),
-                CompletionEvent()
+                SelectionEvent("action", "commit")
             ),
             eventSink = eventSink,
             analyst = DumbSentimentAnalyst,
+            paraphraser = DumbParaphraser,
             clock = Clock.System
         )()
 
@@ -288,6 +298,37 @@ class EditAMomentUseCaseTest {
                 event["selected_id"] == "delete_moment" &&
                 event["moment_id"] == moment.id.toString()
         }.shouldBeTrue()
+    }
+
+    @Test
+    fun `Consults the paraphraser upon request`() {
+        val stories = SelfPopulatingStories(noOfStories = 1, noOfMoments = 1, origin = FakeStories())
+        val story = stories.first()
+        val moment = story.moments.first()
+        val targetId = FakeTargetId(moment.id)
+        val paraphraser = spyk(DumbParaphraser)
+
+        EditAMomentUseCase(
+            targetId = targetId,
+            storyId = FakeTargetId(story.id),
+            stories = stories,
+            places = FakePlaces(),
+            presenter = presenter,
+            modalPresenter = modalPresenter,
+            eventSource = RecordedEventSource(
+                TextInputEvent("description", "Fizz"),
+                SelectionEvent("action", "enable_paraphrasing"),
+                SelectionEvent("action", "disable_paraphrasing"),
+                SelectionEvent("action", "enable_paraphrasing"),
+                SelectionEvent("action", "commit")
+            ),
+            eventSink = eventSink,
+            analyst = DumbSentimentAnalyst,
+            paraphraser = paraphraser,
+            clock = Clock.System
+        )()
+
+        verify { paraphraser.paraphrase("Fizz") }
     }
 
     @Test(timeout = 5_000)
@@ -306,6 +347,7 @@ class EditAMomentUseCaseTest {
                 eventSource = RecordedEventSource(event),
                 eventSink = eventSink,
                 analyst = DumbSentimentAnalyst,
+                paraphraser = DumbParaphraser,
                 clock = Clock.System
             )()
         }
@@ -331,10 +373,11 @@ class EditAMomentUseCaseTest {
                 ModalApprovalEvent("lorem"),
                 CancellationEvent("system"),
                 UnsupportedEvent(),
-                CompletionEvent()
+                SelectionEvent("action", "commit")
             ),
             eventSink = eventSink,
             analyst = DumbSentimentAnalyst,
+            paraphraser = DumbParaphraser,
             clock = Clock.System
         )()
     }
