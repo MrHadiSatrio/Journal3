@@ -42,6 +42,7 @@ import com.hadisatrio.libs.kotlin.foundation.modal.Modal
 import com.hadisatrio.libs.kotlin.foundation.modal.ModalApprovalEvent
 import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
 import com.hadisatrio.libs.kotlin.geography.Places
+import com.hadisatrio.libs.kotlin.paraphrase.Paraphraser
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.onEach
@@ -63,34 +64,35 @@ class EditAMomentUseCase(
     private val eventSource: EventSource,
     private val eventSink: EventSink,
     private val analyst: SentimentAnalyst,
+    private val paraphraser: Paraphraser,
     private val clock: Clock
 ) : UseCase {
 
-    private val completionEvents by lazy { MutableSharedFlow<CompletionEvent>(extraBufferCapacity = 1) }
-    private lateinit var currentTarget: MomentInEdit
-    private var isTargetNew: Boolean = false
-    private var isEditCancelled: Boolean = false
-
-    override operator fun invoke() = runBlocking {
-        identifyTarget()
-        present()
-        observeEvents()
+    private val completionEvents by lazy {
+        MutableSharedFlow<CompletionEvent>(extraBufferCapacity = 1)
     }
-
-    private fun identifyTarget() {
-        currentTarget = SentimentAnalyzingMoment(
+    private val currentTarget: MomentInEdit by lazy {
+        SentimentAnalyzingMoment(
             analyst = analyst,
             origin = UpdateDeferringMoment(
-                if (targetId.isValid()) {
-                    stories.findMoment(targetId.asUuid()).first() as EditableMoment
-                } else {
+                if (isTargetNew) {
                     val story = stories.findStory(storyId.asUuid()).first() as EditableStory
                     val clockRespecting = ClockRespectingStory(clock, story)
-                    isTargetNew = true
                     clockRespecting.new()
+                } else {
+                    stories.findMoment(targetId.asUuid()).first() as EditableMoment
                 }
             )
         )
+    }
+
+    private val isTargetNew: Boolean = targetId.isValid().not()
+    private var isEditCancelled: Boolean = false
+    private var isParaphrasingEnabled: Boolean = false
+
+    override operator fun invoke() = runBlocking {
+        present()
+        observeEvents()
     }
 
     private suspend fun present() {
@@ -102,7 +104,7 @@ class EditAMomentUseCase(
         }
     }
 
-    private fun observeEvents() = runBlocking {
+    private suspend fun observeEvents() {
         merge(eventSource.events(), completionEvents)
             .onEach { eventSink.sink(it) }
             .takeWhile { event -> (event as? CompletionEvent)?.also { handleCompletion() } == null }
@@ -125,7 +127,7 @@ class EditAMomentUseCase(
         presenter.present(currentTarget)
     }
 
-    private fun handleSelection(event: SelectionEvent) {
+    private suspend fun handleSelection(event: SelectionEvent) {
         val kind = event.selectionKind
         val identifier = event.selectedIdentifier
         when (kind) {
@@ -137,8 +139,25 @@ class EditAMomentUseCase(
         }
     }
 
-    private fun handleActionSelection(event: SelectionEvent) {
-        if (event.selectedIdentifier != "delete") return
+    private suspend fun handleActionSelection(event: SelectionEvent) {
+        when (event.selectedIdentifier) {
+            "commit" -> handleCommitActionSelection()
+            "delete" -> handleDeleteActionSelection()
+            "enable_paraphrasing" -> isParaphrasingEnabled = true
+            "disable_paraphrasing" -> isParaphrasingEnabled = false
+        }
+    }
+
+    private suspend fun handleCommitActionSelection() {
+        if (isParaphrasingEnabled) {
+            DescriptionParaphrasingMoment(paraphraser, currentTarget).commit()
+        } else {
+            currentTarget.commit()
+        }
+        completionEvents.emit(CompletionEvent())
+    }
+
+    private fun handleDeleteActionSelection() {
         eventSink.sink(
             SelectionEvent(
                 selectionKind = "action",
@@ -157,14 +176,6 @@ class EditAMomentUseCase(
         }
     }
 
-    private fun handleCompletion() {
-        if (isEditCancelled) {
-            if (isTargetNew) currentTarget.forget()
-        } else {
-            currentTarget.commit()
-        }
-    }
-
     private suspend fun handleCancellation(event: CancellationEvent) {
         if (event.reason != "user") {
             completionEvents.emit(CompletionEvent())
@@ -178,5 +189,9 @@ class EditAMomentUseCase(
             isEditCancelled = true
             completionEvents.emit(CompletionEvent())
         }
+    }
+
+    private fun handleCompletion() {
+        if (isEditCancelled && isTargetNew) currentTarget.forget()
     }
 }

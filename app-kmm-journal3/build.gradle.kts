@@ -18,6 +18,7 @@ kotlin {
                 api(project(":lib-kmm-io"))
                 api(project(":lib-kmm-json"))
                 api(project(":lib-kmm-geography"))
+                api(project(":lib-kmm-paraphrase"))
                 api(Dependencies.Commons.DATETIME)
             }
         }

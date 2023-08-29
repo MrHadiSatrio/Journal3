@@ -30,6 +30,7 @@ import com.hadisatrio.libs.kotlin.foundation.event.EventSource
 import com.hadisatrio.libs.kotlin.foundation.modal.Modal
 import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
 import com.hadisatrio.libs.kotlin.geography.Places
+import com.hadisatrio.libs.kotlin.paraphrase.Paraphraser
 import kotlinx.datetime.Clock
 import java.util.concurrent.Executor
 import kotlin.time.Duration
@@ -45,6 +46,7 @@ abstract class Journal3Application : Application() {
     abstract val timestampDecor: Timestamp.Decor
     abstract val inactivityAlertThreshold: Duration
     abstract val sentimentAnalyst: SentimentAnalyst
+    abstract val paraphraser: Paraphraser
     abstract val clock: Clock
     abstract val backgroundExecutor: Executor
     abstract val foregroundExecutor: Executor

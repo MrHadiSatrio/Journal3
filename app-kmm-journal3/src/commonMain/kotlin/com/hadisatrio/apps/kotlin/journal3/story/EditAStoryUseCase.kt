@@ -48,26 +48,25 @@ class EditAStoryUseCase(
     private val eventSink: EventSink
 ) : UseCase {
 
-    private val completionEvents by lazy { MutableSharedFlow<CompletionEvent>(extraBufferCapacity = 1) }
-    private lateinit var currentTarget: UpdateDeferringStory
-    private var isTargetNew: Boolean = false
+    private val completionEvents by lazy {
+        MutableSharedFlow<CompletionEvent>(extraBufferCapacity = 1)
+    }
+    private val currentTarget by lazy {
+        UpdateDeferringStory(
+            if (isTargetNew) {
+                stories.new()
+            } else {
+                stories.findStory(targetId.asUuid()).first() as EditableStory
+            }
+        )
+    }
+
+    private val isTargetNew: Boolean = targetId.isValid().not()
     private var isEditCancelled: Boolean = false
 
     override operator fun invoke() = runBlocking {
-        identifyTarget()
         present()
         observeEvents()
-    }
-
-    private fun identifyTarget() {
-        currentTarget = UpdateDeferringStory(
-            if (targetId.isValid()) {
-                stories.findStory(targetId.asUuid()).first() as EditableStory
-            } else {
-                isTargetNew = true
-                stories.new()
-            }
-        )
     }
 
     private suspend fun present() {
