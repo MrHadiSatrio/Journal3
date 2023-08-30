@@ -14,21 +14,16 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                api(project(":lib-kmm-foundation"))
-                api(project(":lib-kmm-io"))
                 api(project(":lib-kmm-json"))
-                api(project(":lib-kmm-geography"))
-                api(project(":lib-kmm-paraphrase"))
-                api(Dependencies.Commons.DATETIME)
+                api(Dependencies.Network.KTOR)
             }
         }
         val commonTest by getting {
             dependencies {
                 implementation(kotlin("test"))
-                implementation(Dependencies.TestUtility.COROUTINES_TEST)
                 implementation(Dependencies.TestUtility.KOTEST_ASSERTIONS)
-                implementation(Dependencies.TestDouble.OKIO_FAKE_FS)
                 implementation(Dependencies.TestDouble.MOCKK)
+                implementation(Dependencies.TestDouble.KTOR_MOCK_ENGINE)
             }
         }
         val androidMain by getting
@@ -42,6 +37,11 @@ android {
     defaultConfig {
         minSdk = Dependencies.AndroidSdk.MINIMUM
         targetSdk = Dependencies.AndroidSdk.TARGET
+    }
+    testOptions {
+        unitTests {
+            isIncludeAndroidResources = true
+        }
     }
 }
 

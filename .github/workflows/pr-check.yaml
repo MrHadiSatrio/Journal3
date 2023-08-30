@@ -36,6 +36,8 @@ jobs:
           RELEASE_KEY_PASSWORD: ${{ secrets.RELEASE_KEY_PASSWORD }}
           RELEASE_KEY_HERE_API: ${{ secrets.RELEASE_KEY_HERE_API }}
           DEBUG_KEY_HERE_API: ${{ secrets.DEBUG_KEY_HERE_API }}
+          RELEASE_KEY_OAI_API: ${{ secrets.RELEASE_KEY_OAI_API }}
+          DEBUG_KEY_OAI_API: ${{ secrets.DEBUG_KEY_OAI_API }}
         run: ./gradlew clean build sonarqube
 
       - name: Archive build reports

@@ -35,6 +35,8 @@ import com.hadisatrio.libs.kotlin.foundation.presentation.fake.FakePresenter
 import com.hadisatrio.libs.kotlin.geography.Places
 import com.hadisatrio.libs.kotlin.geography.SelfPopulatingPlaces
 import com.hadisatrio.libs.kotlin.geography.fake.FakePlaces
+import com.hadisatrio.libs.kotlin.paraphrase.DumbParaphraser
+import com.hadisatrio.libs.kotlin.paraphrase.Paraphraser
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.datetime.Clock
 import java.util.concurrent.Executor
@@ -53,6 +55,7 @@ class FakeJournal3Application : Journal3Application() {
     override val globalEventSource: EventSource by lazy { EventHub(MutableSharedFlow(extraBufferCapacity = 1)) }
     override val timestampDecor: Timestamp.Decor by lazy { Timestamp.Decor { it } }
     override val inactivityAlertThreshold: Duration by lazy { 3.hours }
+    override val paraphraser: Paraphraser by lazy { DumbParaphraser }
     override val sentimentAnalyst: SentimentAnalyst by lazy { DumbSentimentAnalyst }
     override val clock: Clock by lazy { Clock.System }
     override val backgroundExecutor: Executor by lazy { Executors.newFixedThreadPool(2) }

@@ -42,13 +42,13 @@ import com.hadisatrio.libs.android.foundation.widget.EditTextInputEventSource
 import com.hadisatrio.libs.android.foundation.widget.PhotoCaptureEventSource
 import com.hadisatrio.libs.android.foundation.widget.PhotoSelectionEventSource
 import com.hadisatrio.libs.android.foundation.widget.RecyclerViewPresenter
+import com.hadisatrio.libs.android.foundation.widget.SwitchSelectionEventSource
 import com.hadisatrio.libs.android.foundation.widget.TextViewStringPresenter
 import com.hadisatrio.libs.android.foundation.widget.ViewClickEventSource
 import com.hadisatrio.libs.android.io.uri.toAndroidUri
 import com.hadisatrio.libs.kotlin.foundation.ExecutorDispatchingUseCase
 import com.hadisatrio.libs.kotlin.foundation.UseCase
 import com.hadisatrio.libs.kotlin.foundation.event.CancellationEvent
-import com.hadisatrio.libs.kotlin.foundation.event.CompletionEvent
 import com.hadisatrio.libs.kotlin.foundation.event.EventSink
 import com.hadisatrio.libs.kotlin.foundation.event.EventSinks
 import com.hadisatrio.libs.kotlin.foundation.event.EventSource
@@ -133,7 +133,7 @@ class EditAMomentActivity : AppCompatActivity() {
                 ),
                 ViewClickEventSource(
                     view = findViewById(R.id.commit_button),
-                    eventFactory = { CompletionEvent() }
+                    eventFactory = { SelectionEvent("action", "commit") }
                 ),
                 PlaceSelectionEventSource(
                     triggerView = findViewById(R.id.place_selector_button),
@@ -149,6 +149,11 @@ class EditAMomentActivity : AppCompatActivity() {
                 SliderSelectionEventSource(
                     slider = findViewById(R.id.sentiment_slider),
                     selectionKind = "sentiment"
+                ),
+                SwitchSelectionEventSource(
+                    switch = findViewById(R.id.paraphrase_switch),
+                    offEventFactory = { SelectionEvent("action", "disable_paraphrasing") },
+                    onEventFactory = { SelectionEvent("action", "enable_paraphrasing") }
                 ),
                 PhotoCaptureEventSource(
                     triggerView = findViewById(R.id.photo_capturer_button),
@@ -183,6 +188,7 @@ class EditAMomentActivity : AppCompatActivity() {
                 eventSource = eventSource,
                 eventSink = eventSink,
                 analyst = journal3Application.sentimentAnalyst,
+                paraphraser = journal3Application.paraphraser,
                 clock = journal3Application.clock
             )
         )

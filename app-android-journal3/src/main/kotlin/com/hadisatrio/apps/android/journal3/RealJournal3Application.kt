@@ -61,6 +61,8 @@ import com.hadisatrio.libs.kotlin.geography.Places
 import com.hadisatrio.libs.kotlin.geography.here.HereNearbyPlaces
 import com.hadisatrio.libs.kotlin.io.SchemeWiseSources
 import com.hadisatrio.libs.kotlin.io.filesystem.FileSystemSources
+import com.hadisatrio.libs.kotlin.paraphrase.OpenAiParaphraser
+import com.hadisatrio.libs.kotlin.paraphrase.Paraphraser
 import io.ktor.client.HttpClient
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.datetime.Clock
@@ -74,6 +76,8 @@ import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.hours
 
 class RealJournal3Application : Journal3Application() {
+
+    private val httpClient = HttpClient()
 
     override val places: Places by lazy {
         HereNearbyPlaces(
@@ -214,6 +218,17 @@ class RealJournal3Application : Journal3Application() {
             }
             TfliteSentimentAnalyst(modelFile)
         }
+    }
+
+    override val paraphraser: Paraphraser by lazy {
+        OpenAiParaphraser(
+            prompt = "You will be provided with diary entry drafts, " +
+                "and your task is to refine their quality without changing too much " +
+                "of the author's tonality and writing style. Don't use overly complex words unless " +
+                "you saw the author use them.",
+            apiKey = BuildConfig.KEY_OAI_API,
+            httpClient = httpClient,
+        )
     }
 
     override val clock: Clock by lazy {
