@@ -33,9 +33,9 @@
             android:id="@+id/description_text_layout"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_marginBottom="@dimen/margin"
+            android:layout_marginBottom="@dimen/gutter"
             android:hint="Description"
-            app:layout_constraintBottom_toTopOf="@id/photo_grid"
+            app:layout_constraintBottom_toTopOf="@id/paraphrase_switch"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -47,6 +47,17 @@
                 android:gravity="top" />
 
         </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.materialswitch.MaterialSwitch
+            android:id="@+id/paraphrase_switch"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin"
+            android:text="Paraphrase"
+            app:layout_constraintBottom_toTopOf="@id/photo_grid"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:thumbIcon="@drawable/ic16_paraphrase" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/photo_grid"
