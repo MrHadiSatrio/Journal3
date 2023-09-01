@@ -34,6 +34,7 @@ class FakeStory(
 ) : EditableStory {
 
     private var isForgotten: Boolean = false
+    private var isNewlyCreated: Boolean = true
     private val rawMoments: MutableList<Moment> = mutableListOf()
 
     override var title: String = ""
@@ -45,15 +46,22 @@ class FakeStory(
 
     override fun update(title: String) {
         require(!isForgotten) { "This story has already been forgotten." }
+        isNewlyCreated = false
         this.title = title
     }
 
     override fun update(synopsis: TokenableString) {
         require(!isForgotten) { "This story has already been forgotten." }
+        isNewlyCreated = false
         this.synopsis = synopsis
     }
 
+    override fun isNewlyCreated(): Boolean {
+        return isNewlyCreated
+    }
+
     override fun new(): EditableMoment {
+        isNewlyCreated = false
         val moment = FakeMoment(uuid4(), rawMoments)
         rawMoments.add(moment)
         return moment

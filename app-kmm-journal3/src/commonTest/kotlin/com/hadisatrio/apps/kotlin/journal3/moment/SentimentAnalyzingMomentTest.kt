@@ -46,6 +46,12 @@ class SentimentAnalyzingMomentTest {
     fun `Trains the analyst when the user overrides the sentiment`() {
         moment.update(Sentiment(0.5F))
         moment.commit()
-        verify(exactly = 1) { analyst.train(mapOf(moment.description.toString() to moment.sentiment),) }
+        verify(exactly = 1) { analyst.train(mapOf(moment.description.toString() to moment.sentiment)) }
+    }
+
+    @Test
+    fun `Refrains from training the analyst when user does not override the sentiment`() {
+        moment.commit()
+        verify(inverse = true) { analyst.train(any()) }
     }
 }

@@ -71,6 +71,10 @@ class FilesystemStory(
         memorables = memorables
     )
 
+    override fun isNewlyCreated(): Boolean {
+        return detailsFile.exists().not()
+    }
+
     override fun update(title: String) {
         fileSystem.createDirectories(dir = directory, mustCreate = false)
         detailsFile.put("title", JsonPrimitive(title))

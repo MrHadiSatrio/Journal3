@@ -52,6 +52,10 @@ class JsonFile(
         return (get(key) as? JsonPrimitive)?.content
     }
 
+    fun exists(): Boolean {
+        return fileSystem.exists(path)
+    }
+
     fun delete() {
         fileSystem.delete(path = path, mustExist = false)
     }

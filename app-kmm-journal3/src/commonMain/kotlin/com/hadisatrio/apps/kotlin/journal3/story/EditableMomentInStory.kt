@@ -48,6 +48,7 @@ class EditableMomentInStory(
     override val place: Place get() = origin.place
     override val attachments: Iterable<Uri> get() = origin.attachments
 
+    override fun isNewlyCreated(): Boolean = origin.isNewlyCreated()
     override fun update(timestamp: Timestamp) = origin.update(timestamp)
     override fun update(description: TokenableString) = origin.update(description)
     override fun update(sentiment: Sentiment) = origin.update(sentiment)

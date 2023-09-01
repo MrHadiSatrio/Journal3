@@ -24,6 +24,7 @@ import com.hadisatrio.apps.kotlin.journal3.token.TokenableString
 import com.hadisatrio.libs.kotlin.geography.Place
 
 interface EditableMoment : Moment {
+    fun isNewlyCreated(): Boolean
     fun update(timestamp: Timestamp)
     fun update(description: TokenableString)
     fun update(sentiment: Sentiment)

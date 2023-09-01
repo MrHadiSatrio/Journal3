@@ -17,30 +17,25 @@
 
 package com.hadisatrio.apps.kotlin.journal3.datetime
 
-import java.text.DateFormat
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
-import java.util.TimeZone
+import io.kotest.matchers.equals.shouldBeEqual
+import io.kotest.matchers.equals.shouldNotBeEqual
+import kotlin.test.Test
 
-class FormattedTimestamp(
-    private val formatter: DateFormat,
-    private val origin: Timestamp
-) : Timestamp by origin {
+class LiteralTimestampTest {
 
-    constructor(
-        locale: Locale,
-        timeZone: TimeZone,
-        format: String,
-        origin: Timestamp
-    ) : this(SimpleDateFormat(format, locale).apply { this.timeZone = timeZone }, origin)
+    @Test
+    fun `Treats two identical timestamps as equal`() {
+        val one = LiteralTimestamp(0)
+        val another = LiteralTimestamp("1970-01-01T00:00:00Z")
+        one.shouldBeEqual(another)
+        one.hashCode().shouldBeEqual(another.hashCode())
+    }
 
-    constructor(
-        format: String,
-        origin: Timestamp
-    ) : this(Locale.getDefault(), TimeZone.getDefault(), format, origin)
-
-    override fun toString(): String {
-        return formatter.format(Date(value.toEpochMilliseconds()))
+    @Test
+    fun `Treats two differing timestamps as non equal`() {
+        val one = LiteralTimestamp(10)
+        val another = LiteralTimestamp("1970-01-01T00:00:00Z")
+        one.shouldNotBeEqual(another)
+        one.hashCode().shouldNotBeEqual(another.hashCode())
     }
 }

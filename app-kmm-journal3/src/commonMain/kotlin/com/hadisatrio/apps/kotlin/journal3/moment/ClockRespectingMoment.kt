@@ -15,15 +15,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.hadisatrio.apps.kotlin.journal3.story
+package com.hadisatrio.apps.kotlin.journal3.moment
 
-import com.hadisatrio.apps.kotlin.journal3.forgettable.Forgettable
-import com.hadisatrio.apps.kotlin.journal3.moment.EditableMoment
-import com.hadisatrio.apps.kotlin.journal3.token.TokenableString
+import com.hadisatrio.apps.kotlin.journal3.datetime.LiteralTimestamp
+import com.hadisatrio.apps.kotlin.journal3.datetime.Timestamp
+import kotlinx.datetime.Clock
 
-interface EditableStory : Story, Forgettable {
-    fun isNewlyCreated(): Boolean
-    fun update(title: String)
-    fun update(synopsis: TokenableString)
-    fun new(): EditableMoment
+class ClockRespectingMoment(
+    private val clock: Clock,
+    private val origin: MomentInEdit
+) : MomentInEdit by origin {
+
+    override val timestamp: Timestamp get() {
+        return if (origin.isNewlyCreated() && !updatesMade()) {
+            LiteralTimestamp(clock.now()).also { update(it) }
+        } else {
+            origin.timestamp
+        }
+    }
 }

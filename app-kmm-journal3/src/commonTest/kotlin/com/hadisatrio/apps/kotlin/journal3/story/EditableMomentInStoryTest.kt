@@ -48,6 +48,7 @@ class EditableMomentInStoryTest {
         editableMoment.sentiment.shouldBe(moment.sentiment)
         editableMoment.place.shouldBe(moment.place)
         editableMoment.attachments.shouldBe(moment.attachments)
+        editableMoment.isNewlyCreated().shouldBe(moment.isNewlyCreated())
         val newTimestamp = LiteralTimestamp(61092L)
         editableMoment.update(newTimestamp)
         moment.timestamp.shouldBe(newTimestamp)

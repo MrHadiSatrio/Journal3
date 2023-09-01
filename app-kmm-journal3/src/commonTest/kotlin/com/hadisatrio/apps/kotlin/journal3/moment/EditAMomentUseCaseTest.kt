@@ -20,10 +20,8 @@ package com.hadisatrio.apps.kotlin.journal3.moment
 import com.hadisatrio.apps.kotlin.journal3.datetime.LiteralTimestamp
 import com.hadisatrio.apps.kotlin.journal3.event.RefreshRequestEvent
 import com.hadisatrio.apps.kotlin.journal3.event.UnsupportedEvent
-import com.hadisatrio.apps.kotlin.journal3.id.FakeTargetId
-import com.hadisatrio.apps.kotlin.journal3.id.InvalidTargetId
-import com.hadisatrio.apps.kotlin.journal3.sentiment.DumbSentimentAnalyst
 import com.hadisatrio.apps.kotlin.journal3.sentiment.Sentiment
+import com.hadisatrio.apps.kotlin.journal3.story.EditableStory
 import com.hadisatrio.apps.kotlin.journal3.story.SelfPopulatingStories
 import com.hadisatrio.apps.kotlin.journal3.story.fake.FakeStories
 import com.hadisatrio.apps.kotlin.journal3.token.TokenableString
@@ -46,7 +44,6 @@ import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
 import io.mockk.spyk
 import io.mockk.verify
-import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import kotlin.test.Test
 
@@ -59,14 +56,13 @@ class EditAMomentUseCaseTest {
     private val eventSink = FakeEventSink()
 
     @Test
-    fun `Updates the target moment when target ID is valid`() {
+    fun `Updates the target moment-in-edit`() {
         val stories = SelfPopulatingStories(noOfStories = 1, noOfMoments = 1, origin = FakeStories())
         val story = stories.first()
         val moment = story.moments.first()
 
         EditAMomentUseCase(
-            targetId = FakeTargetId(moment.id),
-            storyId = FakeTargetId(story.id),
+            moment = UpdateDeferringMoment(moment as EditableMoment),
             stories = stories,
             places = places,
             presenter = presenter,
@@ -80,9 +76,7 @@ class EditAMomentUseCaseTest {
                 SelectionEvent("action", "commit")
             ),
             eventSink = eventSink,
-            analyst = DumbSentimentAnalyst,
-            paraphraser = DumbParaphraser,
-            clock = Clock.System
+            paraphraser = DumbParaphraser
         )()
 
         story.moments.shouldHaveSize(1)
@@ -94,43 +88,13 @@ class EditAMomentUseCaseTest {
     }
 
     @Test
-    fun `Updates a new moment when target ID is invalid`() {
-        val stories = SelfPopulatingStories(noOfStories = 1, noOfMoments = 0, origin = FakeStories())
-        val story = stories.first()
-
-        EditAMomentUseCase(
-            targetId = InvalidTargetId,
-            storyId = FakeTargetId(story.id),
-            stories = stories,
-            places = places,
-            presenter = presenter,
-            modalPresenter = modalPresenter,
-            eventSource = RecordedEventSource(
-                TextInputEvent("description", "Foo"),
-                SelectionEvent("timestamp", LiteralTimestamp(Instant.DISTANT_FUTURE).toString()),
-                SelectionEvent("sentiment", Sentiment(0.75F).toString()),
-                SelectionEvent("action", "commit")
-            ),
-            eventSink = eventSink,
-            analyst = DumbSentimentAnalyst,
-            paraphraser = DumbParaphraser,
-            clock = Clock.System
-        )()
-
-        story.moments.shouldHaveSize(1)
-        story.moments.first().description.toString().shouldBe("Foo")
-        story.moments.first().timestamp.shouldBe(LiteralTimestamp(Instant.DISTANT_FUTURE))
-        story.moments.first().sentiment.shouldBe(Sentiment(0.75F))
-    }
-
-    @Test
     fun `Prevents accidental cancellation by the user when a meaningful edit has been made`() {
-        val stories = SelfPopulatingStories(noOfStories = 1, noOfMoments = 0, origin = FakeStories())
+        val stories = SelfPopulatingStories(noOfStories = 1, noOfMoments = 1, origin = FakeStories())
         val story = stories.first()
+        val moment = story.moments.first()
 
         EditAMomentUseCase(
-            targetId = InvalidTargetId,
-            storyId = FakeTargetId(story.id),
+            moment = UpdateDeferringMoment(moment as EditableMoment),
             stories = stories,
             places = places,
             presenter = presenter,
@@ -145,9 +109,7 @@ class EditAMomentUseCaseTest {
                 SelectionEvent("action", "commit")
             ),
             eventSink = eventSink,
-            analyst = DumbSentimentAnalyst,
-            paraphraser = DumbParaphraser,
-            clock = Clock.System
+            paraphraser = DumbParaphraser
         )()
 
         modalPresenter.hasPresented { it.kind == "edit_cancellation_confirmation" }.shouldBeTrue()
@@ -158,11 +120,11 @@ class EditAMomentUseCaseTest {
     @Test
     fun `Does not prevent accidental cancellation by the user when a meaningful edit has not been made`() {
         val stories = SelfPopulatingStories(noOfStories = 1, noOfMoments = 0, origin = FakeStories())
-        val story = stories.first()
+        val story = stories.first() as EditableStory
+        val moment = story.new()
 
         EditAMomentUseCase(
-            targetId = InvalidTargetId,
-            storyId = FakeTargetId(story.id),
+            moment = UpdateDeferringMoment(moment),
             stories = stories,
             places = FakePlaces(),
             presenter = presenter,
@@ -175,9 +137,7 @@ class EditAMomentUseCaseTest {
                 CancellationEvent("user")
             ),
             eventSink = eventSink,
-            analyst = DumbSentimentAnalyst,
-            paraphraser = DumbParaphraser,
-            clock = Clock.System
+            paraphraser = DumbParaphraser
         )()
 
         modalPresenter.hasPresented { it.kind == "edit_cancellation_confirmation" }.shouldBeFalse()
@@ -187,11 +147,11 @@ class EditAMomentUseCaseTest {
     @Test
     fun `Deletes the moment-in-edit when it is a new one and the user cancels without editing`() {
         val stories = SelfPopulatingStories(noOfStories = 1, noOfMoments = 0, origin = FakeStories())
-        val story = stories.first()
+        val story = stories.first() as EditableStory
+        val moment = story.new()
 
         EditAMomentUseCase(
-            targetId = InvalidTargetId,
-            storyId = FakeTargetId(story.id),
+            moment = UpdateDeferringMoment(moment),
             stories = stories,
             places = FakePlaces(),
             presenter = presenter,
@@ -201,9 +161,7 @@ class EditAMomentUseCaseTest {
                 ModalApprovalEvent("edit_cancellation_confirmation")
             ),
             eventSink = eventSink,
-            analyst = DumbSentimentAnalyst,
-            paraphraser = DumbParaphraser,
-            clock = Clock.System
+            paraphraser = DumbParaphraser
         )()
 
         modalPresenter.hasPresented { it.kind == "edit_cancellation_confirmation" }.shouldBeFalse()
@@ -215,13 +173,10 @@ class EditAMomentUseCaseTest {
         val stories = SelfPopulatingStories(noOfStories = 1, noOfMoments = 1, origin = FakeStories())
         val story = stories.first()
         val moment = story.moments.first() as EditableMoment
-        val targetId = FakeTargetId(moment.id)
 
         moment.update(TokenableString("Fizz"))
-
         EditAMomentUseCase(
-            targetId = targetId,
-            storyId = FakeTargetId(story.id),
+            moment = UpdateDeferringMoment(moment),
             stories = stories,
             places = FakePlaces(),
             presenter = presenter,
@@ -231,9 +186,7 @@ class EditAMomentUseCaseTest {
                 ModalApprovalEvent("edit_cancellation_confirmation")
             ),
             eventSink = eventSink,
-            analyst = DumbSentimentAnalyst,
-            paraphraser = DumbParaphraser,
-            clock = Clock.System
+            paraphraser = DumbParaphraser
         )()
 
         modalPresenter.hasPresented { it.kind == "edit_cancellation_confirmation" }.shouldBeFalse()
@@ -243,12 +196,12 @@ class EditAMomentUseCaseTest {
 
     @Test
     fun `Forwards the moment to the presenter again when refresh is requested`() {
-        val stories = SelfPopulatingStories(noOfStories = 1, noOfMoments = 0, origin = FakeStories())
+        val stories = SelfPopulatingStories(noOfStories = 1, noOfMoments = 1, origin = FakeStories())
         val story = stories.first()
+        val moment = story.moments.first()
 
         EditAMomentUseCase(
-            targetId = InvalidTargetId,
-            storyId = FakeTargetId(story.id),
+            moment = UpdateDeferringMoment(moment as EditableMoment),
             stories = stories,
             places = places,
             presenter = presenter,
@@ -260,9 +213,7 @@ class EditAMomentUseCaseTest {
                 SelectionEvent("action", "commit")
             ),
             eventSink = eventSink,
-            analyst = DumbSentimentAnalyst,
-            paraphraser = DumbParaphraser,
-            clock = Clock.System
+            paraphraser = DumbParaphraser
         )()
 
         presenter.presentedCount().shouldBe(4)
@@ -273,11 +224,9 @@ class EditAMomentUseCaseTest {
         val stories = SelfPopulatingStories(noOfStories = 1, noOfMoments = 1, origin = FakeStories())
         val story = stories.first()
         val moment = story.moments.first()
-        val targetId = FakeTargetId(moment.id)
 
         EditAMomentUseCase(
-            targetId = targetId,
-            storyId = FakeTargetId(story.id),
+            moment = UpdateDeferringMoment(moment as EditableMoment),
             stories = stories,
             places = FakePlaces(),
             presenter = presenter,
@@ -287,9 +236,7 @@ class EditAMomentUseCaseTest {
                 SelectionEvent("action", "commit")
             ),
             eventSink = eventSink,
-            analyst = DumbSentimentAnalyst,
-            paraphraser = DumbParaphraser,
-            clock = Clock.System
+            paraphraser = DumbParaphraser
         )()
 
         eventSink.hasSunk { event ->
@@ -305,12 +252,10 @@ class EditAMomentUseCaseTest {
         val stories = SelfPopulatingStories(noOfStories = 1, noOfMoments = 1, origin = FakeStories())
         val story = stories.first()
         val moment = story.moments.first()
-        val targetId = FakeTargetId(moment.id)
         val paraphraser = spyk(DumbParaphraser)
 
         EditAMomentUseCase(
-            targetId = targetId,
-            storyId = FakeTargetId(story.id),
+            moment = UpdateDeferringMoment(moment as EditableMoment),
             stories = stories,
             places = FakePlaces(),
             presenter = presenter,
@@ -323,9 +268,7 @@ class EditAMomentUseCaseTest {
                 SelectionEvent("action", "commit")
             ),
             eventSink = eventSink,
-            analyst = DumbSentimentAnalyst,
-            paraphraser = paraphraser,
-            clock = Clock.System
+            paraphraser = paraphraser
         )()
 
         verify { paraphraser.paraphrase("Fizz") }
@@ -333,34 +276,32 @@ class EditAMomentUseCaseTest {
 
     @Test(timeout = 5_000)
     fun `Stops upon receiving cancellation events`() {
-        val stories = SelfPopulatingStories(noOfStories = 1, noOfMoments = 0, origin = FakeStories())
+        val stories = SelfPopulatingStories(noOfStories = 1, noOfMoments = 1, origin = FakeStories())
         val story = stories.first()
+        val moment = story.moments.first()
 
         listOf(CancellationEvent("system")).forEach { event ->
             EditAMomentUseCase(
-                targetId = InvalidTargetId,
-                storyId = FakeTargetId(story.id),
+                moment = UpdateDeferringMoment(moment as EditableMoment),
                 stories = stories,
                 places = places,
                 presenter = presenter,
                 modalPresenter = modalPresenter,
                 eventSource = RecordedEventSource(event),
                 eventSink = eventSink,
-                analyst = DumbSentimentAnalyst,
-                paraphraser = DumbParaphraser,
-                clock = Clock.System
+                paraphraser = DumbParaphraser
             )()
         }
     }
 
     @Test
     fun `Ignores unknown events without repercussions`() {
-        val stories = SelfPopulatingStories(noOfStories = 1, noOfMoments = 0, origin = FakeStories())
+        val stories = SelfPopulatingStories(noOfStories = 1, noOfMoments = 1, origin = FakeStories())
         val story = stories.first()
+        val moment = story.moments.first()
 
         EditAMomentUseCase(
-            targetId = InvalidTargetId,
-            storyId = FakeTargetId(story.id),
+            moment = UpdateDeferringMoment(moment as EditableMoment),
             stories = stories,
             places = places,
             presenter = presenter,
@@ -376,9 +317,7 @@ class EditAMomentUseCaseTest {
                 SelectionEvent("action", "commit")
             ),
             eventSink = eventSink,
-            analyst = DumbSentimentAnalyst,
-            paraphraser = DumbParaphraser,
-            clock = Clock.System
+            paraphraser = DumbParaphraser
         )()
     }
 }

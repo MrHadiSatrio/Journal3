@@ -17,14 +17,10 @@
 
 package com.hadisatrio.apps.kotlin.journal3.story
 
-import com.benasher44.uuid.uuid4
 import com.hadisatrio.apps.kotlin.journal3.datetime.LiteralTimestamp
 import com.hadisatrio.apps.kotlin.journal3.event.UnsupportedEvent
-import com.hadisatrio.apps.kotlin.journal3.id.FakeTargetId
-import com.hadisatrio.apps.kotlin.journal3.id.InvalidTargetId
 import com.hadisatrio.apps.kotlin.journal3.sentiment.Sentiment
 import com.hadisatrio.apps.kotlin.journal3.story.fake.FakeStories
-import com.hadisatrio.apps.kotlin.journal3.story.fake.FakeStory
 import com.hadisatrio.apps.kotlin.journal3.token.TokenableString
 import com.hadisatrio.libs.kotlin.foundation.event.CancellationEvent
 import com.hadisatrio.libs.kotlin.foundation.event.CompletionEvent
@@ -45,14 +41,13 @@ import kotlin.test.Test
 
 class EditAStoryUseCaseTest {
 
-    @Test
-    fun `Updates the target story when target ID is valid`() {
-        val targetId = FakeTargetId(uuid4())
-        val story = FakeStory(targetId.asUuid(), mutableListOf())
-        val stories = FakeStories(story)
+    private val stories = FakeStories()
+    private val story = stories.new()
 
+    @Test
+    fun `Updates the target story-in-edit`() {
         EditAStoryUseCase(
-            targetId = targetId,
+            story = UpdateDeferringStory(story as EditableStory),
             stories = stories,
             presenter = mockk(relaxed = true),
             modalPresenter = mockk(relaxed = true),
@@ -69,34 +64,11 @@ class EditAStoryUseCaseTest {
     }
 
     @Test
-    fun `Updates a new story when target ID is invalid`() {
-        val stories = FakeStories()
-
-        EditAStoryUseCase(
-            targetId = InvalidTargetId,
-            stories = stories,
-            presenter = mockk(relaxed = true),
-            modalPresenter = mockk(relaxed = true),
-            eventSource = RecordedEventSource(
-                TextInputEvent("title", "Foo"),
-                TextInputEvent("synopsis", "Bar"),
-                CompletionEvent()
-            ),
-            eventSink = mockk(relaxed = true)
-        )()
-
-        stories.shouldHaveSize(1)
-        stories.first().title.shouldBe("Foo")
-        stories.first().synopsis.shouldBe(TokenableString("Bar"))
-    }
-
-    @Test
     fun `Prevents accidental cancellation by the user when a meaningful edit has been made`() {
-        val stories = FakeStories()
         val modalPresenter = mockk<Presenter<Modal>>(relaxed = true)
 
         EditAStoryUseCase(
-            targetId = InvalidTargetId,
+            story = UpdateDeferringStory(story),
             stories = stories,
             presenter = mockk(relaxed = true),
             modalPresenter = modalPresenter,
@@ -120,11 +92,10 @@ class EditAStoryUseCaseTest {
 
     @Test
     fun `Does not prevent accidental cancellation by the user when a meaningful edit has not been made`() {
-        val stories = FakeStories()
         val modalPresenter = mockk<Presenter<Modal>>(relaxed = true)
 
         EditAStoryUseCase(
-            targetId = InvalidTargetId,
+            story = UpdateDeferringStory(story),
             stories = stories,
             presenter = mockk(relaxed = true),
             modalPresenter = modalPresenter,
@@ -146,11 +117,10 @@ class EditAStoryUseCaseTest {
 
     @Test
     fun `Deletes the story-in-edit when it is a new one and the user cancels without editing`() {
-        val stories = FakeStories()
         val modalPresenter = mockk<Presenter<Modal>>(relaxed = true)
 
         EditAStoryUseCase(
-            targetId = InvalidTargetId,
+            story = UpdateDeferringStory(story),
             stories = stories,
             presenter = mockk(relaxed = true),
             modalPresenter = modalPresenter,
@@ -169,15 +139,11 @@ class EditAStoryUseCaseTest {
 
     @Test
     fun `Does not delete the story-in-edit when it is an existing one even if the user cancels without editing`() {
-        val stories = SelfPopulatingStories(noOfStories = 1, noOfMoments = 0, origin = FakeStories())
-        val story = stories.first() as EditableStory
-        val targetId = FakeTargetId(story.id)
         val modalPresenter = mockk<Presenter<Modal>>(relaxed = true)
 
         story.update("Fizz")
-
         EditAStoryUseCase(
-            targetId = targetId,
+            story = UpdateDeferringStory(story),
             stories = stories,
             presenter = mockk(relaxed = true),
             modalPresenter = modalPresenter,
@@ -198,11 +164,9 @@ class EditAStoryUseCaseTest {
 
     @Test(timeout = 5_000)
     fun `Stops upon receiving cancellation events`() {
-        val stories = FakeStories()
-
         listOf(CancellationEvent("system")).forEach { event ->
             EditAStoryUseCase(
-                targetId = InvalidTargetId,
+                story = UpdateDeferringStory(story),
                 stories = stories,
                 presenter = mockk(relaxed = true),
                 modalPresenter = mockk(relaxed = true),
@@ -214,10 +178,8 @@ class EditAStoryUseCaseTest {
 
     @Test(timeout = 5_000)
     fun `Ignores unknown events without repercussions`() {
-        val stories = FakeStories()
-
         EditAStoryUseCase(
-            targetId = InvalidTargetId,
+            story = UpdateDeferringStory(story),
             stories = stories,
             presenter = mockk(relaxed = true),
             modalPresenter = mockk(relaxed = true),
