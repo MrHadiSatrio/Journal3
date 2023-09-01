@@ -99,6 +99,10 @@ class FilesystemMoment(
         memorables.relate(id, attachments)
     }
 
+    override fun isNewlyCreated(): Boolean {
+        return file.exists().not()
+    }
+
     override fun forget() {
         file.delete()
     }

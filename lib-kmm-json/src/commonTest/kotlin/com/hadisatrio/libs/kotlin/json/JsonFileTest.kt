@@ -64,6 +64,13 @@ class JsonFileTest {
     }
 
     @Test
+    fun `Tells correctly whether or not it exists`() {
+        jsonFile.exists().shouldBeFalse()
+        jsonFile.put("Fizz", JsonPrimitive("Buzz"))
+        jsonFile.exists().shouldBeTrue()
+    }
+
+    @Test
     fun `Deletes itself from the filesystem`() {
         jsonFile.put("Fizz", JsonPrimitive("Buzz"))
 

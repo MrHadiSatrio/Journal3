@@ -17,8 +17,8 @@
 
 package com.hadisatrio.apps.kotlin.journal3.story
 
+import com.benasher44.uuid.Uuid
 import com.hadisatrio.apps.kotlin.journal3.event.RefreshRequestEvent
-import com.hadisatrio.apps.kotlin.journal3.id.TargetId
 import com.hadisatrio.apps.kotlin.journal3.token.TokenableString
 import com.hadisatrio.libs.kotlin.foundation.UseCase
 import com.hadisatrio.libs.kotlin.foundation.event.CancellationEvent
@@ -40,7 +40,7 @@ import kotlinx.coroutines.runBlocking
 
 @Suppress("LongParameterList")
 class EditAStoryUseCase(
-    private val targetId: TargetId,
+    private val story: StoryInEdit,
     private val stories: Stories,
     private val presenter: Presenter<Story>,
     private val modalPresenter: Presenter<Modal>,
@@ -48,20 +48,9 @@ class EditAStoryUseCase(
     private val eventSink: EventSink
 ) : UseCase {
 
-    private val completionEvents by lazy {
-        MutableSharedFlow<CompletionEvent>(extraBufferCapacity = 1)
-    }
-    private val currentTarget by lazy {
-        UpdateDeferringStory(
-            if (isTargetNew) {
-                stories.new()
-            } else {
-                stories.findStory(targetId.asUuid()).first() as EditableStory
-            }
-        )
-    }
-
-    private val isTargetNew: Boolean = targetId.isValid().not()
+    private val completionEvents by lazy { MutableSharedFlow<CompletionEvent>(extraBufferCapacity = 1) }
+    private val targetId: Uuid by lazy { story.id }
+    private val isTargetNew: Boolean by lazy { story.isNewlyCreated() }
     private var isEditCancelled: Boolean = false
 
     override operator fun invoke() = runBlocking {
@@ -70,11 +59,11 @@ class EditAStoryUseCase(
     }
 
     private suspend fun present() {
-        if (!stories.containsStory(targetId.asUuid()) && !isTargetNew) {
+        if (!isTargetNew && !stories.containsStory(targetId)) {
             isEditCancelled = true
             completionEvents.emit(CompletionEvent())
         } else {
-            presenter.present(currentTarget)
+            presenter.present(story)
         }
     }
 
@@ -97,11 +86,11 @@ class EditAStoryUseCase(
 
     private fun handleTextInput(event: TextInputEvent) {
         when (event.inputKind) {
-            "title" -> currentTarget.update(event.inputValue)
-            "synopsis" -> currentTarget.update(TokenableString(event.inputValue))
+            "title" -> story.update(event.inputValue)
+            "synopsis" -> story.update(TokenableString(event.inputValue))
         }
 
-        presenter.present(currentTarget)
+        presenter.present(story)
     }
 
     private fun handleSelection() {
@@ -109,7 +98,7 @@ class EditAStoryUseCase(
             SelectionEvent(
                 "action",
                 "delete_story",
-                "story_id" to currentTarget.id.toString()
+                "story_id" to story.id.toString()
             )
         )
     }
@@ -125,9 +114,9 @@ class EditAStoryUseCase(
 
     private fun handleCompletion() {
         if (isEditCancelled) {
-            if (isTargetNew) currentTarget.forget()
+            if (isTargetNew) story.forget()
         } else {
-            currentTarget.commit()
+            story.commit()
         }
     }
 
@@ -137,7 +126,7 @@ class EditAStoryUseCase(
             return
         }
 
-        if (currentTarget.updatesMade()) {
+        if (story.updatesMade()) {
             val modal = BinaryConfirmationModal("edit_cancellation_confirmation")
             modalPresenter.present(modal)
         } else {

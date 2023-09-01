@@ -38,6 +38,7 @@ class EditableStoryInStoriesTest {
         editableStory.title.shouldBe(story.title)
         editableStory.synopsis.shouldBe(story.synopsis)
         editableStory.moments.shouldBe(story.moments)
+        editableStory.isNewlyCreated().shouldBe(story.isNewlyCreated())
         val newTitle = "Foo"
         editableStory.update(newTitle)
         story.title.shouldBe(newTitle)

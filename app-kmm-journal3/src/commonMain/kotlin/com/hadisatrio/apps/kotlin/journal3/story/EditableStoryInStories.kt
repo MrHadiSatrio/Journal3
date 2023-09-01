@@ -40,6 +40,7 @@ class EditableStoryInStories(
     override val synopsis: TokenableString get() = origin.synopsis
     override val moments: Moments get() = origin.moments
 
+    override fun isNewlyCreated(): Boolean = origin.isNewlyCreated()
     override fun update(title: String) = origin.update(title)
     override fun update(synopsis: TokenableString) = origin.update(synopsis)
     override fun new(): EditableMoment = origin.new()

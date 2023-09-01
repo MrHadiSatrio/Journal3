@@ -17,17 +17,14 @@
 
 package com.hadisatrio.apps.kotlin.journal3.moment
 
+import com.benasher44.uuid.Uuid
 import com.benasher44.uuid.uuidFrom
 import com.chrynan.uri.core.Uri
 import com.chrynan.uri.core.fromString
 import com.hadisatrio.apps.kotlin.journal3.datetime.LiteralTimestamp
 import com.hadisatrio.apps.kotlin.journal3.event.RefreshRequestEvent
-import com.hadisatrio.apps.kotlin.journal3.id.TargetId
 import com.hadisatrio.apps.kotlin.journal3.sentiment.Sentiment
-import com.hadisatrio.apps.kotlin.journal3.sentiment.SentimentAnalyst
-import com.hadisatrio.apps.kotlin.journal3.story.EditableStory
 import com.hadisatrio.apps.kotlin.journal3.story.Stories
-import com.hadisatrio.apps.kotlin.journal3.story.datetime.ClockRespectingStory
 import com.hadisatrio.apps.kotlin.journal3.token.TokenableString
 import com.hadisatrio.libs.kotlin.foundation.UseCase
 import com.hadisatrio.libs.kotlin.foundation.event.CancellationEvent
@@ -48,45 +45,25 @@ import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.takeWhile
 import kotlinx.coroutines.runBlocking
-import kotlinx.datetime.Clock
 
 @Suppress(
     "LongParameterList",
     "TooManyFunctions"
 )
 class EditAMomentUseCase(
-    private val targetId: TargetId,
-    private val storyId: TargetId,
+    private val moment: MomentInEdit,
     private val stories: Stories,
     private val places: Places,
     private val presenter: Presenter<Moment>,
     private val modalPresenter: Presenter<Modal>,
     private val eventSource: EventSource,
     private val eventSink: EventSink,
-    private val analyst: SentimentAnalyst,
     private val paraphraser: Paraphraser,
-    private val clock: Clock
 ) : UseCase {
 
-    private val completionEvents by lazy {
-        MutableSharedFlow<CompletionEvent>(extraBufferCapacity = 1)
-    }
-    private val currentTarget: MomentInEdit by lazy {
-        SentimentAnalyzingMoment(
-            analyst = analyst,
-            origin = UpdateDeferringMoment(
-                if (isTargetNew) {
-                    val story = stories.findStory(storyId.asUuid()).first() as EditableStory
-                    val clockRespecting = ClockRespectingStory(clock, story)
-                    clockRespecting.new()
-                } else {
-                    stories.findMoment(targetId.asUuid()).first() as EditableMoment
-                }
-            )
-        )
-    }
-
-    private val isTargetNew: Boolean = targetId.isValid().not()
+    private val completionEvents by lazy { MutableSharedFlow<CompletionEvent>(extraBufferCapacity = 1) }
+    private val targetId: Uuid by lazy { moment.id }
+    private val isTargetNew: Boolean by lazy { moment.isNewlyCreated() }
     private var isEditCancelled: Boolean = false
     private var isParaphrasingEnabled: Boolean = false
 
@@ -96,11 +73,11 @@ class EditAMomentUseCase(
     }
 
     private suspend fun present() {
-        if (!stories.containsMoment(targetId.asUuid()) && !isTargetNew) {
+        if (!isTargetNew && !stories.containsMoment(targetId)) {
             isEditCancelled = true
             completionEvents.emit(CompletionEvent())
         } else {
-            presenter.present(currentTarget)
+            presenter.present(moment)
         }
     }
 
@@ -123,18 +100,18 @@ class EditAMomentUseCase(
 
     private fun handleTextInput(event: TextInputEvent) {
         if (event.inputKind != "description") return
-        currentTarget.update(TokenableString(event.inputValue))
-        presenter.present(currentTarget)
+        moment.update(TokenableString(event.inputValue))
+        presenter.present(moment)
     }
 
     private suspend fun handleSelection(event: SelectionEvent) {
         val kind = event.selectionKind
         val identifier = event.selectedIdentifier
         when (kind) {
-            "timestamp" -> currentTarget.update(LiteralTimestamp(identifier))
-            "sentiment" -> currentTarget.update(Sentiment(identifier))
-            "place" -> currentTarget.update(places.findPlace(uuidFrom(identifier)).first())
-            "attachments" -> currentTarget.update(identifier.split(',').map { Uri.fromString(it) })
+            "timestamp" -> moment.update(LiteralTimestamp(identifier))
+            "sentiment" -> moment.update(Sentiment(identifier))
+            "place" -> moment.update(places.findPlace(uuidFrom(identifier)).first())
+            "attachments" -> moment.update(identifier.split(',').map { Uri.fromString(it) })
             "action" -> handleActionSelection(event)
         }
     }
@@ -150,9 +127,9 @@ class EditAMomentUseCase(
 
     private suspend fun handleCommitActionSelection() {
         if (isParaphrasingEnabled) {
-            DescriptionParaphrasingMoment(paraphraser, currentTarget).commit()
+            DescriptionParaphrasingMoment(paraphraser, moment).commit()
         } else {
-            currentTarget.commit()
+            moment.commit()
         }
         completionEvents.emit(CompletionEvent())
     }
@@ -162,7 +139,7 @@ class EditAMomentUseCase(
             SelectionEvent(
                 selectionKind = "action",
                 selectedIdentifier = "delete_moment",
-                "moment_id" to currentTarget.id.toString()
+                "moment_id" to targetId.toString()
             )
         )
     }
@@ -182,7 +159,7 @@ class EditAMomentUseCase(
             return
         }
 
-        if (currentTarget.updatesMade()) {
+        if (moment.updatesMade()) {
             val modal = BinaryConfirmationModal("edit_cancellation_confirmation")
             modalPresenter.present(modal)
         } else {
@@ -192,6 +169,6 @@ class EditAMomentUseCase(
     }
 
     private fun handleCompletion() {
-        if (isEditCancelled && isTargetNew) currentTarget.forget()
+        if (isEditCancelled && isTargetNew) moment.forget()
     }
 }
