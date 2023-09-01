@@ -62,7 +62,7 @@ object Dependencies {
     }
 
     object Network {
-        const val KTOR = "io.ktor:ktor-client-core:2.3.3"
+        const val KTOR = "io.ktor:ktor-client-core:2.3.4"
     }
 
     object TestRuntime {
