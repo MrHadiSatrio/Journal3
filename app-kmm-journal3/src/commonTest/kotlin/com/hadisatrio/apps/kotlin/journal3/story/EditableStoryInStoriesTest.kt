@@ -17,7 +17,7 @@
 
 package com.hadisatrio.apps.kotlin.journal3.story
 
-import com.benasher44.uuid.uuidFrom
+import com.hadisatrio.apps.kotlin.journal3.id.INVALID_UUID
 import com.hadisatrio.apps.kotlin.journal3.story.fake.FakeStories
 import com.hadisatrio.apps.kotlin.journal3.token.TokenableString
 import io.kotest.matchers.shouldBe
@@ -50,7 +50,7 @@ class EditableStoryInStoriesTest {
     @Test
     fun `Delegates to a new story given an empty target ID`() {
         val editableStory = EditableStoryInStories(
-            storyId = uuidFrom("00000000-0000-0000-0000-000000000000"),
+            storyId = INVALID_UUID,
             stories = stories
         )
         editableStory.id

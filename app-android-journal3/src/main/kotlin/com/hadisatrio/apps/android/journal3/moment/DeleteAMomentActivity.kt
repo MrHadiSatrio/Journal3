@@ -19,7 +19,7 @@ package com.hadisatrio.apps.android.journal3.moment
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.hadisatrio.apps.android.journal3.id.BundledTargetId
+import com.benasher44.uuid.uuidFrom
 import com.hadisatrio.apps.android.journal3.journal3Application
 import com.hadisatrio.apps.kotlin.journal3.moment.DeleteMomentUseCase
 import com.hadisatrio.libs.android.foundation.activity.ActivityCompletionEventSink
@@ -36,7 +36,7 @@ class DeleteAMomentActivity : AppCompatActivity() {
         ExecutorDispatchingUseCase(
             executor = journal3Application.backgroundExecutor,
             origin = DeleteMomentUseCase(
-                targetId = BundledTargetId(intent, "target_id"),
+                momentId = uuidFrom(intent.getStringExtra("target_id")!!),
                 stories = journal3Application.stories,
                 presenter = ExecutorDispatchingPresenter(
                     executor = journal3Application.foregroundExecutor,

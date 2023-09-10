@@ -17,9 +17,9 @@
 
 package com.hadisatrio.apps.kotlin.journal3.story
 
-import com.benasher44.uuid.uuidFrom
 import com.chrynan.uri.core.Uri
 import com.hadisatrio.apps.kotlin.journal3.datetime.LiteralTimestamp
+import com.hadisatrio.apps.kotlin.journal3.id.INVALID_UUID
 import com.hadisatrio.apps.kotlin.journal3.moment.EditableMoment
 import com.hadisatrio.apps.kotlin.journal3.sentiment.Sentiment
 import com.hadisatrio.apps.kotlin.journal3.story.fake.FakeStories
@@ -73,7 +73,7 @@ class EditableMomentInStoryTest {
     fun `Delegates to a new moment given an empty target ID`() {
         val editableMoment = EditableMomentInStory(
             storyId = story.id,
-            targetId = uuidFrom("00000000-0000-0000-0000-000000000000"),
+            targetId = INVALID_UUID,
             stories = stories,
             clock = clock,
         )
