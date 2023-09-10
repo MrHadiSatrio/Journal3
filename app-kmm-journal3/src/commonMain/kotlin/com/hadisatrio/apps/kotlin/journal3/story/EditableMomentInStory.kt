@@ -20,6 +20,7 @@ package com.hadisatrio.apps.kotlin.journal3.story
 import com.benasher44.uuid.Uuid
 import com.chrynan.uri.core.Uri
 import com.hadisatrio.apps.kotlin.journal3.datetime.Timestamp
+import com.hadisatrio.apps.kotlin.journal3.id.INVALID_UUID
 import com.hadisatrio.apps.kotlin.journal3.moment.EditableMoment
 import com.hadisatrio.apps.kotlin.journal3.moment.Moment
 import com.hadisatrio.apps.kotlin.journal3.sentiment.Sentiment
@@ -33,7 +34,7 @@ class EditableMomentInStory(
 ) : EditableMoment {
 
     private val origin: EditableMoment by lazy {
-        if (targetId.isValid()) {
+        if (targetId != INVALID_UUID) {
             stories.findMoment(targetId).first() as EditableMoment
         } else {
             val story = stories.findStory(storyId).first() as EditableStory
@@ -56,8 +57,4 @@ class EditableMomentInStory(
     override fun update(attachments: Iterable<Uri>) = origin.update(attachments)
     override fun compareTo(other: Moment): Int = origin.compareTo(other)
     override fun forget() = origin.forget()
-
-    private fun Uuid.isValid(): Boolean {
-        return this.toString() != "00000000-0000-0000-0000-000000000000"
-    }
 }

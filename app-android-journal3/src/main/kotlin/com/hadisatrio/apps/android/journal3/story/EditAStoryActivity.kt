@@ -20,8 +20,8 @@ package com.hadisatrio.apps.android.journal3.story
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
-import com.benasher44.uuid.uuidFrom
 import com.hadisatrio.apps.android.journal3.R
+import com.hadisatrio.apps.android.journal3.id.getUuidExtra
 import com.hadisatrio.apps.android.journal3.journal3Application
 import com.hadisatrio.apps.kotlin.journal3.event.RefreshRequestEvent
 import com.hadisatrio.apps.kotlin.journal3.story.EditAStoryUseCase
@@ -120,9 +120,7 @@ class EditAStoryActivity : AppCompatActivity() {
             origin = EditAStoryUseCase(
                 story = UpdateDeferringStory(
                     origin = EditableStoryInStories(
-                        storyId = uuidFrom(
-                            intent.getStringExtra("target_id") ?: "00000000-0000-0000-0000-000000000000"
-                        ),
+                        storyId = intent.getUuidExtra("target_id"),
                         stories = journal3Application.stories
                     )
                 ),

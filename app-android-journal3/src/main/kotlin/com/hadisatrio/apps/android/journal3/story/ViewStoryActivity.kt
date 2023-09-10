@@ -23,10 +23,10 @@ import android.view.LayoutInflater
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.RecyclerView
+import com.benasher44.uuid.uuidFrom
 import com.grzegorzojdana.spacingitemdecoration.Spacing
 import com.grzegorzojdana.spacingitemdecoration.SpacingItemDecoration
 import com.hadisatrio.apps.android.journal3.R
-import com.hadisatrio.apps.android.journal3.id.BundledTargetId
 import com.hadisatrio.apps.android.journal3.journal3Application
 import com.hadisatrio.apps.android.journal3.moment.MomentCardViewRenderer
 import com.hadisatrio.apps.android.journal3.moment.MomentItemDiffer
@@ -152,7 +152,7 @@ class ViewStoryActivity : AppCompatActivity() {
         ExecutorDispatchingUseCase(
             executor = journal3Application.backgroundExecutor,
             origin = ShowStoryUseCase(
-                targetId = BundledTargetId(intent, "target_id"),
+                storyId = uuidFrom(intent.getStringExtra("target_id")!!),
                 stories = journal3Application.stories,
                 presenter = presenter,
                 eventSource = eventSource,

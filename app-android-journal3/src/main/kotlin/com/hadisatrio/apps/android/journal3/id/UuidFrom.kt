@@ -15,30 +15,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.hadisatrio.apps.kotlin.journal3.id
+package com.hadisatrio.apps.android.journal3.id
 
+import android.content.Intent
+import android.os.Bundle
 import com.benasher44.uuid.Uuid
+import com.benasher44.uuid.uuidFrom
+import com.hadisatrio.apps.kotlin.journal3.id.INVALID_UUID
 
-class FakeTargetId(
-    private val uuid: Uuid
-) : TargetId {
+fun Intent.getUuidExtra(key: String): Uuid {
+    return extras?.getUuid(key) ?: INVALID_UUID
+}
 
-    override fun asUuid(): Uuid {
-        return uuid
-    }
-
-    override fun isValid(): Boolean {
-        return true
-    }
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is FakeTargetId) return false
-        if (uuid != other.uuid) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        return uuid.hashCode()
-    }
+fun Bundle.getUuid(key: String): Uuid {
+    return getString(key)?.let(::uuidFrom) ?: INVALID_UUID
 }

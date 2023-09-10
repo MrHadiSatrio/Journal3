@@ -17,9 +17,9 @@
 
 package com.hadisatrio.apps.kotlin.journal3.moment
 
+import com.benasher44.uuid.Uuid
 import com.hadisatrio.apps.kotlin.journal3.forgettable.DeleteForgettableUseCase
 import com.hadisatrio.apps.kotlin.journal3.forgettable.Forgettable
-import com.hadisatrio.apps.kotlin.journal3.id.TargetId
 import com.hadisatrio.apps.kotlin.journal3.story.Stories
 import com.hadisatrio.libs.kotlin.foundation.event.EventSink
 import com.hadisatrio.libs.kotlin.foundation.event.EventSource
@@ -27,7 +27,7 @@ import com.hadisatrio.libs.kotlin.foundation.modal.Modal
 import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
 
 class DeleteMomentUseCase(
-    private val targetId: TargetId,
+    private val momentId: Uuid,
     private val stories: Stories,
     presenter: Presenter<Modal>,
     eventSource: EventSource,
@@ -35,6 +35,6 @@ class DeleteMomentUseCase(
 ) : DeleteForgettableUseCase(presenter, eventSource, eventSink) {
 
     override fun forgettable(): Forgettable? {
-        return stories.findMoment(targetId.asUuid()).firstOrNull()
+        return stories.findMoment(momentId).firstOrNull()
     }
 }

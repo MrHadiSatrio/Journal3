@@ -23,12 +23,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.benasher44.uuid.uuidFrom
 import com.bumptech.glide.Glide
 import com.hadisatrio.apps.android.journal3.R
 import com.hadisatrio.apps.android.journal3.datetime.TimestampSelectionEventSource
 import com.hadisatrio.apps.android.journal3.datetime.TimestampSelectorButtonPresenter
 import com.hadisatrio.apps.android.journal3.geography.PlaceSelectionEventSource
+import com.hadisatrio.apps.android.journal3.id.getUuidExtra
 import com.hadisatrio.apps.android.journal3.journal3Application
 import com.hadisatrio.apps.kotlin.journal3.event.RefreshRequestEvent
 import com.hadisatrio.apps.kotlin.journal3.moment.ClockRespectingMoment
@@ -189,12 +189,8 @@ class EditAMomentActivity : AppCompatActivity() {
                         clock = journal3Application.clock,
                         origin = UpdateDeferringMoment(
                             origin = EditableMomentInStory(
-                                storyId = uuidFrom(
-                                    intent.getStringExtra("story_id") ?: "00000000-0000-0000-0000-000000000000"
-                                ),
-                                targetId = uuidFrom(
-                                    intent.getStringExtra("target_id") ?: "00000000-0000-0000-0000-000000000000"
-                                ),
+                                storyId = intent.getUuidExtra("story_id"),
+                                targetId = intent.getUuidExtra("target_id"),
                                 stories = journal3Application.stories
                             )
                         )

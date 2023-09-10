@@ -15,26 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.hadisatrio.apps.android.journal3.id
+package com.hadisatrio.apps.kotlin.journal3.id
 
-import android.content.Intent
-import android.os.Bundle
-import com.benasher44.uuid.Uuid
 import com.benasher44.uuid.uuidFrom
-import com.hadisatrio.apps.kotlin.journal3.id.TargetId
 
-class BundledTargetId(
-    private val bundle: Bundle,
-    private val bundleKey: String
-) : TargetId {
-
-    constructor(intent: Intent, key: String) : this(intent.extras ?: Bundle.EMPTY, key)
-
-    override fun asUuid(): Uuid {
-        return uuidFrom(bundle.getString(bundleKey, "00000000-0000-0000-0000-000000000000"))
-    }
-
-    override fun isValid(): Boolean {
-        return this.asUuid().toString() != "00000000-0000-0000-0000-000000000000"
-    }
-}
+val INVALID_UUID = uuidFrom("00000000-0000-0000-0000-000000000000")

@@ -17,16 +17,16 @@
 
 package com.hadisatrio.apps.kotlin.journal3.story
 
+import com.benasher44.uuid.Uuid
 import com.hadisatrio.apps.kotlin.journal3.forgettable.DeleteForgettableUseCase
 import com.hadisatrio.apps.kotlin.journal3.forgettable.Forgettable
-import com.hadisatrio.apps.kotlin.journal3.id.TargetId
 import com.hadisatrio.libs.kotlin.foundation.event.EventSink
 import com.hadisatrio.libs.kotlin.foundation.event.EventSource
 import com.hadisatrio.libs.kotlin.foundation.modal.Modal
 import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
 
 class DeleteStoryUseCase(
-    private val targetId: TargetId,
+    private val storyId: Uuid,
     private val stories: Stories,
     presenter: Presenter<Modal>,
     eventSource: EventSource,
@@ -34,6 +34,6 @@ class DeleteStoryUseCase(
 ) : DeleteForgettableUseCase(presenter, eventSource, eventSink) {
 
     override fun forgettable(): Forgettable? {
-        return stories.findStory(targetId.asUuid()).firstOrNull() as? EditableStory
+        return stories.findStory(storyId).firstOrNull() as? EditableStory
     }
 }
