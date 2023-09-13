@@ -28,11 +28,15 @@ import com.hadisatrio.apps.android.journal3.R
 import com.hadisatrio.apps.android.journal3.datetime.TimestampSelectionEventSource
 import com.hadisatrio.apps.android.journal3.datetime.TimestampSelectorButtonPresenter
 import com.hadisatrio.apps.android.journal3.geography.PlaceSelectionEventSource
-import com.hadisatrio.apps.android.journal3.id.BundledTargetId
+import com.hadisatrio.apps.android.journal3.id.getUuidExtra
 import com.hadisatrio.apps.android.journal3.journal3Application
 import com.hadisatrio.apps.kotlin.journal3.event.RefreshRequestEvent
+import com.hadisatrio.apps.kotlin.journal3.moment.ClockRespectingMoment
 import com.hadisatrio.apps.kotlin.journal3.moment.EditAMomentUseCase
 import com.hadisatrio.apps.kotlin.journal3.moment.Moment
+import com.hadisatrio.apps.kotlin.journal3.moment.SentimentAnalyzingMoment
+import com.hadisatrio.apps.kotlin.journal3.moment.UpdateDeferringMoment
+import com.hadisatrio.apps.kotlin.journal3.story.EditableMomentInStory
 import com.hadisatrio.libs.android.foundation.activity.ActivityCompletionEventSink
 import com.hadisatrio.libs.android.foundation.lifecycle.LifecycleTriggeredEventSource
 import com.hadisatrio.libs.android.foundation.material.SliderFloatPresenter
@@ -179,17 +183,26 @@ class EditAMomentActivity : AppCompatActivity() {
         ExecutorDispatchingUseCase(
             executor = journal3Application.backgroundExecutor,
             origin = EditAMomentUseCase(
-                targetId = BundledTargetId(intent, "target_id"),
-                storyId = BundledTargetId(intent, "story_id"),
+                moment = SentimentAnalyzingMoment(
+                    analyst = journal3Application.sentimentAnalyst,
+                    origin = ClockRespectingMoment(
+                        clock = journal3Application.clock,
+                        origin = UpdateDeferringMoment(
+                            origin = EditableMomentInStory(
+                                storyId = intent.getUuidExtra("story_id"),
+                                targetId = intent.getUuidExtra("target_id"),
+                                stories = journal3Application.stories
+                            )
+                        )
+                    )
+                ),
                 stories = journal3Application.stories,
                 places = journal3Application.places,
                 presenter = presenter,
                 modalPresenter = journal3Application.modalPresenter,
                 eventSource = eventSource,
                 eventSink = eventSink,
-                analyst = journal3Application.sentimentAnalyst,
-                paraphraser = journal3Application.paraphraser,
-                clock = journal3Application.clock
+                paraphraser = journal3Application.paraphraser
             )
         )
     }

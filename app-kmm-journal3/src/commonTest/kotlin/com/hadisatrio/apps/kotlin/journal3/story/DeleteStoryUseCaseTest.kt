@@ -18,8 +18,7 @@
 package com.hadisatrio.apps.kotlin.journal3.story
 
 import com.hadisatrio.apps.kotlin.journal3.event.UnsupportedEvent
-import com.hadisatrio.apps.kotlin.journal3.id.FakeTargetId
-import com.hadisatrio.apps.kotlin.journal3.id.InvalidTargetId
+import com.hadisatrio.apps.kotlin.journal3.id.INVALID_UUID
 import com.hadisatrio.apps.kotlin.journal3.story.fake.FakeStories
 import com.hadisatrio.libs.kotlin.foundation.event.CompletionEvent
 import com.hadisatrio.libs.kotlin.foundation.event.RecordedEventSource
@@ -38,14 +37,13 @@ class DeleteStoryUseCaseTest {
 
     private val stories = SelfPopulatingStories(1, 1, FakeStories())
     private val story = stories.first()
-    private val targetId = FakeTargetId(story.id)
     private val presenter = FakePresenter<Modal>()
     private val eventSink = FakeEventSink()
 
     @Test
     fun `Deletes the story after the user confirms the request`() {
         DeleteStoryUseCase(
-            targetId = targetId,
+            storyId = story.id,
             stories = stories,
             presenter = presenter,
             eventSource = RecordedEventSource(
@@ -62,7 +60,7 @@ class DeleteStoryUseCaseTest {
     @Test
     fun `Don't delete the story if the user don't confirm the request`() {
         DeleteStoryUseCase(
-            targetId = targetId,
+            storyId = story.id,
             stories = stories,
             presenter = presenter,
             eventSource = RecordedEventSource(
@@ -83,7 +81,7 @@ class DeleteStoryUseCaseTest {
             ModalDismissalEvent("forgettable_not_found_notification")
         ).forEach { event ->
             DeleteStoryUseCase(
-                targetId = InvalidTargetId,
+                storyId = INVALID_UUID,
                 stories = stories,
                 presenter = presenter,
                 eventSource = RecordedEventSource(event),
@@ -98,7 +96,7 @@ class DeleteStoryUseCaseTest {
     @Test
     fun `Does nothing when given an unsupported event`() {
         DeleteStoryUseCase(
-            targetId = InvalidTargetId,
+            storyId = INVALID_UUID,
             stories = stories,
             presenter = presenter,
             eventSource = RecordedEventSource(

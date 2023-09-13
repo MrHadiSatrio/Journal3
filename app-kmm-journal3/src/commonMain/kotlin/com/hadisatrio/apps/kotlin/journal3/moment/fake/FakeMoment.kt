@@ -34,6 +34,7 @@ class FakeMoment(
 ) : EditableMoment {
 
     private var isForgotten: Boolean = false
+    private var isNewlyCreated: Boolean = true
 
     override var timestamp: Timestamp = UnixEpoch
         private set
@@ -48,27 +49,36 @@ class FakeMoment(
 
     override fun update(timestamp: Timestamp) {
         require(!isForgotten) { "This moment has already been forgotten." }
+        isNewlyCreated = false
         this.timestamp = timestamp
     }
 
     override fun update(description: TokenableString) {
         require(!isForgotten) { "This moment has already been forgotten." }
+        isNewlyCreated = false
         this.description = description
     }
 
     override fun update(sentiment: Sentiment) {
         require(!isForgotten) { "This moment has already been forgotten." }
+        isNewlyCreated = false
         this.sentiment = sentiment
     }
 
     override fun update(place: Place) {
         require(!isForgotten) { "This moment has already been forgotten." }
+        isNewlyCreated = false
         this.place = place
     }
 
     override fun update(attachments: Iterable<Uri>) {
         require(!isForgotten) { "This moment has already been forgotten." }
+        isNewlyCreated = false
         this.attachments = attachments
+    }
+
+    override fun isNewlyCreated(): Boolean {
+        return isNewlyCreated
     }
 
     override fun forget() {

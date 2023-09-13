@@ -17,9 +17,6 @@
 
 package com.hadisatrio.apps.kotlin.journal3.id
 
-import com.benasher44.uuid.Uuid
+import com.benasher44.uuid.uuidFrom
 
-interface TargetId {
-    fun asUuid(): Uuid
-    fun isValid(): Boolean
-}
+val INVALID_UUID = uuidFrom("00000000-0000-0000-0000-000000000000")

@@ -21,7 +21,7 @@ import com.hadisatrio.apps.kotlin.journal3.token.TokenableString
 
 class UpdateDeferringStory(
     private val origin: EditableStory
-) : EditableStory by origin {
+) : StoryInEdit, EditableStory by origin {
 
     private var titleInEdit: String = origin.title
     private var synopsisInEdit: TokenableString = origin.synopsis
@@ -37,11 +37,11 @@ class UpdateDeferringStory(
         this.synopsisInEdit = synopsis
     }
 
-    fun updatesMade(): Boolean {
+    override fun updatesMade(): Boolean {
         return titleInEdit != origin.title || synopsisInEdit != origin.synopsis
     }
 
-    fun commit() {
+    override fun commit() {
         origin.update(titleInEdit)
         origin.update(synopsisInEdit)
     }

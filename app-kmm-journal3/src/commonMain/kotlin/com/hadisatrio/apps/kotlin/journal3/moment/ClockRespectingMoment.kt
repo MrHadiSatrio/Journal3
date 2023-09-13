@@ -15,21 +15,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.hadisatrio.apps.kotlin.journal3.story.datetime
+package com.hadisatrio.apps.kotlin.journal3.moment
 
 import com.hadisatrio.apps.kotlin.journal3.datetime.LiteralTimestamp
-import com.hadisatrio.apps.kotlin.journal3.moment.EditableMoment
-import com.hadisatrio.apps.kotlin.journal3.story.EditableStory
+import com.hadisatrio.apps.kotlin.journal3.datetime.Timestamp
 import kotlinx.datetime.Clock
 
-class ClockRespectingStory(
+class ClockRespectingMoment(
     private val clock: Clock,
-    private val origin: EditableStory
-) : EditableStory by origin {
+    private val origin: MomentInEdit
+) : MomentInEdit by origin {
 
-    override fun new(): EditableMoment {
-        val moment = origin.new()
-        moment.update(LiteralTimestamp(clock.now()))
-        return moment
+    override val timestamp: Timestamp get() {
+        return if (origin.isNewlyCreated() && !updatesMade()) {
+            LiteralTimestamp(clock.now()).also { update(it) }
+        } else {
+            origin.timestamp
+        }
     }
 }

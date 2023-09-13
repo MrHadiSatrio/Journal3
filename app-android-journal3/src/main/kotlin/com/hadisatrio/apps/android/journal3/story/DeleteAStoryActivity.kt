@@ -19,7 +19,7 @@ package com.hadisatrio.apps.android.journal3.story
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.hadisatrio.apps.android.journal3.id.BundledTargetId
+import com.benasher44.uuid.uuidFrom
 import com.hadisatrio.apps.android.journal3.journal3Application
 import com.hadisatrio.apps.kotlin.journal3.story.DeleteStoryUseCase
 import com.hadisatrio.libs.android.foundation.activity.ActivityCompletionEventSink
@@ -36,7 +36,7 @@ class DeleteAStoryActivity : AppCompatActivity() {
         ExecutorDispatchingUseCase(
             executor = journal3Application.backgroundExecutor,
             origin = DeleteStoryUseCase(
-                targetId = BundledTargetId(intent, "target_id"),
+                storyId = uuidFrom(intent.getStringExtra("target_id")!!),
                 stories = journal3Application.stories,
                 presenter = ExecutorDispatchingPresenter(
                     executor = journal3Application.foregroundExecutor,

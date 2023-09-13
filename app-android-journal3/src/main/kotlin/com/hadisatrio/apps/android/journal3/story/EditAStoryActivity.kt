@@ -21,11 +21,13 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
 import com.hadisatrio.apps.android.journal3.R
-import com.hadisatrio.apps.android.journal3.id.BundledTargetId
+import com.hadisatrio.apps.android.journal3.id.getUuidExtra
 import com.hadisatrio.apps.android.journal3.journal3Application
 import com.hadisatrio.apps.kotlin.journal3.event.RefreshRequestEvent
 import com.hadisatrio.apps.kotlin.journal3.story.EditAStoryUseCase
+import com.hadisatrio.apps.kotlin.journal3.story.EditableStoryInStories
 import com.hadisatrio.apps.kotlin.journal3.story.Story
+import com.hadisatrio.apps.kotlin.journal3.story.UpdateDeferringStory
 import com.hadisatrio.libs.android.foundation.activity.ActivityCompletionEventSink
 import com.hadisatrio.libs.android.foundation.lifecycle.LifecycleTriggeredEventSource
 import com.hadisatrio.libs.android.foundation.widget.BackButtonCancellationEventSource
@@ -116,7 +118,12 @@ class EditAStoryActivity : AppCompatActivity() {
         ExecutorDispatchingUseCase(
             executor = journal3Application.backgroundExecutor,
             origin = EditAStoryUseCase(
-                targetId = BundledTargetId(intent, "target_id"),
+                story = UpdateDeferringStory(
+                    origin = EditableStoryInStories(
+                        storyId = intent.getUuidExtra("target_id"),
+                        stories = journal3Application.stories
+                    )
+                ),
                 stories = journal3Application.stories,
                 presenter = presenter,
                 modalPresenter = journal3Application.modalPresenter,

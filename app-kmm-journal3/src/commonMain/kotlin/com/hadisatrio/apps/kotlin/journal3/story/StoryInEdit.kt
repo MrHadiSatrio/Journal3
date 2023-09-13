@@ -15,30 +15,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.hadisatrio.apps.kotlin.journal3.id
+package com.hadisatrio.apps.kotlin.journal3.story
 
-import com.benasher44.uuid.Uuid
-
-class FakeTargetId(
-    private val uuid: Uuid
-) : TargetId {
-
-    override fun asUuid(): Uuid {
-        return uuid
-    }
-
-    override fun isValid(): Boolean {
-        return true
-    }
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is FakeTargetId) return false
-        if (uuid != other.uuid) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        return uuid.hashCode()
-    }
+interface StoryInEdit : EditableStory {
+    fun updatesMade(): Boolean
+    fun commit()
 }

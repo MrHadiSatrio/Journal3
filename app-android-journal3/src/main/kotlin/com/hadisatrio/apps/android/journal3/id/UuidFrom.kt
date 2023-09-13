@@ -21,20 +21,12 @@ import android.content.Intent
 import android.os.Bundle
 import com.benasher44.uuid.Uuid
 import com.benasher44.uuid.uuidFrom
-import com.hadisatrio.apps.kotlin.journal3.id.TargetId
+import com.hadisatrio.apps.kotlin.journal3.id.INVALID_UUID
 
-class BundledTargetId(
-    private val bundle: Bundle,
-    private val bundleKey: String
-) : TargetId {
+fun Intent.getUuidExtra(key: String): Uuid {
+    return extras?.getUuid(key) ?: INVALID_UUID
+}
 
-    constructor(intent: Intent, key: String) : this(intent.extras ?: Bundle.EMPTY, key)
-
-    override fun asUuid(): Uuid {
-        return uuidFrom(bundle.getString(bundleKey, "00000000-0000-0000-0000-000000000000"))
-    }
-
-    override fun isValid(): Boolean {
-        return this.asUuid().toString() != "00000000-0000-0000-0000-000000000000"
-    }
+fun Bundle.getUuid(key: String): Uuid {
+    return getString(key)?.let(::uuidFrom) ?: INVALID_UUID
 }

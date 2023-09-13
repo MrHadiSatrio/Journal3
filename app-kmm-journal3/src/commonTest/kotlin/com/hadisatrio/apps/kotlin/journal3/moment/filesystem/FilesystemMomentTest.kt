@@ -30,6 +30,7 @@ import com.hadisatrio.libs.kotlin.io.filesystem.FileSystemSources
 import com.hadisatrio.libs.kotlin.io.uri.toUri
 import com.hadisatrio.libs.kotlin.json.JsonFile
 import io.kotest.matchers.booleans.shouldBeFalse
+import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.ints.shouldBeNegative
@@ -156,6 +157,14 @@ class FilesystemMomentTest {
         moment.update(listOf(uri))
 
         attachments.relevantTo(moment.id).shouldHaveSize(1)
+    }
+
+    @Test
+    fun `Tells correctly whether it is new or not`() {
+        val moment = story.new()
+        moment.isNewlyCreated().shouldBeTrue()
+        moment.update(timestamp = LiteralTimestamp(1000))
+        moment.isNewlyCreated().shouldBeFalse()
     }
 
     @Test

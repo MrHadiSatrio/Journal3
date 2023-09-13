@@ -18,8 +18,7 @@
 package com.hadisatrio.apps.kotlin.journal3.moment
 
 import com.hadisatrio.apps.kotlin.journal3.event.UnsupportedEvent
-import com.hadisatrio.apps.kotlin.journal3.id.FakeTargetId
-import com.hadisatrio.apps.kotlin.journal3.id.InvalidTargetId
+import com.hadisatrio.apps.kotlin.journal3.id.INVALID_UUID
 import com.hadisatrio.apps.kotlin.journal3.story.SelfPopulatingStories
 import com.hadisatrio.apps.kotlin.journal3.story.fake.FakeStories
 import com.hadisatrio.libs.kotlin.foundation.event.CompletionEvent
@@ -40,14 +39,13 @@ class DeleteMomentUseCaseTest {
     private val stories = SelfPopulatingStories(1, 1, FakeStories())
     private val story = stories.first()
     private val moment = story.moments.first()
-    private val targetId = FakeTargetId(moment.id)
     private val presenter = FakePresenter<Modal>()
     private val eventSink = FakeEventSink()
 
     @Test
     fun `Deletes the moment after the user confirms the request`() {
         DeleteMomentUseCase(
-            targetId = targetId,
+            momentId = moment.id,
             stories = stories,
             presenter = presenter,
             eventSource = RecordedEventSource(
@@ -64,7 +62,7 @@ class DeleteMomentUseCaseTest {
     @Test
     fun `Don't delete the moment if the user don't confirm the request`() {
         DeleteMomentUseCase(
-            targetId = targetId,
+            momentId = moment.id,
             stories = stories,
             presenter = presenter,
             eventSource = RecordedEventSource(
@@ -85,7 +83,7 @@ class DeleteMomentUseCaseTest {
             ModalDismissalEvent("forgettable_not_found_notification")
         ).forEach { event ->
             DeleteMomentUseCase(
-                targetId = InvalidTargetId,
+                momentId = INVALID_UUID,
                 stories = stories,
                 presenter = presenter,
                 eventSource = RecordedEventSource(event),
@@ -100,7 +98,7 @@ class DeleteMomentUseCaseTest {
     @Test
     fun `Does nothing when given an unsupported event`() {
         DeleteMomentUseCase(
-            targetId = InvalidTargetId,
+            momentId = INVALID_UUID,
             stories = stories,
             presenter = presenter,
             eventSource = RecordedEventSource(

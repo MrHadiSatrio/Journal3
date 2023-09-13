@@ -20,6 +20,7 @@ package com.hadisatrio.apps.kotlin.journal3.story.filesystem
 import com.hadisatrio.apps.kotlin.journal3.moment.filesystem.FilesystemMemorablePlaces
 import com.hadisatrio.apps.kotlin.journal3.token.TokenableString
 import io.kotest.matchers.booleans.shouldBeFalse
+import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.shouldBe
 import okio.Path.Companion.toPath
 import okio.buffer
@@ -60,6 +61,14 @@ class FilesystemStoryTest {
         fileContent.contains("Bar")
         story.title.shouldBe("Foo")
         story.synopsis.shouldBe(TokenableString("Bar"))
+    }
+
+    @Test
+    fun `Tells correctly whether it is new or not`() {
+        val story = stories.new()
+        story.isNewlyCreated().shouldBeTrue()
+        story.update(title = "Foo")
+        story.isNewlyCreated().shouldBeFalse()
     }
 
     @Test

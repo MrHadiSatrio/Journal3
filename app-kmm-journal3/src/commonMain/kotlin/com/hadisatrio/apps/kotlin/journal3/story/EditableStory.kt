@@ -22,6 +22,7 @@ import com.hadisatrio.apps.kotlin.journal3.moment.EditableMoment
 import com.hadisatrio.apps.kotlin.journal3.token.TokenableString
 
 interface EditableStory : Story, Forgettable {
+    fun isNewlyCreated(): Boolean
     fun update(title: String)
     fun update(synopsis: TokenableString)
     fun new(): EditableMoment
