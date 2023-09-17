@@ -7,6 +7,7 @@ plugins {
     id("com.android.application")
     kotlin("android")
     kotlin("kapt")
+    id("io.sentry.android.gradle") version "3.12.0"
     id("io.gitlab.arturbosch.detekt")
     id("io.github.reactivecircus.app-versioning").version("1.3.1")
 }
@@ -36,6 +37,7 @@ android {
             applicationIdSuffix = "canary"
             buildConfigField("String", "KEY_HERE_API", "\"${System.getenv("DEBUG_KEY_HERE_API")}\"")
             buildConfigField("String", "KEY_OAI_API", "\"${System.getenv("DEBUG_KEY_OAI_API")}\"")
+            buildConfigField("String", "KEY_SENTRY", "\"${System.getenv("DEBUG_KEY_SENTRY")}\"")
         }
         release {
             isDebuggable = false
@@ -45,6 +47,7 @@ android {
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
             buildConfigField("String", "KEY_HERE_API", "\"${System.getenv("RELEASE_KEY_HERE_API")}\"")
             buildConfigField("String", "KEY_OAI_API", "\"${System.getenv("RELEASE_KEY_OAI_API")}\"")
+            buildConfigField("String", "KEY_SENTRY", "\"${System.getenv("RELEASE_KEY_SENTRY")}\"")
         }
     }
 
@@ -60,6 +63,7 @@ dependencies {
     implementation(Dependencies.AndroidAsynchrony.WORKMANAGER)
     implementation(Dependencies.AndroidFramework.GLIDE)
     implementation(Dependencies.AndroidFramework.TFLITE)
+    implementation(Dependencies.AndroidFramework.SENTRY)
     implementation(Dependencies.AndroidNetwork.KTOR)
     implementation(Dependencies.AndroidUi.VIEWPAGER)
     implementation(Dependencies.AndroidUi.RECYCLER_VIEW_SPACING_DECORATION)
@@ -68,6 +72,13 @@ dependencies {
 detekt {
     autoCorrect = true
     source = files("src/main/kotlin", "src/test/kotlin", "src/androidTest/kotlin")
+}
+
+sentry {
+    org.set("mrhadisatrio")
+    projectName.set("journal3")
+    authToken.set(System.getenv("SENTRY_TOKEN"))
+    includeSourceContext.set(true)
 }
 
 dependencies {
