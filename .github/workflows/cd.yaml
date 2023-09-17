@@ -29,6 +29,7 @@ jobs:
 
       - name: Build with Gradle and SonarCloud
         env:
+          SENTRY_TOKEN: ${{ secrets.SENTRY_TOKEN }}
           RELEASE_KEY_STORE: ${{ secrets.RELEASE_KEY_STORE }}
           RELEASE_KEY_STORE_PASSWORD: ${{ secrets.RELEASE_KEY_STORE_PASSWORD }}
           RELEASE_KEY_ALIAS: ${{ secrets.RELEASE_KEY_ALIAS }}
@@ -37,6 +38,8 @@ jobs:
           DEBUG_KEY_HERE_API: ${{ secrets.DEBUG_KEY_HERE_API }}
           RELEASE_KEY_OAI_API: ${{ secrets.RELEASE_KEY_OAI_API }}
           DEBUG_KEY_OAI_API: ${{ secrets.DEBUG_KEY_OAI_API }}
+          RELEASE_KEY_SENTRY: ${{ secrets.RELEASE_KEY_SENTRY }}
+          DEBUG_KEY_SENTRY: ${{ secrets.DEBUG_KEY_SENTRY }}
         run: ./gradlew clean build
 
       - name: Create a new GitHub Release
