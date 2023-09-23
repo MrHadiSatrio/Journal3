@@ -74,7 +74,7 @@ class HereNearbyPlaces(
     private suspend fun iteratorFromHttp(coordinates: Coordinates): Iterator<HerePlace> {
         val url = urlBuilder.apply { parameters.append("at", coordinates.toString()) }.build()
         val response = httpClient.get(url)
-        if (!response.status.isSuccess()) throw IOException(response.status.toString())
+        if (!response.status.isSuccess()) throw IOException("HTTP ${response.status}: ${response.body<String>()}.")
         pastResponses[coordinates] = response
         return iteratorFromResponse(response)
     }
