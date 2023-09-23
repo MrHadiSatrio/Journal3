@@ -21,7 +21,7 @@ buildscript {
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.10")
         classpath("androidx.benchmark:benchmark-gradle-plugin:1.1.1")
         classpath("org.jetbrains.dokka:dokka-gradle-plugin:1.9.0")
-        classpath("org.jfrog.buildinfo:build-info-extractor-gradle:5.1.6")
+        classpath("org.jfrog.buildinfo:build-info-extractor-gradle:5.1.8")
         classpath("org.jetbrains.kotlinx:kover:0.6.1")
         classpath("io.gitlab.arturbosch.detekt:detekt-gradle-plugin:1.23.1")
     }
