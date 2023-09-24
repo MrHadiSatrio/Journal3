@@ -15,18 +15,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.hadisatrio.libs.kotlin.foundation.event
+package com.hadisatrio.apps.android.journal3
 
-import java.lang.Exception
+import com.hadisatrio.libs.kotlin.foundation.event.Event
+import com.hadisatrio.libs.kotlin.foundation.event.EventSink
+import com.hadisatrio.libs.kotlin.foundation.event.ExceptionalEvent
+import io.sentry.Sentry
 
-class ExceptionalEvent(
-    val exception: Exception
-) : Event() {
+object SentryExceptionalLog : EventSink {
 
-    override fun describeInternally(): Map<String, String> {
-        return mapOf(
-            "message" to exception.message.toString(),
-            "stacktrace" to exception.stackTraceToString(),
-        )
+    override fun sink(event: Event) {
+        if (event !is ExceptionalEvent) return
+        Sentry.captureException(event.exception)
     }
 }
