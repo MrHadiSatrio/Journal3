@@ -23,6 +23,7 @@ import com.hadisatrio.libs.kotlin.foundation.event.CompletionEvent
 import com.hadisatrio.libs.kotlin.foundation.event.Event
 import com.hadisatrio.libs.kotlin.foundation.event.EventSink
 import com.hadisatrio.libs.kotlin.foundation.event.EventSource
+import com.hadisatrio.libs.kotlin.foundation.event.ExceptionalEvent
 import com.hadisatrio.libs.kotlin.foundation.event.SelectionEvent
 import com.hadisatrio.libs.kotlin.foundation.modal.BinaryConfirmationModal
 import com.hadisatrio.libs.kotlin.foundation.modal.Modal
@@ -51,13 +52,14 @@ class SelectAPlaceUseCase(
         observeEvents()
     }
 
-    @Suppress("SwallowedException", "TooGenericExceptionCaught")
+    @Suppress("TooGenericExceptionCaught")
     private fun presentState() {
         try {
             presenter.present(places)
         } catch (e: Exception) {
             val modal = BinaryConfirmationModal("presentation_retrial_confirmation")
             modalPresenter.present(modal)
+            eventSink.sink(ExceptionalEvent(e))
         }
     }
 

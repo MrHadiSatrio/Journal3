@@ -23,6 +23,7 @@ import com.hadisatrio.apps.kotlin.journal3.sentiment.Sentiment
 import com.hadisatrio.libs.kotlin.foundation.event.CancellationEvent
 import com.hadisatrio.libs.kotlin.foundation.event.CompletionEvent
 import com.hadisatrio.libs.kotlin.foundation.event.EventSink
+import com.hadisatrio.libs.kotlin.foundation.event.ExceptionalEvent
 import com.hadisatrio.libs.kotlin.foundation.event.RecordedEventSource
 import com.hadisatrio.libs.kotlin.foundation.event.SelectionEvent
 import com.hadisatrio.libs.kotlin.foundation.event.TextInputEvent
@@ -47,6 +48,7 @@ class SelectAPlaceUseCaseTest {
 
     private val presenter = mockk<Presenter<Places>>(relaxed = true)
     private val modalPresenter = mockk<Presenter<Modal>>(relaxed = true)
+    private val eventSink = mockk<EventSink>(relaxed = true)
 
     private val places = SelfPopulatingPlaces(
         noOfPlaces = 10,
@@ -60,7 +62,7 @@ class SelectAPlaceUseCaseTest {
             presenter = presenter,
             modalPresenter = modalPresenter,
             eventSource = RecordedEventSource(CompletionEvent()),
-            eventSink = mockk(relaxed = true)
+            eventSink = eventSink
         )()
 
         verify(exactly = 1) { presenter.present(withArg { it.shouldHaveSize(places.toList().size) }) }
@@ -75,12 +77,29 @@ class SelectAPlaceUseCaseTest {
             presenter = presenter,
             modalPresenter = modalPresenter,
             eventSource = RecordedEventSource(CompletionEvent()),
-            eventSink = mockk(relaxed = true)
+            eventSink = eventSink
         )()
 
         verify(
             exactly = 1
         ) { modalPresenter.present(withArg { it.kind.shouldBe("presentation_retrial_confirmation") }) }
+    }
+
+    @Test
+    fun `Sinks an exceptional event in case an exception occurs while presenting`() {
+        every { presenter.present(any()) } throws RuntimeException()
+
+        SelectAPlaceUseCase(
+            places = places,
+            presenter = presenter,
+            modalPresenter = modalPresenter,
+            eventSource = RecordedEventSource(CompletionEvent()),
+            eventSink = eventSink
+        )()
+
+        verify(
+            exactly = 1
+        ) { eventSink.sink(withArg { it.shouldBeInstanceOf<ExceptionalEvent>() }) }
     }
 
     @Test
@@ -151,7 +170,7 @@ class SelectAPlaceUseCaseTest {
                 presenter = presenter,
                 modalPresenter = modalPresenter,
                 eventSource = RecordedEventSource(event),
-                eventSink = mockk(relaxed = true)
+                eventSink = eventSink
             )()
         }
     }
@@ -171,7 +190,7 @@ class SelectAPlaceUseCaseTest {
                 UnsupportedEvent(),
                 CompletionEvent()
             ),
-            eventSink = mockk(relaxed = true)
+            eventSink = eventSink
         )()
     }
 }

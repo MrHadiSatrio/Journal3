@@ -15,23 +15,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.hadisatrio.libs.android.foundation.os
+package com.hadisatrio.libs.kotlin.foundation.event
 
-import android.util.Log
-import com.hadisatrio.libs.kotlin.foundation.event.Event
-import com.hadisatrio.libs.kotlin.foundation.event.EventSink
-import com.hadisatrio.libs.kotlin.foundation.event.ExceptionalEvent
+import java.lang.Exception
 
-class SystemLog(
-    private val logTag: String
-) : EventSink {
+class ExceptionalEvent(
+    private val exception: Exception
+) : Event() {
 
-    override fun sink(event: Event) {
-        val message = "Event observed: ${event.describe()}"
-        if (event is ExceptionalEvent) {
-            Log.e(logTag, message)
-        } else {
-            Log.d(logTag, message)
-        }
+    override fun describeInternally(): Map<String, String> {
+        return mapOf(
+            "message" to exception.message.toString(),
+            "stacktrace" to exception.stackTraceToString(),
+        )
     }
 }
