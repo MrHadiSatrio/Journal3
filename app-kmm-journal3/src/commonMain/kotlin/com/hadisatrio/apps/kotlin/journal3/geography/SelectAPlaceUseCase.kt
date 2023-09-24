@@ -23,7 +23,12 @@ import com.hadisatrio.libs.kotlin.foundation.event.CompletionEvent
 import com.hadisatrio.libs.kotlin.foundation.event.Event
 import com.hadisatrio.libs.kotlin.foundation.event.EventSink
 import com.hadisatrio.libs.kotlin.foundation.event.EventSource
+import com.hadisatrio.libs.kotlin.foundation.event.ExceptionalEvent
 import com.hadisatrio.libs.kotlin.foundation.event.SelectionEvent
+import com.hadisatrio.libs.kotlin.foundation.modal.BinaryConfirmationModal
+import com.hadisatrio.libs.kotlin.foundation.modal.Modal
+import com.hadisatrio.libs.kotlin.foundation.modal.ModalApprovalEvent
+import com.hadisatrio.libs.kotlin.foundation.modal.ModalDismissalEvent
 import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
 import com.hadisatrio.libs.kotlin.geography.Places
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -35,6 +40,7 @@ import kotlinx.coroutines.runBlocking
 class SelectAPlaceUseCase(
     private val places: Places,
     private val presenter: Presenter<Places>,
+    private val modalPresenter: Presenter<Modal>,
     private val eventSource: EventSource,
     private val eventSink: EventSink,
 ) : UseCase {
@@ -46,8 +52,15 @@ class SelectAPlaceUseCase(
         observeEvents()
     }
 
+    @Suppress("TooGenericExceptionCaught")
     private fun presentState() {
-        presenter.present(places)
+        try {
+            presenter.present(places)
+        } catch (e: Exception) {
+            val modal = BinaryConfirmationModal("presentation_retrial_confirmation")
+            modalPresenter.present(modal)
+            eventSink.sink(ExceptionalEvent(e))
+        }
     }
 
     private fun observeEvents() = runBlocking {
@@ -60,6 +73,8 @@ class SelectAPlaceUseCase(
     private suspend fun handleEvent(event: Event) {
         when (event) {
             is SelectionEvent -> handleSelection(event)
+            is ModalApprovalEvent -> handleModalApproval(event)
+            is ModalDismissalEvent -> handleModalDismissal(event)
             is CancellationEvent -> handleCancellation()
         }
     }
@@ -75,6 +90,16 @@ class SelectAPlaceUseCase(
                 completionEvents.emit(CompletionEvent())
             }
         }
+    }
+
+    private fun handleModalApproval(event: ModalApprovalEvent) {
+        if (event.modalKind != "presentation_retrial_confirmation") return
+        presentState()
+    }
+
+    private suspend fun handleModalDismissal(event: ModalDismissalEvent) {
+        if (event.modalKind != "presentation_retrial_confirmation") return
+        completionEvents.emit(CompletionEvent())
     }
 
     private suspend fun handleCancellation() {

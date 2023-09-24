@@ -23,10 +23,13 @@ import com.hadisatrio.apps.kotlin.journal3.sentiment.Sentiment
 import com.hadisatrio.libs.kotlin.foundation.event.CancellationEvent
 import com.hadisatrio.libs.kotlin.foundation.event.CompletionEvent
 import com.hadisatrio.libs.kotlin.foundation.event.EventSink
+import com.hadisatrio.libs.kotlin.foundation.event.ExceptionalEvent
 import com.hadisatrio.libs.kotlin.foundation.event.RecordedEventSource
 import com.hadisatrio.libs.kotlin.foundation.event.SelectionEvent
 import com.hadisatrio.libs.kotlin.foundation.event.TextInputEvent
+import com.hadisatrio.libs.kotlin.foundation.modal.Modal
 import com.hadisatrio.libs.kotlin.foundation.modal.ModalApprovalEvent
+import com.hadisatrio.libs.kotlin.foundation.modal.ModalDismissalEvent
 import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
 import com.hadisatrio.libs.kotlin.geography.Places
 import com.hadisatrio.libs.kotlin.geography.SelfPopulatingPlaces
@@ -34,6 +37,7 @@ import com.hadisatrio.libs.kotlin.geography.fake.FakePlaces
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
+import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.datetime.Instant
@@ -42,6 +46,10 @@ import kotlin.test.Test
 
 class SelectAPlaceUseCaseTest {
 
+    private val presenter = mockk<Presenter<Places>>(relaxed = true)
+    private val modalPresenter = mockk<Presenter<Modal>>(relaxed = true)
+    private val eventSink = mockk<EventSink>(relaxed = true)
+
     private val places = SelfPopulatingPlaces(
         noOfPlaces = 10,
         origin = FakePlaces()
@@ -49,16 +57,82 @@ class SelectAPlaceUseCaseTest {
 
     @Test
     fun `Forwards whole places to the presenter`() {
-        val presenter = mockk<Presenter<Places>>(relaxed = true)
+        SelectAPlaceUseCase(
+            places = places,
+            presenter = presenter,
+            modalPresenter = modalPresenter,
+            eventSource = RecordedEventSource(CompletionEvent()),
+            eventSink = eventSink
+        )()
+
+        verify(exactly = 1) { presenter.present(withArg { it.shouldHaveSize(places.toList().size) }) }
+    }
+
+    @Test
+    fun `Presents a modal in case an exception occurs while presenting`() {
+        every { presenter.present(any()) } throws RuntimeException()
 
         SelectAPlaceUseCase(
             places = places,
             presenter = presenter,
+            modalPresenter = modalPresenter,
             eventSource = RecordedEventSource(CompletionEvent()),
+            eventSink = eventSink
+        )()
+
+        verify(
+            exactly = 1
+        ) { modalPresenter.present(withArg { it.kind.shouldBe("presentation_retrial_confirmation") }) }
+    }
+
+    @Test
+    fun `Sinks an exceptional event in case an exception occurs while presenting`() {
+        every { presenter.present(any()) } throws RuntimeException()
+
+        SelectAPlaceUseCase(
+            places = places,
+            presenter = presenter,
+            modalPresenter = modalPresenter,
+            eventSource = RecordedEventSource(CompletionEvent()),
+            eventSink = eventSink
+        )()
+
+        verify(
+            exactly = 1
+        ) { eventSink.sink(withArg { it.shouldBeInstanceOf<ExceptionalEvent>() }) }
+    }
+
+    @Test
+    fun `Retries presentation upon receiving retrial confirmation`() {
+        every { presenter.present(any()) } throws RuntimeException()
+
+        SelectAPlaceUseCase(
+            places = places,
+            presenter = presenter,
+            modalPresenter = modalPresenter,
+            eventSource = RecordedEventSource(
+                ModalApprovalEvent("presentation_retrial_confirmation"),
+                CompletionEvent()
+            ),
             eventSink = mockk(relaxed = true)
         )()
 
-        verify(exactly = 1) { presenter.present(withArg { it.shouldHaveSize(places.toList().size) }) }
+        verify(exactly = 2) { modalPresenter.present(any()) }
+    }
+
+    @Test(timeout = 5_000)
+    fun `Completes upon receiving retrial dismissal`() {
+        every { presenter.present(any()) } throws RuntimeException()
+
+        SelectAPlaceUseCase(
+            places = places,
+            presenter = presenter,
+            modalPresenter = modalPresenter,
+            eventSource = RecordedEventSource(
+                ModalDismissalEvent("presentation_retrial_confirmation")
+            ),
+            eventSink = mockk(relaxed = true)
+        )()
     }
 
     @Test
@@ -69,7 +143,8 @@ class SelectAPlaceUseCaseTest {
 
         SelectAPlaceUseCase(
             places = places,
-            presenter = mockk(relaxUnitFun = true),
+            presenter = presenter,
+            modalPresenter = modalPresenter,
             eventSource = RecordedEventSource(
                 SelectionEvent("item_position", targetPosition.toString())
             ),
@@ -92,9 +167,10 @@ class SelectAPlaceUseCaseTest {
         listOf(CancellationEvent("user"), CancellationEvent("system")).forEach { event ->
             SelectAPlaceUseCase(
                 places = places,
-                presenter = mockk(relaxed = true),
+                presenter = presenter,
+                modalPresenter = modalPresenter,
                 eventSource = RecordedEventSource(event),
-                eventSink = mockk(relaxed = true)
+                eventSink = eventSink
             )()
         }
     }
@@ -103,7 +179,8 @@ class SelectAPlaceUseCaseTest {
     fun `Ignores unknown events without repercussions`() {
         SelectAPlaceUseCase(
             places = places,
-            presenter = mockk(relaxed = true),
+            presenter = presenter,
+            modalPresenter = modalPresenter,
             eventSource = RecordedEventSource(
                 TextInputEvent("foo", "Bar"),
                 SelectionEvent("fizz", LiteralTimestamp(Instant.DISTANT_FUTURE).toString()),
@@ -113,7 +190,7 @@ class SelectAPlaceUseCaseTest {
                 UnsupportedEvent(),
                 CompletionEvent()
             ),
-            eventSink = mockk(relaxed = true)
+            eventSink = eventSink
         )()
     }
 }

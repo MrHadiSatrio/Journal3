@@ -63,18 +63,15 @@ class SelectAPlaceActivity : AppCompatActivity() {
             view.findViewById<TextView>(R.id.name_label).text = item.name
         }
 
-        ExecutorDispatchingPresenter(
-            executor = journal3Application.backgroundExecutor,
-            origin = AdaptingPresenter(
-                adapter = { it.toList() },
-                origin = ExecutorDispatchingPresenter(
-                    executor = journal3Application.foregroundExecutor,
-                    origin = RecyclerViewPresenter(
-                        recyclerView = findViewById(R.id.places_list),
-                        viewFactory = viewFactory,
-                        viewRenderer = viewRenderer,
-                        differ = PlaceItemDiffer
-                    ),
+        AdaptingPresenter(
+            adapter = { it.toList() },
+            origin = ExecutorDispatchingPresenter(
+                executor = journal3Application.foregroundExecutor,
+                origin = RecyclerViewPresenter(
+                    recyclerView = findViewById(R.id.places_list),
+                    viewFactory = viewFactory,
+                    viewRenderer = viewRenderer,
+                    differ = PlaceItemDiffer
                 )
             )
         )
@@ -123,6 +120,7 @@ class SelectAPlaceActivity : AppCompatActivity() {
             origin = SelectAPlaceUseCase(
                 places = journal3Application.places,
                 presenter = presenter,
+                modalPresenter = journal3Application.modalPresenter,
                 eventSource = eventSource,
                 eventSink = eventSink
             )

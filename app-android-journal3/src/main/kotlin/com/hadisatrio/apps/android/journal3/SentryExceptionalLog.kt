@@ -15,23 +15,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.hadisatrio.libs.android.foundation.os
+package com.hadisatrio.apps.android.journal3
 
-import android.util.Log
 import com.hadisatrio.libs.kotlin.foundation.event.Event
 import com.hadisatrio.libs.kotlin.foundation.event.EventSink
 import com.hadisatrio.libs.kotlin.foundation.event.ExceptionalEvent
+import io.sentry.Sentry
 
-class SystemLog(
-    private val logTag: String
-) : EventSink {
+object SentryExceptionalLog : EventSink {
 
     override fun sink(event: Event) {
-        val message = "Event observed: ${event.describe()}"
-        if (event is ExceptionalEvent) {
-            Log.e(logTag, message)
-        } else {
-            Log.d(logTag, message)
-        }
+        if (event !is ExceptionalEvent) return
+        Sentry.captureException(event.exception)
     }
 }

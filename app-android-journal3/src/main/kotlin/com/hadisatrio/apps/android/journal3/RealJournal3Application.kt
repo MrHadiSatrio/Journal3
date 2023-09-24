@@ -192,6 +192,7 @@ class RealJournal3Application : Journal3Application() {
     override val globalEventSink: EventSink by lazy {
         EventSinks(
             ActivityRoutingEventSink(currentActivity),
+            SentryExceptionalLog,
             SystemLog("Journal3")
         )
     }
