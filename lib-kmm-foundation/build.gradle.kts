@@ -16,6 +16,8 @@ kotlin {
             dependencies {
                 api(Dependencies.Commons.UUID)
                 api(Dependencies.Asynchrony.COROUTINES)
+                api(Dependencies.Asynchrony.REACTIVE_EXTENSIONS)
+                api(Dependencies.Asynchrony.REACTIVE_EXTENSIONS_COROUTINE_INTEROP)
             }
         }
         val commonTest by getting {

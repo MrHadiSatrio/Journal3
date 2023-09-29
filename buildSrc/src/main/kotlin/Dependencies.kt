@@ -52,6 +52,8 @@ object Dependencies {
 
     object Asynchrony {
         const val COROUTINES = "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3"
+        const val REACTIVE_EXTENSIONS = "com.badoo.reaktive:reaktive:1.3.0"
+        const val REACTIVE_EXTENSIONS_COROUTINE_INTEROP = "com.badoo.reaktive:coroutines-interop:1.3.0"
     }
 
     object Commons {
