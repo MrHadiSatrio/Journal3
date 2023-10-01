@@ -34,10 +34,9 @@ import com.hadisatrio.libs.android.dimensions.dp
 import com.hadisatrio.libs.android.foundation.activity.ActivityCompletionEventSink
 import com.hadisatrio.libs.kotlin.foundation.ExecutorDispatchingUseCase
 import com.hadisatrio.libs.kotlin.foundation.UseCase
-import com.hadisatrio.libs.kotlin.foundation.event.AdaptedRxEventSource
 import com.hadisatrio.libs.kotlin.foundation.event.EventSink
 import com.hadisatrio.libs.kotlin.foundation.event.EventSinks
-import com.hadisatrio.libs.kotlin.foundation.event.EventSource
+import com.hadisatrio.libs.kotlin.foundation.event.RxEventSource
 import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
 
 abstract class StoriesListFragment : Fragment() {
@@ -48,7 +47,7 @@ abstract class StoriesListFragment : Fragment() {
 
     abstract val presenter: Presenter<Stories>
 
-    abstract val eventSource: EventSource
+    abstract val eventSource: RxEventSource
 
     abstract val stories: Stories
 
@@ -65,7 +64,7 @@ abstract class StoriesListFragment : Fragment() {
             origin = ShowStoriesUseCase(
                 stories = stories,
                 presenter = presenter,
-                eventSource = AdaptedRxEventSource(eventSource),
+                eventSource = eventSource,
                 eventSink = eventSink
             )
         )

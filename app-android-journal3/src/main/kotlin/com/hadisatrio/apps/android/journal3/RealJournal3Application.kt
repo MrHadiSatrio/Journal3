@@ -18,6 +18,7 @@
 package com.hadisatrio.apps.android.journal3
 
 import androidx.core.content.ContextCompat
+import com.badoo.reaktive.subject.publish.PublishSubject
 import com.google.android.material.color.DynamicColors
 import com.hadisatrio.apps.android.journal3.sentiment.TfliteSentimentAnalyst
 import com.hadisatrio.apps.kotlin.journal3.datetime.FormattedTimestamp
@@ -53,7 +54,7 @@ import com.hadisatrio.libs.android.io.content.ContentResolverSources
 import com.hadisatrio.libs.kotlin.foundation.event.EventHub
 import com.hadisatrio.libs.kotlin.foundation.event.EventSink
 import com.hadisatrio.libs.kotlin.foundation.event.EventSinks
-import com.hadisatrio.libs.kotlin.foundation.event.EventSource
+import com.hadisatrio.libs.kotlin.foundation.event.RxEventSource
 import com.hadisatrio.libs.kotlin.foundation.modal.Modal
 import com.hadisatrio.libs.kotlin.foundation.presentation.ExecutorDispatchingPresenter
 import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
@@ -64,7 +65,6 @@ import com.hadisatrio.libs.kotlin.io.filesystem.FileSystemSources
 import com.hadisatrio.libs.kotlin.paraphrase.OpenAiParaphraser
 import com.hadisatrio.libs.kotlin.paraphrase.Paraphraser
 import io.ktor.client.HttpClient
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.datetime.Clock
 import okio.FileSystem
 import okio.Path.Companion.toPath
@@ -197,8 +197,8 @@ class RealJournal3Application : Journal3Application() {
         )
     }
 
-    override val globalEventSource: EventSource by lazy {
-        EventHub(MutableSharedFlow(extraBufferCapacity = 1))
+    override val globalEventSource: RxEventSource by lazy {
+        EventHub(PublishSubject())
     }
 
     override val timestampDecor: Timestamp.Decor by lazy {

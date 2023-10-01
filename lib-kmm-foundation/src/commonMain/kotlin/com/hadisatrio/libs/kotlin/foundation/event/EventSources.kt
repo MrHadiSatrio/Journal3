@@ -17,16 +17,16 @@
 
 package com.hadisatrio.libs.kotlin.foundation.event
 
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.merge
+import com.badoo.reaktive.observable.Observable
+import com.badoo.reaktive.observable.merge
 
 class EventSources(
-    private val sources: Iterable<EventSource>
-) : EventSource {
+    private val sources: Iterable<RxEventSource>
+) : RxEventSource {
 
-    constructor(vararg source: EventSource) : this(source.toList())
+    constructor(vararg source: RxEventSource) : this(source.toList())
 
-    override fun events(): Flow<Event> {
+    override fun events(): Observable<Event> {
         return sources.map { it.events() }.merge()
     }
 }

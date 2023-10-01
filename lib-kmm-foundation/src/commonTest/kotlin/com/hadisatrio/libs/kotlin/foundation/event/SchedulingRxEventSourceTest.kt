@@ -17,16 +17,26 @@
 
 package com.hadisatrio.libs.kotlin.foundation.event
 
-import com.badoo.reaktive.observable.Observable
-import com.badoo.reaktive.observable.asObservable
+import com.badoo.reaktive.observable.subscribe
+import com.badoo.reaktive.scheduler.Scheduler
+import com.badoo.reaktive.subject.publish.PublishSubject
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.verify
+import kotlin.test.Test
 
-class RecordedEventSource(
-    private val events: List<Event>
-) : RxEventSource {
+class SchedulingRxEventSourceTest {
 
-    constructor(vararg event: Event) : this(event.toList())
+    @Test
+    fun `Switches subsription and observation scheduler to the given`() {
+        val scheduler = mockk<Scheduler>(relaxed = true)
+        val origin = mockk<RxEventSource>(relaxed = true)
+        val source = SchedulingRxEventSource(scheduler, origin)
+        every { origin.events() } returns PublishSubject()
 
-    override fun events(): Observable<Event> {
-        return events.asObservable()
+        source.events().subscribe { }
+
+        verify(atLeast = 1) { origin.events() }
+        verify(atLeast = 1) { scheduler.newExecutor() }
     }
 }

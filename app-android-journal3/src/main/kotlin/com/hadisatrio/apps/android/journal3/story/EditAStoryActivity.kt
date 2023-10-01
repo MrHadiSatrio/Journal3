@@ -20,6 +20,8 @@ package com.hadisatrio.apps.android.journal3.story
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
+import com.badoo.reaktive.scheduler.computationScheduler
+import com.badoo.reaktive.scheduler.mainScheduler
 import com.hadisatrio.apps.android.journal3.R
 import com.hadisatrio.apps.android.journal3.id.getUuidExtra
 import com.hadisatrio.apps.android.journal3.journal3Application
@@ -36,14 +38,13 @@ import com.hadisatrio.libs.android.foundation.widget.TextViewStringPresenter
 import com.hadisatrio.libs.android.foundation.widget.ViewClickEventSource
 import com.hadisatrio.libs.kotlin.foundation.ExecutorDispatchingUseCase
 import com.hadisatrio.libs.kotlin.foundation.UseCase
-import com.hadisatrio.libs.kotlin.foundation.event.AdaptedRxEventSource
 import com.hadisatrio.libs.kotlin.foundation.event.CancellationEvent
 import com.hadisatrio.libs.kotlin.foundation.event.CompletionEvent
 import com.hadisatrio.libs.kotlin.foundation.event.EventSink
 import com.hadisatrio.libs.kotlin.foundation.event.EventSinks
-import com.hadisatrio.libs.kotlin.foundation.event.EventSource
 import com.hadisatrio.libs.kotlin.foundation.event.EventSources
-import com.hadisatrio.libs.kotlin.foundation.event.ExecutorDispatchingEventSource
+import com.hadisatrio.libs.kotlin.foundation.event.RxEventSource
+import com.hadisatrio.libs.kotlin.foundation.event.SchedulingRxEventSource
 import com.hadisatrio.libs.kotlin.foundation.event.SelectionEvent
 import com.hadisatrio.libs.kotlin.foundation.presentation.AdaptingPresenter
 import com.hadisatrio.libs.kotlin.foundation.presentation.ExecutorDispatchingPresenter
@@ -68,9 +69,10 @@ class EditAStoryActivity : AppCompatActivity() {
         )
     }
 
-    private val eventSource: EventSource by lazy {
-        ExecutorDispatchingEventSource(
-            executor = journal3Application.foregroundExecutor,
+    private val eventSource: RxEventSource by lazy {
+        SchedulingRxEventSource(
+            subscriptionScheduler = mainScheduler,
+            observationScheduler = computationScheduler,
             origin = EventSources(
                 journal3Application.globalEventSource,
                 LifecycleTriggeredEventSource(
@@ -128,7 +130,7 @@ class EditAStoryActivity : AppCompatActivity() {
                 stories = journal3Application.stories,
                 presenter = presenter,
                 modalPresenter = journal3Application.modalPresenter,
-                eventSource = AdaptedRxEventSource(eventSource),
+                eventSource = eventSource,
                 eventSink = eventSink
             )
         )

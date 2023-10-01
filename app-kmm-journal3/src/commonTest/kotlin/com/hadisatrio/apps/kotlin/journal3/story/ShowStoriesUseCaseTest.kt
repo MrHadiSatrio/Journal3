@@ -19,7 +19,6 @@ package com.hadisatrio.apps.kotlin.journal3.story
 
 import com.hadisatrio.apps.kotlin.journal3.event.RefreshRequestEvent
 import com.hadisatrio.apps.kotlin.journal3.story.fake.FakeStories
-import com.hadisatrio.libs.kotlin.foundation.event.AdaptedRxEventSource
 import com.hadisatrio.libs.kotlin.foundation.event.CancellationEvent
 import com.hadisatrio.libs.kotlin.foundation.event.CompletionEvent
 import com.hadisatrio.libs.kotlin.foundation.event.EventSink
@@ -47,7 +46,7 @@ class ShowStoriesUseCaseTest {
         ShowStoriesUseCase(
             stories = stories,
             presenter = presenter,
-            eventSource = AdaptedRxEventSource(RecordedEventSource(CompletionEvent())),
+            eventSource = RecordedEventSource(CompletionEvent()),
             eventSink = mockk(relaxed = true)
         )()
 
@@ -61,13 +60,11 @@ class ShowStoriesUseCaseTest {
         ShowStoriesUseCase(
             stories = stories,
             presenter = presenter,
-            eventSource = AdaptedRxEventSource(
-                RecordedEventSource(
-                    RefreshRequestEvent("test"),
-                    RefreshRequestEvent("test"),
-                    RefreshRequestEvent("test"),
-                    CompletionEvent()
-                )
+            eventSource = RecordedEventSource(
+                RefreshRequestEvent("test"),
+                RefreshRequestEvent("test"),
+                RefreshRequestEvent("test"),
+                CompletionEvent()
             ),
             eventSink = mockk(relaxed = true)
         )()
@@ -84,12 +81,9 @@ class ShowStoriesUseCaseTest {
         ShowStoriesUseCase(
             stories = stories,
             presenter = mockk(relaxed = true),
-            eventSource =
-            AdaptedRxEventSource(
-                RecordedEventSource(
-                    SelectionEvent("item_position", storyIndex.toString()),
-                    CompletionEvent()
-                )
+            eventSource = RecordedEventSource(
+                SelectionEvent("item_position", storyIndex.toString()),
+                CompletionEvent()
             ),
             eventSink = eventSink
         )()
@@ -112,7 +106,7 @@ class ShowStoriesUseCaseTest {
             ShowStoriesUseCase(
                 stories = stories,
                 presenter = mockk(relaxed = true),
-                eventSource = AdaptedRxEventSource(RecordedEventSource(event)),
+                eventSource = RecordedEventSource(event),
                 eventSink = mockk(relaxed = true)
             )()
         }

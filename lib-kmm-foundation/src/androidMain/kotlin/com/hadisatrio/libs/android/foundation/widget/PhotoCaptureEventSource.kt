@@ -23,12 +23,12 @@ import androidx.activity.ComponentActivity
 import androidx.activity.result.ActivityResultRegistry
 import androidx.activity.result.contract.ActivityResultContracts.TakePicture
 import androidx.core.content.FileProvider
+import com.badoo.reaktive.observable.Observable
+import com.badoo.reaktive.subject.publish.PublishSubject
 import com.benasher44.uuid.uuid4
 import com.hadisatrio.libs.kotlin.foundation.event.Event
-import com.hadisatrio.libs.kotlin.foundation.event.EventSource
+import com.hadisatrio.libs.kotlin.foundation.event.RxEventSource
 import com.hadisatrio.libs.kotlin.foundation.event.SelectionEvent
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
 import java.io.File
 import java.util.concurrent.atomic.AtomicReference
 
@@ -37,15 +37,15 @@ class PhotoCaptureEventSource internal constructor(
     private val activity: ComponentActivity,
     private val registry: ActivityResultRegistry,
     private val tempDirectory: File
-) : EventSource {
+) : RxEventSource {
 
     private val uriInFlight = AtomicReference<Uri>(null)
-    private val events = MutableSharedFlow<Event>(extraBufferCapacity = 1)
+    private val events = PublishSubject<Event>()
 
     private val launcher = activity.registerForActivityResult(TakePicture(), registry) { isPictureTaken ->
         val uri = uriInFlight.getAndSet(null)
         if (!isPictureTaken || uri == null) return@registerForActivityResult
-        events.tryEmit(SelectionEvent("attachments", uri.toString()))
+        events.onNext(SelectionEvent("attachments", uri.toString()))
     }
 
     init {
@@ -62,7 +62,7 @@ class PhotoCaptureEventSource internal constructor(
         File(triggerView.context.cacheDir, "camera").apply { mkdirs() }
     )
 
-    override fun events(): Flow<Event> {
+    override fun events(): Observable<Event> {
         return events
     }
 

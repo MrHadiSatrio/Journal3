@@ -22,7 +22,6 @@ import com.hadisatrio.apps.kotlin.journal3.event.UnsupportedEvent
 import com.hadisatrio.apps.kotlin.journal3.sentiment.Sentiment
 import com.hadisatrio.apps.kotlin.journal3.story.fake.FakeStories
 import com.hadisatrio.apps.kotlin.journal3.token.TokenableString
-import com.hadisatrio.libs.kotlin.foundation.event.AdaptedRxEventSource
 import com.hadisatrio.libs.kotlin.foundation.event.CancellationEvent
 import com.hadisatrio.libs.kotlin.foundation.event.CompletionEvent
 import com.hadisatrio.libs.kotlin.foundation.event.RecordedEventSource
@@ -52,12 +51,10 @@ class EditAStoryUseCaseTest {
             stories = stories,
             presenter = mockk(relaxed = true),
             modalPresenter = mockk(relaxed = true),
-            eventSource = AdaptedRxEventSource(
-                RecordedEventSource(
-                    TextInputEvent("title", "Foo"),
-                    TextInputEvent("synopsis", "Bar"),
-                    CompletionEvent()
-                )
+            eventSource = RecordedEventSource(
+                TextInputEvent("title", "Foo"),
+                TextInputEvent("synopsis", "Bar"),
+                CompletionEvent()
             ),
             eventSink = mockk(relaxed = true)
         )()
@@ -75,16 +72,14 @@ class EditAStoryUseCaseTest {
             stories = stories,
             presenter = mockk(relaxed = true),
             modalPresenter = modalPresenter,
-            eventSource = AdaptedRxEventSource(
-                RecordedEventSource(
-                    TextInputEvent("title", "Foo"),
-                    TextInputEvent("synopsis", "Bar"),
-                    CancellationEvent("user"),
-                    ModalDismissalEvent("edit_cancellation_confirmation"),
-                    TextInputEvent("title", "Fizz"),
-                    TextInputEvent("synopsis", "Buzz"),
-                    CompletionEvent()
-                )
+            eventSource = RecordedEventSource(
+                TextInputEvent("title", "Foo"),
+                TextInputEvent("synopsis", "Bar"),
+                CancellationEvent("user"),
+                ModalDismissalEvent("edit_cancellation_confirmation"),
+                TextInputEvent("title", "Fizz"),
+                TextInputEvent("synopsis", "Buzz"),
+                CompletionEvent()
             ),
             eventSink = mockk(relaxed = true)
         )()
@@ -104,14 +99,12 @@ class EditAStoryUseCaseTest {
             stories = stories,
             presenter = mockk(relaxed = true),
             modalPresenter = modalPresenter,
-            eventSource = AdaptedRxEventSource(
-                RecordedEventSource(
-                    TextInputEvent("title", "Foo"),
-                    TextInputEvent("synopsis", "Bar"),
-                    TextInputEvent("title", ""),
-                    TextInputEvent("synopsis", ""),
-                    CancellationEvent("user")
-                )
+            eventSource = RecordedEventSource(
+                TextInputEvent("title", "Foo"),
+                TextInputEvent("synopsis", "Bar"),
+                TextInputEvent("title", ""),
+                TextInputEvent("synopsis", ""),
+                CancellationEvent("user")
             ),
             eventSink = mockk(relaxed = true)
         )()
@@ -131,11 +124,9 @@ class EditAStoryUseCaseTest {
             stories = stories,
             presenter = mockk(relaxed = true),
             modalPresenter = modalPresenter,
-            eventSource = AdaptedRxEventSource(
-                RecordedEventSource(
-                    CancellationEvent("user"),
-                    ModalApprovalEvent("edit_cancellation_confirmation")
-                )
+            eventSource = RecordedEventSource(
+                CancellationEvent("user"),
+                ModalApprovalEvent("edit_cancellation_confirmation")
             ),
             eventSink = mockk(relaxed = true)
         )()
@@ -156,12 +147,10 @@ class EditAStoryUseCaseTest {
             stories = stories,
             presenter = mockk(relaxed = true),
             modalPresenter = modalPresenter,
-            eventSource = AdaptedRxEventSource(
-                RecordedEventSource(
-                    CancellationEvent("user"),
-                    ModalApprovalEvent("edit_cancellation_confirmation"),
-                    CompletionEvent()
-                )
+            eventSource = RecordedEventSource(
+                CancellationEvent("user"),
+                ModalApprovalEvent("edit_cancellation_confirmation"),
+                CompletionEvent()
             ),
             eventSink = mockk(relaxed = true)
         )()
@@ -181,7 +170,7 @@ class EditAStoryUseCaseTest {
                 stories = stories,
                 presenter = mockk(relaxed = true),
                 modalPresenter = mockk(relaxed = true),
-                eventSource = AdaptedRxEventSource(RecordedEventSource(event)),
+                eventSource = RecordedEventSource(event),
                 eventSink = mockk(relaxed = true)
             )()
         }
@@ -194,16 +183,14 @@ class EditAStoryUseCaseTest {
             stories = stories,
             presenter = mockk(relaxed = true),
             modalPresenter = mockk(relaxed = true),
-            eventSource = AdaptedRxEventSource(
-                RecordedEventSource(
-                    TextInputEvent("foo", "Bar"),
-                    SelectionEvent("fizz", LiteralTimestamp(Instant.DISTANT_FUTURE).toString()),
-                    SelectionEvent("buzz", Sentiment(0.75F).toString()),
-                    ModalApprovalEvent("lorem"),
-                    CancellationEvent("system"),
-                    UnsupportedEvent(),
-                    CompletionEvent()
-                )
+            eventSource = RecordedEventSource(
+                TextInputEvent("foo", "Bar"),
+                SelectionEvent("fizz", LiteralTimestamp(Instant.DISTANT_FUTURE).toString()),
+                SelectionEvent("buzz", Sentiment(0.75F).toString()),
+                ModalApprovalEvent("lorem"),
+                CancellationEvent("system"),
+                UnsupportedEvent(),
+                CompletionEvent()
             ),
             eventSink = mockk(relaxed = true)
         )()

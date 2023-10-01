@@ -32,7 +32,7 @@ class StreamEventsUseCaseTest {
             FakeEvent("baz" to "qux"),
             CompletionEvent()
         )
-        val source = AdaptedRxEventSource(RecordedEventSource(events))
+        val source = RecordedEventSource(events)
 
         StreamEventsUseCase(source, sink)()
 
@@ -46,7 +46,7 @@ class StreamEventsUseCaseTest {
             FakeEvent("baz" to "qux"),
             CancellationEvent("system")
         )
-        val source = AdaptedRxEventSource(RecordedEventSource(events))
+        val source = RecordedEventSource(events)
 
         StreamEventsUseCase(source, sink)()
 

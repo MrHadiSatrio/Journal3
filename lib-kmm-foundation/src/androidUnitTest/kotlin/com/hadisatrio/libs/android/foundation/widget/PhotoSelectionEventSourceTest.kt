@@ -24,13 +24,12 @@ import androidx.activity.result.ActivityResultRegistry
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.core.app.ActivityOptionsCompat
 import androidx.test.runner.AndroidJUnit4
+import com.badoo.reaktive.observable.subscribe
+import com.badoo.reaktive.test.scheduler.TestScheduler
 import com.hadisatrio.libs.kotlin.foundation.event.Event
+import com.hadisatrio.libs.kotlin.foundation.event.SchedulingRxEventSource
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.maps.shouldContain
-import kotlinx.coroutines.flow.toList
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.test.UnconfinedTestDispatcher
-import kotlinx.coroutines.test.runTest
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.Robolectric
@@ -41,39 +40,39 @@ class PhotoSelectionEventSourceTest {
     private val activityController = Robolectric.buildActivity(ComponentActivity::class.java)
     private val activity = activityController.get()
     private val triggerView = Button(activity)
+    private val events = mutableListOf<Event>()
+    private val scheduler = TestScheduler()
 
     @Test
-    fun `Produces SelectionEvent upon positive activity result`() = runTest {
+    fun `Produces SelectionEvent upon positive activity result`() {
         val expectedResult = listOf(Uri.parse("content://foo"), Uri.parse("content://bar"))
         val registry = immediateReturningRegistry(expectedResult)
         val source = PhotoSelectionEventSource(triggerView, activity, registry, activity.contentResolver)
-        val events = mutableListOf<Event>()
+        val disposable = SchedulingRxEventSource(scheduler, source).events().subscribe { events.add(it) }
         activity.setContentView(triggerView)
         activityController.setup().visible()
 
-        val collectJob = launch(UnconfinedTestDispatcher()) { source.events().toList(events) }
         triggerView.performClick()
 
         val description = events.first().describe()
         description.shouldContain("name" to "Selection Event")
         description.shouldContain("selection_kind" to "attachments")
         description.shouldContain("selected_id" to "content://foo,content://bar")
-        collectJob.cancel()
+        disposable.dispose()
     }
 
     @Test
-    fun `Does not produce SelectionEvent upon negative activity result`() = runTest {
+    fun `Does not produce SelectionEvent upon negative activity result`() {
         val registry = immediateReturningRegistry(emptyList<Uri>())
         val source = PhotoSelectionEventSource(triggerView, activity, registry, activity.contentResolver)
-        val events = mutableListOf<Event>()
+        val disposable = SchedulingRxEventSource(scheduler, source).events().subscribe { events.add(it) }
         activity.setContentView(triggerView)
         activityController.setup().visible()
 
-        val collectJob = launch(UnconfinedTestDispatcher()) { source.events().toList(events) }
         triggerView.performClick()
 
         events.shouldBeEmpty()
-        collectJob.cancel()
+        disposable.dispose()
     }
 
     private fun immediateReturningRegistry(expectedResult: Any): ActivityResultRegistry {

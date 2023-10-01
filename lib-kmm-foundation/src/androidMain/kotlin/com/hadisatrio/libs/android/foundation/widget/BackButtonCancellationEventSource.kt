@@ -20,32 +20,32 @@ package com.hadisatrio.libs.android.foundation.widget
 import androidx.activity.ComponentActivity
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.OnBackPressedDispatcher
+import com.badoo.reaktive.base.setCancellable
+import com.badoo.reaktive.observable.Observable
+import com.badoo.reaktive.observable.observable
 import com.hadisatrio.libs.kotlin.foundation.event.CancellationEvent
 import com.hadisatrio.libs.kotlin.foundation.event.Event
-import com.hadisatrio.libs.kotlin.foundation.event.EventSource
-import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
+import com.hadisatrio.libs.kotlin.foundation.event.RxEventSource
 
 class BackButtonCancellationEventSource(
     private val dispatcher: OnBackPressedDispatcher
-) : EventSource {
+) : RxEventSource {
 
-    private val events: Flow<CancellationEvent> by lazy {
-        callbackFlow {
+    private val events: Observable<CancellationEvent> by lazy {
+        observable { emitter ->
             val callback = object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
-                    trySend(CancellationEvent("user"))
+                    emitter.onNext(CancellationEvent("user"))
                 }
             }
             dispatcher.addCallback(callback)
-            awaitClose { callback.remove() }
+            emitter.setCancellable { callback.remove() }
         }
     }
 
     constructor(activity: ComponentActivity) : this(activity.onBackPressedDispatcher)
 
-    override fun events(): Flow<Event> {
+    override fun events(): Observable<Event> {
         return events
     }
 }

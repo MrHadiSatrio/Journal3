@@ -19,13 +19,12 @@ package com.hadisatrio.libs.android.foundation.widget
 
 import android.widget.Button
 import androidx.test.runner.AndroidJUnit4
+import com.badoo.reaktive.observable.subscribe
+import com.badoo.reaktive.test.scheduler.TestScheduler
 import com.hadisatrio.libs.kotlin.foundation.event.Event
+import com.hadisatrio.libs.kotlin.foundation.event.SchedulingRxEventSource
 import com.hadisatrio.libs.kotlin.foundation.event.SelectionEvent
 import io.kotest.matchers.maps.shouldContain
-import kotlinx.coroutines.flow.toList
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.test.UnconfinedTestDispatcher
-import kotlinx.coroutines.test.runTest
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RuntimeEnvironment
@@ -34,20 +33,20 @@ import org.robolectric.RuntimeEnvironment
 class ViewClickEventSourceTest {
 
     @Test
-    fun `Produces TextInputEvent on text changes`() = runTest {
+    fun `Produces TextInputEvent on text changes`() {
         val view = Button(RuntimeEnvironment.getApplication())
         val eventFactory = Event.Factory { SelectionEvent("Foo", "Bar") }
+        val scheduler = TestScheduler()
         val events = mutableListOf<Event>()
+        val source = ViewClickEventSource(view, eventFactory)
+        val disposable = SchedulingRxEventSource(scheduler, source).events().subscribe { events.add(it) }
 
-        val collectJob = launch(UnconfinedTestDispatcher()) {
-            ViewClickEventSource(view, eventFactory).events().toList(events)
-        }
         view.performClick()
 
         val description = events.first().describe()
         description.shouldContain("name" to "Selection Event")
         description.shouldContain("selection_kind" to "Foo")
         description.shouldContain("selected_id" to "Bar")
-        collectJob.cancel()
+        disposable.dispose()
     }
 }

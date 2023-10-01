@@ -18,22 +18,23 @@
 package com.hadisatrio.libs.android.foundation.widget
 
 import android.widget.EditText
+import com.badoo.reaktive.coroutinesinterop.asObservable
+import com.badoo.reaktive.observable.Observable
+import com.badoo.reaktive.observable.map
+import com.badoo.reaktive.observable.skip
 import com.hadisatrio.libs.kotlin.foundation.event.Event
-import com.hadisatrio.libs.kotlin.foundation.event.EventSource
+import com.hadisatrio.libs.kotlin.foundation.event.RxEventSource
 import com.hadisatrio.libs.kotlin.foundation.event.TextInputEvent
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.drop
-import kotlinx.coroutines.flow.map
 import reactivecircus.flowbinding.android.widget.textChanges
 
 class EditTextInputEventSource(
     private val editText: EditText,
     private val inputKind: String
-) : EventSource {
+) : RxEventSource {
 
-    override fun events(): Flow<Event> {
-        return editText.textChanges()
-            .drop(1)
+    override fun events(): Observable<Event> {
+        return editText.textChanges().asObservable()
+            .skip(1)
             .map { TextInputEvent(inputKind, it.toString()) }
     }
 }

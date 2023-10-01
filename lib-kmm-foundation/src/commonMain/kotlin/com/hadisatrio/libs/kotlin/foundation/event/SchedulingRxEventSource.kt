@@ -15,22 +15,24 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.hadisatrio.libs.android.foundation.widget
+package com.hadisatrio.libs.kotlin.foundation.event
 
-import android.view.View
-import com.badoo.reaktive.coroutinesinterop.asObservable
 import com.badoo.reaktive.observable.Observable
-import com.badoo.reaktive.observable.map
-import com.hadisatrio.libs.kotlin.foundation.event.Event
-import com.hadisatrio.libs.kotlin.foundation.event.RxEventSource
-import reactivecircus.flowbinding.android.view.clicks
+import com.badoo.reaktive.observable.observeOn
+import com.badoo.reaktive.observable.subscribeOn
+import com.badoo.reaktive.scheduler.Scheduler
 
-class ViewClickEventSource(
-    private val view: View,
-    private val eventFactory: Event.Factory
+class SchedulingRxEventSource(
+    private val subscriptionScheduler: Scheduler,
+    private val observationScheduler: Scheduler,
+    private val origin: RxEventSource
 ) : RxEventSource {
 
+    constructor(scheduler: Scheduler, origin: RxEventSource) : this(scheduler, scheduler, origin)
+
     override fun events(): Observable<Event> {
-        return view.clicks().asObservable().map { eventFactory.create() }
+        return origin.events()
+            .subscribeOn(subscriptionScheduler)
+            .observeOn(observationScheduler)
     }
 }

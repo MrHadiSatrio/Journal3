@@ -19,20 +19,20 @@ package com.hadisatrio.libs.android.foundation.widget
 
 import android.view.MotionEvent
 import androidx.recyclerview.widget.RecyclerView
+import com.badoo.reaktive.base.setCancellable
+import com.badoo.reaktive.observable.Observable
+import com.badoo.reaktive.observable.observable
 import com.hadisatrio.libs.kotlin.foundation.event.Event
-import com.hadisatrio.libs.kotlin.foundation.event.EventSource
+import com.hadisatrio.libs.kotlin.foundation.event.RxEventSource
 import com.hadisatrio.libs.kotlin.foundation.event.SelectionEvent
-import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
 import kotlin.math.abs
 
 class RecyclerViewItemSelectionEventSource(
     private val recyclerView: RecyclerView
-) : EventSource {
+) : RxEventSource {
 
-    private val events: Flow<Event> by lazy {
-        callbackFlow {
+    private val events: Observable<Event> by lazy {
+        observable { emitter ->
             val listener = object : RecyclerView.SimpleOnItemTouchListener() {
 
                 private var isBeingPressed = false
@@ -51,7 +51,7 @@ class RecyclerViewItemSelectionEventSource(
                             val touched = view.findChildViewUnder(event.x, event.y)
                             if (touched == null) return super.onInterceptTouchEvent(view, event)
                             val position = view.getChildAdapterPosition(touched)
-                            trySend(SelectionEvent("item_position", position.toString()))
+                            emitter.onNext(SelectionEvent("item_position", position.toString()))
                         }
                         else -> markEndOfPress()
                     }
@@ -76,11 +76,11 @@ class RecyclerViewItemSelectionEventSource(
                 }
             }
             recyclerView.addOnItemTouchListener(listener)
-            awaitClose { recyclerView.removeOnItemTouchListener(listener) }
+            emitter.setCancellable { recyclerView.removeOnItemTouchListener(listener) }
         }
     }
 
-    override fun events(): Flow<Event> {
+    override fun events(): Observable<Event> {
         return events
     }
 

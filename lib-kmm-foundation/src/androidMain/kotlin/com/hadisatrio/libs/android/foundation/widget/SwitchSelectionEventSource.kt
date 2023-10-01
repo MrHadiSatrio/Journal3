@@ -18,20 +18,21 @@
 package com.hadisatrio.libs.android.foundation.widget
 
 import androidx.appcompat.widget.SwitchCompat
+import com.badoo.reaktive.coroutinesinterop.asObservable
+import com.badoo.reaktive.observable.Observable
+import com.badoo.reaktive.observable.map
 import com.hadisatrio.libs.kotlin.foundation.event.Event
-import com.hadisatrio.libs.kotlin.foundation.event.EventSource
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
+import com.hadisatrio.libs.kotlin.foundation.event.RxEventSource
 import reactivecircus.flowbinding.android.widget.checkedChanges
 
 class SwitchSelectionEventSource(
     private val switch: SwitchCompat,
     private val offEventFactory: Event.Factory,
     private val onEventFactory: Event.Factory,
-) : EventSource {
+) : RxEventSource {
 
-    override fun events(): Flow<Event> {
-        return switch.checkedChanges().map { isChecked ->
+    override fun events(): Observable<Event> {
+        return switch.checkedChanges().asObservable().map { isChecked ->
             if (isChecked) {
                 onEventFactory.create()
             } else {

@@ -17,35 +17,35 @@
 
 package com.hadisatrio.apps.android.journal3.datetime
 
+import com.badoo.reaktive.base.setCancellable
+import com.badoo.reaktive.observable.Observable
+import com.badoo.reaktive.observable.observable
 import com.hadisatrio.apps.kotlin.journal3.datetime.Timestamp
 import com.hadisatrio.libs.kotlin.foundation.event.Event
-import com.hadisatrio.libs.kotlin.foundation.event.EventSource
+import com.hadisatrio.libs.kotlin.foundation.event.RxEventSource
 import com.hadisatrio.libs.kotlin.foundation.event.SelectionEvent
-import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
 
 class TimestampSelectionEventSource(
     private val button: TimestampSelectorButton
-) : EventSource {
+) : RxEventSource {
 
     private var last: Timestamp? = null
 
-    private val events: Flow<SelectionEvent> by lazy {
-        callbackFlow {
+    private val events: Observable<SelectionEvent> by lazy {
+        observable { emitter ->
             val listener = object : TimestampSelectorButton.OnTimestampSelectedListener {
                 override fun onTimeStampSelected(timestamp: Timestamp) {
                     if (last == timestamp) return
                     last = timestamp
-                    trySend(SelectionEvent("timestamp", timestamp.toString()))
+                    emitter.onNext(SelectionEvent("timestamp", timestamp.toString()))
                 }
             }
             button.setOnTimestampSelectedListener(listener)
-            awaitClose { button.setOnTimestampSelectedListener(null) }
+            emitter.setCancellable { button.setOnTimestampSelectedListener(null) }
         }
     }
 
-    override fun events(): Flow<Event> {
+    override fun events(): Observable<Event> {
         return events
     }
 }
