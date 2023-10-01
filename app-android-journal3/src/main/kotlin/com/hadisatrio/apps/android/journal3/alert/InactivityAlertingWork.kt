@@ -24,6 +24,7 @@ import com.hadisatrio.apps.android.journal3.journal3Application
 import com.hadisatrio.apps.android.journal3.notification.NotificationChannel
 import com.hadisatrio.apps.kotlin.journal3.alert.AlertInactivityUseCase
 import com.hadisatrio.libs.android.foundation.modal.NotificationModalPresenter
+import com.hadisatrio.libs.kotlin.foundation.event.AdaptedRxEventSource
 import com.hadisatrio.libs.kotlin.foundation.event.CompletionEvent
 import com.hadisatrio.libs.kotlin.foundation.event.Event
 import com.hadisatrio.libs.kotlin.foundation.event.EventSource
@@ -47,7 +48,7 @@ class InactivityAlertingWork(
                     channel = NotificationChannel.ALERT_AND_REMINDERS
                 ),
             ),
-            eventSource = NoOpEventSource(),
+            eventSource = AdaptedRxEventSource(NoOpEventSource()),
             eventSink = context.journal3Application.globalEventSink
         )()
         return Result.success()

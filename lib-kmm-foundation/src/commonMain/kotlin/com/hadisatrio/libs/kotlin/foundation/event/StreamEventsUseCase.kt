@@ -17,21 +17,21 @@
 
 package com.hadisatrio.libs.kotlin.foundation.event
 
+import com.badoo.reaktive.observable.doOnBeforeNext
+import com.badoo.reaktive.observable.subscribe
+import com.badoo.reaktive.observable.takeUntil
 import com.hadisatrio.libs.kotlin.foundation.UseCase
-import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.takeWhile
-import kotlinx.coroutines.runBlocking
 
 class StreamEventsUseCase(
-    private val eventSource: EventSource,
+    private val eventSource: RxEventSource,
     private val eventSink: EventSink
 ) : UseCase {
 
-    override fun invoke() = runBlocking {
+    override fun invoke() {
         eventSource.events()
-            .onEach { eventSink.sink(it) }
-            .takeWhile { event -> (event as? CancellationEvent) == null }
-            .takeWhile { event -> (event as? CompletionEvent) == null }
-            .collect {}
+            .takeUntil { event -> event is CompletionEvent }
+            .takeUntil { event -> event is CancellationEvent }
+            .doOnBeforeNext { event -> eventSink.sink(event) }
+            .subscribe { }
     }
 }

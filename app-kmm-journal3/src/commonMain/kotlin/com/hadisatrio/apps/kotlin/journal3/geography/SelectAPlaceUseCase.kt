@@ -17,13 +17,18 @@
 
 package com.hadisatrio.apps.kotlin.journal3.geography
 
+import com.badoo.reaktive.observable.doOnBeforeNext
+import com.badoo.reaktive.observable.merge
+import com.badoo.reaktive.observable.subscribe
+import com.badoo.reaktive.observable.takeUntil
+import com.badoo.reaktive.subject.replay.ReplaySubject
 import com.hadisatrio.libs.kotlin.foundation.UseCase
 import com.hadisatrio.libs.kotlin.foundation.event.CancellationEvent
 import com.hadisatrio.libs.kotlin.foundation.event.CompletionEvent
 import com.hadisatrio.libs.kotlin.foundation.event.Event
 import com.hadisatrio.libs.kotlin.foundation.event.EventSink
-import com.hadisatrio.libs.kotlin.foundation.event.EventSource
 import com.hadisatrio.libs.kotlin.foundation.event.ExceptionalEvent
+import com.hadisatrio.libs.kotlin.foundation.event.RxEventSource
 import com.hadisatrio.libs.kotlin.foundation.event.SelectionEvent
 import com.hadisatrio.libs.kotlin.foundation.modal.BinaryConfirmationModal
 import com.hadisatrio.libs.kotlin.foundation.modal.Modal
@@ -31,21 +36,16 @@ import com.hadisatrio.libs.kotlin.foundation.modal.ModalApprovalEvent
 import com.hadisatrio.libs.kotlin.foundation.modal.ModalDismissalEvent
 import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
 import com.hadisatrio.libs.kotlin.geography.Places
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.merge
-import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.takeWhile
-import kotlinx.coroutines.runBlocking
 
 class SelectAPlaceUseCase(
     private val places: Places,
     private val presenter: Presenter<Places>,
     private val modalPresenter: Presenter<Modal>,
-    private val eventSource: EventSource,
+    private val eventSource: RxEventSource,
     private val eventSink: EventSink,
 ) : UseCase {
 
-    private val completionEvents by lazy { MutableSharedFlow<CompletionEvent>(extraBufferCapacity = 1) }
+    private val completionEvents by lazy { ReplaySubject<CompletionEvent>(bufferSize = 1) }
 
     override fun invoke() {
         presentState()
@@ -63,14 +63,14 @@ class SelectAPlaceUseCase(
         }
     }
 
-    private fun observeEvents() = runBlocking {
+    private fun observeEvents() {
         merge(eventSource.events(), completionEvents)
-            .onEach { eventSink.sink(it) }
-            .takeWhile { event -> (event as? CompletionEvent) == null }
-            .collect { event -> handleEvent(event) }
+            .doOnBeforeNext { event -> eventSink.sink(event) }
+            .takeUntil { event -> event is CompletionEvent }
+            .subscribe { event -> handleEvent(event) }
     }
 
-    private suspend fun handleEvent(event: Event) {
+    private fun handleEvent(event: Event) {
         when (event) {
             is SelectionEvent -> handleSelection(event)
             is ModalApprovalEvent -> handleModalApproval(event)
@@ -79,7 +79,7 @@ class SelectAPlaceUseCase(
         }
     }
 
-    private suspend fun handleSelection(event: SelectionEvent) {
+    private fun handleSelection(event: SelectionEvent) {
         val kind = event.selectionKind
         val identifier = event.selectedIdentifier
         when (kind) {
@@ -87,7 +87,7 @@ class SelectAPlaceUseCase(
                 val position = identifier.toInt()
                 val target = places.elementAt(position)
                 eventSink.sink(SelectionEvent("place", target.id.toString()))
-                completionEvents.emit(CompletionEvent())
+                completionEvents.onNext(CompletionEvent())
             }
         }
     }
@@ -97,12 +97,12 @@ class SelectAPlaceUseCase(
         presentState()
     }
 
-    private suspend fun handleModalDismissal(event: ModalDismissalEvent) {
+    private fun handleModalDismissal(event: ModalDismissalEvent) {
         if (event.modalKind != "presentation_retrial_confirmation") return
-        completionEvents.emit(CompletionEvent())
+        completionEvents.onNext(CompletionEvent())
     }
 
-    private suspend fun handleCancellation() {
-        completionEvents.emit(CompletionEvent())
+    private fun handleCancellation() {
+        completionEvents.onNext(CompletionEvent())
     }
 }

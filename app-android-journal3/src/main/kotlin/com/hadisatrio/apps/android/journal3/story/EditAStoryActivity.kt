@@ -36,6 +36,7 @@ import com.hadisatrio.libs.android.foundation.widget.TextViewStringPresenter
 import com.hadisatrio.libs.android.foundation.widget.ViewClickEventSource
 import com.hadisatrio.libs.kotlin.foundation.ExecutorDispatchingUseCase
 import com.hadisatrio.libs.kotlin.foundation.UseCase
+import com.hadisatrio.libs.kotlin.foundation.event.AdaptedRxEventSource
 import com.hadisatrio.libs.kotlin.foundation.event.CancellationEvent
 import com.hadisatrio.libs.kotlin.foundation.event.CompletionEvent
 import com.hadisatrio.libs.kotlin.foundation.event.EventSink
@@ -127,7 +128,7 @@ class EditAStoryActivity : AppCompatActivity() {
                 stories = journal3Application.stories,
                 presenter = presenter,
                 modalPresenter = journal3Application.modalPresenter,
-                eventSource = eventSource,
+                eventSource = AdaptedRxEventSource(eventSource),
                 eventSink = eventSink
             )
         )

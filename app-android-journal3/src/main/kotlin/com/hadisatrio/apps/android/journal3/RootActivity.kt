@@ -32,6 +32,7 @@ import com.hadisatrio.libs.android.viewpager2.SimpleFragmentPagerAdapter
 import com.hadisatrio.libs.android.viewpager2.SimpleFragmentPagerAdapter.FragmentFactory
 import com.hadisatrio.libs.kotlin.foundation.ExecutorDispatchingUseCase
 import com.hadisatrio.libs.kotlin.foundation.UseCase
+import com.hadisatrio.libs.kotlin.foundation.event.AdaptedRxEventSource
 import com.hadisatrio.libs.kotlin.foundation.event.CancellationEvent
 import com.hadisatrio.libs.kotlin.foundation.event.EventSource
 import com.hadisatrio.libs.kotlin.foundation.event.EventSources
@@ -84,7 +85,7 @@ class RootActivity : AppCompatActivity() {
         ExecutorDispatchingUseCase(
             executor = journal3Application.backgroundExecutor,
             origin = StreamEventsUseCase(
-                eventSource = eventSource,
+                eventSource = AdaptedRxEventSource(eventSource),
                 eventSink = journal3Application.globalEventSink
             )
         )

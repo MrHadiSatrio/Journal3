@@ -52,6 +52,7 @@ import com.hadisatrio.libs.android.foundation.widget.ViewClickEventSource
 import com.hadisatrio.libs.android.io.uri.toAndroidUri
 import com.hadisatrio.libs.kotlin.foundation.ExecutorDispatchingUseCase
 import com.hadisatrio.libs.kotlin.foundation.UseCase
+import com.hadisatrio.libs.kotlin.foundation.event.AdaptedRxEventSource
 import com.hadisatrio.libs.kotlin.foundation.event.CancellationEvent
 import com.hadisatrio.libs.kotlin.foundation.event.EventSink
 import com.hadisatrio.libs.kotlin.foundation.event.EventSinks
@@ -200,7 +201,7 @@ class EditAMomentActivity : AppCompatActivity() {
                 places = journal3Application.places,
                 presenter = presenter,
                 modalPresenter = journal3Application.modalPresenter,
-                eventSource = eventSource,
+                eventSource = AdaptedRxEventSource(eventSource),
                 eventSink = eventSink,
                 paraphraser = journal3Application.paraphraser
             )

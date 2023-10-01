@@ -45,6 +45,7 @@ import com.hadisatrio.libs.android.foundation.widget.TextViewStringPresenter
 import com.hadisatrio.libs.android.foundation.widget.ViewClickEventSource
 import com.hadisatrio.libs.kotlin.foundation.ExecutorDispatchingUseCase
 import com.hadisatrio.libs.kotlin.foundation.UseCase
+import com.hadisatrio.libs.kotlin.foundation.event.AdaptedRxEventSource
 import com.hadisatrio.libs.kotlin.foundation.event.CancellationEvent
 import com.hadisatrio.libs.kotlin.foundation.event.EventSink
 import com.hadisatrio.libs.kotlin.foundation.event.EventSinks
@@ -155,7 +156,7 @@ class ViewStoryActivity : AppCompatActivity() {
                 storyId = uuidFrom(intent.getStringExtra("target_id")!!),
                 stories = journal3Application.stories,
                 presenter = presenter,
-                eventSource = eventSource,
+                eventSource = AdaptedRxEventSource(eventSource),
                 eventSink = eventSink
             )
         )

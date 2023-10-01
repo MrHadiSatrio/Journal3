@@ -21,6 +21,7 @@ import com.benasher44.uuid.uuid4
 import com.hadisatrio.apps.kotlin.journal3.event.RefreshRequestEvent
 import com.hadisatrio.apps.kotlin.journal3.event.UnsupportedEvent
 import com.hadisatrio.apps.kotlin.journal3.story.fake.FakeStories
+import com.hadisatrio.libs.kotlin.foundation.event.AdaptedRxEventSource
 import com.hadisatrio.libs.kotlin.foundation.event.CancellationEvent
 import com.hadisatrio.libs.kotlin.foundation.event.CompletionEvent
 import com.hadisatrio.libs.kotlin.foundation.event.EventSink
@@ -51,7 +52,7 @@ class ShowStoryUseCaseTest {
             storyId = story.id,
             stories = stories,
             presenter = presenter,
-            eventSource = RecordedEventSource(CompletionEvent()),
+            eventSource = AdaptedRxEventSource(RecordedEventSource(CompletionEvent())),
             eventSink = mockk(relaxed = true)
         )()
 
@@ -67,11 +68,13 @@ class ShowStoryUseCaseTest {
             storyId = story.id,
             stories = stories,
             presenter = presenter,
-            eventSource = RecordedEventSource(
-                RefreshRequestEvent("test"),
-                RefreshRequestEvent("test"),
-                RefreshRequestEvent("test"),
-                CompletionEvent()
+            eventSource = AdaptedRxEventSource(
+                RecordedEventSource(
+                    RefreshRequestEvent("test"),
+                    RefreshRequestEvent("test"),
+                    RefreshRequestEvent("test"),
+                    CompletionEvent()
+                )
             ),
             eventSink = mockk(relaxed = true)
         )()
@@ -88,9 +91,11 @@ class ShowStoryUseCaseTest {
             storyId = story.id,
             stories = stories,
             presenter = mockk(relaxed = true),
-            eventSource = RecordedEventSource(
-                SelectionEvent("action", "add"),
-                CompletionEvent()
+            eventSource = AdaptedRxEventSource(
+                RecordedEventSource(
+                    SelectionEvent("action", "add"),
+                    CompletionEvent()
+                )
             ),
             eventSink = eventSink
         )()
@@ -116,9 +121,11 @@ class ShowStoryUseCaseTest {
             storyId = story.id,
             stories = stories,
             presenter = mockk(relaxed = true),
-            eventSource = RecordedEventSource(
-                SelectionEvent("action", "delete"),
-                CompletionEvent()
+            eventSource = AdaptedRxEventSource(
+                RecordedEventSource(
+                    SelectionEvent("action", "delete"),
+                    CompletionEvent()
+                )
             ),
             eventSink = eventSink
         )()
@@ -144,9 +151,11 @@ class ShowStoryUseCaseTest {
             storyId = story.id,
             stories = stories,
             presenter = mockk(relaxed = true),
-            eventSource = RecordedEventSource(
-                SelectionEvent("action", "edit"),
-                CompletionEvent()
+            eventSource = AdaptedRxEventSource(
+                RecordedEventSource(
+                    SelectionEvent("action", "edit"),
+                    CompletionEvent()
+                )
             ),
             eventSink = eventSink
         )()
@@ -173,9 +182,11 @@ class ShowStoryUseCaseTest {
             storyId = story.id,
             stories = stories,
             presenter = mockk(relaxed = true),
-            eventSource = RecordedEventSource(
-                SelectionEvent("item_position", "0"),
-                CompletionEvent()
+            eventSource = AdaptedRxEventSource(
+                RecordedEventSource(
+                    SelectionEvent("item_position", "0"),
+                    CompletionEvent()
+                )
             ),
             eventSink = eventSink
         )()
@@ -201,7 +212,7 @@ class ShowStoryUseCaseTest {
             storyId = uuid4(),
             stories = stories,
             presenter = mockk<Presenter<Story>>(relaxed = true),
-            eventSource = RecordedEventSource(CompletionEvent()),
+            eventSource = AdaptedRxEventSource(RecordedEventSource(CompletionEvent())),
             eventSink = eventSink
         )()
 
@@ -217,7 +228,7 @@ class ShowStoryUseCaseTest {
                 storyId = story.id,
                 stories = stories,
                 presenter = mockk(relaxed = true),
-                eventSource = RecordedEventSource(event),
+                eventSource = AdaptedRxEventSource(RecordedEventSource(event)),
                 eventSink = mockk(relaxed = true)
             )()
         }
@@ -231,11 +242,13 @@ class ShowStoryUseCaseTest {
             storyId = story.id,
             stories = stories,
             presenter = mockk(relaxed = true),
-            eventSource = RecordedEventSource(
-                SelectionEvent("foo", "foo"),
-                SelectionEvent("action", "foo"),
-                UnsupportedEvent(),
-                CompletionEvent()
+            eventSource = AdaptedRxEventSource(
+                RecordedEventSource(
+                    SelectionEvent("foo", "foo"),
+                    SelectionEvent("action", "foo"),
+                    UnsupportedEvent(),
+                    CompletionEvent()
+                )
             ),
             eventSink = mockk(relaxed = true)
         )()

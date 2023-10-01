@@ -25,6 +25,7 @@ import com.hadisatrio.apps.kotlin.journal3.story.EditableStory
 import com.hadisatrio.apps.kotlin.journal3.story.SelfPopulatingStories
 import com.hadisatrio.apps.kotlin.journal3.story.fake.FakeStories
 import com.hadisatrio.apps.kotlin.journal3.token.TokenableString
+import com.hadisatrio.libs.kotlin.foundation.event.AdaptedRxEventSource
 import com.hadisatrio.libs.kotlin.foundation.event.CancellationEvent
 import com.hadisatrio.libs.kotlin.foundation.event.RecordedEventSource
 import com.hadisatrio.libs.kotlin.foundation.event.SelectionEvent
@@ -67,13 +68,15 @@ class EditAMomentUseCaseTest {
             places = places,
             presenter = presenter,
             modalPresenter = modalPresenter,
-            eventSource = RecordedEventSource(
-                TextInputEvent("description", "Foo"),
-                SelectionEvent("timestamp", LiteralTimestamp(Instant.DISTANT_FUTURE).toString()),
-                SelectionEvent("sentiment", Sentiment(0.75F).toString()),
-                SelectionEvent("place", place.id.toString()),
-                SelectionEvent("attachments", "content://foo,content://bar"),
-                SelectionEvent("action", "commit")
+            eventSource = AdaptedRxEventSource(
+                RecordedEventSource(
+                    TextInputEvent("description", "Foo"),
+                    SelectionEvent("timestamp", LiteralTimestamp(Instant.DISTANT_FUTURE).toString()),
+                    SelectionEvent("sentiment", Sentiment(0.75F).toString()),
+                    SelectionEvent("place", place.id.toString()),
+                    SelectionEvent("attachments", "content://foo,content://bar"),
+                    SelectionEvent("action", "commit")
+                )
             ),
             eventSink = eventSink,
             paraphraser = DumbParaphraser
@@ -99,14 +102,16 @@ class EditAMomentUseCaseTest {
             places = places,
             presenter = presenter,
             modalPresenter = modalPresenter,
-            eventSource = RecordedEventSource(
-                TextInputEvent("description", "Fizz"),
-                SelectionEvent("sentiment", Sentiment(0.75F).toString()),
-                SelectionEvent("place", place.id.toString()),
-                CancellationEvent("user"),
-                ModalDismissalEvent("edit_cancellation_confirmation"),
-                TextInputEvent("description", "Fizz"),
-                SelectionEvent("action", "commit")
+            eventSource = AdaptedRxEventSource(
+                RecordedEventSource(
+                    TextInputEvent("description", "Fizz"),
+                    SelectionEvent("sentiment", Sentiment(0.75F).toString()),
+                    SelectionEvent("place", place.id.toString()),
+                    CancellationEvent("user"),
+                    ModalDismissalEvent("edit_cancellation_confirmation"),
+                    TextInputEvent("description", "Fizz"),
+                    SelectionEvent("action", "commit")
+                )
             ),
             eventSink = eventSink,
             paraphraser = DumbParaphraser
@@ -129,12 +134,14 @@ class EditAMomentUseCaseTest {
             places = FakePlaces(),
             presenter = presenter,
             modalPresenter = modalPresenter,
-            eventSource = RecordedEventSource(
-                TextInputEvent("description", "Fizz"),
-                TextInputEvent("description", ""),
-                SelectionEvent("sentiment", Sentiment(0.75F).toString()),
-                SelectionEvent("sentiment", Sentiment.DEFAULT.toString()),
-                CancellationEvent("user")
+            eventSource = AdaptedRxEventSource(
+                RecordedEventSource(
+                    TextInputEvent("description", "Fizz"),
+                    TextInputEvent("description", ""),
+                    SelectionEvent("sentiment", Sentiment(0.75F).toString()),
+                    SelectionEvent("sentiment", Sentiment.DEFAULT.toString()),
+                    CancellationEvent("user")
+                )
             ),
             eventSink = eventSink,
             paraphraser = DumbParaphraser
@@ -156,9 +163,11 @@ class EditAMomentUseCaseTest {
             places = FakePlaces(),
             presenter = presenter,
             modalPresenter = modalPresenter,
-            eventSource = RecordedEventSource(
-                CancellationEvent("user"),
-                ModalApprovalEvent("edit_cancellation_confirmation")
+            eventSource = AdaptedRxEventSource(
+                RecordedEventSource(
+                    CancellationEvent("user"),
+                    ModalApprovalEvent("edit_cancellation_confirmation")
+                )
             ),
             eventSink = eventSink,
             paraphraser = DumbParaphraser
@@ -181,9 +190,11 @@ class EditAMomentUseCaseTest {
             places = FakePlaces(),
             presenter = presenter,
             modalPresenter = modalPresenter,
-            eventSource = RecordedEventSource(
-                CancellationEvent("user"),
-                ModalApprovalEvent("edit_cancellation_confirmation")
+            eventSource = AdaptedRxEventSource(
+                RecordedEventSource(
+                    CancellationEvent("user"),
+                    ModalApprovalEvent("edit_cancellation_confirmation")
+                )
             ),
             eventSink = eventSink,
             paraphraser = DumbParaphraser
@@ -206,11 +217,13 @@ class EditAMomentUseCaseTest {
             places = places,
             presenter = presenter,
             modalPresenter = modalPresenter,
-            eventSource = RecordedEventSource(
-                RefreshRequestEvent("test"),
-                RefreshRequestEvent("test"),
-                RefreshRequestEvent("test"),
-                SelectionEvent("action", "commit")
+            eventSource = AdaptedRxEventSource(
+                RecordedEventSource(
+                    RefreshRequestEvent("test"),
+                    RefreshRequestEvent("test"),
+                    RefreshRequestEvent("test"),
+                    SelectionEvent("action", "commit")
+                )
             ),
             eventSink = eventSink,
             paraphraser = DumbParaphraser
@@ -231,9 +244,11 @@ class EditAMomentUseCaseTest {
             places = FakePlaces(),
             presenter = presenter,
             modalPresenter = modalPresenter,
-            eventSource = RecordedEventSource(
-                SelectionEvent("action", "delete"),
-                SelectionEvent("action", "commit")
+            eventSource = AdaptedRxEventSource(
+                RecordedEventSource(
+                    SelectionEvent("action", "delete"),
+                    SelectionEvent("action", "commit")
+                )
             ),
             eventSink = eventSink,
             paraphraser = DumbParaphraser
@@ -260,12 +275,14 @@ class EditAMomentUseCaseTest {
             places = FakePlaces(),
             presenter = presenter,
             modalPresenter = modalPresenter,
-            eventSource = RecordedEventSource(
-                TextInputEvent("description", "Fizz"),
-                SelectionEvent("action", "enable_paraphrasing"),
-                SelectionEvent("action", "disable_paraphrasing"),
-                SelectionEvent("action", "enable_paraphrasing"),
-                SelectionEvent("action", "commit")
+            eventSource = AdaptedRxEventSource(
+                RecordedEventSource(
+                    TextInputEvent("description", "Fizz"),
+                    SelectionEvent("action", "enable_paraphrasing"),
+                    SelectionEvent("action", "disable_paraphrasing"),
+                    SelectionEvent("action", "enable_paraphrasing"),
+                    SelectionEvent("action", "commit")
+                )
             ),
             eventSink = eventSink,
             paraphraser = paraphraser
@@ -287,7 +304,7 @@ class EditAMomentUseCaseTest {
                 places = places,
                 presenter = presenter,
                 modalPresenter = modalPresenter,
-                eventSource = RecordedEventSource(event),
+                eventSource = AdaptedRxEventSource(RecordedEventSource(event)),
                 eventSink = eventSink,
                 paraphraser = DumbParaphraser
             )()
@@ -306,15 +323,17 @@ class EditAMomentUseCaseTest {
             places = places,
             presenter = presenter,
             modalPresenter = modalPresenter,
-            eventSource = RecordedEventSource(
-                TextInputEvent("foo", "Bar"),
-                SelectionEvent("action", "foo"),
-                SelectionEvent("fizz", LiteralTimestamp(Instant.DISTANT_FUTURE).toString()),
-                SelectionEvent("buzz", Sentiment(0.75F).toString()),
-                ModalApprovalEvent("lorem"),
-                CancellationEvent("system"),
-                UnsupportedEvent(),
-                SelectionEvent("action", "commit")
+            eventSource = AdaptedRxEventSource(
+                RecordedEventSource(
+                    TextInputEvent("foo", "Bar"),
+                    SelectionEvent("action", "foo"),
+                    SelectionEvent("fizz", LiteralTimestamp(Instant.DISTANT_FUTURE).toString()),
+                    SelectionEvent("buzz", Sentiment(0.75F).toString()),
+                    ModalApprovalEvent("lorem"),
+                    CancellationEvent("system"),
+                    UnsupportedEvent(),
+                    SelectionEvent("action", "commit")
+                )
             ),
             eventSink = eventSink,
             paraphraser = DumbParaphraser

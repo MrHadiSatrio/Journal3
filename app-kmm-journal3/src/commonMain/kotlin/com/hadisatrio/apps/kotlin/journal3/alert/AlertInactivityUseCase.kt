@@ -17,6 +17,10 @@
 
 package com.hadisatrio.apps.kotlin.journal3.alert
 
+import com.badoo.reaktive.observable.doOnBeforeNext
+import com.badoo.reaktive.observable.subscribe
+import com.badoo.reaktive.observable.takeUntil
+import com.badoo.reaktive.subject.replay.ReplaySubject
 import com.hadisatrio.apps.kotlin.journal3.datetime.LiteralTimestamp
 import com.hadisatrio.apps.kotlin.journal3.story.Stories
 import com.hadisatrio.libs.kotlin.foundation.UseCase
@@ -24,17 +28,12 @@ import com.hadisatrio.libs.kotlin.foundation.event.CancellationEvent
 import com.hadisatrio.libs.kotlin.foundation.event.CompletionEvent
 import com.hadisatrio.libs.kotlin.foundation.event.Event
 import com.hadisatrio.libs.kotlin.foundation.event.EventSink
-import com.hadisatrio.libs.kotlin.foundation.event.EventSource
+import com.hadisatrio.libs.kotlin.foundation.event.RxEventSource
 import com.hadisatrio.libs.kotlin.foundation.event.SelectionEvent
 import com.hadisatrio.libs.kotlin.foundation.modal.BinaryConfirmationModal
 import com.hadisatrio.libs.kotlin.foundation.modal.Modal
 import com.hadisatrio.libs.kotlin.foundation.modal.ModalApprovalEvent
 import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.merge
-import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.takeWhile
-import kotlinx.coroutines.runBlocking
 import kotlinx.datetime.Clock
 import kotlin.time.Duration
 
@@ -42,11 +41,11 @@ class AlertInactivityUseCase(
     private val threshold: Duration,
     private val stories: Stories,
     private val presenter: Presenter<Modal>,
-    private val eventSource: EventSource,
+    private val eventSource: RxEventSource,
     private val eventSink: EventSink
 ) : UseCase {
 
-    private val completionEvents by lazy { MutableSharedFlow<CompletionEvent>(extraBufferCapacity = 1) }
+    private val completionEvents by lazy { ReplaySubject<CompletionEvent>(bufferSize = 1) }
 
     override fun invoke() {
         if (!isAlertNecessary()) return
@@ -61,21 +60,21 @@ class AlertInactivityUseCase(
         return currentTimestamp.difference(mostRecentTimestamp) > threshold
     }
 
-    private fun observeEvents() = runBlocking {
-        merge(eventSource.events(), completionEvents)
-            .onEach { eventSink.sink(it) }
-            .takeWhile { event -> (event as? CompletionEvent) == null }
-            .collect { event -> handle(event) }
+    private fun observeEvents() {
+        com.badoo.reaktive.observable.merge(eventSource.events(), completionEvents)
+            .takeUntil { event -> event is CompletionEvent }
+            .doOnBeforeNext { event -> eventSink.sink(event) }
+            .subscribe { event -> handleEvent(event) }
     }
 
-    private suspend fun handle(event: Event) {
+    private fun handleEvent(event: Event) {
         when (event) {
             is ModalApprovalEvent -> handleModalApproval(event)
             is CancellationEvent -> handleCancellation()
         }
     }
 
-    private suspend fun handleModalApproval(event: ModalApprovalEvent) {
+    private fun handleModalApproval(event: ModalApprovalEvent) {
         if (event.modalKind != "inactivity_alert") return
         eventSink.sink(
             SelectionEvent(
@@ -84,10 +83,10 @@ class AlertInactivityUseCase(
                 "story_id" to stories.first().id.toString()
             )
         )
-        completionEvents.emit(CompletionEvent())
+        completionEvents.onNext(CompletionEvent())
     }
 
-    private suspend fun handleCancellation() {
-        completionEvents.emit(CompletionEvent())
+    private fun handleCancellation() {
+        completionEvents.onNext(CompletionEvent())
     }
 }

@@ -20,6 +20,7 @@ package com.hadisatrio.apps.kotlin.journal3.story
 import com.hadisatrio.apps.kotlin.journal3.event.UnsupportedEvent
 import com.hadisatrio.apps.kotlin.journal3.id.INVALID_UUID
 import com.hadisatrio.apps.kotlin.journal3.story.fake.FakeStories
+import com.hadisatrio.libs.kotlin.foundation.event.AdaptedRxEventSource
 import com.hadisatrio.libs.kotlin.foundation.event.CompletionEvent
 import com.hadisatrio.libs.kotlin.foundation.event.RecordedEventSource
 import com.hadisatrio.libs.kotlin.foundation.event.fake.FakeEventSink
@@ -46,8 +47,10 @@ class DeleteStoryUseCaseTest {
             storyId = story.id,
             stories = stories,
             presenter = presenter,
-            eventSource = RecordedEventSource(
-                ModalApprovalEvent("forgettable_deletion_confirmation")
+            eventSource = AdaptedRxEventSource(
+                RecordedEventSource(
+                    ModalApprovalEvent("forgettable_deletion_confirmation")
+                )
             ),
             eventSink = eventSink
         )()
@@ -63,8 +66,10 @@ class DeleteStoryUseCaseTest {
             storyId = story.id,
             stories = stories,
             presenter = presenter,
-            eventSource = RecordedEventSource(
-                ModalDismissalEvent("forgettable_deletion_confirmation")
+            eventSource = AdaptedRxEventSource(
+                RecordedEventSource(
+                    ModalDismissalEvent("forgettable_deletion_confirmation")
+                )
             ),
             eventSink = eventSink
         )()
@@ -84,7 +89,7 @@ class DeleteStoryUseCaseTest {
                 storyId = INVALID_UUID,
                 stories = stories,
                 presenter = presenter,
-                eventSource = RecordedEventSource(event),
+                eventSource = AdaptedRxEventSource(RecordedEventSource(event)),
                 eventSink = eventSink
             )()
 
@@ -99,11 +104,13 @@ class DeleteStoryUseCaseTest {
             storyId = INVALID_UUID,
             stories = stories,
             presenter = presenter,
-            eventSource = RecordedEventSource(
-                ModalApprovalEvent("foo"),
-                ModalDismissalEvent("foo"),
-                UnsupportedEvent(),
-                CompletionEvent()
+            eventSource = AdaptedRxEventSource(
+                RecordedEventSource(
+                    ModalApprovalEvent("foo"),
+                    ModalDismissalEvent("foo"),
+                    UnsupportedEvent(),
+                    CompletionEvent()
+                )
             ),
             eventSink = eventSink
         )()

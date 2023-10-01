@@ -39,6 +39,7 @@ import com.hadisatrio.libs.android.foundation.widget.RecyclerViewPresenter
 import com.hadisatrio.libs.android.foundation.widget.ViewClickEventSource
 import com.hadisatrio.libs.kotlin.foundation.ExecutorDispatchingUseCase
 import com.hadisatrio.libs.kotlin.foundation.UseCase
+import com.hadisatrio.libs.kotlin.foundation.event.AdaptedRxEventSource
 import com.hadisatrio.libs.kotlin.foundation.event.CancellationEvent
 import com.hadisatrio.libs.kotlin.foundation.event.EventSink
 import com.hadisatrio.libs.kotlin.foundation.event.EventSinks
@@ -121,7 +122,7 @@ class SelectAPlaceActivity : AppCompatActivity() {
                 places = journal3Application.places,
                 presenter = presenter,
                 modalPresenter = journal3Application.modalPresenter,
-                eventSource = eventSource,
+                eventSource = AdaptedRxEventSource(eventSource),
                 eventSink = eventSink
             )
         )

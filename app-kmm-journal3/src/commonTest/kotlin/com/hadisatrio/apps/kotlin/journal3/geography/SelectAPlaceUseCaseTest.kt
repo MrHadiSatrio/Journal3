@@ -20,6 +20,7 @@ package com.hadisatrio.apps.kotlin.journal3.geography
 import com.hadisatrio.apps.kotlin.journal3.datetime.LiteralTimestamp
 import com.hadisatrio.apps.kotlin.journal3.event.UnsupportedEvent
 import com.hadisatrio.apps.kotlin.journal3.sentiment.Sentiment
+import com.hadisatrio.libs.kotlin.foundation.event.AdaptedRxEventSource
 import com.hadisatrio.libs.kotlin.foundation.event.CancellationEvent
 import com.hadisatrio.libs.kotlin.foundation.event.CompletionEvent
 import com.hadisatrio.libs.kotlin.foundation.event.EventSink
@@ -61,7 +62,7 @@ class SelectAPlaceUseCaseTest {
             places = places,
             presenter = presenter,
             modalPresenter = modalPresenter,
-            eventSource = RecordedEventSource(CompletionEvent()),
+            eventSource = AdaptedRxEventSource(RecordedEventSource(CompletionEvent())),
             eventSink = eventSink
         )()
 
@@ -76,7 +77,7 @@ class SelectAPlaceUseCaseTest {
             places = places,
             presenter = presenter,
             modalPresenter = modalPresenter,
-            eventSource = RecordedEventSource(CompletionEvent()),
+            eventSource = AdaptedRxEventSource(RecordedEventSource(CompletionEvent())),
             eventSink = eventSink
         )()
 
@@ -93,7 +94,7 @@ class SelectAPlaceUseCaseTest {
             places = places,
             presenter = presenter,
             modalPresenter = modalPresenter,
-            eventSource = RecordedEventSource(CompletionEvent()),
+            eventSource = AdaptedRxEventSource(RecordedEventSource(CompletionEvent())),
             eventSink = eventSink
         )()
 
@@ -110,9 +111,11 @@ class SelectAPlaceUseCaseTest {
             places = places,
             presenter = presenter,
             modalPresenter = modalPresenter,
-            eventSource = RecordedEventSource(
-                ModalApprovalEvent("presentation_retrial_confirmation"),
-                CompletionEvent()
+            eventSource = AdaptedRxEventSource(
+                RecordedEventSource(
+                    ModalApprovalEvent("presentation_retrial_confirmation"),
+                    CompletionEvent()
+                )
             ),
             eventSink = mockk(relaxed = true)
         )()
@@ -128,8 +131,10 @@ class SelectAPlaceUseCaseTest {
             places = places,
             presenter = presenter,
             modalPresenter = modalPresenter,
-            eventSource = RecordedEventSource(
-                ModalDismissalEvent("presentation_retrial_confirmation")
+            eventSource = AdaptedRxEventSource(
+                RecordedEventSource(
+                    ModalDismissalEvent("presentation_retrial_confirmation")
+                )
             ),
             eventSink = mockk(relaxed = true)
         )()
@@ -145,8 +150,10 @@ class SelectAPlaceUseCaseTest {
             places = places,
             presenter = presenter,
             modalPresenter = modalPresenter,
-            eventSource = RecordedEventSource(
-                SelectionEvent("item_position", targetPosition.toString())
+            eventSource = AdaptedRxEventSource(
+                RecordedEventSource(
+                    SelectionEvent("item_position", targetPosition.toString())
+                )
             ),
             eventSink = eventSink
         )()
@@ -169,7 +176,9 @@ class SelectAPlaceUseCaseTest {
                 places = places,
                 presenter = presenter,
                 modalPresenter = modalPresenter,
-                eventSource = RecordedEventSource(event),
+                eventSource = AdaptedRxEventSource(
+                    RecordedEventSource(event)
+                ),
                 eventSink = eventSink
             )()
         }
@@ -181,14 +190,16 @@ class SelectAPlaceUseCaseTest {
             places = places,
             presenter = presenter,
             modalPresenter = modalPresenter,
-            eventSource = RecordedEventSource(
-                TextInputEvent("foo", "Bar"),
-                SelectionEvent("fizz", LiteralTimestamp(Instant.DISTANT_FUTURE).toString()),
-                SelectionEvent("buzz", Sentiment(0.75F).toString()),
-                ModalApprovalEvent("lorem"),
-                CancellationEvent("system"),
-                UnsupportedEvent(),
-                CompletionEvent()
+            eventSource = AdaptedRxEventSource(
+                RecordedEventSource(
+                    TextInputEvent("foo", "Bar"),
+                    SelectionEvent("fizz", LiteralTimestamp(Instant.DISTANT_FUTURE).toString()),
+                    SelectionEvent("buzz", Sentiment(0.75F).toString()),
+                    ModalApprovalEvent("lorem"),
+                    CancellationEvent("system"),
+                    UnsupportedEvent(),
+                    CompletionEvent()
+                )
             ),
             eventSink = eventSink
         )()

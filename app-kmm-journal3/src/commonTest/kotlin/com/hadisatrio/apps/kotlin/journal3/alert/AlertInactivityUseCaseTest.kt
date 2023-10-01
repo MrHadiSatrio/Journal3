@@ -20,6 +20,7 @@ package com.hadisatrio.apps.kotlin.journal3.alert
 import com.hadisatrio.apps.kotlin.journal3.datetime.LiteralTimestamp
 import com.hadisatrio.apps.kotlin.journal3.event.UnsupportedEvent
 import com.hadisatrio.apps.kotlin.journal3.story.fake.FakeStories
+import com.hadisatrio.libs.kotlin.foundation.event.AdaptedRxEventSource
 import com.hadisatrio.libs.kotlin.foundation.event.CancellationEvent
 import com.hadisatrio.libs.kotlin.foundation.event.CompletionEvent
 import com.hadisatrio.libs.kotlin.foundation.event.EventSink
@@ -51,9 +52,7 @@ class AlertInactivityUseCaseTest {
             threshold = 3.hours,
             stories = stories,
             presenter = presenter,
-            eventSource = RecordedEventSource(
-                CompletionEvent()
-            ),
+            eventSource = AdaptedRxEventSource(RecordedEventSource(CompletionEvent())),
             eventSink = eventSink
         )()
 
@@ -66,9 +65,7 @@ class AlertInactivityUseCaseTest {
             threshold = 3.hours,
             stories = stories,
             presenter = presenter,
-            eventSource = RecordedEventSource(
-                CompletionEvent()
-            ),
+            eventSource = AdaptedRxEventSource(RecordedEventSource(CompletionEvent())),
             eventSink = eventSink
         )()
 
@@ -83,9 +80,7 @@ class AlertInactivityUseCaseTest {
             threshold = 3.hours,
             stories = stories,
             presenter = presenter,
-            eventSource = RecordedEventSource(
-                CompletionEvent()
-            ),
+            eventSource = AdaptedRxEventSource(RecordedEventSource(CompletionEvent())),
             eventSink = eventSink
         )()
 
@@ -100,9 +95,11 @@ class AlertInactivityUseCaseTest {
             threshold = 3.hours,
             stories = stories,
             presenter = mockk(relaxed = true),
-            eventSource = RecordedEventSource(
-                ModalApprovalEvent("inactivity_alert"),
-                CompletionEvent()
+            eventSource = AdaptedRxEventSource(
+                RecordedEventSource(
+                    ModalApprovalEvent("inactivity_alert"),
+                    CompletionEvent()
+                )
             ),
             eventSink = eventSink
         )()
@@ -128,7 +125,7 @@ class AlertInactivityUseCaseTest {
                 threshold = 3.hours,
                 stories = stories,
                 presenter = mockk(relaxed = true),
-                eventSource = RecordedEventSource(event),
+                eventSource = AdaptedRxEventSource(RecordedEventSource(event)),
                 eventSink = eventSink
             )()
         }
@@ -142,10 +139,12 @@ class AlertInactivityUseCaseTest {
             threshold = 3.hours,
             stories = stories,
             presenter = mockk(relaxed = true),
-            eventSource = RecordedEventSource(
-                ModalApprovalEvent("foo"),
-                UnsupportedEvent(),
-                CompletionEvent()
+            eventSource = AdaptedRxEventSource(
+                RecordedEventSource(
+                    ModalApprovalEvent("foo"),
+                    UnsupportedEvent(),
+                    CompletionEvent()
+                )
             ),
             eventSink = eventSink
         )()
