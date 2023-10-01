@@ -7,7 +7,7 @@ plugins {
     id("com.android.application")
     kotlin("android")
     kotlin("kapt")
-    id("io.sentry.android.gradle") version "3.12.0"
+    id("io.sentry.android.gradle") version "3.13.0"
     id("io.gitlab.arturbosch.detekt")
     id("io.github.reactivecircus.app-versioning").version("1.3.1")
 }
