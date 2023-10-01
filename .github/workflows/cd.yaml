@@ -17,10 +17,10 @@ jobs:
         run: |
           echo $KEYSTORE_BASE64 | base64 -di > app-android-journal3/release_signing.jks
 
-      - name: Set up JDK 11
+      - name: Set up JDK 17
         uses: actions/setup-java@v3
         with:
-          java-version: '11'
+          java-version: '17'
           distribution: 'adopt'
           cache: gradle
 

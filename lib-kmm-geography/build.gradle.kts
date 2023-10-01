@@ -11,6 +11,8 @@ kotlin {
     jvm()
     androidTarget()
 
+    jvmToolchain(17)
+
     sourceSets {
         val commonMain by getting {
             dependencies {
@@ -46,6 +48,7 @@ kotlin {
 }
 
 android {
+    namespace = "com.hadisatrio.libs.android.geography"
     compileSdk = Dependencies.AndroidSdk.COMPILE
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
     defaultConfig {

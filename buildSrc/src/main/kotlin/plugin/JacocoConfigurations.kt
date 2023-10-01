@@ -120,12 +120,12 @@ private fun Project.configureJacoco(configuration: String.() -> Unit) {
     tasks.named<JacocoReport>(task).configure {
         reports.apply {
             xml.apply {
-                isEnabled = true
-                destination = File("${project.buildDir}/reports/jacocoTestReport.xml")
+                required.set(true)
+                outputLocation.set(File("${project.buildDir}/reports/jacocoTestReport.xml"))
             }
             html.apply {
-                isEnabled = true
-                destination = File("${project.buildDir}/reports/jacoco")
+                required.set(true)
+                outputLocation.set(File("${project.buildDir}/reports/jacoco"))
             }
         }
     }

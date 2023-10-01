@@ -13,6 +13,8 @@ plugins {
 }
 
 android {
+    namespace = "com.hadisatrio.apps.android.journal3"
+
     signingConfigs {
         getByName("debug") {
             storeFile = File(projectDir, "debug_signing.jks")
