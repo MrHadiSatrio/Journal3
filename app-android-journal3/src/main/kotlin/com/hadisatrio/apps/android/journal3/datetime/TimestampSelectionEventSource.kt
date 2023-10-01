@@ -22,12 +22,12 @@ import com.badoo.reaktive.observable.Observable
 import com.badoo.reaktive.observable.observable
 import com.hadisatrio.apps.kotlin.journal3.datetime.Timestamp
 import com.hadisatrio.libs.kotlin.foundation.event.Event
-import com.hadisatrio.libs.kotlin.foundation.event.RxEventSource
+import com.hadisatrio.libs.kotlin.foundation.event.EventSource
 import com.hadisatrio.libs.kotlin.foundation.event.SelectionEvent
 
 class TimestampSelectionEventSource(
     private val button: TimestampSelectorButton
-) : RxEventSource {
+) : EventSource {
 
     private var last: Timestamp? = null
 

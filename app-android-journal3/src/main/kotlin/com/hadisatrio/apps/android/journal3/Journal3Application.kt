@@ -26,7 +26,7 @@ import com.hadisatrio.apps.kotlin.journal3.sentiment.SentimentAnalyst
 import com.hadisatrio.apps.kotlin.journal3.story.Stories
 import com.hadisatrio.libs.android.foundation.activity.CurrentActivity
 import com.hadisatrio.libs.kotlin.foundation.event.EventSink
-import com.hadisatrio.libs.kotlin.foundation.event.RxEventSource
+import com.hadisatrio.libs.kotlin.foundation.event.EventSource
 import com.hadisatrio.libs.kotlin.foundation.modal.Modal
 import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
 import com.hadisatrio.libs.kotlin.geography.Places
@@ -42,7 +42,7 @@ abstract class Journal3Application : Application() {
     abstract val modalPresenter: Presenter<Modal>
     abstract val currentActivity: CurrentActivity
     abstract val globalEventSink: EventSink
-    abstract val globalEventSource: RxEventSource
+    abstract val globalEventSource: EventSource
     abstract val timestampDecor: Timestamp.Decor
     abstract val inactivityAlertThreshold: Duration
     abstract val sentimentAnalyst: SentimentAnalyst

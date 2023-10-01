@@ -26,7 +26,7 @@ import androidx.test.runner.AndroidJUnit4
 import com.badoo.reaktive.observable.subscribe
 import com.badoo.reaktive.test.scheduler.TestScheduler
 import com.hadisatrio.libs.kotlin.foundation.event.Event
-import com.hadisatrio.libs.kotlin.foundation.event.SchedulingRxEventSource
+import com.hadisatrio.libs.kotlin.foundation.event.SchedulingEventSource
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.maps.shouldContain
 import org.junit.Before
@@ -40,7 +40,7 @@ class RecyclerViewItemSelectionEventSourceTest {
     private val recyclerView = RecyclerView(RuntimeEnvironment.getApplication())
     private val events = mutableListOf<Event>()
     private val scheduler = TestScheduler()
-    private val source = SchedulingRxEventSource(scheduler, RecyclerViewItemSelectionEventSource(recyclerView))
+    private val source = SchedulingEventSource(scheduler, RecyclerViewItemSelectionEventSource(recyclerView))
 
     @Before
     fun `Initialize RecyclerView`() {
@@ -52,7 +52,7 @@ class RecyclerViewItemSelectionEventSourceTest {
 
     @Test
     fun `Produces SelectionEvent on clicks on an item within the RecyclerView`() {
-        val disposable = SchedulingRxEventSource(scheduler, source).events().subscribe { events.add(it) }
+        val disposable = SchedulingEventSource(scheduler, source).events().subscribe { events.add(it) }
 
         recyclerView.dispatchTouchEvent(
             MotionEvent.obtain(
@@ -96,7 +96,7 @@ class RecyclerViewItemSelectionEventSourceTest {
 
     @Test
     fun `Doesn't do anything if touch happens outside of child's boundaries`() {
-        val disposable = SchedulingRxEventSource(scheduler, source).events().subscribe { events.add(it) }
+        val disposable = SchedulingEventSource(scheduler, source).events().subscribe { events.add(it) }
 
         recyclerView.dispatchTouchEvent(
             MotionEvent.obtain(
@@ -136,7 +136,7 @@ class RecyclerViewItemSelectionEventSourceTest {
 
     @Test
     fun `Tolerates slight movement whilst registering click events`() {
-        val disposable = SchedulingRxEventSource(scheduler, source).events().subscribe { events.add(it) }
+        val disposable = SchedulingEventSource(scheduler, source).events().subscribe { events.add(it) }
 
         recyclerView.dispatchTouchEvent(
             MotionEvent.obtain(
@@ -212,7 +212,7 @@ class RecyclerViewItemSelectionEventSourceTest {
 
     @Test
     fun `Prevents major movements from resulting in a click event`() {
-        val disposable = SchedulingRxEventSource(scheduler, source).events().subscribe { events.add(it) }
+        val disposable = SchedulingEventSource(scheduler, source).events().subscribe { events.add(it) }
 
         recyclerView.dispatchTouchEvent(
             MotionEvent.obtain(

@@ -28,7 +28,7 @@ import com.hadisatrio.apps.kotlin.journal3.alert.AlertInactivityUseCase
 import com.hadisatrio.libs.android.foundation.modal.NotificationModalPresenter
 import com.hadisatrio.libs.kotlin.foundation.event.CompletionEvent
 import com.hadisatrio.libs.kotlin.foundation.event.Event
-import com.hadisatrio.libs.kotlin.foundation.event.RxEventSource
+import com.hadisatrio.libs.kotlin.foundation.event.EventSource
 
 @Suppress("unused")
 class InactivityAlertingWork(
@@ -53,7 +53,7 @@ class InactivityAlertingWork(
         return Result.success()
     }
 
-    private class NoOpEventSource : RxEventSource {
+    private class NoOpEventSource : EventSource {
         override fun events(): Observable<Event> {
             return observableOf(CompletionEvent())
         }

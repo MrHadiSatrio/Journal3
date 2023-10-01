@@ -54,7 +54,7 @@ import com.hadisatrio.libs.android.io.content.ContentResolverSources
 import com.hadisatrio.libs.kotlin.foundation.event.EventHub
 import com.hadisatrio.libs.kotlin.foundation.event.EventSink
 import com.hadisatrio.libs.kotlin.foundation.event.EventSinks
-import com.hadisatrio.libs.kotlin.foundation.event.RxEventSource
+import com.hadisatrio.libs.kotlin.foundation.event.EventSource
 import com.hadisatrio.libs.kotlin.foundation.modal.Modal
 import com.hadisatrio.libs.kotlin.foundation.presentation.ExecutorDispatchingPresenter
 import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
@@ -197,7 +197,7 @@ class RealJournal3Application : Journal3Application() {
         )
     }
 
-    override val globalEventSource: RxEventSource by lazy {
+    override val globalEventSource: EventSource by lazy {
         EventHub(PublishSubject())
     }
 

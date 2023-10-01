@@ -57,9 +57,9 @@ import com.hadisatrio.libs.kotlin.foundation.UseCase
 import com.hadisatrio.libs.kotlin.foundation.event.CancellationEvent
 import com.hadisatrio.libs.kotlin.foundation.event.EventSink
 import com.hadisatrio.libs.kotlin.foundation.event.EventSinks
+import com.hadisatrio.libs.kotlin.foundation.event.EventSource
 import com.hadisatrio.libs.kotlin.foundation.event.EventSources
-import com.hadisatrio.libs.kotlin.foundation.event.RxEventSource
-import com.hadisatrio.libs.kotlin.foundation.event.SchedulingRxEventSource
+import com.hadisatrio.libs.kotlin.foundation.event.SchedulingEventSource
 import com.hadisatrio.libs.kotlin.foundation.event.SelectionEvent
 import com.hadisatrio.libs.kotlin.foundation.presentation.AdaptingPresenter
 import com.hadisatrio.libs.kotlin.foundation.presentation.ExecutorDispatchingPresenter
@@ -114,8 +114,8 @@ class EditAMomentActivity : AppCompatActivity() {
         )
     }
 
-    private val eventSource: RxEventSource by lazy {
-        SchedulingRxEventSource(
+    private val eventSource: EventSource by lazy {
+        SchedulingEventSource(
             subscriptionScheduler = mainScheduler,
             observationScheduler = computationScheduler,
             origin = EventSources(

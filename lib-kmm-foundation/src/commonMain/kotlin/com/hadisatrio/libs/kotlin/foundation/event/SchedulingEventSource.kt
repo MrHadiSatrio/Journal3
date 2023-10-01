@@ -17,17 +17,22 @@
 
 package com.hadisatrio.libs.kotlin.foundation.event
 
-import kotlinx.coroutines.asCoroutineDispatcher
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOn
-import java.util.concurrent.Executor
+import com.badoo.reaktive.observable.Observable
+import com.badoo.reaktive.observable.observeOn
+import com.badoo.reaktive.observable.subscribeOn
+import com.badoo.reaktive.scheduler.Scheduler
 
-class ExecutorDispatchingEventSource(
-    private val executor: Executor,
+class SchedulingEventSource(
+    private val subscriptionScheduler: Scheduler,
+    private val observationScheduler: Scheduler,
     private val origin: EventSource
 ) : EventSource {
 
-    override fun events(): Flow<Event> {
-        return origin.events().flowOn(executor.asCoroutineDispatcher())
+    constructor(scheduler: Scheduler, origin: EventSource) : this(scheduler, scheduler, origin)
+
+    override fun events(): Observable<Event> {
+        return origin.events()
+            .subscribeOn(subscriptionScheduler)
+            .observeOn(observationScheduler)
     }
 }

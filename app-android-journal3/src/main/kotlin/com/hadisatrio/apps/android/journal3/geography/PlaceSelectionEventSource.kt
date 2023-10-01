@@ -26,14 +26,14 @@ import androidx.activity.result.contract.ActivityResultContract
 import com.badoo.reaktive.observable.Observable
 import com.badoo.reaktive.subject.publish.PublishSubject
 import com.hadisatrio.libs.kotlin.foundation.event.Event
-import com.hadisatrio.libs.kotlin.foundation.event.RxEventSource
+import com.hadisatrio.libs.kotlin.foundation.event.EventSource
 import com.hadisatrio.libs.kotlin.foundation.event.SelectionEvent
 
 class PlaceSelectionEventSource internal constructor(
     triggerView: View,
     activity: ComponentActivity,
     registry: ActivityResultRegistry
-) : RxEventSource {
+) : EventSource {
 
     private val events = PublishSubject<Event>()
     private val launcher = activity.registerForActivityResult(SelectAPlace(), registry) { placeId ->

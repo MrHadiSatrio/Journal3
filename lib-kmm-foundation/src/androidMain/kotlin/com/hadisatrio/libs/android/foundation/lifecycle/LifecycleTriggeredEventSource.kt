@@ -26,13 +26,13 @@ import com.badoo.reaktive.base.setCancellable
 import com.badoo.reaktive.observable.Observable
 import com.badoo.reaktive.observable.observable
 import com.hadisatrio.libs.kotlin.foundation.event.Event
-import com.hadisatrio.libs.kotlin.foundation.event.RxEventSource
+import com.hadisatrio.libs.kotlin.foundation.event.EventSource
 
 class LifecycleTriggeredEventSource(
     private val lifecycleOwner: LifecycleOwner,
     private val lifecycleEvent: Lifecycle.Event,
     private val eventFactory: Event.Factory
-) : RxEventSource {
+) : EventSource {
 
     private val events: Observable<Event> by lazy {
         observable { emitter ->

@@ -27,7 +27,7 @@ import com.badoo.reaktive.observable.Observable
 import com.badoo.reaktive.subject.publish.PublishSubject
 import com.benasher44.uuid.uuid4
 import com.hadisatrio.libs.kotlin.foundation.event.Event
-import com.hadisatrio.libs.kotlin.foundation.event.RxEventSource
+import com.hadisatrio.libs.kotlin.foundation.event.EventSource
 import com.hadisatrio.libs.kotlin.foundation.event.SelectionEvent
 import java.io.File
 import java.util.concurrent.atomic.AtomicReference
@@ -37,7 +37,7 @@ class PhotoCaptureEventSource internal constructor(
     private val activity: ComponentActivity,
     private val registry: ActivityResultRegistry,
     private val tempDirectory: File
-) : RxEventSource {
+) : EventSource {
 
     private val uriInFlight = AtomicReference<Uri>(null)
     private val events = PublishSubject<Event>()

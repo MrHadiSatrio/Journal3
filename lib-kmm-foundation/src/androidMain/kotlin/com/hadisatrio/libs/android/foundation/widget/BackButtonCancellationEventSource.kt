@@ -25,11 +25,11 @@ import com.badoo.reaktive.observable.Observable
 import com.badoo.reaktive.observable.observable
 import com.hadisatrio.libs.kotlin.foundation.event.CancellationEvent
 import com.hadisatrio.libs.kotlin.foundation.event.Event
-import com.hadisatrio.libs.kotlin.foundation.event.RxEventSource
+import com.hadisatrio.libs.kotlin.foundation.event.EventSource
 
 class BackButtonCancellationEventSource(
     private val dispatcher: OnBackPressedDispatcher
-) : RxEventSource {
+) : EventSource {
 
     private val events: Observable<CancellationEvent> by lazy {
         observable { emitter ->

@@ -23,7 +23,7 @@ import com.badoo.reaktive.observable.takeUntil
 import com.hadisatrio.libs.kotlin.foundation.UseCase
 
 class StreamEventsUseCase(
-    private val eventSource: RxEventSource,
+    private val eventSource: EventSource,
     private val eventSink: EventSink
 ) : UseCase {
 

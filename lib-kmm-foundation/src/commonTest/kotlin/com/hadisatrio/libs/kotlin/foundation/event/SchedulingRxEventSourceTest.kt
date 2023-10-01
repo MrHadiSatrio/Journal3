@@ -30,8 +30,8 @@ class SchedulingRxEventSourceTest {
     @Test
     fun `Switches subsription and observation scheduler to the given`() {
         val scheduler = mockk<Scheduler>(relaxed = true)
-        val origin = mockk<RxEventSource>(relaxed = true)
-        val source = SchedulingRxEventSource(scheduler, origin)
+        val origin = mockk<EventSource>(relaxed = true)
+        val source = SchedulingEventSource(scheduler, origin)
         every { origin.events() } returns PublishSubject()
 
         source.events().subscribe { }

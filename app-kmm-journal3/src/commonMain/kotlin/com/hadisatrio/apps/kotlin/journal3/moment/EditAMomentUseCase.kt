@@ -36,7 +36,7 @@ import com.hadisatrio.libs.kotlin.foundation.event.CancellationEvent
 import com.hadisatrio.libs.kotlin.foundation.event.CompletionEvent
 import com.hadisatrio.libs.kotlin.foundation.event.Event
 import com.hadisatrio.libs.kotlin.foundation.event.EventSink
-import com.hadisatrio.libs.kotlin.foundation.event.RxEventSource
+import com.hadisatrio.libs.kotlin.foundation.event.EventSource
 import com.hadisatrio.libs.kotlin.foundation.event.SelectionEvent
 import com.hadisatrio.libs.kotlin.foundation.event.TextInputEvent
 import com.hadisatrio.libs.kotlin.foundation.modal.BinaryConfirmationModal
@@ -56,7 +56,7 @@ class EditAMomentUseCase(
     private val places: Places,
     private val presenter: Presenter<Moment>,
     private val modalPresenter: Presenter<Modal>,
-    private val eventSource: RxEventSource,
+    private val eventSource: EventSource,
     private val eventSink: EventSink,
     private val paraphraser: Paraphraser,
 ) : UseCase {

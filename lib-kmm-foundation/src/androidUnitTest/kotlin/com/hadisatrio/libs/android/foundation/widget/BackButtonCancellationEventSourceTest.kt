@@ -22,7 +22,7 @@ import androidx.test.runner.AndroidJUnit4
 import com.badoo.reaktive.observable.subscribe
 import com.badoo.reaktive.test.scheduler.TestScheduler
 import com.hadisatrio.libs.kotlin.foundation.event.Event
-import com.hadisatrio.libs.kotlin.foundation.event.SchedulingRxEventSource
+import com.hadisatrio.libs.kotlin.foundation.event.SchedulingEventSource
 import io.kotest.matchers.maps.shouldContain
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -37,7 +37,7 @@ class BackButtonCancellationEventSourceTest {
         val scheduler = TestScheduler()
         val events = mutableListOf<Event>()
         val source = BackButtonCancellationEventSource(activity)
-        val disposable = SchedulingRxEventSource(scheduler, source).events().subscribe { events.add(it) }
+        val disposable = SchedulingEventSource(scheduler, source).events().subscribe { events.add(it) }
 
         activity.onBackPressed()
 

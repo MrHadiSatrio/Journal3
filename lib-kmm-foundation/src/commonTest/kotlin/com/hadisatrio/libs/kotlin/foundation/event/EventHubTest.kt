@@ -36,7 +36,7 @@ class EventHubTest {
         val hub = EventHub(PublishSubject())
         val eventsPosted = mutableListOf<Event>()
         val scheduler = TestScheduler()
-        val disposable = SchedulingRxEventSource(scheduler, hub).events().subscribe { eventsPosted.add(it) }
+        val disposable = SchedulingEventSource(scheduler, hub).events().subscribe { eventsPosted.add(it) }
 
         eventsToBeSunk.forEach { hub.sink(it) }
 

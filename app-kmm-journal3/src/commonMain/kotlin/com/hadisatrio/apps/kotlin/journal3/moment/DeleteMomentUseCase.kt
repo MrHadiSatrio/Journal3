@@ -22,7 +22,7 @@ import com.hadisatrio.apps.kotlin.journal3.forgettable.DeleteForgettableUseCase
 import com.hadisatrio.apps.kotlin.journal3.forgettable.Forgettable
 import com.hadisatrio.apps.kotlin.journal3.story.Stories
 import com.hadisatrio.libs.kotlin.foundation.event.EventSink
-import com.hadisatrio.libs.kotlin.foundation.event.RxEventSource
+import com.hadisatrio.libs.kotlin.foundation.event.EventSource
 import com.hadisatrio.libs.kotlin.foundation.modal.Modal
 import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
 
@@ -30,7 +30,7 @@ class DeleteMomentUseCase(
     private val momentId: Uuid,
     private val stories: Stories,
     presenter: Presenter<Modal>,
-    eventSource: RxEventSource,
+    eventSource: EventSource,
     eventSink: EventSink
 ) : DeleteForgettableUseCase(presenter, eventSource, eventSink) {
 

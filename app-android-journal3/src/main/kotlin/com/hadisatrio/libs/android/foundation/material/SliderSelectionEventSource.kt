@@ -22,13 +22,13 @@ import com.badoo.reaktive.observable.Observable
 import com.badoo.reaktive.observable.observable
 import com.google.android.material.slider.Slider
 import com.hadisatrio.libs.kotlin.foundation.event.Event
-import com.hadisatrio.libs.kotlin.foundation.event.RxEventSource
+import com.hadisatrio.libs.kotlin.foundation.event.EventSource
 import com.hadisatrio.libs.kotlin.foundation.event.SelectionEvent
 
 class SliderSelectionEventSource(
     private val slider: Slider,
     private val selectionKind: String
-) : RxEventSource {
+) : EventSource {
 
     private val events: Observable<SelectionEvent> by lazy {
         observable { emitter ->

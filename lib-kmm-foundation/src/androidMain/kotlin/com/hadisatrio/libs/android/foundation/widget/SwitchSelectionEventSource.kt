@@ -22,14 +22,14 @@ import com.badoo.reaktive.coroutinesinterop.asObservable
 import com.badoo.reaktive.observable.Observable
 import com.badoo.reaktive.observable.map
 import com.hadisatrio.libs.kotlin.foundation.event.Event
-import com.hadisatrio.libs.kotlin.foundation.event.RxEventSource
+import com.hadisatrio.libs.kotlin.foundation.event.EventSource
 import reactivecircus.flowbinding.android.widget.checkedChanges
 
 class SwitchSelectionEventSource(
     private val switch: SwitchCompat,
     private val offEventFactory: Event.Factory,
     private val onEventFactory: Event.Factory,
-) : RxEventSource {
+) : EventSource {
 
     override fun events(): Observable<Event> {
         return switch.checkedChanges().asObservable().map { isChecked ->

@@ -60,7 +60,6 @@ internal fun Project.configureAndroid() {
             add("implementation", Dependencies.AndroidCompatibility.CORE_KTX)
             add("implementation", Dependencies.AndroidUi.RECYCLER_VIEW)
             add("implementation", Dependencies.AndroidUi.MATERIAL)
-            add("implementation", Dependencies.Asynchrony.COROUTINES)
 
             add("androidTestImplementation", Dependencies.TestDouble.MOCKK)
             add("androidTestImplementation", Dependencies.TestRuntime.ANDROID_JUNIT_4)

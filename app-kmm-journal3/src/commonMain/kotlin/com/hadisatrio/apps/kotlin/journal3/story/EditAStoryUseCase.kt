@@ -30,7 +30,7 @@ import com.hadisatrio.libs.kotlin.foundation.event.CancellationEvent
 import com.hadisatrio.libs.kotlin.foundation.event.CompletionEvent
 import com.hadisatrio.libs.kotlin.foundation.event.Event
 import com.hadisatrio.libs.kotlin.foundation.event.EventSink
-import com.hadisatrio.libs.kotlin.foundation.event.RxEventSource
+import com.hadisatrio.libs.kotlin.foundation.event.EventSource
 import com.hadisatrio.libs.kotlin.foundation.event.SelectionEvent
 import com.hadisatrio.libs.kotlin.foundation.event.TextInputEvent
 import com.hadisatrio.libs.kotlin.foundation.modal.BinaryConfirmationModal
@@ -44,7 +44,7 @@ class EditAStoryUseCase(
     private val stories: Stories,
     private val presenter: Presenter<Story>,
     private val modalPresenter: Presenter<Modal>,
-    private val eventSource: RxEventSource,
+    private val eventSource: EventSource,
     private val eventSink: EventSink
 ) : UseCase {
 

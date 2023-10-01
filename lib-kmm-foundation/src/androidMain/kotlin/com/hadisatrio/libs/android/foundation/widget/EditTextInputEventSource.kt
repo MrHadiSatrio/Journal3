@@ -23,14 +23,14 @@ import com.badoo.reaktive.observable.Observable
 import com.badoo.reaktive.observable.map
 import com.badoo.reaktive.observable.skip
 import com.hadisatrio.libs.kotlin.foundation.event.Event
-import com.hadisatrio.libs.kotlin.foundation.event.RxEventSource
+import com.hadisatrio.libs.kotlin.foundation.event.EventSource
 import com.hadisatrio.libs.kotlin.foundation.event.TextInputEvent
 import reactivecircus.flowbinding.android.widget.textChanges
 
 class EditTextInputEventSource(
     private val editText: EditText,
     private val inputKind: String
-) : RxEventSource {
+) : EventSource {
 
     override fun events(): Observable<Event> {
         return editText.textChanges().asObservable()

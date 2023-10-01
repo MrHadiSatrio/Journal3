@@ -28,7 +28,7 @@ import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia
 import com.badoo.reaktive.observable.Observable
 import com.badoo.reaktive.subject.publish.PublishSubject
 import com.hadisatrio.libs.kotlin.foundation.event.Event
-import com.hadisatrio.libs.kotlin.foundation.event.RxEventSource
+import com.hadisatrio.libs.kotlin.foundation.event.EventSource
 import com.hadisatrio.libs.kotlin.foundation.event.SelectionEvent
 
 class PhotoSelectionEventSource internal constructor(
@@ -36,7 +36,7 @@ class PhotoSelectionEventSource internal constructor(
     activity: ComponentActivity,
     registry: ActivityResultRegistry,
     contentResolver: ContentResolver
-) : RxEventSource {
+) : EventSource {
 
     private val events = PublishSubject<Event>()
     private val launcher = activity.registerForActivityResult(PickMultipleVisualMedia(), registry) { uris ->

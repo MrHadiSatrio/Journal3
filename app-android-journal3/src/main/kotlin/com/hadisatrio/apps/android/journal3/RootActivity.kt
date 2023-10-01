@@ -35,9 +35,9 @@ import com.hadisatrio.libs.android.viewpager2.SimpleFragmentPagerAdapter.Fragmen
 import com.hadisatrio.libs.kotlin.foundation.ExecutorDispatchingUseCase
 import com.hadisatrio.libs.kotlin.foundation.UseCase
 import com.hadisatrio.libs.kotlin.foundation.event.CancellationEvent
+import com.hadisatrio.libs.kotlin.foundation.event.EventSource
 import com.hadisatrio.libs.kotlin.foundation.event.EventSources
-import com.hadisatrio.libs.kotlin.foundation.event.RxEventSource
-import com.hadisatrio.libs.kotlin.foundation.event.SchedulingRxEventSource
+import com.hadisatrio.libs.kotlin.foundation.event.SchedulingEventSource
 import com.hadisatrio.libs.kotlin.foundation.event.SelectionEvent
 import com.hadisatrio.libs.kotlin.foundation.event.StreamEventsUseCase
 
@@ -51,8 +51,8 @@ class RootActivity : AppCompatActivity() {
         findViewById(R.id.bottom_bar)
     }
 
-    private val eventSource: RxEventSource by lazy {
-        SchedulingRxEventSource(
+    private val eventSource: EventSource by lazy {
+        SchedulingEventSource(
             subscriptionScheduler = mainScheduler,
             observationScheduler = computationScheduler,
             origin = EventSources(

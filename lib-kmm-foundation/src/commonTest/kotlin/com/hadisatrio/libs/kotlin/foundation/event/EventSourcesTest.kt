@@ -15,8 +15,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-@file:OptIn(ExperimentalCoroutinesApi::class)
-
 package com.hadisatrio.libs.kotlin.foundation.event
 
 import com.badoo.reaktive.observable.subscribe
@@ -24,7 +22,6 @@ import com.badoo.reaktive.subject.publish.PublishSubject
 import com.badoo.reaktive.test.scheduler.TestScheduler
 import com.hadisatrio.libs.kotlin.foundation.event.fake.FakeEventSource
 import io.kotest.matchers.collections.shouldHaveSize
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlin.test.Test
 
 class EventSourcesTest {
@@ -39,7 +36,7 @@ class EventSourcesTest {
         val events = mutableListOf<Event>()
         val scheduler = TestScheduler()
         val sources = EventSources(*rawSources)
-        val disposable = SchedulingRxEventSource(scheduler, sources).events().subscribe { events.add(it) }
+        val disposable = SchedulingEventSource(scheduler, sources).events().subscribe { events.add(it) }
 
         rawSources.forEachIndexed { i, s -> s.produce(CompletionEvent()) }
 

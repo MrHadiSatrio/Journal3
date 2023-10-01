@@ -23,7 +23,7 @@ import androidx.test.runner.AndroidJUnit4
 import com.badoo.reaktive.observable.subscribe
 import com.badoo.reaktive.test.scheduler.TestScheduler
 import com.hadisatrio.libs.kotlin.foundation.event.Event
-import com.hadisatrio.libs.kotlin.foundation.event.SchedulingRxEventSource
+import com.hadisatrio.libs.kotlin.foundation.event.SchedulingEventSource
 import com.hadisatrio.libs.kotlin.foundation.event.fake.FakeEvent
 import io.kotest.matchers.maps.shouldContain
 import org.junit.Test
@@ -39,7 +39,7 @@ class SwitchSelectionEventSourceTest {
     private val scheduler = TestScheduler()
     private val offEventFactory = Event.Factory { FakeEvent("value" to "off") }
     private val onEventFactory = Event.Factory { FakeEvent("value" to "on") }
-    private val eventSource = SchedulingRxEventSource(
+    private val eventSource = SchedulingEventSource(
         scheduler,
         SwitchSelectionEventSource(switch, offEventFactory, onEventFactory)
     )

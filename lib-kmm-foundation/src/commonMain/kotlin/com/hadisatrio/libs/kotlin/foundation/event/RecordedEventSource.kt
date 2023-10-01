@@ -22,7 +22,7 @@ import com.badoo.reaktive.observable.asObservable
 
 class RecordedEventSource(
     private val events: List<Event>
-) : RxEventSource {
+) : EventSource {
 
     constructor(vararg event: Event) : this(event.toList())
 

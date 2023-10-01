@@ -20,11 +20,11 @@ package com.hadisatrio.libs.kotlin.foundation.event.fake
 import com.badoo.reaktive.observable.Observable
 import com.badoo.reaktive.subject.Subject
 import com.hadisatrio.libs.kotlin.foundation.event.Event
-import com.hadisatrio.libs.kotlin.foundation.event.RxEventSource
+import com.hadisatrio.libs.kotlin.foundation.event.EventSource
 
 class FakeEventSource(
     private val sharedFlow: Subject<Event>
-) : RxEventSource {
+) : EventSource {
 
     fun produce(event: Event) {
         sharedFlow.onNext(event)

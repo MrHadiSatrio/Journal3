@@ -22,12 +22,12 @@ import com.badoo.reaktive.observable.Observable
 import com.badoo.reaktive.observable.observable
 import com.google.android.material.navigation.NavigationBarView
 import com.hadisatrio.libs.kotlin.foundation.event.Event
-import com.hadisatrio.libs.kotlin.foundation.event.RxEventSource
+import com.hadisatrio.libs.kotlin.foundation.event.EventSource
 
 class NavigationBarSelectionEventSource(
     private val view: NavigationBarView,
     private val eventFactory: Event.ArgumentedFactory<Int>
-) : RxEventSource {
+) : EventSource {
 
     private val events: Observable<Event> by lazy {
         observable { emitter ->

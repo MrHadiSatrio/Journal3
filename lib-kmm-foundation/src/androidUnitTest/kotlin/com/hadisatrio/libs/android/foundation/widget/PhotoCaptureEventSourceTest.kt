@@ -29,7 +29,7 @@ import androidx.test.runner.AndroidJUnit4
 import com.badoo.reaktive.observable.subscribe
 import com.badoo.reaktive.test.scheduler.TestScheduler
 import com.hadisatrio.libs.kotlin.foundation.event.Event
-import com.hadisatrio.libs.kotlin.foundation.event.SchedulingRxEventSource
+import com.hadisatrio.libs.kotlin.foundation.event.SchedulingEventSource
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.maps.shouldContain
 import io.kotest.matchers.nulls.shouldNotBeNull
@@ -56,7 +56,7 @@ class PhotoCaptureEventSourceTest {
     fun `Produces SelectionEvent upon positive activity result`() {
         val registry = immediateReturningRegistry(true)
         val source = PhotoCaptureEventSource(triggerView, activity, registry, activity.cacheDir)
-        val disposable = SchedulingRxEventSource(scheduler, source).events().subscribe { events.add(it) }
+        val disposable = SchedulingEventSource(scheduler, source).events().subscribe { events.add(it) }
         activity.setContentView(triggerView)
         activityController.setup().visible()
 
@@ -74,7 +74,7 @@ class PhotoCaptureEventSourceTest {
     fun `Does not produce SelectionEvent upon negative activity result`() {
         val registry = immediateReturningRegistry(false)
         val source = PhotoCaptureEventSource(triggerView, activity, registry, activity.cacheDir)
-        val disposable = SchedulingRxEventSource(scheduler, source).events().subscribe { events.add(it) }
+        val disposable = SchedulingEventSource(scheduler, source).events().subscribe { events.add(it) }
         activity.setContentView(triggerView)
         activityController.setup().visible()
 

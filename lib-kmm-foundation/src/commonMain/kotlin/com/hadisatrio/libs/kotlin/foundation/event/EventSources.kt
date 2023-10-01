@@ -21,10 +21,10 @@ import com.badoo.reaktive.observable.Observable
 import com.badoo.reaktive.observable.merge
 
 class EventSources(
-    private val sources: Iterable<RxEventSource>
-) : RxEventSource {
+    private val sources: Iterable<EventSource>
+) : EventSource {
 
-    constructor(vararg source: RxEventSource) : this(source.toList())
+    constructor(vararg source: EventSource) : this(source.toList())
 
     override fun events(): Observable<Event> {
         return sources.map { it.events() }.merge()

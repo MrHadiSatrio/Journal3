@@ -26,7 +26,7 @@ import com.hadisatrio.libs.kotlin.foundation.UseCase
 import com.hadisatrio.libs.kotlin.foundation.event.CompletionEvent
 import com.hadisatrio.libs.kotlin.foundation.event.Event
 import com.hadisatrio.libs.kotlin.foundation.event.EventSink
-import com.hadisatrio.libs.kotlin.foundation.event.RxEventSource
+import com.hadisatrio.libs.kotlin.foundation.event.EventSource
 import com.hadisatrio.libs.kotlin.foundation.modal.BinaryConfirmationModal
 import com.hadisatrio.libs.kotlin.foundation.modal.Modal
 import com.hadisatrio.libs.kotlin.foundation.modal.ModalApprovalEvent
@@ -35,7 +35,7 @@ import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
 
 abstract class DeleteForgettableUseCase(
     private val presenter: Presenter<Modal>,
-    private val eventSource: RxEventSource,
+    private val eventSource: EventSource,
     private val eventSink: EventSink
 ) : UseCase {
 

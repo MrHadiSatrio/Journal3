@@ -27,8 +27,8 @@ import com.hadisatrio.libs.kotlin.foundation.event.CancellationEvent
 import com.hadisatrio.libs.kotlin.foundation.event.CompletionEvent
 import com.hadisatrio.libs.kotlin.foundation.event.Event
 import com.hadisatrio.libs.kotlin.foundation.event.EventSink
+import com.hadisatrio.libs.kotlin.foundation.event.EventSource
 import com.hadisatrio.libs.kotlin.foundation.event.ExceptionalEvent
-import com.hadisatrio.libs.kotlin.foundation.event.RxEventSource
 import com.hadisatrio.libs.kotlin.foundation.event.SelectionEvent
 import com.hadisatrio.libs.kotlin.foundation.modal.BinaryConfirmationModal
 import com.hadisatrio.libs.kotlin.foundation.modal.Modal
@@ -41,7 +41,7 @@ class SelectAPlaceUseCase(
     private val places: Places,
     private val presenter: Presenter<Places>,
     private val modalPresenter: Presenter<Modal>,
-    private val eventSource: RxEventSource,
+    private val eventSource: EventSource,
     private val eventSink: EventSink,
 ) : UseCase {
 

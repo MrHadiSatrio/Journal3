@@ -36,7 +36,7 @@ import com.hadisatrio.libs.kotlin.foundation.ExecutorDispatchingUseCase
 import com.hadisatrio.libs.kotlin.foundation.UseCase
 import com.hadisatrio.libs.kotlin.foundation.event.EventSink
 import com.hadisatrio.libs.kotlin.foundation.event.EventSinks
-import com.hadisatrio.libs.kotlin.foundation.event.RxEventSource
+import com.hadisatrio.libs.kotlin.foundation.event.EventSource
 import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
 
 abstract class StoriesListFragment : Fragment() {
@@ -47,7 +47,7 @@ abstract class StoriesListFragment : Fragment() {
 
     abstract val presenter: Presenter<Stories>
 
-    abstract val eventSource: RxEventSource
+    abstract val eventSource: EventSource
 
     abstract val stories: Stories
 

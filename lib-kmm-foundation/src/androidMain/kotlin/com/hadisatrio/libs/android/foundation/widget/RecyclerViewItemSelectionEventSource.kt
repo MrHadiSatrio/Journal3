@@ -23,13 +23,13 @@ import com.badoo.reaktive.base.setCancellable
 import com.badoo.reaktive.observable.Observable
 import com.badoo.reaktive.observable.observable
 import com.hadisatrio.libs.kotlin.foundation.event.Event
-import com.hadisatrio.libs.kotlin.foundation.event.RxEventSource
+import com.hadisatrio.libs.kotlin.foundation.event.EventSource
 import com.hadisatrio.libs.kotlin.foundation.event.SelectionEvent
 import kotlin.math.abs
 
 class RecyclerViewItemSelectionEventSource(
     private val recyclerView: RecyclerView
-) : RxEventSource {
+) : EventSource {
 
     private val events: Observable<Event> by lazy {
         observable { emitter ->

@@ -22,13 +22,13 @@ import com.badoo.reaktive.coroutinesinterop.asObservable
 import com.badoo.reaktive.observable.Observable
 import com.badoo.reaktive.observable.map
 import com.hadisatrio.libs.kotlin.foundation.event.Event
-import com.hadisatrio.libs.kotlin.foundation.event.RxEventSource
+import com.hadisatrio.libs.kotlin.foundation.event.EventSource
 import reactivecircus.flowbinding.android.view.clicks
 
 class ViewClickEventSource(
     private val view: View,
     private val eventFactory: Event.Factory
-) : RxEventSource {
+) : EventSource {
 
     override fun events(): Observable<Event> {
         return view.clicks().asObservable().map { eventFactory.create() }

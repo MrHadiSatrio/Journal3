@@ -22,7 +22,7 @@ import com.badoo.reaktive.subject.Subject
 
 class EventHub(
     private val subject: Subject<Event>
-) : RxEventSource, EventSink {
+) : EventSource, EventSink {
 
     override fun events(): Observable<Event> {
         return subject

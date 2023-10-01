@@ -31,9 +31,9 @@ import com.hadisatrio.libs.android.foundation.lifecycle.LifecycleTriggeredEventS
 import com.hadisatrio.libs.android.foundation.widget.RecyclerViewItemSelectionEventSource
 import com.hadisatrio.libs.android.foundation.widget.RecyclerViewPresenter
 import com.hadisatrio.libs.kotlin.foundation.event.CancellationEvent
+import com.hadisatrio.libs.kotlin.foundation.event.EventSource
 import com.hadisatrio.libs.kotlin.foundation.event.EventSources
-import com.hadisatrio.libs.kotlin.foundation.event.RxEventSource
-import com.hadisatrio.libs.kotlin.foundation.event.SchedulingRxEventSource
+import com.hadisatrio.libs.kotlin.foundation.event.SchedulingEventSource
 import com.hadisatrio.libs.kotlin.foundation.presentation.AdaptingPresenter
 import com.hadisatrio.libs.kotlin.foundation.presentation.ExecutorDispatchingPresenter
 import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
@@ -70,8 +70,8 @@ class UserStoriesListFragment : StoriesListFragment() {
         )
     }
 
-    override val eventSource: RxEventSource by lazy {
-        SchedulingRxEventSource(
+    override val eventSource: EventSource by lazy {
+        SchedulingEventSource(
             subscriptionScheduler = mainScheduler,
             observationScheduler = computationScheduler,
             origin = EventSources(
