@@ -15,13 +15,14 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 api(Dependencies.Commons.UUID)
-                api(Dependencies.Asynchrony.COROUTINES)
+                api(Dependencies.Asynchrony.REACTIVE_EXTENSIONS)
+                implementation(Dependencies.Asynchrony.REACTIVE_EXTENSIONS_COROUTINE_INTEROP)
             }
         }
         val commonTest by getting {
             dependencies {
                 implementation(kotlin("test"))
-                implementation(Dependencies.TestUtility.COROUTINES_TEST)
+                implementation(Dependencies.TestUtility.REACTIVE_EXTENSIONS_TEST)
                 implementation(Dependencies.TestUtility.KOTEST_ASSERTIONS)
                 implementation(Dependencies.TestDouble.MOCKK)
             }

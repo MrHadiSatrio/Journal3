@@ -17,8 +17,8 @@
 
 package com.hadisatrio.libs.kotlin.foundation.event
 
-import kotlinx.coroutines.flow.Flow
+import com.badoo.reaktive.observable.Observable
 
 interface EventSource {
-    fun events(): Flow<Event>
+    fun events(): Observable<Event>
 }

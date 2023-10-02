@@ -17,6 +17,11 @@
 
 package com.hadisatrio.apps.kotlin.journal3.story
 
+import com.badoo.reaktive.observable.doOnBeforeNext
+import com.badoo.reaktive.observable.merge
+import com.badoo.reaktive.observable.subscribe
+import com.badoo.reaktive.observable.takeUntil
+import com.badoo.reaktive.subject.replay.ReplaySubject
 import com.hadisatrio.apps.kotlin.journal3.event.RefreshRequestEvent
 import com.hadisatrio.libs.kotlin.foundation.UseCase
 import com.hadisatrio.libs.kotlin.foundation.event.CancellationEvent
@@ -26,11 +31,6 @@ import com.hadisatrio.libs.kotlin.foundation.event.EventSink
 import com.hadisatrio.libs.kotlin.foundation.event.EventSource
 import com.hadisatrio.libs.kotlin.foundation.event.SelectionEvent
 import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.merge
-import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.takeWhile
-import kotlinx.coroutines.runBlocking
 
 class ShowStoriesUseCase(
     private val stories: Stories,
@@ -39,7 +39,7 @@ class ShowStoriesUseCase(
     private val eventSink: EventSink
 ) : UseCase {
 
-    private val completionEvents by lazy { MutableSharedFlow<CompletionEvent>(extraBufferCapacity = 1) }
+    private val completionEvents by lazy { ReplaySubject<CompletionEvent>(bufferSize = 1) }
 
     override fun invoke() {
         presentState()
@@ -50,14 +50,14 @@ class ShowStoriesUseCase(
         presenter.present(stories)
     }
 
-    private fun observeEvents() = runBlocking {
+    private fun observeEvents() {
         merge(eventSource.events(), completionEvents)
-            .onEach { eventSink.sink(it) }
-            .takeWhile { event -> (event as? CompletionEvent) == null }
-            .collect { event -> handleEvent(event) }
+            .takeUntil { event -> event is CompletionEvent }
+            .doOnBeforeNext { event -> eventSink.sink(event) }
+            .subscribe { event -> handleEvent(event) }
     }
 
-    private suspend fun handleEvent(event: Event) {
+    private fun handleEvent(event: Event) {
         when (event) {
             is SelectionEvent -> handleSelection(event)
             is RefreshRequestEvent -> presentState()
@@ -83,7 +83,7 @@ class ShowStoriesUseCase(
         }
     }
 
-    private suspend fun handleCancellation() {
-        completionEvents.emit(CompletionEvent())
+    private fun handleCancellation() {
+        completionEvents.onNext(CompletionEvent())
     }
 }

@@ -15,27 +15,24 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.hadisatrio.libs.kotlin.foundation
+package com.hadisatrio.libs.kotlin.foundation.event
 
-import io.mockk.mockk
-import io.mockk.verify
-import kotlinx.coroutines.test.TestScope
-import kotlinx.coroutines.test.UnconfinedTestDispatcher
-import kotlin.test.Test
+import com.badoo.reaktive.observable.Observable
+import com.badoo.reaktive.observable.observeOn
+import com.badoo.reaktive.observable.subscribeOn
+import com.badoo.reaktive.scheduler.Scheduler
 
-class CoroutineDispatchingUseCaseTest {
+class SchedulingEventSource(
+    private val subscriptionScheduler: Scheduler,
+    private val observationScheduler: Scheduler,
+    private val origin: EventSource
+) : EventSource {
 
-    @Test
-    fun `Forwards the call to origin within a launched coroutine`() {
-        val origin = mockk<UseCase>(relaxed = true)
+    constructor(scheduler: Scheduler, origin: EventSource) : this(scheduler, scheduler, origin)
 
-        val useCase = CoroutineDispatchingUseCase(
-            coroutineScope = TestScope(),
-            coroutineDispatcher = UnconfinedTestDispatcher(),
-            origin = origin
-        )
-        useCase()
-
-        verify(exactly = 1) { origin.invoke() }
+    override fun events(): Observable<Event> {
+        return origin.events()
+            .subscribeOn(subscriptionScheduler)
+            .observeOn(observationScheduler)
     }
 }

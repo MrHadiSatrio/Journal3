@@ -17,19 +17,18 @@
 
 package com.hadisatrio.libs.kotlin.foundation.event
 
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.asSharedFlow
+import com.badoo.reaktive.observable.Observable
+import com.badoo.reaktive.subject.Subject
 
 class EventHub(
-    private val flow: MutableSharedFlow<Event>
+    private val subject: Subject<Event>
 ) : EventSource, EventSink {
 
-    override fun events(): Flow<Event> {
-        return flow.asSharedFlow()
+    override fun events(): Observable<Event> {
+        return subject
     }
 
     override fun sink(event: Event) {
-        flow.tryEmit(event)
+        subject.onNext(event)
     }
 }

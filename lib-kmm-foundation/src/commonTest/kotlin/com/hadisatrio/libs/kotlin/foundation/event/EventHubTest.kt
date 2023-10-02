@@ -15,38 +15,32 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-@file:OptIn(ExperimentalCoroutinesApi::class)
-
 package com.hadisatrio.libs.kotlin.foundation.event
 
+import com.badoo.reaktive.observable.subscribe
+import com.badoo.reaktive.subject.publish.PublishSubject
+import com.badoo.reaktive.test.scheduler.TestScheduler
 import io.kotest.matchers.collections.shouldHaveSize
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.toList
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.test.UnconfinedTestDispatcher
-import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.time.Duration
 
 class EventHubTest {
 
     @Test
-    fun `Forwards sunk events to the collector`() = runTest {
+    fun `Forwards sunk events to the collector`() {
         val eventsToBeSunk = arrayOf(
             PerfSensitiveEvent(Duration.ZERO, TextInputEvent("Foo", "Bar")),
             SelectionEvent("Foo", "Bar"),
             CancellationEvent("system")
         )
-
-        val hub = EventHub(MutableSharedFlow(extraBufferCapacity = 1))
+        val hub = EventHub(PublishSubject())
         val eventsPosted = mutableListOf<Event>()
-        val collectJob = launch(UnconfinedTestDispatcher()) {
-            hub.events().toList(eventsPosted)
-        }
+        val scheduler = TestScheduler()
+        val disposable = SchedulingEventSource(scheduler, hub).events().subscribe { eventsPosted.add(it) }
+
         eventsToBeSunk.forEach { hub.sink(it) }
 
         eventsPosted.shouldHaveSize(eventsToBeSunk.size)
-        collectJob.cancel()
+        disposable.dispose()
     }
 }

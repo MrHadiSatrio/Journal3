@@ -17,6 +17,11 @@
 
 package com.hadisatrio.apps.kotlin.journal3.forgettable
 
+import com.badoo.reaktive.observable.doOnBeforeNext
+import com.badoo.reaktive.observable.merge
+import com.badoo.reaktive.observable.subscribe
+import com.badoo.reaktive.observable.takeUntil
+import com.badoo.reaktive.subject.replay.ReplaySubject
 import com.hadisatrio.libs.kotlin.foundation.UseCase
 import com.hadisatrio.libs.kotlin.foundation.event.CompletionEvent
 import com.hadisatrio.libs.kotlin.foundation.event.Event
@@ -27,11 +32,6 @@ import com.hadisatrio.libs.kotlin.foundation.modal.Modal
 import com.hadisatrio.libs.kotlin.foundation.modal.ModalApprovalEvent
 import com.hadisatrio.libs.kotlin.foundation.modal.ModalDismissalEvent
 import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.merge
-import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.takeWhile
-import kotlinx.coroutines.runBlocking
 
 abstract class DeleteForgettableUseCase(
     private val presenter: Presenter<Modal>,
@@ -39,9 +39,9 @@ abstract class DeleteForgettableUseCase(
     private val eventSink: EventSink
 ) : UseCase {
 
-    private val completionEvents by lazy { MutableSharedFlow<CompletionEvent>(extraBufferCapacity = 1) }
+    private val completionEvents by lazy { ReplaySubject<CompletionEvent>(bufferSize = 1) }
 
-    final override fun invoke() = runBlocking {
+    final override fun invoke() {
         present()
         observeEvents()
     }
@@ -57,33 +57,33 @@ abstract class DeleteForgettableUseCase(
         presenter.present(modal)
     }
 
-    private suspend fun observeEvents() {
+    private fun observeEvents() {
         merge(eventSource.events(), completionEvents)
-            .onEach { eventSink.sink(it) }
-            .takeWhile { event -> (event as? CompletionEvent) == null }
-            .collect { event -> handle(event) }
+            .takeUntil { event -> event is CompletionEvent }
+            .doOnBeforeNext { event -> eventSink.sink(event) }
+            .subscribe { event -> handleEvent(event) }
     }
 
-    private suspend fun handle(event: Event) {
+    private fun handleEvent(event: Event) {
         when (event) {
             is ModalApprovalEvent -> handleApproval(event)
             is ModalDismissalEvent -> handleDismissal()
         }
     }
 
-    private suspend fun handleApproval(event: ModalApprovalEvent) {
+    private fun handleApproval(event: ModalApprovalEvent) {
         when (event.modalKind) {
             "forgettable_not_found_notification" -> {
-                completionEvents.emit(CompletionEvent())
+                completionEvents.onNext(CompletionEvent())
             }
             "forgettable_deletion_confirmation" -> {
                 forgettable()!!.forget()
-                completionEvents.emit(CompletionEvent())
+                completionEvents.onNext(CompletionEvent())
             }
         }
     }
 
-    private suspend fun handleDismissal() {
-        completionEvents.emit(CompletionEvent())
+    private fun handleDismissal() {
+        completionEvents.onNext(CompletionEvent())
     }
 }

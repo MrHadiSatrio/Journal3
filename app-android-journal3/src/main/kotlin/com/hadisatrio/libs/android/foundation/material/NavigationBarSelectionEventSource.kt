@@ -17,29 +17,30 @@
 
 package com.hadisatrio.libs.android.foundation.material
 
+import com.badoo.reaktive.base.setCancellable
+import com.badoo.reaktive.observable.Observable
+import com.badoo.reaktive.observable.observable
 import com.google.android.material.navigation.NavigationBarView
 import com.hadisatrio.libs.kotlin.foundation.event.Event
 import com.hadisatrio.libs.kotlin.foundation.event.EventSource
-import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
 
 class NavigationBarSelectionEventSource(
     private val view: NavigationBarView,
     private val eventFactory: Event.ArgumentedFactory<Int>
 ) : EventSource {
 
-    private val events: Flow<Event> by lazy {
-        callbackFlow {
+    private val events: Observable<Event> by lazy {
+        observable { emitter ->
             val listener = NavigationBarView.OnItemSelectedListener { item ->
-                trySend(eventFactory.create(item.itemId)).isSuccess
+                emitter.onNext(eventFactory.create(item.itemId))
+                true
             }
             view.setOnItemSelectedListener(listener)
-            awaitClose { view.setOnItemSelectedListener(null) }
+            emitter.setCancellable { view.setOnItemSelectedListener(null) }
         }
     }
 
-    override fun events(): Flow<Event> {
+    override fun events(): Observable<Event> {
         return events
     }
 }

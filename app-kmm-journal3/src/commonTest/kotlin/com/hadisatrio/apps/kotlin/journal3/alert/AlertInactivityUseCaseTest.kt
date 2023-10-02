@@ -51,9 +51,7 @@ class AlertInactivityUseCaseTest {
             threshold = 3.hours,
             stories = stories,
             presenter = presenter,
-            eventSource = RecordedEventSource(
-                CompletionEvent()
-            ),
+            eventSource = RecordedEventSource(CompletionEvent()),
             eventSink = eventSink
         )()
 
@@ -66,9 +64,7 @@ class AlertInactivityUseCaseTest {
             threshold = 3.hours,
             stories = stories,
             presenter = presenter,
-            eventSource = RecordedEventSource(
-                CompletionEvent()
-            ),
+            eventSource = RecordedEventSource(CompletionEvent()),
             eventSink = eventSink
         )()
 
@@ -83,9 +79,7 @@ class AlertInactivityUseCaseTest {
             threshold = 3.hours,
             stories = stories,
             presenter = presenter,
-            eventSource = RecordedEventSource(
-                CompletionEvent()
-            ),
+            eventSource = RecordedEventSource(CompletionEvent()),
             eventSink = eventSink
         )()
 

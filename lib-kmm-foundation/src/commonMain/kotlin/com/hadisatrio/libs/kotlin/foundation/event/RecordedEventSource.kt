@@ -17,11 +17,8 @@
 
 package com.hadisatrio.libs.kotlin.foundation.event
 
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.asFlow
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.merge
+import com.badoo.reaktive.observable.Observable
+import com.badoo.reaktive.observable.asObservable
 
 class RecordedEventSource(
     private val events: List<Event>
@@ -29,10 +26,7 @@ class RecordedEventSource(
 
     constructor(vararg event: Event) : this(event.toList())
 
-    override fun events(): Flow<Event> {
-        return merge(
-            events.asFlow(),
-            flow { delay(Long.MAX_VALUE) } // ...to prevent the flow from completing.
-        )
+    override fun events(): Observable<Event> {
+        return events.asObservable()
     }
 }

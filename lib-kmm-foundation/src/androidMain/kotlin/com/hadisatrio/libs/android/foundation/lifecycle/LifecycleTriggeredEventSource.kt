@@ -17,14 +17,16 @@
 
 package com.hadisatrio.libs.android.foundation.lifecycle
 
+import android.os.Handler
+import android.os.Looper
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
+import com.badoo.reaktive.base.setCancellable
+import com.badoo.reaktive.observable.Observable
+import com.badoo.reaktive.observable.observable
 import com.hadisatrio.libs.kotlin.foundation.event.Event
 import com.hadisatrio.libs.kotlin.foundation.event.EventSource
-import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
 
 class LifecycleTriggeredEventSource(
     private val lifecycleOwner: LifecycleOwner,
@@ -32,19 +34,22 @@ class LifecycleTriggeredEventSource(
     private val eventFactory: Event.Factory
 ) : EventSource {
 
-    private val events: Flow<Event> by lazy {
-        callbackFlow {
+    private val events: Observable<Event> by lazy {
+        observable { emitter ->
+            val handler = Handler(Looper.getMainLooper())
             val observer = LifecycleEventObserver { _, event ->
                 if (event != lifecycleEvent) return@LifecycleEventObserver
-                trySend(eventFactory.create())
+                emitter.onNext(eventFactory.create())
             }
 
-            lifecycleOwner.lifecycle.addObserver(observer)
-            awaitClose { lifecycleOwner.lifecycle.removeObserver(observer) }
+            handler.post { lifecycleOwner.lifecycle.addObserver(observer) }
+            emitter.setCancellable {
+                handler.post { lifecycleOwner.lifecycle.removeObserver(observer) }
+            }
         }
     }
 
-    override fun events(): Flow<Event> {
+    override fun events(): Observable<Event> {
         return events
     }
 }

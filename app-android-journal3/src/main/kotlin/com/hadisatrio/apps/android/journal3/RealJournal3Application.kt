@@ -18,6 +18,7 @@
 package com.hadisatrio.apps.android.journal3
 
 import androidx.core.content.ContextCompat
+import com.badoo.reaktive.subject.publish.PublishSubject
 import com.google.android.material.color.DynamicColors
 import com.hadisatrio.apps.android.journal3.sentiment.TfliteSentimentAnalyst
 import com.hadisatrio.apps.kotlin.journal3.datetime.FormattedTimestamp
@@ -64,7 +65,6 @@ import com.hadisatrio.libs.kotlin.io.filesystem.FileSystemSources
 import com.hadisatrio.libs.kotlin.paraphrase.OpenAiParaphraser
 import com.hadisatrio.libs.kotlin.paraphrase.Paraphraser
 import io.ktor.client.HttpClient
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.datetime.Clock
 import okio.FileSystem
 import okio.Path.Companion.toPath
@@ -198,7 +198,7 @@ class RealJournal3Application : Journal3Application() {
     }
 
     override val globalEventSource: EventSource by lazy {
-        EventHub(MutableSharedFlow(extraBufferCapacity = 1))
+        EventHub(PublishSubject())
     }
 
     override val timestampDecor: Timestamp.Decor by lazy {

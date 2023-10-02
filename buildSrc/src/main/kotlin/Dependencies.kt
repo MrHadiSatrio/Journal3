@@ -51,7 +51,8 @@ object Dependencies {
     }
 
     object Asynchrony {
-        const val COROUTINES = "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3"
+        const val REACTIVE_EXTENSIONS = "com.badoo.reaktive:reaktive:1.3.0"
+        const val REACTIVE_EXTENSIONS_COROUTINE_INTEROP = "com.badoo.reaktive:coroutines-interop:1.3.0"
     }
 
     object Commons {
@@ -78,7 +79,7 @@ object Dependencies {
     }
 
     object TestUtility {
-        const val COROUTINES_TEST = "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3"
+        const val REACTIVE_EXTENSIONS_TEST = "com.badoo.reaktive:reaktive-testing:1.3.0"
         const val KOTEST_ASSERTIONS = "io.kotest:kotest-assertions-core:5.7.2"
         const val ESPRESSO = "androidx.test.espresso:espresso-core:3.5.1"
         const val ROBOLECTRIC = "org.robolectric:robolectric:4.10.3"

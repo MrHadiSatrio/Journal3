@@ -17,6 +17,11 @@
 
 package com.hadisatrio.apps.kotlin.journal3.story
 
+import com.badoo.reaktive.observable.doOnBeforeNext
+import com.badoo.reaktive.observable.merge
+import com.badoo.reaktive.observable.subscribe
+import com.badoo.reaktive.observable.takeUntil
+import com.badoo.reaktive.subject.replay.ReplaySubject
 import com.benasher44.uuid.Uuid
 import com.hadisatrio.apps.kotlin.journal3.event.RefreshRequestEvent
 import com.hadisatrio.apps.kotlin.journal3.token.TokenableString
@@ -32,11 +37,6 @@ import com.hadisatrio.libs.kotlin.foundation.modal.BinaryConfirmationModal
 import com.hadisatrio.libs.kotlin.foundation.modal.Modal
 import com.hadisatrio.libs.kotlin.foundation.modal.ModalApprovalEvent
 import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.merge
-import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.takeWhile
-import kotlinx.coroutines.runBlocking
 
 @Suppress("LongParameterList")
 class EditAStoryUseCase(
@@ -48,33 +48,33 @@ class EditAStoryUseCase(
     private val eventSink: EventSink
 ) : UseCase {
 
-    private val completionEvents by lazy { MutableSharedFlow<CompletionEvent>(extraBufferCapacity = 1) }
+    private val completionEvents by lazy { ReplaySubject<CompletionEvent>(bufferSize = 1) }
     private val targetId: Uuid by lazy { story.id }
     private val isTargetNew: Boolean by lazy { story.isNewlyCreated() }
     private var isEditCancelled: Boolean = false
 
-    override operator fun invoke() = runBlocking {
+    override operator fun invoke() {
         present()
         observeEvents()
     }
 
-    private suspend fun present() {
+    private fun present() {
         if (!isTargetNew && !stories.containsStory(targetId)) {
             isEditCancelled = true
-            completionEvents.emit(CompletionEvent())
+            completionEvents.onNext(CompletionEvent())
         } else {
             presenter.present(story)
         }
     }
 
-    private suspend fun observeEvents() {
+    private fun observeEvents() {
         merge(eventSource.events(), completionEvents)
-            .onEach { eventSink.sink(it) }
-            .takeWhile { event -> (event as? CompletionEvent)?.also { handleCompletion() } == null }
-            .collect { event -> handle(event) }
+            .doOnBeforeNext { event -> eventSink.sink(event) }
+            .takeUntil { event -> (event as? CompletionEvent)?.also { handleCompletion() } != null }
+            .subscribe { event -> handleEvent(event) }
     }
 
-    private suspend fun handle(event: Event) {
+    private fun handleEvent(event: Event) {
         when (event) {
             is TextInputEvent -> handleTextInput(event)
             is SelectionEvent -> handleSelection()
@@ -103,11 +103,11 @@ class EditAStoryUseCase(
         )
     }
 
-    private suspend fun handleModalApproval(event: ModalApprovalEvent) {
+    private fun handleModalApproval(event: ModalApprovalEvent) {
         when (event.modalKind) {
             "edit_cancellation_confirmation" -> {
                 isEditCancelled = true
-                completionEvents.emit(CompletionEvent())
+                completionEvents.onNext(CompletionEvent())
             }
         }
     }
@@ -120,9 +120,9 @@ class EditAStoryUseCase(
         }
     }
 
-    private suspend fun handleCancellation(event: CancellationEvent) {
+    private fun handleCancellation(event: CancellationEvent) {
         if (event.reason != "user") {
-            completionEvents.emit(CompletionEvent())
+            completionEvents.onNext(CompletionEvent())
             return
         }
 
@@ -131,7 +131,7 @@ class EditAStoryUseCase(
             modalPresenter.present(modal)
         } else {
             isEditCancelled = true
-            completionEvents.emit(CompletionEvent())
+            completionEvents.onNext(CompletionEvent())
         }
     }
 }

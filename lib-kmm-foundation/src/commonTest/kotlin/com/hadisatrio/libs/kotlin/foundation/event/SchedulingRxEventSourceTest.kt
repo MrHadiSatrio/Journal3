@@ -17,17 +17,26 @@
 
 package com.hadisatrio.libs.kotlin.foundation.event
 
-import kotlinx.coroutines.asCoroutineDispatcher
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOn
-import java.util.concurrent.Executor
+import com.badoo.reaktive.observable.subscribe
+import com.badoo.reaktive.scheduler.Scheduler
+import com.badoo.reaktive.subject.publish.PublishSubject
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.verify
+import kotlin.test.Test
 
-class ExecutorDispatchingEventSource(
-    private val executor: Executor,
-    private val origin: EventSource
-) : EventSource {
+class SchedulingRxEventSourceTest {
 
-    override fun events(): Flow<Event> {
-        return origin.events().flowOn(executor.asCoroutineDispatcher())
+    @Test
+    fun `Switches subsription and observation scheduler to the given`() {
+        val scheduler = mockk<Scheduler>(relaxed = true)
+        val origin = mockk<EventSource>(relaxed = true)
+        val source = SchedulingEventSource(scheduler, origin)
+        every { origin.events() } returns PublishSubject()
+
+        source.events().subscribe { }
+
+        verify(atLeast = 1) { origin.events() }
+        verify(atLeast = 1) { scheduler.newExecutor() }
     }
 }

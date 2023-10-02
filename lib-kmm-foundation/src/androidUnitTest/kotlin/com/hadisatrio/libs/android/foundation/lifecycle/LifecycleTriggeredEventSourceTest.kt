@@ -20,13 +20,12 @@ package com.hadisatrio.libs.android.foundation.lifecycle
 import androidx.activity.ComponentActivity
 import androidx.lifecycle.Lifecycle
 import androidx.test.runner.AndroidJUnit4
+import com.badoo.reaktive.observable.subscribe
+import com.badoo.reaktive.test.scheduler.TestScheduler
 import com.hadisatrio.libs.kotlin.foundation.event.CompletionEvent
 import com.hadisatrio.libs.kotlin.foundation.event.Event
+import com.hadisatrio.libs.kotlin.foundation.event.SchedulingEventSource
 import io.kotest.matchers.maps.shouldContain
-import kotlinx.coroutines.flow.toList
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.test.UnconfinedTestDispatcher
-import kotlinx.coroutines.test.runTest
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.Robolectric
@@ -35,21 +34,21 @@ import org.robolectric.Robolectric
 class LifecycleTriggeredEventSourceTest {
 
     @Test
-    fun `Produces an event from the given factory when the lifecycle owner enters the specified stage`() = runTest {
+    fun `Produces an event from the given factory when the lifecycle owner enters the specified stage`() {
         val activity = Robolectric.buildActivity(ComponentActivity::class.java)
+        val scheduler = TestScheduler()
         val events = mutableListOf<Event>()
+        val source = LifecycleTriggeredEventSource(
+            lifecycleOwner = activity.get(),
+            lifecycleEvent = Lifecycle.Event.ON_RESUME,
+            eventFactory = { CompletionEvent() }
+        )
+        val disposable = SchedulingEventSource(scheduler, source).events().subscribe { events.add(it) }
 
-        val collectJob = launch(UnconfinedTestDispatcher()) {
-            LifecycleTriggeredEventSource(
-                lifecycleOwner = activity.get(),
-                lifecycleEvent = Lifecycle.Event.ON_RESUME,
-                eventFactory = { CompletionEvent() }
-            ).events().toList(events)
-        }
         activity.setup().resume()
 
         val description = events.first().describe()
         description.shouldContain("name" to "Completion Event")
-        collectJob.cancel()
+        disposable.dispose()
     }
 }

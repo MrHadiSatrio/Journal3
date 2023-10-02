@@ -15,37 +15,32 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-@file:OptIn(ExperimentalCoroutinesApi::class)
-
 package com.hadisatrio.libs.kotlin.foundation.event
 
+import com.badoo.reaktive.observable.subscribe
+import com.badoo.reaktive.subject.publish.PublishSubject
+import com.badoo.reaktive.test.scheduler.TestScheduler
 import com.hadisatrio.libs.kotlin.foundation.event.fake.FakeEventSource
 import io.kotest.matchers.collections.shouldHaveSize
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.toList
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.test.UnconfinedTestDispatcher
-import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 
 class EventSourcesTest {
 
     @Test
-    fun `Channels events posted from participating sources`() = runTest {
+    fun `Channels events posted from participating sources`() {
         val rawSources = arrayOf(
-            FakeEventSource(MutableSharedFlow(extraBufferCapacity = 1)),
-            FakeEventSource(MutableSharedFlow(extraBufferCapacity = 1)),
-            FakeEventSource(MutableSharedFlow(extraBufferCapacity = 1))
+            FakeEventSource(PublishSubject()),
+            FakeEventSource(PublishSubject()),
+            FakeEventSource(PublishSubject())
         )
-
         val events = mutableListOf<Event>()
-        val collectJob = launch(UnconfinedTestDispatcher()) {
-            EventSources(*rawSources).events().toList(events)
-        }
+        val scheduler = TestScheduler()
+        val sources = EventSources(*rawSources)
+        val disposable = SchedulingEventSource(scheduler, sources).events().subscribe { events.add(it) }
+
         rawSources.forEachIndexed { i, s -> s.produce(CompletionEvent()) }
 
         events.shouldHaveSize(rawSources.size)
-        collectJob.cancel()
+        disposable.dispose()
     }
 }

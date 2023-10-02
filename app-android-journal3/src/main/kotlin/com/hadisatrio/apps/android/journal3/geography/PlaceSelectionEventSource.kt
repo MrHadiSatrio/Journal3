@@ -23,11 +23,11 @@ import android.view.View
 import androidx.activity.ComponentActivity
 import androidx.activity.result.ActivityResultRegistry
 import androidx.activity.result.contract.ActivityResultContract
+import com.badoo.reaktive.observable.Observable
+import com.badoo.reaktive.subject.publish.PublishSubject
 import com.hadisatrio.libs.kotlin.foundation.event.Event
 import com.hadisatrio.libs.kotlin.foundation.event.EventSource
 import com.hadisatrio.libs.kotlin.foundation.event.SelectionEvent
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
 
 class PlaceSelectionEventSource internal constructor(
     triggerView: View,
@@ -35,10 +35,10 @@ class PlaceSelectionEventSource internal constructor(
     registry: ActivityResultRegistry
 ) : EventSource {
 
-    private val events = MutableSharedFlow<Event>(extraBufferCapacity = 1)
+    private val events = PublishSubject<Event>()
     private val launcher = activity.registerForActivityResult(SelectAPlace(), registry) { placeId ->
         if (placeId.isNullOrBlank()) return@registerForActivityResult
-        events.tryEmit(SelectionEvent("place", placeId))
+        events.onNext(SelectionEvent("place", placeId))
     }
 
     init {
@@ -51,7 +51,7 @@ class PlaceSelectionEventSource internal constructor(
         activity.activityResultRegistry
     )
 
-    override fun events(): Flow<Event> {
+    override fun events(): Observable<Event> {
         return events
     }
 

@@ -17,6 +17,11 @@
 
 package com.hadisatrio.apps.kotlin.journal3.moment
 
+import com.badoo.reaktive.observable.doOnBeforeNext
+import com.badoo.reaktive.observable.merge
+import com.badoo.reaktive.observable.subscribe
+import com.badoo.reaktive.observable.takeUntil
+import com.badoo.reaktive.subject.replay.ReplaySubject
 import com.benasher44.uuid.Uuid
 import com.benasher44.uuid.uuidFrom
 import com.chrynan.uri.core.Uri
@@ -40,11 +45,6 @@ import com.hadisatrio.libs.kotlin.foundation.modal.ModalApprovalEvent
 import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
 import com.hadisatrio.libs.kotlin.geography.Places
 import com.hadisatrio.libs.kotlin.paraphrase.Paraphraser
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.merge
-import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.takeWhile
-import kotlinx.coroutines.runBlocking
 
 @Suppress(
     "LongParameterList",
@@ -61,34 +61,34 @@ class EditAMomentUseCase(
     private val paraphraser: Paraphraser,
 ) : UseCase {
 
-    private val completionEvents by lazy { MutableSharedFlow<CompletionEvent>(extraBufferCapacity = 1) }
+    private val completionEvents by lazy { ReplaySubject<CompletionEvent>(bufferSize = 1) }
     private val targetId: Uuid by lazy { moment.id }
     private val isTargetNew: Boolean by lazy { moment.isNewlyCreated() }
     private var isEditCancelled: Boolean = false
     private var isParaphrasingEnabled: Boolean = false
 
-    override operator fun invoke() = runBlocking {
+    override operator fun invoke() {
         present()
         observeEvents()
     }
 
-    private suspend fun present() {
+    private fun present() {
         if (!isTargetNew && !stories.containsMoment(targetId)) {
             isEditCancelled = true
-            completionEvents.emit(CompletionEvent())
+            completionEvents.onNext(CompletionEvent())
         } else {
             presenter.present(moment)
         }
     }
 
-    private suspend fun observeEvents() {
+    private fun observeEvents() {
         merge(eventSource.events(), completionEvents)
-            .onEach { eventSink.sink(it) }
-            .takeWhile { event -> (event as? CompletionEvent)?.also { handleCompletion() } == null }
-            .collect { event -> handle(event) }
+            .doOnBeforeNext { event -> eventSink.sink(event) }
+            .takeUntil { event -> (event as? CompletionEvent)?.also { handleCompletion() } != null }
+            .subscribe { event -> handleEvent(event) }
     }
 
-    private suspend fun handle(event: Event) {
+    private fun handleEvent(event: Event) {
         when (event) {
             is TextInputEvent -> handleTextInput(event)
             is SelectionEvent -> handleSelection(event)
@@ -104,7 +104,7 @@ class EditAMomentUseCase(
         presenter.present(moment)
     }
 
-    private suspend fun handleSelection(event: SelectionEvent) {
+    private fun handleSelection(event: SelectionEvent) {
         val kind = event.selectionKind
         val identifier = event.selectedIdentifier
         when (kind) {
@@ -116,7 +116,7 @@ class EditAMomentUseCase(
         }
     }
 
-    private suspend fun handleActionSelection(event: SelectionEvent) {
+    private fun handleActionSelection(event: SelectionEvent) {
         when (event.selectedIdentifier) {
             "commit" -> handleCommitActionSelection()
             "delete" -> handleDeleteActionSelection()
@@ -125,13 +125,13 @@ class EditAMomentUseCase(
         }
     }
 
-    private suspend fun handleCommitActionSelection() {
+    private fun handleCommitActionSelection() {
         if (isParaphrasingEnabled) {
             DescriptionParaphrasingMoment(paraphraser, moment).commit()
         } else {
             moment.commit()
         }
-        completionEvents.emit(CompletionEvent())
+        completionEvents.onNext(CompletionEvent())
     }
 
     private fun handleDeleteActionSelection() {
@@ -144,18 +144,18 @@ class EditAMomentUseCase(
         )
     }
 
-    private suspend fun handleModalApproval(event: ModalApprovalEvent) {
+    private fun handleModalApproval(event: ModalApprovalEvent) {
         when (event.modalKind) {
             "edit_cancellation_confirmation" -> {
                 isEditCancelled = true
-                completionEvents.emit(CompletionEvent())
+                completionEvents.onNext(CompletionEvent())
             }
         }
     }
 
-    private suspend fun handleCancellation(event: CancellationEvent) {
+    private fun handleCancellation(event: CancellationEvent) {
         if (event.reason != "user") {
-            completionEvents.emit(CompletionEvent())
+            completionEvents.onNext(CompletionEvent())
             return
         }
 
@@ -164,7 +164,7 @@ class EditAMomentUseCase(
             modalPresenter.present(modal)
         } else {
             isEditCancelled = true
-            completionEvents.emit(CompletionEvent())
+            completionEvents.onNext(CompletionEvent())
         }
     }
 

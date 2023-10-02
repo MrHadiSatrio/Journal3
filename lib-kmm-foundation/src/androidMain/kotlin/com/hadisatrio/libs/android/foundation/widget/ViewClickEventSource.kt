@@ -18,10 +18,11 @@
 package com.hadisatrio.libs.android.foundation.widget
 
 import android.view.View
+import com.badoo.reaktive.coroutinesinterop.asObservable
+import com.badoo.reaktive.observable.Observable
+import com.badoo.reaktive.observable.map
 import com.hadisatrio.libs.kotlin.foundation.event.Event
 import com.hadisatrio.libs.kotlin.foundation.event.EventSource
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
 import reactivecircus.flowbinding.android.view.clicks
 
 class ViewClickEventSource(
@@ -29,7 +30,7 @@ class ViewClickEventSource(
     private val eventFactory: Event.Factory
 ) : EventSource {
 
-    override fun events(): Flow<Event> {
-        return view.clicks().map { eventFactory.create() }
+    override fun events(): Observable<Event> {
+        return view.clicks().asObservable().map { eventFactory.create() }
     }
 }

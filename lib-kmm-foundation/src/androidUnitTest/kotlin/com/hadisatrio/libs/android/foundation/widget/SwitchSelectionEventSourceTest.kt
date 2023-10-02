@@ -20,13 +20,12 @@ package com.hadisatrio.libs.android.foundation.widget
 import androidx.activity.ComponentActivity
 import androidx.appcompat.widget.SwitchCompat
 import androidx.test.runner.AndroidJUnit4
+import com.badoo.reaktive.observable.subscribe
+import com.badoo.reaktive.test.scheduler.TestScheduler
 import com.hadisatrio.libs.kotlin.foundation.event.Event
+import com.hadisatrio.libs.kotlin.foundation.event.SchedulingEventSource
 import com.hadisatrio.libs.kotlin.foundation.event.fake.FakeEvent
 import io.kotest.matchers.maps.shouldContain
-import kotlinx.coroutines.flow.toList
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.test.UnconfinedTestDispatcher
-import kotlinx.coroutines.test.runTest
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.Robolectric
@@ -37,35 +36,35 @@ class SwitchSelectionEventSourceTest {
     private val activityController = Robolectric.buildActivity(ComponentActivity::class.java)
     private val activity = activityController.get()
     private val switch = SwitchCompat(activity)
+    private val scheduler = TestScheduler()
     private val offEventFactory = Event.Factory { FakeEvent("value" to "off") }
     private val onEventFactory = Event.Factory { FakeEvent("value" to "on") }
-    private val eventSource = SwitchSelectionEventSource(switch, offEventFactory, onEventFactory)
+    private val eventSource = SchedulingEventSource(
+        scheduler,
+        SwitchSelectionEventSource(switch, offEventFactory, onEventFactory)
+    )
 
     @Test
-    fun `Produces Event from the 'off' factory when switch is toggled off`() = runTest {
+    fun `Produces Event from the 'off' factory when switch is toggled off`() {
         val events = mutableListOf<Event>()
-        val collectJob = launch(UnconfinedTestDispatcher()) {
-            eventSource.events().toList(events)
-        }
+        val disposable = eventSource.events().subscribe { events.add(it) }
 
         switch.isChecked = false
 
         val description = events.last().describe()
         description.shouldContain("value" to "off")
-        collectJob.cancel()
+        disposable.dispose()
     }
 
     @Test
-    fun `Produces Event from the 'on' factory when switch is toggled on`() = runTest {
+    fun `Produces Event from the 'on' factory when switch is toggled on`() {
         val events = mutableListOf<Event>()
-        val collectJob = launch(UnconfinedTestDispatcher()) {
-            eventSource.events().toList(events)
-        }
+        val disposable = eventSource.events().subscribe { events.add(it) }
 
         switch.isChecked = true
 
         val description = events.last().describe()
         description.shouldContain("value" to "on")
-        collectJob.cancel()
+        disposable.dispose()
     }
 }

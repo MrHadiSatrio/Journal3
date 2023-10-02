@@ -26,15 +26,14 @@ import androidx.activity.result.contract.ActivityResultContract
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.content.FileProvider
 import androidx.test.runner.AndroidJUnit4
+import com.badoo.reaktive.observable.subscribe
+import com.badoo.reaktive.test.scheduler.TestScheduler
 import com.hadisatrio.libs.kotlin.foundation.event.Event
+import com.hadisatrio.libs.kotlin.foundation.event.SchedulingEventSource
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.maps.shouldContain
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.string.shouldStartWith
-import kotlinx.coroutines.flow.toList
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.test.UnconfinedTestDispatcher
-import kotlinx.coroutines.test.runTest
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.Robolectric
@@ -50,16 +49,17 @@ class PhotoCaptureEventSourceTest {
     private val activityController = Robolectric.buildActivity(ComponentActivity::class.java)
     private val activity = activityController.get()
     private val triggerView = Button(activity)
+    private val events = mutableListOf<Event>()
+    private val scheduler = TestScheduler()
 
     @Test
-    fun `Produces SelectionEvent upon positive activity result`() = runTest {
+    fun `Produces SelectionEvent upon positive activity result`() {
         val registry = immediateReturningRegistry(true)
         val source = PhotoCaptureEventSource(triggerView, activity, registry, activity.cacheDir)
-        val events = mutableListOf<Event>()
+        val disposable = SchedulingEventSource(scheduler, source).events().subscribe { events.add(it) }
         activity.setContentView(triggerView)
         activityController.setup().visible()
 
-        val collectJob = launch(UnconfinedTestDispatcher()) { source.events().toList(events) }
         triggerView.performClick()
 
         val description = events.first().describe()
@@ -67,22 +67,21 @@ class PhotoCaptureEventSourceTest {
         description.shouldContain("selection_kind" to "attachments")
         description["selected_id"].shouldNotBeNull()
         description["selected_id"].shouldStartWith("content://")
-        collectJob.cancel()
+        disposable.dispose()
     }
 
     @Test
-    fun `Does not produce SelectionEvent upon negative activity result`() = runTest {
+    fun `Does not produce SelectionEvent upon negative activity result`() {
         val registry = immediateReturningRegistry(false)
         val source = PhotoCaptureEventSource(triggerView, activity, registry, activity.cacheDir)
-        val events = mutableListOf<Event>()
+        val disposable = SchedulingEventSource(scheduler, source).events().subscribe { events.add(it) }
         activity.setContentView(triggerView)
         activityController.setup().visible()
 
-        val collectJob = launch(UnconfinedTestDispatcher()) { source.events().toList(events) }
         triggerView.performClick()
 
         events.shouldBeEmpty()
-        collectJob.cancel()
+        disposable.dispose()
     }
 
     private fun immediateReturningRegistry(expectedResult: Any): ActivityResultRegistry {

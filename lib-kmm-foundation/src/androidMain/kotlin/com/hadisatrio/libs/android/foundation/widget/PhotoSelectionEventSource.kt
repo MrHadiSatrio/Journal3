@@ -25,11 +25,11 @@ import androidx.activity.result.ActivityResultRegistry
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts.PickMultipleVisualMedia
 import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia
+import com.badoo.reaktive.observable.Observable
+import com.badoo.reaktive.subject.publish.PublishSubject
 import com.hadisatrio.libs.kotlin.foundation.event.Event
 import com.hadisatrio.libs.kotlin.foundation.event.EventSource
 import com.hadisatrio.libs.kotlin.foundation.event.SelectionEvent
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
 
 class PhotoSelectionEventSource internal constructor(
     triggerView: View,
@@ -38,7 +38,7 @@ class PhotoSelectionEventSource internal constructor(
     contentResolver: ContentResolver
 ) : EventSource {
 
-    private val events = MutableSharedFlow<Event>(extraBufferCapacity = 1)
+    private val events = PublishSubject<Event>()
     private val launcher = activity.registerForActivityResult(PickMultipleVisualMedia(), registry) { uris ->
         if (uris.isNullOrEmpty()) return@registerForActivityResult
         val csv = StringBuilder()
@@ -47,7 +47,7 @@ class PhotoSelectionEventSource internal constructor(
             csv.append(uri.toString())
             if (index != uris.lastIndex) csv.append(',')
         }
-        events.tryEmit(SelectionEvent("attachments", csv.toString()))
+        events.onNext(SelectionEvent("attachments", csv.toString()))
     }
 
     init {
@@ -61,7 +61,7 @@ class PhotoSelectionEventSource internal constructor(
         activity.contentResolver
     )
 
-    override fun events(): Flow<Event> {
+    override fun events(): Observable<Event> {
         return events
     }
 }

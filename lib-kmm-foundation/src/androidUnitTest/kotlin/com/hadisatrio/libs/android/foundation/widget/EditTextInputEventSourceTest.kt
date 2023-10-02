@@ -19,12 +19,11 @@ package com.hadisatrio.libs.android.foundation.widget
 
 import android.widget.EditText
 import androidx.test.runner.AndroidJUnit4
+import com.badoo.reaktive.observable.subscribe
+import com.badoo.reaktive.test.scheduler.TestScheduler
 import com.hadisatrio.libs.kotlin.foundation.event.Event
+import com.hadisatrio.libs.kotlin.foundation.event.SchedulingEventSource
 import io.kotest.matchers.maps.shouldContain
-import kotlinx.coroutines.flow.toList
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.test.UnconfinedTestDispatcher
-import kotlinx.coroutines.test.runTest
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RuntimeEnvironment
@@ -33,20 +32,20 @@ import org.robolectric.RuntimeEnvironment
 class EditTextInputEventSourceTest {
 
     @Test
-    fun `Produces TextInputEvent on text changes`() = runTest {
+    fun `Produces TextInputEvent on text changes`() {
         val editText = EditText(RuntimeEnvironment.getApplication())
         val inputKind = "Foo"
+        val scheduler = TestScheduler()
         val events = mutableListOf<Event>()
+        val source = EditTextInputEventSource(editText, inputKind)
+        val disposable = SchedulingEventSource(scheduler, source).events().subscribe { events.add(it) }
 
-        val collectJob = launch(UnconfinedTestDispatcher()) {
-            EditTextInputEventSource(editText, inputKind).events().toList(events)
-        }
         editText.setText("Bar")
 
         val description = events.first().describe()
         description.shouldContain("name" to "Text Input Event")
         description.shouldContain("input_kind" to inputKind)
         description.shouldContain("input_value" to "Bar")
-        collectJob.cancel()
+        disposable.dispose()
     }
 }

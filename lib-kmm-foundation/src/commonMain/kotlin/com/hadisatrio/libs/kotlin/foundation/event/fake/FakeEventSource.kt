@@ -17,20 +17,20 @@
 
 package com.hadisatrio.libs.kotlin.foundation.event.fake
 
+import com.badoo.reaktive.observable.Observable
+import com.badoo.reaktive.subject.Subject
 import com.hadisatrio.libs.kotlin.foundation.event.Event
 import com.hadisatrio.libs.kotlin.foundation.event.EventSource
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
 
 class FakeEventSource(
-    private val sharedFlow: MutableSharedFlow<Event>
+    private val sharedFlow: Subject<Event>
 ) : EventSource {
 
     fun produce(event: Event) {
-        sharedFlow.tryEmit(event)
+        sharedFlow.onNext(event)
     }
 
-    override fun events(): Flow<Event> {
+    override fun events(): Observable<Event> {
         return sharedFlow
     }
 }

@@ -23,13 +23,13 @@ import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.runner.AndroidJUnit4
+import com.badoo.reaktive.observable.subscribe
+import com.badoo.reaktive.test.scheduler.TestScheduler
 import com.hadisatrio.libs.kotlin.foundation.event.Event
+import com.hadisatrio.libs.kotlin.foundation.event.SchedulingEventSource
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.maps.shouldContain
-import kotlinx.coroutines.flow.toList
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.test.UnconfinedTestDispatcher
-import kotlinx.coroutines.test.runTest
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RuntimeEnvironment
@@ -37,18 +37,23 @@ import org.robolectric.RuntimeEnvironment
 @RunWith(AndroidJUnit4::class)
 class RecyclerViewItemSelectionEventSourceTest {
 
-    @Test
-    fun `Produces SelectionEvent on clicks on an item within the RecyclerView`() = runTest {
-        val recyclerView = RecyclerView(RuntimeEnvironment.getApplication())
-        val events = mutableListOf<Event>()
+    private val recyclerView = RecyclerView(RuntimeEnvironment.getApplication())
+    private val events = mutableListOf<Event>()
+    private val scheduler = TestScheduler()
+    private val source = SchedulingEventSource(scheduler, RecyclerViewItemSelectionEventSource(recyclerView))
+
+    @Before
+    fun `Initialize RecyclerView`() {
         recyclerView.layoutManager = LinearLayoutManager(RuntimeEnvironment.getApplication())
         recyclerView.adapter = Adapter(listOf("Foo", "Bar", "Fizz", "Buzz"))
         recyclerView.measure(0, 0)
         recyclerView.layout(0, 0, 1000, 1000)
+    }
 
-        val collectJob = launch(UnconfinedTestDispatcher()) {
-            RecyclerViewItemSelectionEventSource(recyclerView).events().toList(events)
-        }
+    @Test
+    fun `Produces SelectionEvent on clicks on an item within the RecyclerView`() {
+        val disposable = SchedulingEventSource(scheduler, source).events().subscribe { events.add(it) }
+
         recyclerView.dispatchTouchEvent(
             MotionEvent.obtain(
                 /* downTime = */
@@ -86,21 +91,13 @@ class RecyclerViewItemSelectionEventSourceTest {
         description.shouldContain("name" to "Selection Event")
         description.shouldContain("selection_kind" to "item_position")
         description.shouldContain("selected_id" to "0")
-        collectJob.cancel()
+        disposable.dispose()
     }
 
     @Test
-    fun `Doesn't do anything if touch happens outside of child's boundaries`() = runTest {
-        val recyclerView = RecyclerView(RuntimeEnvironment.getApplication())
-        val events = mutableListOf<Event>()
-        recyclerView.layoutManager = LinearLayoutManager(RuntimeEnvironment.getApplication())
-        recyclerView.adapter = Adapter(listOf("Foo", "Bar", "Fizz", "Buzz"))
-        recyclerView.measure(0, 0)
-        recyclerView.layout(0, 0, 1000, 1000)
+    fun `Doesn't do anything if touch happens outside of child's boundaries`() {
+        val disposable = SchedulingEventSource(scheduler, source).events().subscribe { events.add(it) }
 
-        val collectJob = launch(UnconfinedTestDispatcher()) {
-            RecyclerViewItemSelectionEventSource(recyclerView).events().toList(events)
-        }
         recyclerView.dispatchTouchEvent(
             MotionEvent.obtain(
                 /* downTime = */
@@ -134,21 +131,13 @@ class RecyclerViewItemSelectionEventSourceTest {
             )
         )
 
-        collectJob.cancel()
+        disposable.dispose()
     }
 
     @Test
-    fun `Tolerates slight movement whilst registering click events`() = runTest {
-        val recyclerView = RecyclerView(RuntimeEnvironment.getApplication())
-        val events = mutableListOf<Event>()
-        recyclerView.layoutManager = LinearLayoutManager(RuntimeEnvironment.getApplication())
-        recyclerView.adapter = Adapter(listOf("Foo", "Bar", "Fizz", "Buzz"))
-        recyclerView.measure(0, 0)
-        recyclerView.layout(0, 0, 1000, 1000)
+    fun `Tolerates slight movement whilst registering click events`() {
+        val disposable = SchedulingEventSource(scheduler, source).events().subscribe { events.add(it) }
 
-        val collectJob = launch(UnconfinedTestDispatcher()) {
-            RecyclerViewItemSelectionEventSource(recyclerView).events().toList(events)
-        }
         recyclerView.dispatchTouchEvent(
             MotionEvent.obtain(
                 /* downTime = */
@@ -218,21 +207,13 @@ class RecyclerViewItemSelectionEventSourceTest {
         description.shouldContain("name" to "Selection Event")
         description.shouldContain("selection_kind" to "item_position")
         description.shouldContain("selected_id" to "0")
-        collectJob.cancel()
+        disposable.dispose()
     }
 
     @Test
-    fun `Prevents major movements from resulting in a click event`() = runTest {
-        val recyclerView = RecyclerView(RuntimeEnvironment.getApplication())
-        val events = mutableListOf<Event>()
-        recyclerView.layoutManager = LinearLayoutManager(RuntimeEnvironment.getApplication())
-        recyclerView.adapter = Adapter(listOf("Foo", "Bar", "Fizz", "Buzz"))
-        recyclerView.measure(0, 0)
-        recyclerView.layout(0, 0, 1000, 1000)
+    fun `Prevents major movements from resulting in a click event`() {
+        val disposable = SchedulingEventSource(scheduler, source).events().subscribe { events.add(it) }
 
-        val collectJob = launch(UnconfinedTestDispatcher()) {
-            RecyclerViewItemSelectionEventSource(recyclerView).events().toList(events)
-        }
         recyclerView.dispatchTouchEvent(
             MotionEvent.obtain(
                 /* downTime = */
@@ -299,7 +280,7 @@ class RecyclerViewItemSelectionEventSourceTest {
         )
 
         events.shouldBeEmpty()
-        collectJob.cancel()
+        disposable.dispose()
     }
 
     private class Adapter(private val items: List<String>) : RecyclerView.Adapter<ViewHolder>() {

@@ -17,31 +17,31 @@
 
 package com.hadisatrio.libs.android.foundation.material
 
+import com.badoo.reaktive.base.setCancellable
+import com.badoo.reaktive.observable.Observable
+import com.badoo.reaktive.observable.observable
 import com.google.android.material.slider.Slider
 import com.hadisatrio.libs.kotlin.foundation.event.Event
 import com.hadisatrio.libs.kotlin.foundation.event.EventSource
 import com.hadisatrio.libs.kotlin.foundation.event.SelectionEvent
-import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
 
 class SliderSelectionEventSource(
     private val slider: Slider,
     private val selectionKind: String
 ) : EventSource {
 
-    private val events: Flow<SelectionEvent> by lazy {
-        callbackFlow {
+    private val events: Observable<SelectionEvent> by lazy {
+        observable { emitter ->
             val listener = Slider.OnChangeListener { _, value, fromUser ->
                 if (!fromUser) return@OnChangeListener
-                trySend(SelectionEvent(selectionKind, value.toString()))
+                emitter.onNext(SelectionEvent(selectionKind, value.toString()))
             }
             slider.addOnChangeListener(listener)
-            awaitClose { slider.removeOnChangeListener(listener) }
+            emitter.setCancellable { slider.removeOnChangeListener(listener) }
         }
     }
 
-    override fun events(): Flow<Event> {
+    override fun events(): Observable<Event> {
         return events
     }
 }
