@@ -17,7 +17,7 @@ buildscript {
         maven(url = "https://ajoberstar.org/bintray-backup/")
     }
     dependencies {
-        classpath("com.android.tools.build:gradle:7.4.2")
+        classpath("com.android.tools.build:gradle:8.1.2")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.10")
         classpath("androidx.benchmark:benchmark-gradle-plugin:1.1.1")
         classpath("org.jetbrains.dokka:dokka-gradle-plugin:1.9.0")
