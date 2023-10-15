@@ -4,7 +4,7 @@ object Dependencies {
 
     object AndroidSdk {
         const val MINIMUM = 23
-        const val COMPILE = 33
+        const val COMPILE = 34
         const val TARGET = 32
     }
 
@@ -20,7 +20,7 @@ object Dependencies {
     }
 
     object AndroidCompatibility {
-        const val CORE_KTX = "androidx.core:core-ktx:1.10.1"
+        const val CORE_KTX = "androidx.core:core-ktx:1.12.0"
         const val APPCOMPAT = "androidx.appcompat:appcompat:1.6.1"
     }
 
