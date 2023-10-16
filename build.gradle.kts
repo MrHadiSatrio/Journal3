@@ -2,7 +2,7 @@ plugins {
     id("scripts.infrastructure")
     id("org.ajoberstar.grgit").version("5.2.0")
     id("org.jetbrains.dokka").version("1.9.0")
-    id("org.jetbrains.kotlinx.kover").version("0.7.3")
+    id("org.jetbrains.kotlinx.kover").version("0.7.4")
     id("io.gitlab.arturbosch.detekt").version("1.23.1")
     id("org.barfuin.gradle.jacocolog").version("3.1.0")
     id("org.sonarqube").version("4.0.0.2929")
