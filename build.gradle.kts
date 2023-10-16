@@ -37,7 +37,7 @@ allprojects {
     }
     configurations.all {
         resolutionStrategy {
-            force("org.xerial:sqlite-jdbc:3.43.0.0")
+            force("org.xerial:sqlite-jdbc:3.43.2.0")
         }
     }
 }
