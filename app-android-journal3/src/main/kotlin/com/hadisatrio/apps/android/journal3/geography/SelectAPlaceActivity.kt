@@ -36,6 +36,7 @@ import com.hadisatrio.libs.android.foundation.activity.ActivityCompletionEventSi
 import com.hadisatrio.libs.android.foundation.activity.ActivityResultSettingEventSink
 import com.hadisatrio.libs.android.foundation.lifecycle.LifecycleTriggeredEventSource
 import com.hadisatrio.libs.android.foundation.widget.BackButtonCancellationEventSource
+import com.hadisatrio.libs.android.foundation.widget.EditTextInputEventSource
 import com.hadisatrio.libs.android.foundation.widget.RecyclerViewItemSelectionEventSource
 import com.hadisatrio.libs.android.foundation.widget.RecyclerViewPresenter
 import com.hadisatrio.libs.android.foundation.widget.ViewClickEventSource
@@ -92,6 +93,10 @@ class SelectAPlaceActivity : AppCompatActivity() {
                 ViewClickEventSource(
                     view = findViewById(R.id.back_button),
                     eventFactory = { CancellationEvent("user") }
+                ),
+                EditTextInputEventSource(
+                    editText = findViewById(R.id.search_text_field),
+                    inputKind = "query"
                 ),
                 RecyclerViewItemSelectionEventSource(findViewById(R.id.places_list)),
                 BackButtonCancellationEventSource(this)
