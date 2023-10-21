@@ -30,16 +30,18 @@ import com.hadisatrio.libs.kotlin.foundation.event.EventSink
 import com.hadisatrio.libs.kotlin.foundation.event.EventSource
 import com.hadisatrio.libs.kotlin.foundation.event.ExceptionalEvent
 import com.hadisatrio.libs.kotlin.foundation.event.SelectionEvent
+import com.hadisatrio.libs.kotlin.foundation.event.TextInputEvent
 import com.hadisatrio.libs.kotlin.foundation.modal.BinaryConfirmationModal
 import com.hadisatrio.libs.kotlin.foundation.modal.Modal
 import com.hadisatrio.libs.kotlin.foundation.modal.ModalApprovalEvent
 import com.hadisatrio.libs.kotlin.foundation.modal.ModalDismissalEvent
 import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
+import com.hadisatrio.libs.kotlin.geography.Place
 import com.hadisatrio.libs.kotlin.geography.Places
 
 class SelectAPlaceUseCase(
     private val places: Places,
-    private val presenter: Presenter<Places>,
+    private val presenter: Presenter<Iterable<Place>>,
     private val modalPresenter: Presenter<Modal>,
     private val eventSource: EventSource,
     private val eventSink: EventSink,
@@ -73,6 +75,7 @@ class SelectAPlaceUseCase(
     private fun handleEvent(event: Event) {
         when (event) {
             is SelectionEvent -> handleSelection(event)
+            is TextInputEvent -> handleTextInput(event)
             is ModalApprovalEvent -> handleModalApproval(event)
             is ModalDismissalEvent -> handleModalDismissal(event)
             is CancellationEvent -> handleCancellation()
@@ -89,6 +92,15 @@ class SelectAPlaceUseCase(
                 eventSink.sink(SelectionEvent("place", target.id.toString()))
                 completionEvents.onNext(CompletionEvent())
             }
+        }
+    }
+
+    private fun handleTextInput(event: TextInputEvent) {
+        if (event.inputKind != "query") return
+        if (event.inputValue.isBlank()) {
+            presentState()
+        } else {
+            presenter.present(places.findPlace(event.inputValue))
         }
     }
 

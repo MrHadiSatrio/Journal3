@@ -52,11 +52,10 @@ import com.hadisatrio.libs.kotlin.foundation.presentation.AdaptingPresenter
 import com.hadisatrio.libs.kotlin.foundation.presentation.ExecutorDispatchingPresenter
 import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
 import com.hadisatrio.libs.kotlin.geography.Place
-import com.hadisatrio.libs.kotlin.geography.Places
 
 class SelectAPlaceActivity : AppCompatActivity() {
 
-    private val presenter: Presenter<Places> by lazy {
+    private val presenter: Presenter<Iterable<Place>> by lazy {
         val viewFactory = RecyclerViewPresenter.ViewFactory { parent, _ ->
             LayoutInflater.from(parent.context)
                 .inflate(R.layout.view_place_snippet_card, parent, false)
