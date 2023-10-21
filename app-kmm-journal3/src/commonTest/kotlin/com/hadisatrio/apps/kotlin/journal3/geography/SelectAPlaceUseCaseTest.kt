@@ -31,7 +31,7 @@ import com.hadisatrio.libs.kotlin.foundation.modal.Modal
 import com.hadisatrio.libs.kotlin.foundation.modal.ModalApprovalEvent
 import com.hadisatrio.libs.kotlin.foundation.modal.ModalDismissalEvent
 import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
-import com.hadisatrio.libs.kotlin.geography.Places
+import com.hadisatrio.libs.kotlin.geography.Place
 import com.hadisatrio.libs.kotlin.geography.SelfPopulatingPlaces
 import com.hadisatrio.libs.kotlin.geography.fake.FakePlaces
 import io.kotest.matchers.collections.shouldHaveSize
@@ -46,7 +46,7 @@ import kotlin.test.Test
 
 class SelectAPlaceUseCaseTest {
 
-    private val presenter = mockk<Presenter<Places>>(relaxed = true)
+    private val presenter = mockk<Presenter<Iterable<Place>>>(relaxed = true)
     private val modalPresenter = mockk<Presenter<Modal>>(relaxed = true)
     private val eventSink = mockk<EventSink>(relaxed = true)
 
@@ -157,6 +157,29 @@ class SelectAPlaceUseCaseTest {
                     event.shouldBeInstanceOf<SelectionEvent>()
                     event.selectionKind.shouldBe("place")
                     event.selectedIdentifier.shouldBe(target.id.toString())
+                }
+            )
+        }
+    }
+
+    @Test
+    fun `Presents narrowed down places upon receiving a query`() {
+        SelectAPlaceUseCase(
+            places = places,
+            presenter = presenter,
+            modalPresenter = modalPresenter,
+            eventSource = RecordedEventSource(
+                TextInputEvent("query", places.first().name),
+                CompletionEvent()
+            ),
+            eventSink = eventSink
+        )()
+
+        verify(exactly = 1) {
+            presenter.present(
+                withArg {
+                    it.shouldHaveSize(1)
+                    it.first().name.shouldBe(places.first().name)
                 }
             )
         }

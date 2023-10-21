@@ -22,4 +22,5 @@ import com.benasher44.uuid.Uuid
 interface Places : Iterable<Place> {
     fun new(): Place
     fun findPlace(id: Uuid): Iterable<Place>
+    fun findPlace(name: String): Iterable<Place>
 }

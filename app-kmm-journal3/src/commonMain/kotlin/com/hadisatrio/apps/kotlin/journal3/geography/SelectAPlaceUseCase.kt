@@ -30,16 +30,18 @@ import com.hadisatrio.libs.kotlin.foundation.event.EventSink
 import com.hadisatrio.libs.kotlin.foundation.event.EventSource
 import com.hadisatrio.libs.kotlin.foundation.event.ExceptionalEvent
 import com.hadisatrio.libs.kotlin.foundation.event.SelectionEvent
+import com.hadisatrio.libs.kotlin.foundation.event.TextInputEvent
 import com.hadisatrio.libs.kotlin.foundation.modal.BinaryConfirmationModal
 import com.hadisatrio.libs.kotlin.foundation.modal.Modal
 import com.hadisatrio.libs.kotlin.foundation.modal.ModalApprovalEvent
 import com.hadisatrio.libs.kotlin.foundation.modal.ModalDismissalEvent
 import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
+import com.hadisatrio.libs.kotlin.geography.Place
 import com.hadisatrio.libs.kotlin.geography.Places
 
 class SelectAPlaceUseCase(
     private val places: Places,
-    private val presenter: Presenter<Places>,
+    private val presenter: Presenter<Iterable<Place>>,
     private val modalPresenter: Presenter<Modal>,
     private val eventSource: EventSource,
     private val eventSink: EventSink,
@@ -47,15 +49,18 @@ class SelectAPlaceUseCase(
 
     private val completionEvents by lazy { ReplaySubject<CompletionEvent>(bufferSize = 1) }
 
+    private var presentedPlaces: Iterable<Place> = emptyList()
+
     override fun invoke() {
-        presentState()
+        presentState(places)
         observeEvents()
     }
 
     @Suppress("TooGenericExceptionCaught")
-    private fun presentState() {
+    private fun presentState(places: Iterable<Place>) {
         try {
             presenter.present(places)
+            presentedPlaces = places
         } catch (e: Exception) {
             val modal = BinaryConfirmationModal("presentation_retrial_confirmation")
             modalPresenter.present(modal)
@@ -73,6 +78,7 @@ class SelectAPlaceUseCase(
     private fun handleEvent(event: Event) {
         when (event) {
             is SelectionEvent -> handleSelection(event)
+            is TextInputEvent -> handleTextInput(event)
             is ModalApprovalEvent -> handleModalApproval(event)
             is ModalDismissalEvent -> handleModalDismissal(event)
             is CancellationEvent -> handleCancellation()
@@ -85,16 +91,25 @@ class SelectAPlaceUseCase(
         when (kind) {
             "item_position" -> {
                 val position = identifier.toInt()
-                val target = places.elementAt(position)
+                val target = presentedPlaces.elementAt(position)
                 eventSink.sink(SelectionEvent("place", target.id.toString()))
                 completionEvents.onNext(CompletionEvent())
             }
         }
     }
 
+    private fun handleTextInput(event: TextInputEvent) {
+        if (event.inputKind != "query") return
+        if (event.inputValue.isBlank()) {
+            presentState(places)
+        } else {
+            presentState(places.findPlace(event.inputValue))
+        }
+    }
+
     private fun handleModalApproval(event: ModalApprovalEvent) {
         if (event.modalKind != "presentation_retrial_confirmation") return
-        presentState()
+        presentState(places)
     }
 
     private fun handleModalDismissal(event: ModalDismissalEvent) {

@@ -27,6 +27,7 @@ import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.client.statement.HttpResponse
 import io.ktor.http.URLBuilder
+import io.ktor.http.clone
 import io.ktor.http.isSuccess
 import io.ktor.utils.io.errors.IOException
 import kotlinx.coroutines.runBlocking
@@ -60,30 +61,43 @@ class HereNearbyPlaces(
         return filter { it.id == id }
     }
 
+    override fun findPlace(name: String): Iterable<Place> = runBlocking {
+        val urlBuilder = urlBuilder.clone()
+        urlBuilder.parameters.append("name", name)
+        urlBuilder.parameters.append("at", coordinates.toString())
+        return@runBlocking jsonPlaces(urlBuilder.buildAndCall().body())
+    }
+
     override fun iterator(): Iterator<Place> = runBlocking {
         val coordinates = LiteralCoordinates(coordinates.toString())
-        return@runBlocking iteratorFromPastResponses(coordinates) ?: iteratorFromHttp(coordinates)
+        return@runBlocking (cachedPlaces(coordinates) ?: httpPlaces(coordinates)).iterator()
     }
 
-    private suspend fun iteratorFromPastResponses(coordinates: Coordinates): Iterator<HerePlace>? {
+    private suspend fun cachedPlaces(coordinates: Coordinates): Iterable<HerePlace>? {
         return pastResponses.entries
             .firstOrNull { (key, _) -> key.distanceTo(coordinates).value <= DISTANCE_THRESHOLD_METERS }
-            ?.let { (_, value) -> iteratorFromResponse(value) }
+            ?.let { (_, value) -> jsonPlaces(value.body()) }
     }
 
-    private suspend fun iteratorFromHttp(coordinates: Coordinates): Iterator<HerePlace> {
-        val url = urlBuilder.apply { parameters.append("at", coordinates.toString()) }.build()
+    private suspend fun httpPlaces(coordinates: Coordinates): Iterable<HerePlace> {
+        val urlBuilder = urlBuilder.clone()
+        urlBuilder.parameters.append("at", coordinates.toString())
+        val response = urlBuilder.buildAndCall()
+        pastResponses[coordinates] = response
+        return jsonPlaces(response.body())
+    }
+
+    private fun jsonPlaces(json: String): Iterable<HerePlace> {
+        val responseObject = Json.parseToJsonElement(json).jsonObject
+        val responseArray = responseObject["items"]!!.jsonArray
+        return responseArray.map { HerePlace(it) }
+    }
+
+    private suspend fun URLBuilder.buildAndCall(): HttpResponse {
+        val url = this.build()
         val response = httpClient.get(url)
         if (!response.status.isSuccess()) throw IOException("HTTP ${response.status}: ${response.body<String>()}.")
-        pastResponses[coordinates] = response
-        return iteratorFromResponse(response)
-    }
-
-    private suspend fun iteratorFromResponse(response: HttpResponse): Iterator<HerePlace> {
-        val responseBody = response.body<String>()
-        val responseObject = Json.parseToJsonElement(responseBody).jsonObject
-        val responseArray = responseObject["items"]!!.jsonArray
-        return responseArray.asSequence().map { HerePlace(it) }.iterator()
+        return response
     }
 
     companion object {

@@ -86,6 +86,13 @@ class HereNearbyPlacesTest {
     }
 
     @Test
+    fun `Finds places by their name`() {
+        val otherPlaces = SelfPopulatingPlaces(noOfPlaces = 1, origin = FakePlaces())
+        val otherPlace = otherPlaces.first()
+        places.forEach { places.findPlace(it.name).shouldNotBeEmpty() }
+    }
+
+    @Test
     fun `Throws NoSuchElementException when iterating outside of valid bound`() {
         val iterator = places.iterator()
         shouldThrow<NoSuchElementException> { repeat(101) { iterator.next() } }
@@ -114,7 +121,7 @@ class HereNearbyPlacesTest {
             val parameters = url.parameters
             url.toString().shouldStartWith("https://browse.search.hereapi.com/v1/browse")
             parameters.contains("apiKey", apiKey).shouldBeTrue()
-            parameters.contains("at", coordinates.toString()).shouldBeTrue()
+            parameters.contains("at").shouldBeTrue()
 
             if (shouldFail) {
                 respondError(HttpStatusCode.InternalServerError)

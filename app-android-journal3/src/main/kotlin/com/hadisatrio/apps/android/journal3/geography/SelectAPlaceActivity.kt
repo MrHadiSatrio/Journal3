@@ -36,12 +36,14 @@ import com.hadisatrio.libs.android.foundation.activity.ActivityCompletionEventSi
 import com.hadisatrio.libs.android.foundation.activity.ActivityResultSettingEventSink
 import com.hadisatrio.libs.android.foundation.lifecycle.LifecycleTriggeredEventSource
 import com.hadisatrio.libs.android.foundation.widget.BackButtonCancellationEventSource
+import com.hadisatrio.libs.android.foundation.widget.EditTextInputEventSource
 import com.hadisatrio.libs.android.foundation.widget.RecyclerViewItemSelectionEventSource
 import com.hadisatrio.libs.android.foundation.widget.RecyclerViewPresenter
 import com.hadisatrio.libs.android.foundation.widget.ViewClickEventSource
 import com.hadisatrio.libs.kotlin.foundation.ExecutorDispatchingUseCase
 import com.hadisatrio.libs.kotlin.foundation.UseCase
 import com.hadisatrio.libs.kotlin.foundation.event.CancellationEvent
+import com.hadisatrio.libs.kotlin.foundation.event.DebouncingEventSource
 import com.hadisatrio.libs.kotlin.foundation.event.EventSink
 import com.hadisatrio.libs.kotlin.foundation.event.EventSinks
 import com.hadisatrio.libs.kotlin.foundation.event.EventSource
@@ -52,11 +54,10 @@ import com.hadisatrio.libs.kotlin.foundation.presentation.AdaptingPresenter
 import com.hadisatrio.libs.kotlin.foundation.presentation.ExecutorDispatchingPresenter
 import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
 import com.hadisatrio.libs.kotlin.geography.Place
-import com.hadisatrio.libs.kotlin.geography.Places
 
 class SelectAPlaceActivity : AppCompatActivity() {
 
-    private val presenter: Presenter<Places> by lazy {
+    private val presenter: Presenter<Iterable<Place>> by lazy {
         val viewFactory = RecyclerViewPresenter.ViewFactory { parent, _ ->
             LayoutInflater.from(parent.context)
                 .inflate(R.layout.view_place_snippet_card, parent, false)
@@ -93,6 +94,12 @@ class SelectAPlaceActivity : AppCompatActivity() {
                 ViewClickEventSource(
                     view = findViewById(R.id.back_button),
                     eventFactory = { CancellationEvent("user") }
+                ),
+                DebouncingEventSource(
+                    origin = EditTextInputEventSource(
+                        editText = findViewById(R.id.search_text_field),
+                        inputKind = "query"
+                    )
                 ),
                 RecyclerViewItemSelectionEventSource(findViewById(R.id.places_list)),
                 BackButtonCancellationEventSource(this)
