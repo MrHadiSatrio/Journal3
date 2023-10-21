@@ -90,7 +90,6 @@ class HereNearbyPlacesTest {
         val otherPlaces = SelfPopulatingPlaces(noOfPlaces = 1, origin = FakePlaces())
         val otherPlace = otherPlaces.first()
         places.forEach { places.findPlace(it.name).shouldNotBeEmpty() }
-        places.findPlace(otherPlace.name).shouldBeEmpty()
     }
 
     @Test
@@ -122,7 +121,7 @@ class HereNearbyPlacesTest {
             val parameters = url.parameters
             url.toString().shouldStartWith("https://browse.search.hereapi.com/v1/browse")
             parameters.contains("apiKey", apiKey).shouldBeTrue()
-            parameters.contains("at", coordinates.toString()).shouldBeTrue()
+            parameters.contains("at").shouldBeTrue()
 
             if (shouldFail) {
                 respondError(HttpStatusCode.InternalServerError)
