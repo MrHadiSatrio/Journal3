@@ -37,6 +37,10 @@ class FakePlaces(
         return places.filter { it.id == id }
     }
 
+    override fun findPlace(name: String): Iterable<Place> {
+        return places.filter { it.name.contains(name, ignoreCase = true) }
+    }
+
     override fun iterator(): Iterator<Place> {
         return places.iterator()
     }

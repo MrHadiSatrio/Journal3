@@ -60,6 +60,10 @@ class HereNearbyPlaces(
         return filter { it.id == id }
     }
 
+    override fun findPlace(name: String): Iterable<Place> {
+        return filter { it.name.contains(name, ignoreCase = true) }
+    }
+
     override fun iterator(): Iterator<Place> = runBlocking {
         val coordinates = LiteralCoordinates(coordinates.toString())
         return@runBlocking iteratorFromPastResponses(coordinates) ?: iteratorFromHttp(coordinates)

@@ -86,6 +86,14 @@ class HereNearbyPlacesTest {
     }
 
     @Test
+    fun `Finds places by their name`() {
+        val otherPlaces = SelfPopulatingPlaces(noOfPlaces = 1, origin = FakePlaces())
+        val otherPlace = otherPlaces.first()
+        places.forEach { places.findPlace(it.name).shouldNotBeEmpty() }
+        places.findPlace(otherPlace.name).shouldBeEmpty()
+    }
+
+    @Test
     fun `Throws NoSuchElementException when iterating outside of valid bound`() {
         val iterator = places.iterator()
         shouldThrow<NoSuchElementException> { repeat(101) { iterator.next() } }
