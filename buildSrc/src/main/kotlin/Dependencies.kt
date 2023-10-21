@@ -43,7 +43,7 @@ object Dependencies {
     }
 
     object AndroidPerformance {
-        const val MICROBENCHMARK = "androidx.benchmark:benchmark-junit4:1.1.1"
+        const val MICROBENCHMARK = "androidx.benchmark:benchmark-junit4:1.2.0"
     }
 
     object AndroidSecurity {
