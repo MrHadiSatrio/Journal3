@@ -43,6 +43,7 @@ import com.hadisatrio.libs.android.foundation.widget.ViewClickEventSource
 import com.hadisatrio.libs.kotlin.foundation.ExecutorDispatchingUseCase
 import com.hadisatrio.libs.kotlin.foundation.UseCase
 import com.hadisatrio.libs.kotlin.foundation.event.CancellationEvent
+import com.hadisatrio.libs.kotlin.foundation.event.DebouncingEventSource
 import com.hadisatrio.libs.kotlin.foundation.event.EventSink
 import com.hadisatrio.libs.kotlin.foundation.event.EventSinks
 import com.hadisatrio.libs.kotlin.foundation.event.EventSource
@@ -94,9 +95,11 @@ class SelectAPlaceActivity : AppCompatActivity() {
                     view = findViewById(R.id.back_button),
                     eventFactory = { CancellationEvent("user") }
                 ),
-                EditTextInputEventSource(
-                    editText = findViewById(R.id.search_text_field),
-                    inputKind = "query"
+                DebouncingEventSource(
+                    origin = EditTextInputEventSource(
+                        editText = findViewById(R.id.search_text_field),
+                        inputKind = "query"
+                    )
                 ),
                 RecyclerViewItemSelectionEventSource(findViewById(R.id.places_list)),
                 BackButtonCancellationEventSource(this)
