@@ -1,6 +1,6 @@
 plugins {
     id("scripts.infrastructure")
-    id("org.ajoberstar.grgit").version("5.2.0")
+    id("org.ajoberstar.grgit").version("5.2.1")
     id("org.jetbrains.dokka").version("1.9.10")
     id("org.jetbrains.kotlinx.kover").version("0.7.4")
     id("io.gitlab.arturbosch.detekt").version("1.23.1")
