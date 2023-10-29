@@ -49,7 +49,7 @@ class HereNearbyPlaces(
         builder
     }
 
-    private val pastResponses: MutableMap<Coordinates, HttpResponse> by lazy { mutableMapOf() }
+    private val pastResponses: MutableMap<Coordinates, Set<HerePlace>> by lazy { mutableMapOf() }
     private val pastSearchResults: MutableSet<HerePlace> by lazy { mutableSetOf() }
 
     override fun new(): Place {
@@ -81,18 +81,18 @@ class HereNearbyPlaces(
         return@runBlocking (cachedPlaces(coordinates) ?: httpPlaces(coordinates)).iterator()
     }
 
-    private suspend fun cachedPlaces(coordinates: Coordinates): Iterable<HerePlace>? {
+    private fun cachedPlaces(coordinates: Coordinates): Iterable<HerePlace>? {
         return pastResponses.entries
             .firstOrNull { (key, _) -> key.distanceTo(coordinates).value <= DISTANCE_THRESHOLD_METERS }
-            ?.let { (_, value) -> jsonPlaces(value.body()) }
+            ?.value
     }
 
     private suspend fun httpPlaces(coordinates: Coordinates): Iterable<HerePlace> {
         val urlBuilder = urlBuilder.clone()
         urlBuilder.parameters.append("at", coordinates.toString())
-        val response = urlBuilder.buildAndCall()
-        pastResponses[coordinates] = response
-        return jsonPlaces(response.body())
+        val places = jsonPlaces(urlBuilder.buildAndCall().body())
+        pastResponses[coordinates] = places.toSet()
+        return places
     }
 
     private fun jsonPlaces(json: String): Iterable<HerePlace> {
