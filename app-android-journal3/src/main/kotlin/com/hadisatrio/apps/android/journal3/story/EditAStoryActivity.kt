@@ -39,7 +39,6 @@ import com.hadisatrio.libs.android.foundation.widget.ViewClickEventSource
 import com.hadisatrio.libs.kotlin.foundation.ExecutorDispatchingUseCase
 import com.hadisatrio.libs.kotlin.foundation.UseCase
 import com.hadisatrio.libs.kotlin.foundation.event.CancellationEvent
-import com.hadisatrio.libs.kotlin.foundation.event.CompletionEvent
 import com.hadisatrio.libs.kotlin.foundation.event.EventSink
 import com.hadisatrio.libs.kotlin.foundation.event.EventSinks
 import com.hadisatrio.libs.kotlin.foundation.event.EventSource
@@ -87,7 +86,7 @@ class EditAStoryActivity : AppCompatActivity() {
                 ),
                 ViewClickEventSource(
                     view = findViewById(R.id.commit_button),
-                    eventFactory = { CompletionEvent() }
+                    eventFactory = { SelectionEvent("action", "commit") }
                 ),
                 ViewClickEventSource(
                     view = findViewById(R.id.delete_button),

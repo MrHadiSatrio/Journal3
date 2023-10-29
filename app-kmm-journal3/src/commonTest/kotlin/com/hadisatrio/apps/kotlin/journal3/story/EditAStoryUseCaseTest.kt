@@ -54,7 +54,7 @@ class EditAStoryUseCaseTest {
             eventSource = RecordedEventSource(
                 TextInputEvent("title", "Foo"),
                 TextInputEvent("synopsis", "Bar"),
-                CompletionEvent()
+                SelectionEvent("action", "commit")
             ),
             eventSink = mockk(relaxed = true)
         )()
@@ -79,7 +79,7 @@ class EditAStoryUseCaseTest {
                 ModalDismissalEvent("edit_cancellation_confirmation"),
                 TextInputEvent("title", "Fizz"),
                 TextInputEvent("synopsis", "Buzz"),
-                CompletionEvent()
+                SelectionEvent("action", "commit")
             ),
             eventSink = mockk(relaxed = true)
         )()
@@ -150,7 +150,7 @@ class EditAStoryUseCaseTest {
             eventSource = RecordedEventSource(
                 CancellationEvent("user"),
                 ModalApprovalEvent("edit_cancellation_confirmation"),
-                CompletionEvent()
+                SelectionEvent("action", "commit")
             ),
             eventSink = mockk(relaxed = true)
         )()
