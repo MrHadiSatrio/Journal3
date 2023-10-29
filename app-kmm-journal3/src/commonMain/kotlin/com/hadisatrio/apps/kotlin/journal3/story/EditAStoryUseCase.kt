@@ -38,7 +38,10 @@ import com.hadisatrio.libs.kotlin.foundation.modal.Modal
 import com.hadisatrio.libs.kotlin.foundation.modal.ModalApprovalEvent
 import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
 
-@Suppress("LongParameterList")
+@Suppress(
+    "LongParameterList",
+    "TooManyFunctions"
+)
 class EditAStoryUseCase(
     private val story: StoryInEdit,
     private val stories: Stories,
@@ -77,7 +80,7 @@ class EditAStoryUseCase(
     private fun handleEvent(event: Event) {
         when (event) {
             is TextInputEvent -> handleTextInput(event)
-            is SelectionEvent -> handleSelection()
+            is SelectionEvent -> handleSelection(event)
             is ModalApprovalEvent -> handleModalApproval(event)
             is CancellationEvent -> handleCancellation(event)
             is RefreshRequestEvent -> present()
@@ -93,7 +96,22 @@ class EditAStoryUseCase(
         presenter.present(story)
     }
 
-    private fun handleSelection() {
+    private fun handleSelection(event: SelectionEvent) {
+        val kind = event.selectionKind
+        val identifier = event.selectedIdentifier
+        if (kind != "action") return
+        when (identifier) {
+            "commit" -> handleCommitActionSelection()
+            "delete" -> handleDeleteActionSelection()
+        }
+    }
+
+    private fun handleCommitActionSelection() {
+        story.commit()
+        completionEvents.onNext(CompletionEvent())
+    }
+
+    private fun handleDeleteActionSelection() {
         eventSink.sink(
             SelectionEvent(
                 "action",
@@ -112,14 +130,6 @@ class EditAStoryUseCase(
         }
     }
 
-    private fun handleCompletion() {
-        if (isEditCancelled) {
-            if (isTargetNew) story.forget()
-        } else {
-            story.commit()
-        }
-    }
-
     private fun handleCancellation(event: CancellationEvent) {
         if (event.reason != "user") {
             completionEvents.onNext(CompletionEvent())
@@ -133,5 +143,9 @@ class EditAStoryUseCase(
             isEditCancelled = true
             completionEvents.onNext(CompletionEvent())
         }
+    }
+
+    private fun handleCompletion() {
+        if (isEditCancelled && isTargetNew) story.forget()
     }
 }
