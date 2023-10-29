@@ -49,23 +49,31 @@ class HereNearbyPlaces(
         builder
     }
 
-    private val pastResponses: MutableMap<Coordinates, HttpResponse> by lazy {
-        mutableMapOf()
-    }
+    private val pastResponses: MutableMap<Coordinates, HttpResponse> by lazy { mutableMapOf() }
+    private val pastSearchResults: MutableSet<HerePlace> by lazy { mutableSetOf() }
 
     override fun new(): Place {
         throw UnsupportedOperationException("This collection of places is read-only.")
     }
 
     override fun findPlace(id: Uuid): Iterable<Place> {
-        return filter { it.id == id }
+        // I don't really like this very much. Ideally, we should be able to perform
+        // an ID-based query to HERE's services. However, the fact that they are not
+        // using UUIDs prevents us from doing so. On the other hand, we have enforced the
+        // usage of UUIDs through `Uuid#nameUUIDFromBytes()`, which internally uses
+        // MD5, making it nearly impossible to retrieve the original ID.
+        // The best we can do then is a simple filter operation on the data we have
+        // obtained so far from HERE, either through `findPlace(String)` or `iterator()`.
+        return pastSearchResults.filter { it.id == id } + this.filter { it.id == id }
     }
 
     override fun findPlace(name: String): Iterable<Place> = runBlocking {
         val urlBuilder = urlBuilder.clone()
         urlBuilder.parameters.append("name", name)
         urlBuilder.parameters.append("at", coordinates.toString())
-        return@runBlocking jsonPlaces(urlBuilder.buildAndCall().body())
+        val places = jsonPlaces(urlBuilder.buildAndCall().body())
+        pastSearchResults.addAll(places)
+        return@runBlocking places
     }
 
     override fun iterator(): Iterator<Place> = runBlocking {
