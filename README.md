@@ -2,6 +2,7 @@
 
 ![CI Status Badge](https://github.com/MrHadiSatrio/Journal3/actions/workflows/ci.yaml/badge.svg) [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=MrHadiSatrio_Journal3&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=MrHadiSatrio_Journal3) [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=MrHadiSatrio_Journal3&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=MrHadiSatrio_Journal3)
 
+![Widgets](https://github.com/MrHadiSatrio/Journal3/assets/22863610/1d68a5ed-b067-400b-a9de-2ad58d273233)
 ![Reflections](https://github.com/MrHadiSatrio/Journal3/assets/22863610/e27d2d72-bd46-4fdb-8227-89c2988ffe74)
 ![Story](https://github.com/MrHadiSatrio/Journal3/assets/22863610/5e5c8541-ecb0-4cbe-821c-383793266052)
 ![Moment Editing](https://github.com/MrHadiSatrio/Journal3/assets/22863610/762f434b-16fa-47f7-8877-1f681f075006)
