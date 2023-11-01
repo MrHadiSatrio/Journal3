@@ -20,15 +20,11 @@ package com.hadisatrio.apps.android.journal3.alert
 import android.content.Context
 import androidx.work.Worker
 import androidx.work.WorkerParameters
-import com.badoo.reaktive.observable.Observable
-import com.badoo.reaktive.observable.observableOf
 import com.hadisatrio.apps.android.journal3.journal3Application
 import com.hadisatrio.apps.android.journal3.notification.NotificationChannel
 import com.hadisatrio.apps.kotlin.journal3.alert.AlertInactivityUseCase
 import com.hadisatrio.libs.android.foundation.modal.NotificationModalPresenter
-import com.hadisatrio.libs.kotlin.foundation.event.CompletionEvent
-import com.hadisatrio.libs.kotlin.foundation.event.Event
-import com.hadisatrio.libs.kotlin.foundation.event.EventSource
+import com.hadisatrio.libs.kotlin.foundation.event.NoOpEventSource
 
 @Suppress("unused")
 class InactivityAlertingWork(
@@ -47,15 +43,9 @@ class InactivityAlertingWork(
                     channel = NotificationChannel.ALERT_AND_REMINDERS
                 ),
             ),
-            eventSource = NoOpEventSource(),
+            eventSource = NoOpEventSource,
             eventSink = context.journal3Application.globalEventSink
         )()
         return Result.success()
-    }
-
-    private class NoOpEventSource : EventSource {
-        override fun events(): Observable<Event> {
-            return observableOf(CompletionEvent())
-        }
     }
 }

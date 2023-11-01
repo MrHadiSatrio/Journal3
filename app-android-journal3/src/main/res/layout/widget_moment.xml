@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+  ~ Copyright (C) 2022 Hadi Satrio
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@android:id/background"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_widget"
+    android:theme="@style/Theme.Journal3">
+
+    <TextView
+        android:id="@+id/sentiment_indicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:gravity="center"
+        android:text="⬤"
+        android:textAppearance="@style/TextAppearance.Material3.TitleSmall"
+        tools:ignore="HardcodedText" />
+
+    <TextView
+        android:id="@+id/timestamp_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/sentiment_indicator"
+        android:layout_alignBottom="@id/sentiment_indicator"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="@dimen/gutter"
+        android:layout_toEndOf="@id/sentiment_indicator"
+        android:ellipsize="middle"
+        android:gravity="end|center_vertical"
+        android:maxLines="1"
+        android:textAppearance="@style/TextAppearance.Material3.LabelSmall"
+        android:textColor="?colorOnSecondaryContainer"
+        tools:text="@tools:sample/date/ddmmyy" />
+
+    <TextView
+        android:id="@+id/description_label"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/attachment_count_label"
+        android:layout_below="@id/timestamp_label"
+        android:layout_marginTop="@dimen/gutter"
+        android:layout_marginBottom="@dimen/gutter"
+        android:textAppearance="@style/TextAppearance.Material3.BodySmall"
+        android:textColor="?colorOnSecondaryContainer"
+        tools:text="@tools:sample/lorem/random" />
+
+    <TextView
+        android:id="@+id/attachment_count_label"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/place_label"
+        android:layout_marginBottom="@dimen/margin"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textAppearance="@style/TextAppearance.Material3.LabelSmall"
+        android:textColor="?colorOnSecondaryContainer"
+        tools:text="2 attachment(s)" />
+
+    <TextView
+        android:id="@+id/place_label"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:drawableStart="@drawable/ic24_place"
+        android:drawablePadding="@dimen/gutter"
+        android:drawableTint="@color/material_on_surface_emphasis_high_type"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:textAppearance="@style/TextAppearance.Material3.LabelSmall"
+        android:textColor="?colorOnSecondaryContainer"
+        tools:ignore="UseCompatTextViewDrawableXml"
+        tools:text="@tools:sample/lorem" />
+
+</RelativeLayout>
