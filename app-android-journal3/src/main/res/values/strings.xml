@@ -18,6 +18,9 @@
 <resources>
     <string name="app_name">Journal</string>
 
+    <string name="widgetName_positiveReflections">Positive reflections</string>
+    <string name="widgetDesc_positiveReflections">Reflect on the good things in life with your moments.</string>
+
     <string name="notifChannelName_alertsReminders">Alert &amp; Reminders</string>
     <string name="notifChannelDesc_alertsReminders">Timely alert and reminders to help keep your journaling habit on track.</string>
 
