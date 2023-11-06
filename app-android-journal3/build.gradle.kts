@@ -53,8 +53,8 @@ android {
         }
     }
 
-    packagingOptions {
-        resources.excludes.add("META-INF/*")
+    packaging {
+        resources.excludes += "**/*"
     }
 }
 
