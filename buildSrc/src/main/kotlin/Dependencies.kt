@@ -31,7 +31,7 @@ object Dependencies {
     }
 
     object AndroidNetwork {
-        const val KTOR = "io.ktor:ktor-client-android:2.3.4"
+        const val KTOR = "io.ktor:ktor-client-android:2.3.5"
     }
 
     object AndroidUi {
