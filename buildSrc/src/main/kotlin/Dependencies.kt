@@ -80,7 +80,7 @@ object Dependencies {
 
     object TestUtility {
         const val REACTIVE_EXTENSIONS_TEST = "com.badoo.reaktive:reaktive-testing:1.3.0"
-        const val KOTEST_ASSERTIONS = "io.kotest:kotest-assertions-core:5.7.2"
+        const val KOTEST_ASSERTIONS = "io.kotest:kotest-assertions-core:5.8.0"
         const val ESPRESSO = "androidx.test.espresso:espresso-core:3.5.1"
         const val ROBOLECTRIC = "org.robolectric:robolectric:4.11.1"
     }
