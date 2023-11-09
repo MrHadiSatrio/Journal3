@@ -44,6 +44,7 @@ jobs:
         run: ./gradlew clean build sonarqube
 
       - name: Archive build reports
+        if: success() || failure()
         uses: actions/upload-artifact@v3
         with:
           name: build-report-artifacts
