@@ -2,6 +2,14 @@
 
 object Dependencies {
 
+    object CollectiveDependencyVersions {
+        const val ANDROIDX_LIFECYCLE = "2.6.2"
+        const val JUNIT_5 = "5.10.0"
+        const val KTOR = "2.3.5"
+        const val OKIO = "3.6.0"
+        const val REACTIVE_EXTENSIONS = "2.0.0"
+    }
+
     object AndroidSdk {
         const val MINIMUM = 23
         const val COMPILE = 34
@@ -10,8 +18,8 @@ object Dependencies {
 
     object AndroidArchitecture {
         const val FRAGMENT = "androidx.fragment:fragment-ktx:1.6.2"
-        const val VIEWMODEL = "androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2"
-        const val LIFECYCLE = "androidx.lifecycle:lifecycle-runtime-ktx:2.6.2"
+        const val VIEWMODEL = "androidx.lifecycle:lifecycle-viewmodel-ktx:${CollectiveDependencyVersions.ANDROIDX_LIFECYCLE}"
+        const val LIFECYCLE = "androidx.lifecycle:lifecycle-runtime-ktx:${CollectiveDependencyVersions.ANDROIDX_LIFECYCLE}"
         const val STARTUP = "androidx.startup:startup-runtime:1.1.1"
     }
 
@@ -31,7 +39,7 @@ object Dependencies {
     }
 
     object AndroidNetwork {
-        const val KTOR = "io.ktor:ktor-client-android:2.3.5"
+        const val KTOR = "io.ktor:ktor-client-android:${CollectiveDependencyVersions.KTOR}"
     }
 
     object AndroidUi {
@@ -51,8 +59,8 @@ object Dependencies {
     }
 
     object Asynchrony {
-        const val REACTIVE_EXTENSIONS = "com.badoo.reaktive:reaktive:1.3.0"
-        const val REACTIVE_EXTENSIONS_COROUTINE_INTEROP = "com.badoo.reaktive:coroutines-interop:1.3.0"
+        const val REACTIVE_EXTENSIONS = "com.badoo.reaktive:reaktive:${CollectiveDependencyVersions.REACTIVE_EXTENSIONS}"
+        const val REACTIVE_EXTENSIONS_COROUTINE_INTEROP = "com.badoo.reaktive:coroutines-interop:${CollectiveDependencyVersions.REACTIVE_EXTENSIONS}"
     }
 
     object Commons {
@@ -60,26 +68,26 @@ object Dependencies {
         const val URI = "com.chrynan.uri:uri-core:0.4.0"
         const val DATETIME = "org.jetbrains.kotlinx:kotlinx-datetime:0.4.1"
         const val KOTLINX_JSON_OKIO = "org.jetbrains.kotlinx:kotlinx-serialization-json-okio:1.6.0"
-        const val OKIO = "com.squareup.okio:okio:3.6.0"
+        const val OKIO = "com.squareup.okio:okio:${CollectiveDependencyVersions.OKIO}"
     }
 
     object Network {
-        const val KTOR = "io.ktor:ktor-client-core:2.3.5"
+        const val KTOR = "io.ktor:ktor-client-core:${CollectiveDependencyVersions.KTOR}"
     }
 
     object TestRuntime {
         const val ANDROID_JUNIT_4 = "androidx.test:runner:1.5.2"
-        const val JUNIT_5 = "org.junit.jupiter:junit-jupiter-engine:5.10.0"
+        const val JUNIT_5 = "org.junit.jupiter:junit-jupiter-engine:${CollectiveDependencyVersions.JUNIT_5}"
     }
 
     object TestFramework {
         const val JUNIT_4 = "junit:junit:4.13.2"
-        const val JUNIT_5 = "org.junit.jupiter:junit-jupiter-api:5.10.0"
+        const val JUNIT_5 = "org.junit.jupiter:junit-jupiter-api:${CollectiveDependencyVersions.JUNIT_5}"
         const val ANDROID_JUNIT = "androidx.test.ext:junit:1.1.5"
     }
 
     object TestUtility {
-        const val REACTIVE_EXTENSIONS_TEST = "com.badoo.reaktive:reaktive-testing:1.3.0"
+        const val REACTIVE_EXTENSIONS_TEST = "com.badoo.reaktive:reaktive-testing:${CollectiveDependencyVersions.REACTIVE_EXTENSIONS}"
         const val KOTEST_ASSERTIONS = "io.kotest:kotest-assertions-core:5.8.0"
         const val ESPRESSO = "androidx.test.espresso:espresso-core:3.5.1"
         const val ROBOLECTRIC = "org.robolectric:robolectric:4.11.1"
@@ -87,8 +95,8 @@ object Dependencies {
 
     object TestDouble {
         const val MOCKK = "io.mockk:mockk:1.13.8"
-        const val OKIO_FAKE_FS = "com.squareup.okio:okio-fakefilesystem:3.6.0"
-        const val KTOR_MOCK_ENGINE = "io.ktor:ktor-client-mock:2.3.5"
+        const val OKIO_FAKE_FS = "com.squareup.okio:okio-fakefilesystem:${CollectiveDependencyVersions.OKIO}"
+        const val KTOR_MOCK_ENGINE = "io.ktor:ktor-client-mock:${CollectiveDependencyVersions.KTOR}"
     }
 }
 

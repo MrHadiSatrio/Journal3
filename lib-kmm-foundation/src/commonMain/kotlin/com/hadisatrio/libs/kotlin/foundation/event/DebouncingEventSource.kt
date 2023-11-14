@@ -21,20 +21,22 @@ import com.badoo.reaktive.observable.Observable
 import com.badoo.reaktive.observable.debounce
 import com.badoo.reaktive.scheduler.Scheduler
 import com.badoo.reaktive.scheduler.computationScheduler
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
 
 class DebouncingEventSource(
-    private val timeoutMillis: Long,
+    private val timeoutMillis: Duration,
     private val scheduler: Scheduler,
     private val origin: EventSource
 ) : EventSource {
 
-    constructor(origin: EventSource) : this(DEFAULT_TIMEOUT_MILLIS, computationScheduler, origin)
+    constructor(origin: EventSource) : this(DEFAULT_TIMEOUT, computationScheduler, origin)
 
     override fun events(): Observable<Event> {
         return origin.events().debounce(timeoutMillis, scheduler)
     }
 
     companion object {
-        private const val DEFAULT_TIMEOUT_MILLIS = 300L
+        private val DEFAULT_TIMEOUT = 300L.milliseconds
     }
 }
