@@ -24,15 +24,16 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import kotlin.test.Test
+import kotlin.time.Duration.Companion.milliseconds
 
 class DebouncingEventSourceTest {
 
     @Test
     fun `Debounces the given origin`() {
-        val timeoutMillis = 100L
+        val timeout = 100L.milliseconds
         val scheduler = mockk<Scheduler>(relaxed = true)
         val origin = mockk<EventSource>(relaxed = true)
-        val source = DebouncingEventSource(timeoutMillis, scheduler, origin)
+        val source = DebouncingEventSource(timeout, scheduler, origin)
         every { origin.events() } returns PublishSubject()
 
         source.events().subscribe { }
