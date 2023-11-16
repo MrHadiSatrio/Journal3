@@ -20,7 +20,6 @@ package com.hadisatrio.libs.kotlin.geography
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
-import java.lang.IllegalArgumentException
 import kotlin.test.Test
 
 class LiteralCoordinatesTest {

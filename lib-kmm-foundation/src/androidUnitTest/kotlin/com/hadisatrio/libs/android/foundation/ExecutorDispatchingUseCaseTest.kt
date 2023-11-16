@@ -15,25 +15,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.hadisatrio.libs.kotlin.foundation.presentation
+package com.hadisatrio.libs.android.foundation
 
-import com.hadisatrio.libs.kotlin.foundation.concurrent.CurrentThreadExecutor
+import com.hadisatrio.libs.android.foundation.concurrent.CurrentThreadExecutor
+import com.hadisatrio.libs.kotlin.foundation.UseCase
 import io.mockk.mockk
 import io.mockk.spyk
 import io.mockk.verify
 import java.util.concurrent.Executor
 import kotlin.test.Test
 
-class ExecutorDispatchingPresenterTest {
+class ExecutorDispatchingUseCaseTest {
 
     private val executor: Executor = spyk(CurrentThreadExecutor())
-    private val origin: Presenter<Any> = mockk(relaxUnitFun = true)
-    private val presenter = ExecutorDispatchingPresenter(executor, origin)
+    private val origin: UseCase = mockk(relaxUnitFun = true)
+    private val useCase = ExecutorDispatchingUseCase(executor, origin)
 
     @Test
     fun `Forwards call to the origin on the given executor`() {
-        presenter.present("Foo")
+        useCase()
         verify(exactly = 1) { executor.execute(any()) }
-        verify(exactly = 1) { origin.present("Foo") }
+        verify(exactly = 1) { origin.invoke() }
     }
 }

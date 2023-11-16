@@ -18,11 +18,11 @@
 package com.hadisatrio.libs.kotlin.geography
 
 import com.benasher44.uuid.Uuid
-import java.util.UUID
+import com.benasher44.uuid.uuidFrom
 
 object NullIsland : Place {
 
-    override val id: Uuid = UUID.fromString("00000000-0000-0000-0000-000000000000")
+    override val id: Uuid = uuidFrom("00000000-0000-0000-0000-000000000000")
 
     override val name: String = "Null Island"
 

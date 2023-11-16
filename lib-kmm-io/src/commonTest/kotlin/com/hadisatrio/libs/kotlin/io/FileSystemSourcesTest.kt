@@ -27,7 +27,6 @@ import okio.Path
 import okio.Path.Companion.toPath
 import okio.buffer
 import okio.fakefilesystem.FakeFileSystem
-import java.lang.IllegalArgumentException
 import kotlin.test.AfterTest
 import kotlin.test.Test
 

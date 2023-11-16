@@ -37,9 +37,9 @@ import com.hadisatrio.apps.kotlin.journal3.story.ShowStoriesUseCase
 import com.hadisatrio.apps.kotlin.journal3.story.Stories
 import com.hadisatrio.apps.kotlin.journal3.story.fake.FakeStories
 import com.hadisatrio.apps.kotlin.journal3.token.TokenableString
+import com.hadisatrio.libs.android.foundation.ExecutorDispatchingUseCase
 import com.hadisatrio.libs.android.foundation.widget.RemoteTextViewStringPresenter
 import com.hadisatrio.libs.android.foundation.widget.RemoteViewsUpdatingPresenter
-import com.hadisatrio.libs.kotlin.foundation.ExecutorDispatchingUseCase
 import com.hadisatrio.libs.kotlin.foundation.event.NoOpEventSource
 import com.hadisatrio.libs.kotlin.foundation.presentation.AdaptingPresenter
 import com.hadisatrio.libs.kotlin.foundation.presentation.Presenters

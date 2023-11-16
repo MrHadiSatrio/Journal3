@@ -17,8 +17,6 @@
 
 package com.hadisatrio.libs.kotlin.foundation.event
 
-import java.lang.Exception
-
 class ExceptionalEvent(
     val exception: Exception
 ) : Event() {

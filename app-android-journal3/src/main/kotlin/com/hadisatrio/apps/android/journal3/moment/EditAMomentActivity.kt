@@ -39,10 +39,12 @@ import com.hadisatrio.apps.kotlin.journal3.moment.Moment
 import com.hadisatrio.apps.kotlin.journal3.moment.SentimentAnalyzingMoment
 import com.hadisatrio.apps.kotlin.journal3.moment.UpdateDeferringMoment
 import com.hadisatrio.apps.kotlin.journal3.story.EditableMomentInStory
+import com.hadisatrio.libs.android.foundation.ExecutorDispatchingUseCase
 import com.hadisatrio.libs.android.foundation.activity.ActivityCompletionEventSink
 import com.hadisatrio.libs.android.foundation.lifecycle.LifecycleTriggeredEventSource
 import com.hadisatrio.libs.android.foundation.material.SliderFloatPresenter
 import com.hadisatrio.libs.android.foundation.material.SliderSelectionEventSource
+import com.hadisatrio.libs.android.foundation.presentation.ExecutorDispatchingPresenter
 import com.hadisatrio.libs.android.foundation.widget.BackButtonCancellationEventSource
 import com.hadisatrio.libs.android.foundation.widget.EditTextInputEventSource
 import com.hadisatrio.libs.android.foundation.widget.PhotoCaptureEventSource
@@ -52,7 +54,6 @@ import com.hadisatrio.libs.android.foundation.widget.SwitchSelectionEventSource
 import com.hadisatrio.libs.android.foundation.widget.TextViewStringPresenter
 import com.hadisatrio.libs.android.foundation.widget.ViewClickEventSource
 import com.hadisatrio.libs.android.io.uri.toAndroidUri
-import com.hadisatrio.libs.kotlin.foundation.ExecutorDispatchingUseCase
 import com.hadisatrio.libs.kotlin.foundation.UseCase
 import com.hadisatrio.libs.kotlin.foundation.event.CancellationEvent
 import com.hadisatrio.libs.kotlin.foundation.event.EventSink
@@ -62,7 +63,6 @@ import com.hadisatrio.libs.kotlin.foundation.event.EventSources
 import com.hadisatrio.libs.kotlin.foundation.event.SchedulingEventSource
 import com.hadisatrio.libs.kotlin.foundation.event.SelectionEvent
 import com.hadisatrio.libs.kotlin.foundation.presentation.AdaptingPresenter
-import com.hadisatrio.libs.kotlin.foundation.presentation.ExecutorDispatchingPresenter
 import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
 import com.hadisatrio.libs.kotlin.foundation.presentation.Presenters
 
