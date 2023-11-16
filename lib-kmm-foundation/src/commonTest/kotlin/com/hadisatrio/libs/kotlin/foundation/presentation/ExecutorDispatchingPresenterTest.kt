@@ -21,8 +21,8 @@ import com.hadisatrio.libs.kotlin.foundation.concurrent.CurrentThreadExecutor
 import io.mockk.mockk
 import io.mockk.spyk
 import io.mockk.verify
-import org.junit.Test
 import java.util.concurrent.Executor
+import kotlin.test.Test
 
 class ExecutorDispatchingPresenterTest {
 

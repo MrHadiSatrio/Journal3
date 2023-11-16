@@ -31,7 +31,7 @@ import io.kotest.matchers.shouldBe
 import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.datetime.Clock
-import org.junit.Test
+import kotlin.test.Test
 import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.hours
 

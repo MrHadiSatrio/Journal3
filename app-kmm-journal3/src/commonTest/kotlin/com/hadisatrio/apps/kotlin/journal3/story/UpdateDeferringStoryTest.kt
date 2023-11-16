@@ -23,15 +23,15 @@ import io.kotest.matchers.booleans.shouldBeFalse
 import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.equals.shouldBeEqual
 import io.kotest.matchers.equals.shouldNotBeEqual
-import org.junit.Before
-import org.junit.Test
+import kotlin.test.BeforeTest
+import kotlin.test.Test
 
 class UpdateDeferringStoryTest {
 
     private lateinit var original: EditableStory
     private lateinit var updateDeferring: UpdateDeferringStory
 
-    @Before
+    @BeforeTest
     fun `Inits subjects`() {
         val stories = SelfPopulatingStories(noOfStories = 1, noOfMoments = 1, origin = FakeStories())
         original = stories.first() as EditableStory

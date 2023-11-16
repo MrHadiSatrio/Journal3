@@ -31,15 +31,15 @@ import io.kotest.matchers.equals.shouldBeEqual
 import io.kotest.matchers.equals.shouldNotBeEqual
 import io.kotest.matchers.shouldBe
 import kotlinx.datetime.Instant
-import org.junit.Before
-import org.junit.Test
+import kotlin.test.BeforeTest
+import kotlin.test.Test
 
 class UpdateDeferringMomentTest {
 
     private lateinit var original: EditableMoment
     private lateinit var updateDeferring: UpdateDeferringMoment
 
-    @Before
+    @BeforeTest
     fun `Inits subjects`() {
         val stories = SelfPopulatingStories(noOfStories = 1, noOfMoments = 1, origin = FakeStories())
         original = stories.first().moments.first() as EditableMoment
