@@ -15,8 +15,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.hadisatrio.libs.kotlin.foundation
+package com.hadisatrio.libs.android.foundation
 
+import com.hadisatrio.libs.kotlin.foundation.UseCase
 import java.util.concurrent.Executor
 
 class ExecutorDispatchingUseCase(

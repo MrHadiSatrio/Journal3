@@ -6,7 +6,7 @@ import com.hadisatrio.apps.kotlin.journal3.moment.fake.FakeMemorables
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldHaveSize
-import org.junit.Test
+import kotlin.test.Test
 
 class MergedMemorablesTest {
 

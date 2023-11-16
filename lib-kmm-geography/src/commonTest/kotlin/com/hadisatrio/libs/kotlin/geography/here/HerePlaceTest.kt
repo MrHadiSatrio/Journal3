@@ -17,6 +17,7 @@
 
 package com.hadisatrio.libs.kotlin.geography.here
 
+import com.benasher44.uuid.Uuid
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import kotlinx.serialization.decodeFromString
@@ -24,7 +25,6 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
-import java.util.UUID
 import kotlin.test.Test
 
 class HerePlaceTest {
@@ -60,7 +60,7 @@ class HerePlaceTest {
     @Test
     fun `Infers ID from the Here ID consistently`() {
         val lifemarkStreetJsonId = lifemarkStreetJson["id"]!!.jsonPrimitive.content
-        lifemarkStreet.id.shouldBe(UUID.nameUUIDFromBytes(lifemarkStreetJsonId.toByteArray()))
+        lifemarkStreet.id.shouldBe(Uuid.nameUUIDFromBytes(lifemarkStreetJsonId.toByteArray()))
         lifemarkStreet.id.shouldBe(lifemarkStreet.id)
         lifemarkStreet.id.shouldBe(otherLifemarkStreet.id)
     }

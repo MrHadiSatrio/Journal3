@@ -15,13 +15,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.hadisatrio.libs.kotlin.foundation.concurrent
+package com.hadisatrio.libs.android.foundation.presentation
 
+import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
 import java.util.concurrent.Executor
 
-class CurrentThreadExecutor : Executor {
+class ExecutorDispatchingPresenter<T>(
+    private val executor: Executor,
+    private val origin: Presenter<T>
+) : Presenter<T> {
 
-    override fun execute(command: Runnable) {
-        command.run()
+    override fun present(thing: T) {
+        executor.execute { origin.present(thing) }
     }
 }

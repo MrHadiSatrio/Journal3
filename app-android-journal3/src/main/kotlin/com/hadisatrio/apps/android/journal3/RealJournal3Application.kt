@@ -48,6 +48,7 @@ import com.hadisatrio.apps.kotlin.journal3.token.TokenableString
 import com.hadisatrio.libs.android.foundation.activity.CurrentActivity
 import com.hadisatrio.libs.android.foundation.modal.AlertDialogModalPresenter
 import com.hadisatrio.libs.android.foundation.os.SystemLog
+import com.hadisatrio.libs.android.foundation.presentation.ExecutorDispatchingPresenter
 import com.hadisatrio.libs.android.geography.LocationManagerCoordinates
 import com.hadisatrio.libs.android.geography.PermissionAwareCoordinates
 import com.hadisatrio.libs.android.io.content.ContentResolverSources
@@ -56,7 +57,6 @@ import com.hadisatrio.libs.kotlin.foundation.event.EventSink
 import com.hadisatrio.libs.kotlin.foundation.event.EventSinks
 import com.hadisatrio.libs.kotlin.foundation.event.EventSource
 import com.hadisatrio.libs.kotlin.foundation.modal.Modal
-import com.hadisatrio.libs.kotlin.foundation.presentation.ExecutorDispatchingPresenter
 import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
 import com.hadisatrio.libs.kotlin.geography.Places
 import com.hadisatrio.libs.kotlin.geography.here.HereNearbyPlaces

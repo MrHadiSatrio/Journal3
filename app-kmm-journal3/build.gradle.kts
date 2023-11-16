@@ -26,7 +26,7 @@ kotlin {
         }
         val commonTest by getting {
             dependencies {
-                implementation(kotlin("test"))
+                implementation(kotlin("test-junit"))
                 implementation(Dependencies.TestUtility.REACTIVE_EXTENSIONS_TEST)
                 implementation(Dependencies.TestUtility.KOTEST_ASSERTIONS)
                 implementation(Dependencies.TestDouble.OKIO_FAKE_FS)

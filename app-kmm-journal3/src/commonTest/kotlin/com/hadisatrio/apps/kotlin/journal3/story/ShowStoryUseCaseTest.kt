@@ -32,7 +32,7 @@ import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.shouldBe
 import io.mockk.mockk
 import io.mockk.verify
-import org.junit.Test
+import kotlin.test.Test
 
 class ShowStoryUseCaseTest {
 

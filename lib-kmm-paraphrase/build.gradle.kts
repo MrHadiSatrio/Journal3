@@ -22,7 +22,7 @@ kotlin {
         }
         val commonTest by getting {
             dependencies {
-                implementation(kotlin("test"))
+                implementation(kotlin("test-junit"))
                 implementation(Dependencies.TestUtility.KOTEST_ASSERTIONS)
                 implementation(Dependencies.TestDouble.MOCKK)
                 implementation(Dependencies.TestDouble.KTOR_MOCK_ENGINE)

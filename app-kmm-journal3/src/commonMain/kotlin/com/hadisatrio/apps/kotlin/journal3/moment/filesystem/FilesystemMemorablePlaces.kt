@@ -25,7 +25,6 @@ import com.hadisatrio.libs.kotlin.geography.NullIsland
 import com.hadisatrio.libs.kotlin.geography.Place
 import okio.FileSystem
 import okio.Path
-import java.util.UUID
 
 class FilesystemMemorablePlaces(
     private val fileSystem: FileSystem,
@@ -53,7 +52,7 @@ class FilesystemMemorablePlaces(
         }
     }
 
-    override fun relevantTo(momentId: UUID): Iterable<Memorable> {
+    override fun relevantTo(momentId: Uuid): Iterable<Memorable> {
         return filter { it.relevantTo(momentId) }
     }
 
