@@ -25,7 +25,7 @@ kotlin {
         }
         val commonTest by getting {
             dependencies {
-                implementation(kotlin("test"))
+                implementation(kotlin("test-junit"))
                 implementation(Dependencies.TestUtility.KOTEST_ASSERTIONS)
                 implementation(Dependencies.TestUtility.ROBOLECTRIC)
                 implementation(Dependencies.TestDouble.MOCKK)
