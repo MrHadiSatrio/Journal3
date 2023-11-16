@@ -47,6 +47,7 @@ import com.hadisatrio.libs.kotlin.foundation.event.EventSource
 import com.hadisatrio.libs.kotlin.foundation.event.EventSources
 import com.hadisatrio.libs.kotlin.foundation.event.SchedulingEventSource
 import com.hadisatrio.libs.kotlin.foundation.presentation.AdaptingPresenter
+import com.hadisatrio.libs.kotlin.foundation.presentation.PerfTrackingPresenter
 import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
 import kotlin.math.roundToInt
 
@@ -60,9 +61,11 @@ class ReflectionStoriesListFragment : StoriesListFragment() {
         val subItemViewFactory = RecyclerViewPresenter.ViewFactory { parent, _ ->
             val inflater = LayoutInflater.from(parent.context)
             val view = inflater.inflate(R.layout.view_moment_vert_card, parent, false)
-            val width = (Resources.getSystem().displayMetrics.widthPixels / GOLDEN_RATIO).roundToInt()
+            val width =
+                (Resources.getSystem().displayMetrics.widthPixels / GOLDEN_RATIO).roundToInt()
             val height = (width * GOLDEN_RATIO).roundToInt()
-            val sentimentPresenter = TextViewColorSentimentPresenter(view.findViewById(R.id.sentiment_indicator))
+            val sentimentPresenter =
+                TextViewColorSentimentPresenter(view.findViewById(R.id.sentiment_indicator))
             view.layoutParams = RecyclerView.LayoutParams(width, height)
             view.setTag(R.id.presenter_view_tag, sentimentPresenter)
             view
@@ -75,7 +78,11 @@ class ReflectionStoriesListFragment : StoriesListFragment() {
                 recyclerView = carousel,
                 viewFactory = subItemViewFactory,
                 viewRenderer = MomentCardViewRenderer,
-                layoutManager = LinearLayoutManager(parent.context, LinearLayoutManager.HORIZONTAL, false),
+                layoutManager = LinearLayoutManager(
+                    parent.context,
+                    LinearLayoutManager.HORIZONTAL,
+                    false
+                ),
                 differ = MomentItemDiffer
             )
             carousel.addItemDecoration(SpacingItemDecoration(Spacing(horizontal = 8.dp)))
@@ -90,16 +97,20 @@ class ReflectionStoriesListFragment : StoriesListFragment() {
 
         ExecutorDispatchingPresenter(
             executor = journal3Application.backgroundExecutor,
-            origin = CachingStoriesPresenter(
-                origin = ExecutorDispatchingPresenter(
-                    executor = journal3Application.foregroundExecutor,
-                    origin = AdaptingPresenter(
-                        adapter = { stories -> stories.toList() },
-                        origin = RecyclerViewPresenter(
-                            recyclerView = storiesListView,
-                            viewFactory = itemViewFactory,
-                            viewRenderer = itemViewRenderer,
-                            differ = StoryItemDiffer
+            origin = PerfTrackingPresenter(
+                clock = journal3Application.clock,
+                eventSink = journal3Application.globalEventSink,
+                origin = CachingStoriesPresenter(
+                    origin = ExecutorDispatchingPresenter(
+                        executor = journal3Application.foregroundExecutor,
+                        origin = AdaptingPresenter(
+                            adapter = { stories -> stories.toList() },
+                            origin = RecyclerViewPresenter(
+                                recyclerView = storiesListView,
+                                viewFactory = itemViewFactory,
+                                viewRenderer = itemViewRenderer,
+                                differ = StoryItemDiffer
+                            )
                         )
                     )
                 )

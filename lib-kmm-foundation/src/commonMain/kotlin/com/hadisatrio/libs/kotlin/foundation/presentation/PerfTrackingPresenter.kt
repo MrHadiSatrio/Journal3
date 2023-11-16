@@ -15,26 +15,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.hadisatrio.libs.kotlin.foundation.event
+package com.hadisatrio.libs.kotlin.foundation.presentation
 
-import io.kotest.matchers.maps.shouldContain
-import io.mockk.every
-import io.mockk.mockk
+import com.hadisatrio.libs.kotlin.foundation.event.EventSink
+import com.hadisatrio.libs.kotlin.foundation.event.PerfSensitiveEvent
 import kotlinx.datetime.Clock
-import kotlinx.datetime.Instant
-import kotlin.test.Test
 
-class PerfSensitiveEventTest {
+class PerfTrackingPresenter<T>(
+    private val clock: Clock,
+    private val eventSink: EventSink,
+    private val origin: Presenter<T>
+) : Presenter<T> {
 
-    @Test
-    fun `Describes itself`() {
-        val clock = mockk<Clock>()
-        every { clock.now() } returns Instant.fromEpochMilliseconds(1)
-
-        val event = PerfSensitiveEvent("Foo", clock)
-        val description = event.describe()
-
-        description.shouldContain("tag" to "Foo")
-        description.shouldContain("epoch_time" to "1")
+    override fun present(thing: T) {
+        val event = PerfSensitiveEvent("${origin::class.simpleName}#present()", clock)
+        origin.present(thing)
+        eventSink.sink(event.end())
     }
 }

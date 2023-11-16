@@ -36,6 +36,7 @@ import com.hadisatrio.libs.kotlin.foundation.event.EventSource
 import com.hadisatrio.libs.kotlin.foundation.event.EventSources
 import com.hadisatrio.libs.kotlin.foundation.event.SchedulingEventSource
 import com.hadisatrio.libs.kotlin.foundation.presentation.AdaptingPresenter
+import com.hadisatrio.libs.kotlin.foundation.presentation.PerfTrackingPresenter
 import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
 
 class UserStoriesListFragment : StoriesListFragment() {
@@ -47,23 +48,28 @@ class UserStoriesListFragment : StoriesListFragment() {
     override val presenter: Presenter<Stories> by lazy {
         ExecutorDispatchingPresenter(
             executor = journal3Application.backgroundExecutor,
-            origin = CachingStoriesPresenter(
-                origin = ExecutorDispatchingPresenter(
-                    executor = journal3Application.foregroundExecutor,
-                    origin = AdaptingPresenter(
-                        origin = RecyclerViewPresenter(
-                            recyclerView = storiesListView,
-                            viewFactory = { parent, _ ->
-                                LayoutInflater.from(parent.context)
-                                    .inflate(R.layout.view_story_snippet_card, parent, false)
-                            },
-                            viewRenderer = { view, item ->
-                                view.findViewById<TextView>(R.id.title_label).text = item.title
-                                view.findViewById<TextView>(R.id.synopsis_label).text = item.synopsis.toString()
-                            },
-                            differ = StoryItemDiffer
-                        ),
-                        adapter = { stories -> stories.toList() }
+            PerfTrackingPresenter(
+                clock = journal3Application.clock,
+                eventSink = journal3Application.globalEventSink,
+                origin = CachingStoriesPresenter(
+                    origin = ExecutorDispatchingPresenter(
+                        executor = journal3Application.foregroundExecutor,
+                        origin = AdaptingPresenter(
+                            adapter = { stories -> stories.toList() },
+                            origin = RecyclerViewPresenter(
+                                recyclerView = storiesListView,
+                                viewFactory = { parent, _ ->
+                                    LayoutInflater.from(parent.context)
+                                        .inflate(R.layout.view_story_snippet_card, parent, false)
+                                },
+                                viewRenderer = { view, item ->
+                                    view.findViewById<TextView>(R.id.title_label).text = item.title
+                                    view.findViewById<TextView>(R.id.synopsis_label).text =
+                                        item.synopsis.toString()
+                                },
+                                differ = StoryItemDiffer
+                            )
+                        )
                     )
                 )
             )
