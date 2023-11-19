@@ -15,20 +15,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.hadisatrio.apps.android.journal3.geography
+package com.hadisatrio.libs.android.foundation.widget.recyclerview
 
-import com.hadisatrio.libs.android.foundation.widget.recyclerview.ItemDiffer
-import com.hadisatrio.libs.kotlin.geography.Place
+import android.view.ViewGroup
+import androidx.recyclerview.widget.ListAdapter
 
-object PlaceItemDiffer : ItemDiffer<Place> {
+internal class Adapter<T : Any>(
+    private val viewFactory: ViewFactory,
+    private val viewRenderer: ViewRenderer<T>,
+    private val differ: ItemDiffer<T>
+) : ListAdapter<T, ViewHolder>(DiffCallback(differ)) {
 
-    override fun areItemsTheSame(oldItem: Place, newItem: Place): Boolean {
-        return oldItem.id == newItem.id
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        return ViewHolder(viewFactory.create(parent, viewType))
     }
 
-    override fun areContentsTheSame(oldItem: Place, newItem: Place): Boolean {
-        return oldItem.name == newItem.name &&
-            oldItem.address == newItem.address &&
-            oldItem.coordinates == newItem.coordinates
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        viewRenderer.render(holder.view, getItem(position))
     }
 }

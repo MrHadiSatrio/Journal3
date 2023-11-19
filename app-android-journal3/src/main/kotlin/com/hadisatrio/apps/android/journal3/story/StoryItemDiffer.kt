@@ -18,9 +18,9 @@
 package com.hadisatrio.apps.android.journal3.story
 
 import com.hadisatrio.apps.kotlin.journal3.story.Story
-import com.hadisatrio.libs.android.foundation.widget.RecyclerViewPresenter
+import com.hadisatrio.libs.android.foundation.widget.recyclerview.ItemDiffer
 
-object StoryItemDiffer : RecyclerViewPresenter.ItemDiffer<Story> {
+object StoryItemDiffer : ItemDiffer<Story> {
 
     override fun areItemsTheSame(oldItem: Story, newItem: Story): Boolean {
         return oldItem.id == newItem.id

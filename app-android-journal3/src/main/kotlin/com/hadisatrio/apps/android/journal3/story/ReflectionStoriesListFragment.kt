@@ -41,7 +41,9 @@ import com.hadisatrio.libs.android.dimensions.GOLDEN_RATIO
 import com.hadisatrio.libs.android.dimensions.dp
 import com.hadisatrio.libs.android.foundation.lifecycle.LifecycleTriggeredEventSource
 import com.hadisatrio.libs.android.foundation.presentation.ExecutorDispatchingPresenter
-import com.hadisatrio.libs.android.foundation.widget.RecyclerViewPresenter
+import com.hadisatrio.libs.android.foundation.widget.recyclerview.RecyclerViewPresenter
+import com.hadisatrio.libs.android.foundation.widget.recyclerview.ViewFactory
+import com.hadisatrio.libs.android.foundation.widget.recyclerview.ViewRenderer
 import com.hadisatrio.libs.kotlin.foundation.event.CancellationEvent
 import com.hadisatrio.libs.kotlin.foundation.event.EventSource
 import com.hadisatrio.libs.kotlin.foundation.event.EventSources
@@ -58,7 +60,7 @@ class ReflectionStoriesListFragment : StoriesListFragment() {
     }
 
     override val presenter: Presenter<Stories> by lazy {
-        val subItemViewFactory = RecyclerViewPresenter.ViewFactory { parent, _ ->
+        val subItemViewFactory = ViewFactory { parent, _ ->
             val inflater = LayoutInflater.from(parent.context)
             val view = inflater.inflate(R.layout.view_moment_vert_card, parent, false)
             val width =
@@ -70,7 +72,7 @@ class ReflectionStoriesListFragment : StoriesListFragment() {
             view.setTag(R.id.presenter_view_tag, sentimentPresenter)
             view
         }
-        val itemViewFactory = RecyclerViewPresenter.ViewFactory { parent, _ ->
+        val itemViewFactory = ViewFactory { parent, _ ->
             val inflater = LayoutInflater.from(parent.context)
             val view = inflater.inflate(R.layout.view_story_carousel, parent, false)
             val carousel = view.findViewById<RecyclerView>(R.id.moments_carousel)
@@ -89,7 +91,7 @@ class ReflectionStoriesListFragment : StoriesListFragment() {
             view.setTag(R.id.presenter_view_tag, carouselPresenter)
             view
         }
-        val itemViewRenderer = RecyclerViewPresenter.ViewRenderer<Story> { view, item ->
+        val itemViewRenderer = ViewRenderer<Story> { view, item ->
             view.findViewById<TextView>(R.id.title_label).text = item.title
             view.findViewById<TextView>(R.id.synopsis_label).text = item.synopsis.toString()
             (view.getTag(R.id.presenter_view_tag) as Presenter<Iterable<Moment>>).present(item.moments)

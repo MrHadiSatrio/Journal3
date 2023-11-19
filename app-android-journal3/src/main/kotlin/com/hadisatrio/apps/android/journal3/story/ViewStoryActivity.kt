@@ -43,10 +43,11 @@ import com.hadisatrio.libs.android.foundation.ExecutorDispatchingUseCase
 import com.hadisatrio.libs.android.foundation.activity.ActivityCompletionEventSink
 import com.hadisatrio.libs.android.foundation.lifecycle.LifecycleTriggeredEventSource
 import com.hadisatrio.libs.android.foundation.presentation.ExecutorDispatchingPresenter
-import com.hadisatrio.libs.android.foundation.widget.RecyclerViewItemSelectionEventSource
-import com.hadisatrio.libs.android.foundation.widget.RecyclerViewPresenter
 import com.hadisatrio.libs.android.foundation.widget.TextViewStringPresenter
 import com.hadisatrio.libs.android.foundation.widget.ViewClickEventSource
+import com.hadisatrio.libs.android.foundation.widget.recyclerview.RecyclerViewItemSelectionEventSource
+import com.hadisatrio.libs.android.foundation.widget.recyclerview.RecyclerViewPresenter
+import com.hadisatrio.libs.android.foundation.widget.recyclerview.ViewFactory
 import com.hadisatrio.libs.kotlin.foundation.UseCase
 import com.hadisatrio.libs.kotlin.foundation.event.CancellationEvent
 import com.hadisatrio.libs.kotlin.foundation.event.EventSink
@@ -75,7 +76,7 @@ class ViewStoryActivity : AppCompatActivity() {
             adapter = StoryStringAdapter("attachment_count"),
             origin = TextViewStringPresenter(findViewById(R.id.attachment_count_label))
         )
-        val momentsViewFactory = RecyclerViewPresenter.ViewFactory { parent, _ ->
+        val momentsViewFactory = ViewFactory { parent, _ ->
             val inflater = LayoutInflater.from(parent.context)
             val view = inflater.inflate(R.layout.view_moment_horz_card, parent, false)
             val width = RecyclerView.LayoutParams.MATCH_PARENT

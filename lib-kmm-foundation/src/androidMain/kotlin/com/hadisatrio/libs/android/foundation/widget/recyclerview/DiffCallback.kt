@@ -15,20 +15,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.hadisatrio.apps.android.journal3.geography
+package com.hadisatrio.libs.android.foundation.widget.recyclerview
 
-import com.hadisatrio.libs.android.foundation.widget.recyclerview.ItemDiffer
-import com.hadisatrio.libs.kotlin.geography.Place
+import androidx.recyclerview.widget.DiffUtil
 
-object PlaceItemDiffer : ItemDiffer<Place> {
+internal class DiffCallback<T : Any>(private val differ: ItemDiffer<T>) : DiffUtil.ItemCallback<T>() {
 
-    override fun areItemsTheSame(oldItem: Place, newItem: Place): Boolean {
-        return oldItem.id == newItem.id
+    override fun areItemsTheSame(oldItem: T, newItem: T): Boolean {
+        return differ.areItemsTheSame(oldItem, newItem)
     }
 
-    override fun areContentsTheSame(oldItem: Place, newItem: Place): Boolean {
-        return oldItem.name == newItem.name &&
-            oldItem.address == newItem.address &&
-            oldItem.coordinates == newItem.coordinates
+    override fun areContentsTheSame(oldItem: T, newItem: T): Boolean {
+        return differ.areContentsTheSame(oldItem, newItem)
     }
 }

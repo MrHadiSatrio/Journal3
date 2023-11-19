@@ -39,9 +39,11 @@ import com.hadisatrio.libs.android.foundation.lifecycle.LifecycleTriggeredEventS
 import com.hadisatrio.libs.android.foundation.presentation.ExecutorDispatchingPresenter
 import com.hadisatrio.libs.android.foundation.widget.BackButtonCancellationEventSource
 import com.hadisatrio.libs.android.foundation.widget.EditTextInputEventSource
-import com.hadisatrio.libs.android.foundation.widget.RecyclerViewItemSelectionEventSource
-import com.hadisatrio.libs.android.foundation.widget.RecyclerViewPresenter
 import com.hadisatrio.libs.android.foundation.widget.ViewClickEventSource
+import com.hadisatrio.libs.android.foundation.widget.recyclerview.RecyclerViewItemSelectionEventSource
+import com.hadisatrio.libs.android.foundation.widget.recyclerview.RecyclerViewPresenter
+import com.hadisatrio.libs.android.foundation.widget.recyclerview.ViewFactory
+import com.hadisatrio.libs.android.foundation.widget.recyclerview.ViewRenderer
 import com.hadisatrio.libs.kotlin.foundation.UseCase
 import com.hadisatrio.libs.kotlin.foundation.event.CancellationEvent
 import com.hadisatrio.libs.kotlin.foundation.event.DebouncingEventSource
@@ -58,11 +60,11 @@ import com.hadisatrio.libs.kotlin.geography.Place
 class SelectAPlaceActivity : AppCompatActivity() {
 
     private val presenter: Presenter<Iterable<Place>> by lazy {
-        val viewFactory = RecyclerViewPresenter.ViewFactory { parent, _ ->
+        val viewFactory = ViewFactory { parent, _ ->
             LayoutInflater.from(parent.context)
                 .inflate(R.layout.view_place_snippet_card, parent, false)
         }
-        val viewRenderer = RecyclerViewPresenter.ViewRenderer<Place> { view, item ->
+        val viewRenderer = ViewRenderer<Place> { view, item ->
             view.findViewById<TextView>(R.id.name_label).text = item.name
         }
 
