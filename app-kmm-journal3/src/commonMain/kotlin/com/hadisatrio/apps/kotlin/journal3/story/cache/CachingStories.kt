@@ -21,16 +21,10 @@ import com.hadisatrio.apps.kotlin.journal3.story.Stories
 import com.hadisatrio.apps.kotlin.journal3.story.Story
 
 class CachingStories(
-    private val stories: Iterable<Story>,
     private val origin: Stories
 ) : Stories by origin {
 
-    constructor(moments: Stories) : this(
-        moments.map(::CachingStory),
-        moments
-    )
-
     override fun iterator(): Iterator<Story> {
-        return stories.iterator()
+        return origin.asSequence().map { CachingStory(it) }.iterator()
     }
 }

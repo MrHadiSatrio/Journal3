@@ -22,7 +22,9 @@ import com.hadisatrio.apps.kotlin.journal3.story.Stories
 import com.hadisatrio.apps.kotlin.journal3.story.fake.FakeStories
 import com.hadisatrio.apps.kotlin.journal3.story.fake.FakeStory
 import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
+import io.mockk.every
 import io.mockk.mockk
+import io.mockk.slot
 import io.mockk.spyk
 import io.mockk.verify
 import kotlin.test.Test
@@ -34,16 +36,13 @@ class CachingStoriesPresenterTest {
         val story = spyk(FakeStory(uuid4(), mutableListOf()))
         val stories = FakeStories(story)
         val origin = mockk<Presenter<Stories>>(relaxed = true)
+        val presented = slot<Stories>()
+        every { origin.present(capture(presented)) } answers { nothing }
 
         CachingStoriesPresenter(origin = origin).present(stories)
 
-        verify {
-            origin.present(
-                withArg { cachedStories ->
-                    repeat(10) { cachedStories.first().title }
-                    verify(exactly = 1) { story.title }
-                }
-            )
-        }
+        val cached = presented.captured.first()
+        repeat(10) { cached.title }
+        verify(exactly = 1) { story.title }
     }
 }
