@@ -18,13 +18,29 @@
 package com.hadisatrio.libs.android.foundation.widget.recyclerview
 
 import android.view.ViewGroup
+import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.ListAdapter
+import java.util.concurrent.Executor
+import java.util.concurrent.Executors
 
 internal class Adapter<T : Any>(
     private val viewFactory: ViewFactory,
     private val viewRenderer: ViewRenderer<T>,
-    private val differ: ItemDiffer<T>
-) : ListAdapter<T, ViewHolder>(DiffCallback(differ)) {
+    private val config: AsyncDifferConfig<T>
+) : ListAdapter<T, ViewHolder>(config) {
+
+    constructor(
+        viewFactory: ViewFactory,
+        viewRenderer: ViewRenderer<T>,
+        differ: ItemDiffer<T>,
+        backgroundExecutor: Executor = Executors.newFixedThreadPool(2)
+    ) : this(
+        viewFactory,
+        viewRenderer,
+        AsyncDifferConfig.Builder(DiffCallback(differ))
+            .setBackgroundThreadExecutor(backgroundExecutor)
+            .build()
+    )
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(viewFactory.create(parent, viewType))
