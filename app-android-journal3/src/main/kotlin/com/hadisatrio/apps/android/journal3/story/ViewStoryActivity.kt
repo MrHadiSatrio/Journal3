@@ -45,8 +45,8 @@ import com.hadisatrio.libs.android.foundation.lifecycle.LifecycleTriggeredEventS
 import com.hadisatrio.libs.android.foundation.presentation.ExecutorDispatchingPresenter
 import com.hadisatrio.libs.android.foundation.widget.TextViewStringPresenter
 import com.hadisatrio.libs.android.foundation.widget.ViewClickEventSource
+import com.hadisatrio.libs.android.foundation.widget.recyclerview.ListViewPresenter
 import com.hadisatrio.libs.android.foundation.widget.recyclerview.RecyclerViewItemSelectionEventSource
-import com.hadisatrio.libs.android.foundation.widget.recyclerview.RecyclerViewPresenter
 import com.hadisatrio.libs.android.foundation.widget.recyclerview.ViewFactory
 import com.hadisatrio.libs.kotlin.foundation.UseCase
 import com.hadisatrio.libs.kotlin.foundation.event.CancellationEvent
@@ -87,12 +87,14 @@ class ViewStoryActivity : AppCompatActivity() {
             view
         }
         val momentsPresenter = AdaptingPresenter<Story, Iterable<Moment>>(
-            adapter = { story -> story.moments.toList() },
-            origin = RecyclerViewPresenter(
+            adapter = { story -> story.moments },
+            origin = ListViewPresenter(
                 recyclerView = findViewById(R.id.moments_list),
+                orientation = RecyclerView.VERTICAL,
                 viewFactory = momentsViewFactory,
                 viewRenderer = MomentCardViewRenderer,
-                differ = MomentItemDiffer
+                differ = MomentItemDiffer,
+                backgroundExecutor = journal3Application.backgroundExecutor
             )
         )
 

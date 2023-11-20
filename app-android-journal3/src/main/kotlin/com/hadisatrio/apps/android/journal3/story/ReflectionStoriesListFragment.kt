@@ -21,7 +21,6 @@ import android.content.res.Resources
 import android.view.LayoutInflater
 import android.widget.TextView
 import androidx.lifecycle.Lifecycle
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.badoo.reaktive.scheduler.computationScheduler
 import com.badoo.reaktive.scheduler.mainScheduler
@@ -41,7 +40,7 @@ import com.hadisatrio.libs.android.dimensions.GOLDEN_RATIO
 import com.hadisatrio.libs.android.dimensions.dp
 import com.hadisatrio.libs.android.foundation.lifecycle.LifecycleTriggeredEventSource
 import com.hadisatrio.libs.android.foundation.presentation.ExecutorDispatchingPresenter
-import com.hadisatrio.libs.android.foundation.widget.recyclerview.RecyclerViewPresenter
+import com.hadisatrio.libs.android.foundation.widget.recyclerview.ListViewPresenter
 import com.hadisatrio.libs.android.foundation.widget.recyclerview.ViewFactory
 import com.hadisatrio.libs.android.foundation.widget.recyclerview.ViewRenderer
 import com.hadisatrio.libs.kotlin.foundation.event.CancellationEvent
@@ -76,16 +75,13 @@ class ReflectionStoriesListFragment : StoriesListFragment() {
             val inflater = LayoutInflater.from(parent.context)
             val view = inflater.inflate(R.layout.view_story_carousel, parent, false)
             val carousel = view.findViewById<RecyclerView>(R.id.moments_carousel)
-            val carouselPresenter = RecyclerViewPresenter(
+            val carouselPresenter = ListViewPresenter(
                 recyclerView = carousel,
+                orientation = RecyclerView.HORIZONTAL,
                 viewFactory = subItemViewFactory,
                 viewRenderer = MomentCardViewRenderer,
-                layoutManager = LinearLayoutManager(
-                    parent.context,
-                    LinearLayoutManager.HORIZONTAL,
-                    false
-                ),
-                differ = MomentItemDiffer
+                differ = MomentItemDiffer,
+                backgroundExecutor = journal3Application.backgroundExecutor
             )
             carousel.addItemDecoration(SpacingItemDecoration(Spacing(horizontal = 8.dp)))
             view.setTag(R.id.presenter_view_tag, carouselPresenter)
@@ -106,12 +102,13 @@ class ReflectionStoriesListFragment : StoriesListFragment() {
                     origin = ExecutorDispatchingPresenter(
                         executor = journal3Application.foregroundExecutor,
                         origin = AdaptingPresenter(
-                            adapter = { stories -> stories.toList() },
-                            origin = RecyclerViewPresenter(
+                            adapter = { stories -> stories },
+                            origin = ListViewPresenter(
                                 recyclerView = storiesListView,
                                 viewFactory = itemViewFactory,
                                 viewRenderer = itemViewRenderer,
-                                differ = StoryItemDiffer
+                                differ = StoryItemDiffer,
+                                backgroundExecutor = journal3Application.backgroundExecutor
                             )
                         )
                     )

@@ -40,8 +40,8 @@ import com.hadisatrio.libs.android.foundation.presentation.ExecutorDispatchingPr
 import com.hadisatrio.libs.android.foundation.widget.BackButtonCancellationEventSource
 import com.hadisatrio.libs.android.foundation.widget.EditTextInputEventSource
 import com.hadisatrio.libs.android.foundation.widget.ViewClickEventSource
+import com.hadisatrio.libs.android.foundation.widget.recyclerview.ListViewPresenter
 import com.hadisatrio.libs.android.foundation.widget.recyclerview.RecyclerViewItemSelectionEventSource
-import com.hadisatrio.libs.android.foundation.widget.recyclerview.RecyclerViewPresenter
 import com.hadisatrio.libs.android.foundation.widget.recyclerview.ViewFactory
 import com.hadisatrio.libs.android.foundation.widget.recyclerview.ViewRenderer
 import com.hadisatrio.libs.kotlin.foundation.UseCase
@@ -53,7 +53,6 @@ import com.hadisatrio.libs.kotlin.foundation.event.EventSource
 import com.hadisatrio.libs.kotlin.foundation.event.EventSources
 import com.hadisatrio.libs.kotlin.foundation.event.SchedulingEventSource
 import com.hadisatrio.libs.kotlin.foundation.event.SelectionEvent
-import com.hadisatrio.libs.kotlin.foundation.presentation.AdaptingPresenter
 import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
 import com.hadisatrio.libs.kotlin.geography.Place
 
@@ -68,16 +67,14 @@ class SelectAPlaceActivity : AppCompatActivity() {
             view.findViewById<TextView>(R.id.name_label).text = item.name
         }
 
-        AdaptingPresenter(
-            adapter = { it.toList() },
-            origin = ExecutorDispatchingPresenter(
-                executor = journal3Application.foregroundExecutor,
-                origin = RecyclerViewPresenter(
-                    recyclerView = findViewById(R.id.places_list),
-                    viewFactory = viewFactory,
-                    viewRenderer = viewRenderer,
-                    differ = PlaceItemDiffer
-                )
+        ExecutorDispatchingPresenter(
+            executor = journal3Application.foregroundExecutor,
+            origin = ListViewPresenter(
+                recyclerView = findViewById(R.id.places_list),
+                viewFactory = viewFactory,
+                viewRenderer = viewRenderer,
+                differ = PlaceItemDiffer,
+                backgroundExecutor = journal3Application.backgroundExecutor
             )
         )
     }

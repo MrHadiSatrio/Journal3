@@ -29,8 +29,8 @@ import com.hadisatrio.apps.kotlin.journal3.story.Stories
 import com.hadisatrio.apps.kotlin.journal3.story.cache.CachingStoriesPresenter
 import com.hadisatrio.libs.android.foundation.lifecycle.LifecycleTriggeredEventSource
 import com.hadisatrio.libs.android.foundation.presentation.ExecutorDispatchingPresenter
+import com.hadisatrio.libs.android.foundation.widget.recyclerview.ListViewPresenter
 import com.hadisatrio.libs.android.foundation.widget.recyclerview.RecyclerViewItemSelectionEventSource
-import com.hadisatrio.libs.android.foundation.widget.recyclerview.RecyclerViewPresenter
 import com.hadisatrio.libs.kotlin.foundation.event.CancellationEvent
 import com.hadisatrio.libs.kotlin.foundation.event.EventSource
 import com.hadisatrio.libs.kotlin.foundation.event.EventSources
@@ -55,8 +55,8 @@ class UserStoriesListFragment : StoriesListFragment() {
                     origin = ExecutorDispatchingPresenter(
                         executor = journal3Application.foregroundExecutor,
                         origin = AdaptingPresenter(
-                            adapter = { stories -> stories.toList() },
-                            origin = RecyclerViewPresenter(
+                            adapter = { stories -> stories },
+                            origin = ListViewPresenter(
                                 recyclerView = storiesListView,
                                 viewFactory = { parent, _ ->
                                     LayoutInflater.from(parent.context)
@@ -67,7 +67,8 @@ class UserStoriesListFragment : StoriesListFragment() {
                                     view.findViewById<TextView>(R.id.synopsis_label).text =
                                         item.synopsis.toString()
                                 },
-                                differ = StoryItemDiffer
+                                differ = StoryItemDiffer,
+                                backgroundExecutor = journal3Application.backgroundExecutor
                             )
                         )
                     )
