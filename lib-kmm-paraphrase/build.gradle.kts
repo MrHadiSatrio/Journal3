@@ -48,23 +48,24 @@ android {
     }
 }
 
-kover {
+koverReport {
     filters {
-        classes {
-            excludes += listOf("*Fake*", "*Test")
+        excludes {
+            classes("*Fake*", "*Test")
         }
     }
-    verify {
-        onCheck.set(true)
-        rule {
-            isEnabled = true
-            name = "Branch coverage must exceed 90%"
-            target = kotlinx.kover.api.VerificationTarget.ALL
+    defaults {
+        verify {
+            onCheck = true
+            rule("Branch coverage must exceed 90%") {
+                isEnabled = true
+                entity = kotlinx.kover.gradle.plugin.dsl.GroupingEntityType.APPLICATION
 
-            bound {
-                minValue = 90
-                counter = kotlinx.kover.api.CounterType.BRANCH
-                valueType = kotlinx.kover.api.VerificationValueType.COVERED_PERCENTAGE
+                bound {
+                    minValue = 90
+                    metric = kotlinx.kover.gradle.plugin.dsl.MetricType.BRANCH
+                    aggregation = kotlinx.kover.gradle.plugin.dsl.AggregationType.COVERED_PERCENTAGE
+                }
             }
         }
     }
