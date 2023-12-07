@@ -1,7 +1,7 @@
 plugins {
     id("scripts.infrastructure")
     id("org.jetbrains.kotlinx.kover").version("0.7.4")
-    id("io.gitlab.arturbosch.detekt").version("1.23.3")
+    id("io.gitlab.arturbosch.detekt").version("1.23.4")
     id("org.sonarqube").version("4.0.0.2929")
 }
 
