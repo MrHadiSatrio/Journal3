@@ -21,7 +21,6 @@ import android.content.res.Resources
 import android.view.LayoutInflater
 import android.widget.TextView
 import androidx.lifecycle.Lifecycle
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.badoo.reaktive.scheduler.computationScheduler
 import com.badoo.reaktive.scheduler.mainScheduler
@@ -41,12 +40,15 @@ import com.hadisatrio.libs.android.dimensions.GOLDEN_RATIO
 import com.hadisatrio.libs.android.dimensions.dp
 import com.hadisatrio.libs.android.foundation.lifecycle.LifecycleTriggeredEventSource
 import com.hadisatrio.libs.android.foundation.presentation.ExecutorDispatchingPresenter
-import com.hadisatrio.libs.android.foundation.widget.RecyclerViewPresenter
+import com.hadisatrio.libs.android.foundation.widget.recyclerview.ListViewPresenter
+import com.hadisatrio.libs.android.foundation.widget.recyclerview.ViewFactory
+import com.hadisatrio.libs.android.foundation.widget.recyclerview.ViewRenderer
 import com.hadisatrio.libs.kotlin.foundation.event.CancellationEvent
 import com.hadisatrio.libs.kotlin.foundation.event.EventSource
 import com.hadisatrio.libs.kotlin.foundation.event.EventSources
 import com.hadisatrio.libs.kotlin.foundation.event.SchedulingEventSource
 import com.hadisatrio.libs.kotlin.foundation.presentation.AdaptingPresenter
+import com.hadisatrio.libs.kotlin.foundation.presentation.PerfTrackingPresenter
 import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
 import kotlin.math.roundToInt
 
@@ -57,32 +59,35 @@ class ReflectionStoriesListFragment : StoriesListFragment() {
     }
 
     override val presenter: Presenter<Stories> by lazy {
-        val subItemViewFactory = RecyclerViewPresenter.ViewFactory { parent, _ ->
+        val subItemViewFactory = ViewFactory { parent, _ ->
             val inflater = LayoutInflater.from(parent.context)
             val view = inflater.inflate(R.layout.view_moment_vert_card, parent, false)
-            val width = (Resources.getSystem().displayMetrics.widthPixels / GOLDEN_RATIO).roundToInt()
+            val width =
+                (Resources.getSystem().displayMetrics.widthPixels / GOLDEN_RATIO).roundToInt()
             val height = (width * GOLDEN_RATIO).roundToInt()
-            val sentimentPresenter = TextViewColorSentimentPresenter(view.findViewById(R.id.sentiment_indicator))
+            val sentimentPresenter =
+                TextViewColorSentimentPresenter(view.findViewById(R.id.sentiment_indicator))
             view.layoutParams = RecyclerView.LayoutParams(width, height)
             view.setTag(R.id.presenter_view_tag, sentimentPresenter)
             view
         }
-        val itemViewFactory = RecyclerViewPresenter.ViewFactory { parent, _ ->
+        val itemViewFactory = ViewFactory { parent, _ ->
             val inflater = LayoutInflater.from(parent.context)
             val view = inflater.inflate(R.layout.view_story_carousel, parent, false)
             val carousel = view.findViewById<RecyclerView>(R.id.moments_carousel)
-            val carouselPresenter = RecyclerViewPresenter(
+            val carouselPresenter = ListViewPresenter(
                 recyclerView = carousel,
+                orientation = RecyclerView.HORIZONTAL,
                 viewFactory = subItemViewFactory,
                 viewRenderer = MomentCardViewRenderer,
-                layoutManager = LinearLayoutManager(parent.context, LinearLayoutManager.HORIZONTAL, false),
-                differ = MomentItemDiffer
+                differ = MomentItemDiffer,
+                backgroundExecutor = journal3Application.backgroundExecutor
             )
             carousel.addItemDecoration(SpacingItemDecoration(Spacing(horizontal = 8.dp)))
             view.setTag(R.id.presenter_view_tag, carouselPresenter)
             view
         }
-        val itemViewRenderer = RecyclerViewPresenter.ViewRenderer<Story> { view, item ->
+        val itemViewRenderer = ViewRenderer<Story> { view, item ->
             view.findViewById<TextView>(R.id.title_label).text = item.title
             view.findViewById<TextView>(R.id.synopsis_label).text = item.synopsis.toString()
             (view.getTag(R.id.presenter_view_tag) as Presenter<Iterable<Moment>>).present(item.moments)
@@ -90,16 +95,21 @@ class ReflectionStoriesListFragment : StoriesListFragment() {
 
         ExecutorDispatchingPresenter(
             executor = journal3Application.backgroundExecutor,
-            origin = CachingStoriesPresenter(
-                origin = ExecutorDispatchingPresenter(
-                    executor = journal3Application.foregroundExecutor,
-                    origin = AdaptingPresenter(
-                        adapter = { stories -> stories.toList() },
-                        origin = RecyclerViewPresenter(
-                            recyclerView = storiesListView,
-                            viewFactory = itemViewFactory,
-                            viewRenderer = itemViewRenderer,
-                            differ = StoryItemDiffer
+            origin = PerfTrackingPresenter(
+                clock = journal3Application.clock,
+                eventSink = journal3Application.globalEventSink,
+                origin = CachingStoriesPresenter(
+                    origin = ExecutorDispatchingPresenter(
+                        executor = journal3Application.foregroundExecutor,
+                        origin = AdaptingPresenter(
+                            adapter = { stories -> stories },
+                            origin = ListViewPresenter(
+                                recyclerView = storiesListView,
+                                viewFactory = itemViewFactory,
+                                viewRenderer = itemViewRenderer,
+                                differ = StoryItemDiffer,
+                                backgroundExecutor = journal3Application.backgroundExecutor
+                            )
                         )
                     )
                 )

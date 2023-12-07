@@ -22,14 +22,13 @@ import com.badoo.reaktive.subject.publish.PublishSubject
 import com.badoo.reaktive.test.scheduler.TestScheduler
 import io.kotest.matchers.collections.shouldHaveSize
 import kotlin.test.Test
-import kotlin.time.Duration
 
 class EventHubTest {
 
     @Test
     fun `Forwards sunk events to the collector`() {
         val eventsToBeSunk = arrayOf(
-            PerfSensitiveEvent(Duration.ZERO, TextInputEvent("Foo", "Bar")),
+            PerfSensitiveEvent("Foo"),
             SelectionEvent("Foo", "Bar"),
             CancellationEvent("system")
         )

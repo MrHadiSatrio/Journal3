@@ -49,10 +49,10 @@ import com.hadisatrio.libs.android.foundation.widget.BackButtonCancellationEvent
 import com.hadisatrio.libs.android.foundation.widget.EditTextInputEventSource
 import com.hadisatrio.libs.android.foundation.widget.PhotoCaptureEventSource
 import com.hadisatrio.libs.android.foundation.widget.PhotoSelectionEventSource
-import com.hadisatrio.libs.android.foundation.widget.RecyclerViewPresenter
 import com.hadisatrio.libs.android.foundation.widget.SwitchSelectionEventSource
 import com.hadisatrio.libs.android.foundation.widget.TextViewStringPresenter
 import com.hadisatrio.libs.android.foundation.widget.ViewClickEventSource
+import com.hadisatrio.libs.android.foundation.widget.recyclerview.RecyclerViewPresenter
 import com.hadisatrio.libs.android.io.uri.toAndroidUri
 import com.hadisatrio.libs.kotlin.foundation.UseCase
 import com.hadisatrio.libs.kotlin.foundation.event.CancellationEvent

@@ -15,16 +15,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.hadisatrio.apps.kotlin.journal3.story.cache
+package com.hadisatrio.libs.android.foundation.widget.recyclerview
 
-import com.hadisatrio.apps.kotlin.journal3.story.Stories
-import com.hadisatrio.apps.kotlin.journal3.story.Story
+import androidx.recyclerview.widget.DiffUtil
 
-class CachingStories(
-    private val origin: Stories
-) : Stories by origin {
+internal class DiffCallback<T : Any>(private val differ: ItemDiffer<T>) : DiffUtil.ItemCallback<T>() {
 
-    override fun iterator(): Iterator<Story> {
-        return origin.asSequence().map { CachingStory(it) }.iterator()
+    override fun areItemsTheSame(oldItem: T, newItem: T): Boolean {
+        return differ.areItemsTheSame(oldItem, newItem)
+    }
+
+    override fun areContentsTheSame(oldItem: T, newItem: T): Boolean {
+        return differ.areContentsTheSame(oldItem, newItem)
     }
 }

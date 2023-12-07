@@ -15,16 +15,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.hadisatrio.apps.kotlin.journal3.story.cache
+package com.hadisatrio.libs.android.foundation.widget.recyclerview
 
-import com.hadisatrio.apps.kotlin.journal3.story.Stories
-import com.hadisatrio.apps.kotlin.journal3.story.Story
+import android.view.View
+import android.view.ViewGroup
 
-class CachingStories(
-    private val origin: Stories
-) : Stories by origin {
-
-    override fun iterator(): Iterator<Story> {
-        return origin.asSequence().map { CachingStory(it) }.iterator()
-    }
+fun interface ViewFactory {
+    fun create(parent: ViewGroup, viewType: Int): View
 }

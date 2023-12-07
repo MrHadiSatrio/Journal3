@@ -20,17 +20,18 @@ package com.hadisatrio.apps.kotlin.journal3.moment.cache
 import com.hadisatrio.apps.kotlin.journal3.moment.Moment
 import com.hadisatrio.apps.kotlin.journal3.moment.Moments
 
-class CachingMoments(
-    private val moments: Iterable<Moment>,
+class CachingMoments private constructor(
+    private val count: Int,
     private val origin: Moments
 ) : Moments by origin {
 
-    constructor(moments: Moments) : this(
-        moments.map(::CachingMoment),
-        moments
-    )
+    constructor(origin: Moments) : this(origin.count(), origin)
+
+    override fun count(): Int {
+        return count
+    }
 
     override fun iterator(): Iterator<Moment> {
-        return moments.iterator()
+        return origin.asSequence().map { CachingMoment(it) }.iterator()
     }
 }

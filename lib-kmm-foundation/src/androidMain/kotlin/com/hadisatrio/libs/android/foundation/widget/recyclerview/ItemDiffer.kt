@@ -15,16 +15,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.hadisatrio.apps.kotlin.journal3.story.cache
+package com.hadisatrio.libs.android.foundation.widget.recyclerview
 
-import com.hadisatrio.apps.kotlin.journal3.story.Stories
-import com.hadisatrio.apps.kotlin.journal3.story.Story
-
-class CachingStories(
-    private val origin: Stories
-) : Stories by origin {
-
-    override fun iterator(): Iterator<Story> {
-        return origin.asSequence().map { CachingStory(it) }.iterator()
-    }
+interface ItemDiffer<T> {
+    fun areItemsTheSame(oldItem: T, newItem: T): Boolean
+    fun areContentsTheSame(oldItem: T, newItem: T): Boolean
 }

@@ -18,24 +18,23 @@
 package com.hadisatrio.libs.kotlin.foundation.event
 
 import io.kotest.matchers.maps.shouldContain
+import io.mockk.every
+import io.mockk.mockk
+import kotlinx.datetime.Clock
+import kotlinx.datetime.Instant
 import kotlin.test.Test
-import kotlin.time.Duration
 
 class PerfSensitiveEventTest {
 
     @Test
     fun `Describes itself`() {
-        val origin = TextInputEvent("Foo", "Bar")
+        val clock = mockk<Clock>()
+        every { clock.now() } returns Instant.fromEpochMilliseconds(1)
 
-        val event = PerfSensitiveEvent(
-            origin = origin,
-            duration = Duration.parse("1s")
-        )
+        val event = PerfSensitiveEvent("Foo", clock)
         val description = event.describe()
 
-        description.shouldContain("name" to "Text Input Event")
-        description.shouldContain("duration" to "1000")
-        description.shouldContain("input_kind" to "Foo")
-        description.shouldContain("input_value" to "Bar")
+        description.shouldContain("tag" to "Foo")
+        description.shouldContain("epoch_time" to "1")
     }
 }

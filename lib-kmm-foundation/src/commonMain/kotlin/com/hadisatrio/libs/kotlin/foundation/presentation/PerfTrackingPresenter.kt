@@ -15,16 +15,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.hadisatrio.apps.kotlin.journal3.story.cache
+package com.hadisatrio.libs.kotlin.foundation.presentation
 
-import com.hadisatrio.apps.kotlin.journal3.story.Stories
-import com.hadisatrio.apps.kotlin.journal3.story.Story
+import com.hadisatrio.libs.kotlin.foundation.event.EventSink
+import com.hadisatrio.libs.kotlin.foundation.event.PerfSensitiveEvent
+import kotlinx.datetime.Clock
 
-class CachingStories(
-    private val origin: Stories
-) : Stories by origin {
+class PerfTrackingPresenter<T>(
+    private val clock: Clock,
+    private val eventSink: EventSink,
+    private val origin: Presenter<T>
+) : Presenter<T> {
 
-    override fun iterator(): Iterator<Story> {
-        return origin.asSequence().map { CachingStory(it) }.iterator()
+    override fun present(thing: T) {
+        val event = PerfSensitiveEvent("${origin::class.simpleName}#present()", clock)
+        origin.present(thing)
+        eventSink.sink(event.end())
     }
 }

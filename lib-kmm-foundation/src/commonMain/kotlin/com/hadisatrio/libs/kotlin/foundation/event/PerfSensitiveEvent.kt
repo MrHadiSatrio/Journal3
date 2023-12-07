@@ -17,14 +17,33 @@
 
 package com.hadisatrio.libs.kotlin.foundation.event
 
+import kotlinx.datetime.Clock
+import kotlinx.datetime.Instant
 import kotlin.time.Duration
 
 class PerfSensitiveEvent internal constructor(
-    private val duration: Duration,
-    private val origin: Event
+    private val tag: String,
+    private val clock: Clock = Clock.System,
+    private val start: PerfSensitiveEvent? = null,
 ) : Event() {
 
+    private val time: Instant = clock.now()
+    private val duration: Duration? = start?.let { time - it.time }
+
     override fun describeInternally(): Map<String, String> {
-        return origin.describe().plus("duration" to duration.inWholeMilliseconds.toString())
+        val description = mapOf(
+            "tag" to tag,
+            "epoch_time" to time.toEpochMilliseconds().toString()
+        )
+
+        return if (duration == null) {
+            description
+        } else {
+            description.plus("duration" to duration.inWholeMilliseconds.toString())
+        }
+    }
+
+    internal fun end(): PerfSensitiveEvent {
+        return PerfSensitiveEvent(tag, clock, this)
     }
 }

@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.hadisatrio.libs.android.foundation.widget
+package com.hadisatrio.libs.android.foundation.widget.recyclerview
 
 import android.view.MotionEvent
 import androidx.recyclerview.widget.RecyclerView

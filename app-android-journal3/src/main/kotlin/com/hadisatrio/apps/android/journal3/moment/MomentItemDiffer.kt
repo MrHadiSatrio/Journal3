@@ -18,9 +18,9 @@
 package com.hadisatrio.apps.android.journal3.moment
 
 import com.hadisatrio.apps.kotlin.journal3.moment.Moment
-import com.hadisatrio.libs.android.foundation.widget.RecyclerViewPresenter
+import com.hadisatrio.libs.android.foundation.widget.recyclerview.ItemDiffer
 
-object MomentItemDiffer : RecyclerViewPresenter.ItemDiffer<Moment> {
+object MomentItemDiffer : ItemDiffer<Moment> {
 
     override fun areItemsTheSame(oldItem: Moment, newItem: Moment): Boolean {
         return oldItem.id == newItem.id

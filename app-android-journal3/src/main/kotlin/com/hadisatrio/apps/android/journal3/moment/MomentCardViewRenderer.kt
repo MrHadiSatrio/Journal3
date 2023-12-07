@@ -23,10 +23,10 @@ import com.hadisatrio.apps.android.journal3.R
 import com.hadisatrio.apps.android.journal3.journal3Application
 import com.hadisatrio.apps.kotlin.journal3.moment.Moment
 import com.hadisatrio.apps.kotlin.journal3.sentiment.Sentiment
-import com.hadisatrio.libs.android.foundation.widget.RecyclerViewPresenter
+import com.hadisatrio.libs.android.foundation.widget.recyclerview.ViewRenderer
 import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
 
-object MomentCardViewRenderer : RecyclerViewPresenter.ViewRenderer<Moment> {
+object MomentCardViewRenderer : ViewRenderer<Moment> {
     override fun render(view: View, item: Moment) {
         val timestamp = view.journal3Application.timestampDecor.apply(item.timestamp).toString()
         val attachments = "${item.attachments.count()} attachment(s)"

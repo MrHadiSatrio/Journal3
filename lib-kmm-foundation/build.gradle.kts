@@ -18,6 +18,7 @@ kotlin {
             dependencies {
                 api(Dependencies.Commons.UUID)
                 api(Dependencies.Asynchrony.REACTIVE_EXTENSIONS)
+                implementation(Dependencies.Commons.DATETIME)
                 implementation(Dependencies.Asynchrony.REACTIVE_EXTENSIONS_COROUTINE_INTEROP)
             }
         }

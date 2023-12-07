@@ -17,10 +17,10 @@
 
 package com.hadisatrio.apps.android.journal3.geography
 
-import com.hadisatrio.libs.android.foundation.widget.RecyclerViewPresenter
+import com.hadisatrio.libs.android.foundation.widget.recyclerview.ItemDiffer
 import com.hadisatrio.libs.kotlin.geography.Place
 
-object PlaceItemDiffer : RecyclerViewPresenter.ItemDiffer<Place> {
+object PlaceItemDiffer : ItemDiffer<Place> {
 
     override fun areItemsTheSame(oldItem: Place, newItem: Place): Boolean {
         return oldItem.id == newItem.id

@@ -39,9 +39,11 @@ import com.hadisatrio.libs.android.foundation.lifecycle.LifecycleTriggeredEventS
 import com.hadisatrio.libs.android.foundation.presentation.ExecutorDispatchingPresenter
 import com.hadisatrio.libs.android.foundation.widget.BackButtonCancellationEventSource
 import com.hadisatrio.libs.android.foundation.widget.EditTextInputEventSource
-import com.hadisatrio.libs.android.foundation.widget.RecyclerViewItemSelectionEventSource
-import com.hadisatrio.libs.android.foundation.widget.RecyclerViewPresenter
 import com.hadisatrio.libs.android.foundation.widget.ViewClickEventSource
+import com.hadisatrio.libs.android.foundation.widget.recyclerview.ListViewPresenter
+import com.hadisatrio.libs.android.foundation.widget.recyclerview.RecyclerViewItemSelectionEventSource
+import com.hadisatrio.libs.android.foundation.widget.recyclerview.ViewFactory
+import com.hadisatrio.libs.android.foundation.widget.recyclerview.ViewRenderer
 import com.hadisatrio.libs.kotlin.foundation.UseCase
 import com.hadisatrio.libs.kotlin.foundation.event.CancellationEvent
 import com.hadisatrio.libs.kotlin.foundation.event.DebouncingEventSource
@@ -51,31 +53,28 @@ import com.hadisatrio.libs.kotlin.foundation.event.EventSource
 import com.hadisatrio.libs.kotlin.foundation.event.EventSources
 import com.hadisatrio.libs.kotlin.foundation.event.SchedulingEventSource
 import com.hadisatrio.libs.kotlin.foundation.event.SelectionEvent
-import com.hadisatrio.libs.kotlin.foundation.presentation.AdaptingPresenter
 import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
 import com.hadisatrio.libs.kotlin.geography.Place
 
 class SelectAPlaceActivity : AppCompatActivity() {
 
     private val presenter: Presenter<Iterable<Place>> by lazy {
-        val viewFactory = RecyclerViewPresenter.ViewFactory { parent, _ ->
+        val viewFactory = ViewFactory { parent, _ ->
             LayoutInflater.from(parent.context)
                 .inflate(R.layout.view_place_snippet_card, parent, false)
         }
-        val viewRenderer = RecyclerViewPresenter.ViewRenderer<Place> { view, item ->
+        val viewRenderer = ViewRenderer<Place> { view, item ->
             view.findViewById<TextView>(R.id.name_label).text = item.name
         }
 
-        AdaptingPresenter(
-            adapter = { it.toList() },
-            origin = ExecutorDispatchingPresenter(
-                executor = journal3Application.foregroundExecutor,
-                origin = RecyclerViewPresenter(
-                    recyclerView = findViewById(R.id.places_list),
-                    viewFactory = viewFactory,
-                    viewRenderer = viewRenderer,
-                    differ = PlaceItemDiffer
-                )
+        ExecutorDispatchingPresenter(
+            executor = journal3Application.foregroundExecutor,
+            origin = ListViewPresenter(
+                recyclerView = findViewById(R.id.places_list),
+                viewFactory = viewFactory,
+                viewRenderer = viewRenderer,
+                differ = PlaceItemDiffer,
+                backgroundExecutor = journal3Application.backgroundExecutor
             )
         )
     }

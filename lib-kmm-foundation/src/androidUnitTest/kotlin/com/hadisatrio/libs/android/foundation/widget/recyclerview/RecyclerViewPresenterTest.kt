@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.hadisatrio.libs.android.foundation.widget
+package com.hadisatrio.libs.android.foundation.widget.recyclerview
 
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.runner.AndroidJUnit4
