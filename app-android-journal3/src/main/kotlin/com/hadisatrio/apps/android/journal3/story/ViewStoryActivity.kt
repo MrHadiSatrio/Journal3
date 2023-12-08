@@ -53,7 +53,6 @@ import com.hadisatrio.libs.kotlin.foundation.event.EventSource
 import com.hadisatrio.libs.kotlin.foundation.event.EventSources
 import com.hadisatrio.libs.kotlin.foundation.event.SelectionEvent
 import com.hadisatrio.libs.kotlin.foundation.presentation.AdaptingPresenter
-import com.hadisatrio.libs.kotlin.foundation.presentation.PerfTrackingPresenter
 import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
 import com.hadisatrio.libs.kotlin.foundation.presentation.Presenters
 
@@ -94,15 +93,15 @@ class ViewStoryActivity : AppCompatActivity() {
             )
         )
 
-        ExecutorDispatchingPresenter(
-            executor = journal3Application.backgroundExecutor,
-            origin = PerfTrackingPresenter(
-                clock = journal3Application.clock,
-                eventSink = eventSink,
-                origin = CachingStoryPresenter(
-                    origin = ExecutorDispatchingPresenter(
-                        executor = journal3Application.foregroundExecutor,
-                        origin = Presenters(titlePresenter, synopsisPresenter, attachmentPresenter, momentsPresenter)
+        journal3Application.presenterDecor<Story>().apply(
+            CachingStoryPresenter(
+                origin = ExecutorDispatchingPresenter(
+                    executor = journal3Application.foregroundExecutor,
+                    origin = Presenters(
+                        titlePresenter,
+                        synopsisPresenter,
+                        attachmentPresenter,
+                        momentsPresenter
                     )
                 )
             )

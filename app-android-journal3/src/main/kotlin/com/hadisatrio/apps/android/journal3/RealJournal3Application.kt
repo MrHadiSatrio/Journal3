@@ -63,6 +63,7 @@ import com.hadisatrio.libs.kotlin.foundation.event.EventSinks
 import com.hadisatrio.libs.kotlin.foundation.event.EventSource
 import com.hadisatrio.libs.kotlin.foundation.event.SchedulingEventSource
 import com.hadisatrio.libs.kotlin.foundation.modal.Modal
+import com.hadisatrio.libs.kotlin.foundation.presentation.PerfTrackingPresenter
 import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
 import com.hadisatrio.libs.kotlin.geography.Places
 import com.hadisatrio.libs.kotlin.geography.here.HereNearbyPlaces
@@ -217,6 +218,15 @@ class RealJournal3Application : Journal3Application() {
 
     override val eventSourceDecor: Decor<EventSource> by lazy {
         Decor { SchedulingEventSource(mainScheduler, computationScheduler, it) }
+    }
+
+    override fun <T> presenterDecor(): Decor<Presenter<T>> {
+        return Decor {
+            ExecutorDispatchingPresenter(
+                journal3Application.backgroundExecutor,
+                PerfTrackingPresenter(clock, globalEventSink, it)
+            )
+        }
     }
 
     override val inactivityAlertThreshold: Duration by lazy {

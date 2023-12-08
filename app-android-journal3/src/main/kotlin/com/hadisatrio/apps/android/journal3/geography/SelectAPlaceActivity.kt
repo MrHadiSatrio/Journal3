@@ -63,14 +63,16 @@ class SelectAPlaceActivity : AppCompatActivity() {
             view.findViewById<TextView>(R.id.name_label).text = item.name
         }
 
-        ExecutorDispatchingPresenter(
-            executor = journal3Application.foregroundExecutor,
-            origin = ListViewPresenter(
-                recyclerView = findViewById(R.id.places_list),
-                viewFactory = viewFactory,
-                viewRenderer = viewRenderer,
-                differ = PlaceItemDiffer,
-                backgroundExecutor = journal3Application.backgroundExecutor
+        journal3Application.presenterDecor<Iterable<Place>>().apply(
+            ExecutorDispatchingPresenter(
+                executor = journal3Application.foregroundExecutor,
+                origin = ListViewPresenter(
+                    recyclerView = findViewById(R.id.places_list),
+                    viewFactory = viewFactory,
+                    viewRenderer = viewRenderer,
+                    differ = PlaceItemDiffer,
+                    backgroundExecutor = journal3Application.backgroundExecutor
+                )
             )
         )
     }

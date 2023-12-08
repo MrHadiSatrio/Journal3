@@ -69,42 +69,44 @@ class EditAMomentActivity : AppCompatActivity() {
     }
 
     private val presenter: Presenter<Moment> by lazy {
-        ExecutorDispatchingPresenter(
-            executor = journal3Application.foregroundExecutor,
-            origin = Presenters(
-                AdaptingPresenter(
-                    origin = TimestampSelectorButtonPresenter(findViewById(R.id.timestamp_selector_button)),
-                    adapter = { moment -> moment.timestamp }
-                ),
-                AdaptingPresenter(
-                    origin = TextViewStringPresenter(findViewById(R.id.place_selector_button)),
-                    adapter = { moment -> moment.place.name }
-                ),
-                AdaptingPresenter(
-                    origin = TextViewStringPresenter(findViewById(R.id.description_text_field)),
-                    adapter = { moment -> moment.description.toString() }
-                ),
-                AdaptingPresenter(
-                    origin = SliderFloatPresenter(findViewById(R.id.sentiment_slider)),
-                    adapter = { moment -> moment.sentiment.value }
-                ),
-                AdaptingPresenter(
-                    origin = RecyclerViewPresenter(
-                        recyclerView = photoGrid,
-                        layoutManager = GridLayoutManager(this, PHOTO_GRID_SPAN_COUNT),
-                        viewFactory = { parent, _ ->
-                            ImageView(parent.context).apply {
-                                layoutParams = RecyclerView.LayoutParams(
-                                    photoGrid.measuredHeight,
-                                    photoGrid.measuredHeight
-                                )
-                            }
-                        },
-                        viewRenderer = { view, item ->
-                            Glide.with(view).load(item.toAndroidUri()).centerCrop().into(view as ImageView)
-                        }
+        journal3Application.presenterDecor<Moment>().apply(
+            ExecutorDispatchingPresenter(
+                executor = journal3Application.foregroundExecutor,
+                origin = Presenters(
+                    AdaptingPresenter(
+                        origin = TimestampSelectorButtonPresenter(findViewById(R.id.timestamp_selector_button)),
+                        adapter = { moment -> moment.timestamp }
                     ),
-                    adapter = { moment -> moment.attachments }
+                    AdaptingPresenter(
+                        origin = TextViewStringPresenter(findViewById(R.id.place_selector_button)),
+                        adapter = { moment -> moment.place.name }
+                    ),
+                    AdaptingPresenter(
+                        origin = TextViewStringPresenter(findViewById(R.id.description_text_field)),
+                        adapter = { moment -> moment.description.toString() }
+                    ),
+                    AdaptingPresenter(
+                        origin = SliderFloatPresenter(findViewById(R.id.sentiment_slider)),
+                        adapter = { moment -> moment.sentiment.value }
+                    ),
+                    AdaptingPresenter(
+                        origin = RecyclerViewPresenter(
+                            recyclerView = photoGrid,
+                            layoutManager = GridLayoutManager(this, PHOTO_GRID_SPAN_COUNT),
+                            viewFactory = { parent, _ ->
+                                ImageView(parent.context).apply {
+                                    layoutParams = RecyclerView.LayoutParams(
+                                        photoGrid.measuredHeight,
+                                        photoGrid.measuredHeight
+                                    )
+                                }
+                            },
+                            viewRenderer = { view, item ->
+                                Glide.with(view).load(item.toAndroidUri()).centerCrop().into(view as ImageView)
+                            }
+                        ),
+                        adapter = { moment -> moment.attachments }
+                    )
                 )
             )
         )

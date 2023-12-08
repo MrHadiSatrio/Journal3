@@ -49,16 +49,18 @@ import com.hadisatrio.libs.kotlin.foundation.presentation.Presenters
 class EditAStoryActivity : AppCompatActivity() {
 
     private val presenter: Presenter<Story> by lazy {
-        ExecutorDispatchingPresenter(
-            executor = journal3Application.foregroundExecutor,
-            origin = Presenters(
-                AdaptingPresenter(
-                    origin = TextViewStringPresenter(findViewById(R.id.title_text_field)),
-                    adapter = StoryStringAdapter("title")
-                ),
-                AdaptingPresenter(
-                    origin = TextViewStringPresenter(findViewById(R.id.synopsis_text_field)),
-                    adapter = StoryStringAdapter("synopsis")
+        journal3Application.presenterDecor<Story>().apply(
+            ExecutorDispatchingPresenter(
+                executor = journal3Application.foregroundExecutor,
+                origin = Presenters(
+                    AdaptingPresenter(
+                        origin = TextViewStringPresenter(findViewById(R.id.title_text_field)),
+                        adapter = StoryStringAdapter("title")
+                    ),
+                    AdaptingPresenter(
+                        origin = TextViewStringPresenter(findViewById(R.id.synopsis_text_field)),
+                        adapter = StoryStringAdapter("synopsis")
+                    )
                 )
             )
         )

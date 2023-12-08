@@ -45,7 +45,6 @@ import com.hadisatrio.libs.kotlin.foundation.event.CancellationEvent
 import com.hadisatrio.libs.kotlin.foundation.event.EventSource
 import com.hadisatrio.libs.kotlin.foundation.event.EventSources
 import com.hadisatrio.libs.kotlin.foundation.presentation.AdaptingPresenter
-import com.hadisatrio.libs.kotlin.foundation.presentation.PerfTrackingPresenter
 import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
 import kotlin.math.roundToInt
 
@@ -90,23 +89,18 @@ class ReflectionStoriesListFragment : StoriesListFragment() {
             (view.getTag(R.id.presenter_view_tag) as Presenter<Iterable<Moment>>).present(item.moments)
         }
 
-        ExecutorDispatchingPresenter(
-            executor = journal3Application.backgroundExecutor,
-            origin = PerfTrackingPresenter(
-                clock = journal3Application.clock,
-                eventSink = journal3Application.globalEventSink,
-                origin = CachingStoriesPresenter(
-                    origin = ExecutorDispatchingPresenter(
-                        executor = journal3Application.foregroundExecutor,
-                        origin = AdaptingPresenter(
-                            adapter = { stories -> stories },
-                            origin = ListViewPresenter(
-                                recyclerView = storiesListView,
-                                viewFactory = itemViewFactory,
-                                viewRenderer = itemViewRenderer,
-                                differ = StoryItemDiffer,
-                                backgroundExecutor = journal3Application.backgroundExecutor
-                            )
+        journal3Application.presenterDecor<Stories>().apply(
+            CachingStoriesPresenter(
+                origin = ExecutorDispatchingPresenter(
+                    executor = journal3Application.foregroundExecutor,
+                    origin = AdaptingPresenter(
+                        adapter = { stories -> stories },
+                        origin = ListViewPresenter(
+                            recyclerView = storiesListView,
+                            viewFactory = itemViewFactory,
+                            viewRenderer = itemViewRenderer,
+                            differ = StoryItemDiffer,
+                            backgroundExecutor = journal3Application.backgroundExecutor
                         )
                     )
                 )

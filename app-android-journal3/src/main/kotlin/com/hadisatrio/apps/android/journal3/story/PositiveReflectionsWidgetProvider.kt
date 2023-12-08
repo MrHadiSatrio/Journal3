@@ -79,7 +79,9 @@ class PositiveReflectionsWidgetProvider : AppWidgetProvider() {
                         )
                     )
                 },
-                presenter = Presenter(application, widgetId, widgetManager, views),
+                presenter = application.presenterDecor<Stories>().apply(
+                    Presenter(application, widgetId, widgetManager, views)
+                ),
                 eventSource = application.eventSourceDecor.apply(NoOpEventSource),
                 eventSink = application.globalEventSink
             )

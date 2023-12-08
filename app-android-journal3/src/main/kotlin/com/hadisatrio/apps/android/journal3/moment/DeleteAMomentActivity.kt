@@ -25,6 +25,7 @@ import com.hadisatrio.apps.kotlin.journal3.moment.DeleteMomentUseCase
 import com.hadisatrio.libs.android.foundation.activity.ActivityCompletionEventSink
 import com.hadisatrio.libs.android.foundation.presentation.ExecutorDispatchingPresenter
 import com.hadisatrio.libs.kotlin.foundation.event.EventSinks
+import com.hadisatrio.libs.kotlin.foundation.modal.Modal
 
 class DeleteAMomentActivity : AppCompatActivity() {
 
@@ -35,9 +36,11 @@ class DeleteAMomentActivity : AppCompatActivity() {
             DeleteMomentUseCase(
                 momentId = uuidFrom(intent.getStringExtra("target_id")!!),
                 stories = journal3Application.stories,
-                presenter = ExecutorDispatchingPresenter(
-                    executor = journal3Application.foregroundExecutor,
-                    origin = journal3Application.modalPresenter
+                presenter = journal3Application.presenterDecor<Modal>().apply(
+                    ExecutorDispatchingPresenter(
+                        executor = journal3Application.foregroundExecutor,
+                        origin = journal3Application.modalPresenter
+                    )
                 ),
                 eventSource = journal3Application.eventSourceDecor.apply(
                     journal3Application.globalEventSource
