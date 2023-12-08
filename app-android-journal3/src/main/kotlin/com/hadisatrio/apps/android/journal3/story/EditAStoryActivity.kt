@@ -30,7 +30,6 @@ import com.hadisatrio.apps.kotlin.journal3.story.EditAStoryUseCase
 import com.hadisatrio.apps.kotlin.journal3.story.EditableStoryInStories
 import com.hadisatrio.apps.kotlin.journal3.story.Story
 import com.hadisatrio.apps.kotlin.journal3.story.UpdateDeferringStory
-import com.hadisatrio.libs.android.foundation.ExecutorDispatchingUseCase
 import com.hadisatrio.libs.android.foundation.activity.ActivityCompletionEventSink
 import com.hadisatrio.libs.android.foundation.lifecycle.LifecycleTriggeredEventSource
 import com.hadisatrio.libs.android.foundation.presentation.ExecutorDispatchingPresenter
@@ -117,9 +116,8 @@ class EditAStoryActivity : AppCompatActivity() {
     }
 
     private val useCase: UseCase by lazy {
-        ExecutorDispatchingUseCase(
-            executor = journal3Application.backgroundExecutor,
-            origin = EditAStoryUseCase(
+        journal3Application.useCaseDecor.apply(
+            EditAStoryUseCase(
                 story = UpdateDeferringStory(
                     origin = EditableStoryInStories(
                         storyId = intent.getUuidExtra("target_id"),

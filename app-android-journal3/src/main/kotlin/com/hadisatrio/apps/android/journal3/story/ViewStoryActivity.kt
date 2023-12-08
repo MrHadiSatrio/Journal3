@@ -39,7 +39,6 @@ import com.hadisatrio.apps.kotlin.journal3.story.ShowStoryUseCase
 import com.hadisatrio.apps.kotlin.journal3.story.Story
 import com.hadisatrio.apps.kotlin.journal3.story.cache.CachingStoryPresenter
 import com.hadisatrio.libs.android.dimensions.dp
-import com.hadisatrio.libs.android.foundation.ExecutorDispatchingUseCase
 import com.hadisatrio.libs.android.foundation.activity.ActivityCompletionEventSink
 import com.hadisatrio.libs.android.foundation.lifecycle.LifecycleTriggeredEventSource
 import com.hadisatrio.libs.android.foundation.presentation.ExecutorDispatchingPresenter
@@ -160,9 +159,8 @@ class ViewStoryActivity : AppCompatActivity() {
     }
 
     private val useCase: UseCase by lazy {
-        ExecutorDispatchingUseCase(
-            executor = journal3Application.backgroundExecutor,
-            origin = ShowStoryUseCase(
+        journal3Application.useCaseDecor.apply(
+            ShowStoryUseCase(
                 storyId = uuidFrom(intent.getStringExtra("target_id")!!),
                 stories = journal3Application.stories,
                 presenter = presenter,

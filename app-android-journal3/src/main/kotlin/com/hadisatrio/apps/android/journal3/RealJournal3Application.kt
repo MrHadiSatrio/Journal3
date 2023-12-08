@@ -45,6 +45,7 @@ import com.hadisatrio.apps.kotlin.journal3.story.Stories
 import com.hadisatrio.apps.kotlin.journal3.story.fake.FakeStories
 import com.hadisatrio.apps.kotlin.journal3.story.filesystem.FilesystemStories
 import com.hadisatrio.apps.kotlin.journal3.token.TokenableString
+import com.hadisatrio.libs.android.foundation.ExecutorDispatchingUseCase
 import com.hadisatrio.libs.android.foundation.activity.CurrentActivity
 import com.hadisatrio.libs.android.foundation.modal.AlertDialogModalPresenter
 import com.hadisatrio.libs.android.foundation.os.SystemLog
@@ -53,6 +54,7 @@ import com.hadisatrio.libs.android.geography.LocationManagerCoordinates
 import com.hadisatrio.libs.android.geography.PermissionAwareCoordinates
 import com.hadisatrio.libs.android.io.content.ContentResolverSources
 import com.hadisatrio.libs.kotlin.foundation.Decor
+import com.hadisatrio.libs.kotlin.foundation.UseCase
 import com.hadisatrio.libs.kotlin.foundation.event.EventHub
 import com.hadisatrio.libs.kotlin.foundation.event.EventSink
 import com.hadisatrio.libs.kotlin.foundation.event.EventSinks
@@ -204,6 +206,10 @@ class RealJournal3Application : Journal3Application() {
 
     override val timestampDecor: Decor<Timestamp> by lazy {
         Decor { FormattedTimestamp("EEEE, d MMMM yyyy '·' hh:mm aa", it) }
+    }
+
+    override val useCaseDecor: Decor<UseCase> by lazy {
+        Decor { ExecutorDispatchingUseCase(backgroundExecutor, it) }
     }
 
     override val inactivityAlertThreshold: Duration by lazy {

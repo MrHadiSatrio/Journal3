@@ -27,7 +27,6 @@ import com.badoo.reaktive.scheduler.mainScheduler
 import com.google.android.material.navigation.NavigationBarView
 import com.hadisatrio.apps.android.journal3.story.ReflectionStoriesListFragment
 import com.hadisatrio.apps.android.journal3.story.UserStoriesListFragment
-import com.hadisatrio.libs.android.foundation.ExecutorDispatchingUseCase
 import com.hadisatrio.libs.android.foundation.lifecycle.LifecycleTriggeredEventSource
 import com.hadisatrio.libs.android.foundation.material.NavigationBarSelectionEventSource
 import com.hadisatrio.libs.android.foundation.widget.ViewClickEventSource
@@ -84,9 +83,8 @@ class RootActivity : AppCompatActivity() {
     }
 
     private val useCase: UseCase by lazy {
-        ExecutorDispatchingUseCase(
-            executor = journal3Application.backgroundExecutor,
-            origin = StreamEventsUseCase(
+        journal3Application.useCaseDecor.apply(
+            StreamEventsUseCase(
                 eventSource = eventSource,
                 eventSink = journal3Application.globalEventSink
             )

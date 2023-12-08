@@ -37,7 +37,6 @@ import com.hadisatrio.apps.kotlin.journal3.story.ShowStoriesUseCase
 import com.hadisatrio.apps.kotlin.journal3.story.Stories
 import com.hadisatrio.apps.kotlin.journal3.story.fake.FakeStories
 import com.hadisatrio.apps.kotlin.journal3.token.TokenableString
-import com.hadisatrio.libs.android.foundation.ExecutorDispatchingUseCase
 import com.hadisatrio.libs.android.foundation.widget.RemoteTextViewStringPresenter
 import com.hadisatrio.libs.android.foundation.widget.RemoteViewsUpdatingPresenter
 import com.hadisatrio.libs.kotlin.foundation.event.NoOpEventSource
@@ -61,9 +60,8 @@ class PositiveReflectionsWidgetProvider : AppWidgetProvider() {
     ) {
         val application = context.journal3Application
         val views = RemoteViews(context.packageName, R.layout.widget_moment)
-        val useCase = ExecutorDispatchingUseCase(
-            executor = application.backgroundExecutor,
-            origin = ShowStoriesUseCase(
+        val useCase = application.useCaseDecor.apply(
+            ShowStoriesUseCase(
                 stories = InitDeferringStories {
                     FakeStories(
                         Reflection(

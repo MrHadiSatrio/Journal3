@@ -32,7 +32,6 @@ import com.hadisatrio.apps.android.journal3.R
 import com.hadisatrio.apps.android.journal3.journal3Application
 import com.hadisatrio.apps.kotlin.journal3.geography.SelectAPlaceUseCase
 import com.hadisatrio.libs.android.dimensions.dp
-import com.hadisatrio.libs.android.foundation.ExecutorDispatchingUseCase
 import com.hadisatrio.libs.android.foundation.activity.ActivityCompletionEventSink
 import com.hadisatrio.libs.android.foundation.activity.ActivityResultSettingEventSink
 import com.hadisatrio.libs.android.foundation.lifecycle.LifecycleTriggeredEventSource
@@ -124,9 +123,8 @@ class SelectAPlaceActivity : AppCompatActivity() {
     }
 
     private val useCase: UseCase by lazy {
-        ExecutorDispatchingUseCase(
-            executor = journal3Application.backgroundExecutor,
-            origin = SelectAPlaceUseCase(
+        journal3Application.useCaseDecor.apply(
+            SelectAPlaceUseCase(
                 places = journal3Application.places,
                 presenter = presenter,
                 modalPresenter = journal3Application.modalPresenter,

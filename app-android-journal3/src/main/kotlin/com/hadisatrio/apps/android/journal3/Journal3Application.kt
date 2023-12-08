@@ -26,6 +26,7 @@ import com.hadisatrio.apps.kotlin.journal3.sentiment.SentimentAnalyst
 import com.hadisatrio.apps.kotlin.journal3.story.Stories
 import com.hadisatrio.libs.android.foundation.activity.CurrentActivity
 import com.hadisatrio.libs.kotlin.foundation.Decor
+import com.hadisatrio.libs.kotlin.foundation.UseCase
 import com.hadisatrio.libs.kotlin.foundation.event.EventSink
 import com.hadisatrio.libs.kotlin.foundation.event.EventSource
 import com.hadisatrio.libs.kotlin.foundation.modal.Modal
@@ -45,6 +46,7 @@ abstract class Journal3Application : Application() {
     abstract val globalEventSink: EventSink
     abstract val globalEventSource: EventSource
     abstract val timestampDecor: Decor<Timestamp>
+    abstract val useCaseDecor: Decor<UseCase>
     abstract val inactivityAlertThreshold: Duration
     abstract val sentimentAnalyst: SentimentAnalyst
     abstract val paraphraser: Paraphraser

@@ -39,7 +39,6 @@ import com.hadisatrio.apps.kotlin.journal3.moment.Moment
 import com.hadisatrio.apps.kotlin.journal3.moment.SentimentAnalyzingMoment
 import com.hadisatrio.apps.kotlin.journal3.moment.UpdateDeferringMoment
 import com.hadisatrio.apps.kotlin.journal3.story.EditableMomentInStory
-import com.hadisatrio.libs.android.foundation.ExecutorDispatchingUseCase
 import com.hadisatrio.libs.android.foundation.activity.ActivityCompletionEventSink
 import com.hadisatrio.libs.android.foundation.lifecycle.LifecycleTriggeredEventSource
 import com.hadisatrio.libs.android.foundation.material.SliderFloatPresenter
@@ -183,9 +182,8 @@ class EditAMomentActivity : AppCompatActivity() {
     }
 
     private val useCase: UseCase by lazy {
-        ExecutorDispatchingUseCase(
-            executor = journal3Application.backgroundExecutor,
-            origin = EditAMomentUseCase(
+        journal3Application.useCaseDecor.apply(
+            EditAMomentUseCase(
                 moment = SentimentAnalyzingMoment(
                     analyst = journal3Application.sentimentAnalyst,
                     origin = ClockRespectingMoment(

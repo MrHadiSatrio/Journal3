@@ -31,7 +31,6 @@ import com.hadisatrio.apps.android.journal3.journal3Application
 import com.hadisatrio.apps.kotlin.journal3.story.ShowStoriesUseCase
 import com.hadisatrio.apps.kotlin.journal3.story.Stories
 import com.hadisatrio.libs.android.dimensions.dp
-import com.hadisatrio.libs.android.foundation.ExecutorDispatchingUseCase
 import com.hadisatrio.libs.android.foundation.activity.ActivityCompletionEventSink
 import com.hadisatrio.libs.kotlin.foundation.UseCase
 import com.hadisatrio.libs.kotlin.foundation.event.EventSink
@@ -59,9 +58,8 @@ abstract class StoriesListFragment : Fragment() {
     }
 
     private val useCase: UseCase by lazy {
-        ExecutorDispatchingUseCase(
-            executor = journal3Application.backgroundExecutor,
-            origin = ShowStoriesUseCase(
+        journal3Application.useCaseDecor.apply(
+            ShowStoriesUseCase(
                 stories = stories,
                 presenter = presenter,
                 eventSource = eventSource,
