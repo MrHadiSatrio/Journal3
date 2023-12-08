@@ -57,6 +57,7 @@ class FakeJournal3Application : Journal3Application() {
     override val globalEventSource: EventSource by lazy { EventHub(PublishSubject()) }
     override val timestampDecor: Decor<Timestamp> by lazy { Decor<Timestamp> { it } }
     override val useCaseDecor: Decor<UseCase> by lazy { Decor<UseCase> { it } }
+    override val eventSourceDecor: Decor<EventSource> by lazy { Decor<EventSource> { it } }
     override val inactivityAlertThreshold: Duration by lazy { 3.hours }
     override val paraphraser: Paraphraser by lazy { DumbParaphraser }
     override val sentimentAnalyst: SentimentAnalyst by lazy { DumbSentimentAnalyst }

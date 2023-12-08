@@ -33,9 +33,10 @@ class InactivityAlertingWork(
 ) : Worker(context, workerParams) {
 
     override fun doWork(): Result {
+        val application = context.journal3Application
         AlertInactivityUseCase(
-            threshold = context.journal3Application.inactivityAlertThreshold,
-            stories = context.journal3Application.stories,
+            threshold = application.inactivityAlertThreshold,
+            stories = application.stories,
             presenter = NotificationModalPresenter(
                 context = context,
                 contentAdapter = InactivityAlertModalNotificationBuilderAdapter(
@@ -43,8 +44,8 @@ class InactivityAlertingWork(
                     channel = NotificationChannel.ALERT_AND_REMINDERS
                 ),
             ),
-            eventSource = NoOpEventSource,
-            eventSink = context.journal3Application.globalEventSink
+            eventSource = application.eventSourceDecor.apply(NoOpEventSource),
+            eventSink = application.globalEventSink
         )()
         return Result.success()
     }

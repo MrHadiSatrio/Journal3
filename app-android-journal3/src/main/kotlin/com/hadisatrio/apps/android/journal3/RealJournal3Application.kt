@@ -18,6 +18,8 @@
 package com.hadisatrio.apps.android.journal3
 
 import androidx.core.content.ContextCompat
+import com.badoo.reaktive.scheduler.computationScheduler
+import com.badoo.reaktive.scheduler.mainScheduler
 import com.badoo.reaktive.subject.publish.PublishSubject
 import com.google.android.material.color.DynamicColors
 import com.hadisatrio.apps.android.journal3.sentiment.TfliteSentimentAnalyst
@@ -59,6 +61,7 @@ import com.hadisatrio.libs.kotlin.foundation.event.EventHub
 import com.hadisatrio.libs.kotlin.foundation.event.EventSink
 import com.hadisatrio.libs.kotlin.foundation.event.EventSinks
 import com.hadisatrio.libs.kotlin.foundation.event.EventSource
+import com.hadisatrio.libs.kotlin.foundation.event.SchedulingEventSource
 import com.hadisatrio.libs.kotlin.foundation.modal.Modal
 import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
 import com.hadisatrio.libs.kotlin.geography.Places
@@ -210,6 +213,10 @@ class RealJournal3Application : Journal3Application() {
 
     override val useCaseDecor: Decor<UseCase> by lazy {
         Decor { ExecutorDispatchingUseCase(backgroundExecutor, it) }
+    }
+
+    override val eventSourceDecor: Decor<EventSource> by lazy {
+        Decor { SchedulingEventSource(mainScheduler, computationScheduler, it) }
     }
 
     override val inactivityAlertThreshold: Duration by lazy {
