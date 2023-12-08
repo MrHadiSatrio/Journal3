@@ -52,6 +52,7 @@ import com.hadisatrio.libs.android.foundation.presentation.ExecutorDispatchingPr
 import com.hadisatrio.libs.android.geography.LocationManagerCoordinates
 import com.hadisatrio.libs.android.geography.PermissionAwareCoordinates
 import com.hadisatrio.libs.android.io.content.ContentResolverSources
+import com.hadisatrio.libs.kotlin.foundation.Decor
 import com.hadisatrio.libs.kotlin.foundation.event.EventHub
 import com.hadisatrio.libs.kotlin.foundation.event.EventSink
 import com.hadisatrio.libs.kotlin.foundation.event.EventSinks
@@ -201,8 +202,8 @@ class RealJournal3Application : Journal3Application() {
         EventHub(PublishSubject())
     }
 
-    override val timestampDecor: Timestamp.Decor by lazy {
-        Timestamp.Decor { FormattedTimestamp("EEEE, d MMMM yyyy '·' hh:mm aa", it) }
+    override val timestampDecor: Decor<Timestamp> by lazy {
+        Decor { FormattedTimestamp("EEEE, d MMMM yyyy '·' hh:mm aa", it) }
     }
 
     override val inactivityAlertThreshold: Duration by lazy {

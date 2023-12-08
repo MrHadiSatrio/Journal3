@@ -26,6 +26,7 @@ import com.hadisatrio.apps.kotlin.journal3.story.SelfPopulatingStories
 import com.hadisatrio.apps.kotlin.journal3.story.Stories
 import com.hadisatrio.apps.kotlin.journal3.story.fake.FakeStories
 import com.hadisatrio.libs.android.foundation.activity.CurrentActivity
+import com.hadisatrio.libs.kotlin.foundation.Decor
 import com.hadisatrio.libs.kotlin.foundation.event.EventHub
 import com.hadisatrio.libs.kotlin.foundation.event.EventSink
 import com.hadisatrio.libs.kotlin.foundation.event.EventSource
@@ -53,7 +54,7 @@ class FakeJournal3Application : Journal3Application() {
     override val currentActivity: CurrentActivity by lazy { CurrentActivity(this) }
     override val globalEventSink: EventSink by lazy { FakeEventSink() }
     override val globalEventSource: EventSource by lazy { EventHub(PublishSubject()) }
-    override val timestampDecor: Timestamp.Decor by lazy { Timestamp.Decor { it } }
+    override val timestampDecor: Decor<Timestamp> by lazy { Decor<Timestamp> { it } }
     override val inactivityAlertThreshold: Duration by lazy { 3.hours }
     override val paraphraser: Paraphraser by lazy { DumbParaphraser }
     override val sentimentAnalyst: SentimentAnalyst by lazy { DumbSentimentAnalyst }
