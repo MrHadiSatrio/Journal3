@@ -48,7 +48,7 @@ class InactivityAlertingWork(
                 )
             ),
             eventSource = application.eventSourceDecor.apply(NoOpEventSource),
-            eventSink = application.globalEventSink
+            eventSink = application.eventSinkDecor.apply(application.globalEventSink)
         )()
         return Result.success()
     }

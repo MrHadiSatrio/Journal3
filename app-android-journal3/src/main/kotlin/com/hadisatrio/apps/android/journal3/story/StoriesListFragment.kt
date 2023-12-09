@@ -51,9 +51,11 @@ abstract class StoriesListFragment : Fragment() {
     abstract val stories: Stories
 
     private val eventSink: EventSink by lazy {
-        EventSinks(
-            journal3Application.globalEventSink,
-            ActivityCompletionEventSink(requireActivity())
+        journal3Application.eventSinkDecor.apply(
+            EventSinks(
+                journal3Application.globalEventSink,
+                ActivityCompletionEventSink(requireActivity())
+            )
         )
     }
 

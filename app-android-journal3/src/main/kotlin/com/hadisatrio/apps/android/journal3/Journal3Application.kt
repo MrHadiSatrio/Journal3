@@ -48,6 +48,7 @@ abstract class Journal3Application : Application() {
     abstract val timestampDecor: Decor<Timestamp>
     abstract val useCaseDecor: Decor<UseCase>
     abstract val eventSourceDecor: Decor<EventSource>
+    abstract val eventSinkDecor: Decor<EventSink>
     abstract fun <T> presenterDecor(): Decor<Presenter<T>>
     abstract val inactivityAlertThreshold: Duration
     abstract val sentimentAnalyst: SentimentAnalyst

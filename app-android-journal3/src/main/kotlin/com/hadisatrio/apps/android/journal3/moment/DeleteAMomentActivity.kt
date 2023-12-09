@@ -45,9 +45,11 @@ class DeleteAMomentActivity : AppCompatActivity() {
                 eventSource = journal3Application.eventSourceDecor.apply(
                     journal3Application.globalEventSource
                 ),
-                eventSink = EventSinks(
-                    journal3Application.globalEventSink,
-                    ActivityCompletionEventSink(this)
+                eventSink = journal3Application.eventSinkDecor.apply(
+                    EventSinks(
+                        journal3Application.globalEventSink,
+                        ActivityCompletionEventSink(this)
+                    )
                 )
             )
         )

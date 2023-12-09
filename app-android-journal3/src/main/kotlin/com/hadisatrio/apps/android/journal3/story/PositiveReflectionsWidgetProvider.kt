@@ -83,7 +83,7 @@ class PositiveReflectionsWidgetProvider : AppWidgetProvider() {
                     Presenter(application, widgetId, widgetManager, views)
                 ),
                 eventSource = application.eventSourceDecor.apply(NoOpEventSource),
-                eventSink = application.globalEventSink
+                eventSink = application.eventSinkDecor.apply(application.globalEventSink)
             )
         )
         useCase()

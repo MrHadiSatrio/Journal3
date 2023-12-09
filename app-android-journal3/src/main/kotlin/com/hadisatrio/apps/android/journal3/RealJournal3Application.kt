@@ -49,6 +49,7 @@ import com.hadisatrio.apps.kotlin.journal3.story.filesystem.FilesystemStories
 import com.hadisatrio.apps.kotlin.journal3.token.TokenableString
 import com.hadisatrio.libs.android.foundation.ExecutorDispatchingUseCase
 import com.hadisatrio.libs.android.foundation.activity.CurrentActivity
+import com.hadisatrio.libs.android.foundation.event.ExecutorDispatchingEventSink
 import com.hadisatrio.libs.android.foundation.modal.AlertDialogModalPresenter
 import com.hadisatrio.libs.android.foundation.os.SystemLog
 import com.hadisatrio.libs.android.foundation.presentation.ExecutorDispatchingPresenter
@@ -218,6 +219,10 @@ class RealJournal3Application : Journal3Application() {
 
     override val eventSourceDecor: Decor<EventSource> by lazy {
         Decor { SchedulingEventSource(mainScheduler, computationScheduler, it) }
+    }
+
+    override val eventSinkDecor: Decor<EventSink> by lazy {
+        Decor { ExecutorDispatchingEventSink(backgroundExecutor, it) }
     }
 
     override fun <T> presenterDecor(): Decor<Presenter<T>> {

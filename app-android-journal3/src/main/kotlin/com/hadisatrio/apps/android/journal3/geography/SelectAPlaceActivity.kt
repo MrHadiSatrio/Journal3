@@ -103,19 +103,21 @@ class SelectAPlaceActivity : AppCompatActivity() {
     }
 
     private val eventSink: EventSink by lazy {
-        EventSinks(
-            journal3Application.globalEventSink,
-            ActivityResultSettingEventSink(
-                activity = this,
-                adapter = { event ->
-                    val values = mutableMapOf<String, Any>()
-                    if (event is SelectionEvent && event.selectionKind == "place") {
-                        values["place"] = event.selectedIdentifier
+        journal3Application.eventSinkDecor.apply(
+            EventSinks(
+                journal3Application.globalEventSink,
+                ActivityResultSettingEventSink(
+                    activity = this,
+                    adapter = { event ->
+                        val values = mutableMapOf<String, Any>()
+                        if (event is SelectionEvent && event.selectionKind == "place") {
+                            values["place"] = event.selectedIdentifier
+                        }
+                        values
                     }
-                    values
-                }
-            ),
-            ActivityCompletionEventSink(this)
+                ),
+                ActivityCompletionEventSink(this)
+            )
         )
     }
 

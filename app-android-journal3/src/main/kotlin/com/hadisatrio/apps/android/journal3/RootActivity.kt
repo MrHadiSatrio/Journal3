@@ -32,6 +32,7 @@ import com.hadisatrio.libs.android.viewpager2.SimpleFragmentPagerAdapter
 import com.hadisatrio.libs.android.viewpager2.SimpleFragmentPagerAdapter.FragmentFactory
 import com.hadisatrio.libs.kotlin.foundation.UseCase
 import com.hadisatrio.libs.kotlin.foundation.event.CancellationEvent
+import com.hadisatrio.libs.kotlin.foundation.event.EventSink
 import com.hadisatrio.libs.kotlin.foundation.event.EventSource
 import com.hadisatrio.libs.kotlin.foundation.event.EventSources
 import com.hadisatrio.libs.kotlin.foundation.event.SelectionEvent
@@ -77,11 +78,15 @@ class RootActivity : AppCompatActivity() {
         )
     }
 
+    private val eventSink: EventSink by lazy {
+        journal3Application.eventSinkDecor.apply(journal3Application.globalEventSink)
+    }
+
     private val useCase: UseCase by lazy {
         journal3Application.useCaseDecor.apply(
             StreamEventsUseCase(
                 eventSource = eventSource,
-                eventSink = journal3Application.globalEventSink
+                eventSink = eventSink
             )
         )
     }

@@ -146,9 +146,11 @@ class ViewStoryActivity : AppCompatActivity() {
     }
 
     private val eventSink: EventSink by lazy {
-        EventSinks(
-            journal3Application.globalEventSink,
-            ActivityCompletionEventSink(this)
+        journal3Application.eventSinkDecor.apply(
+            EventSinks(
+                journal3Application.globalEventSink,
+                ActivityCompletionEventSink(this)
+            )
         )
     }
 
