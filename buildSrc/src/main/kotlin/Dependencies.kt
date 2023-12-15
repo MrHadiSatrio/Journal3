@@ -5,7 +5,7 @@ object Dependencies {
     object CollectiveDependencyVersions {
         const val ANDROIDX_LIFECYCLE = "2.6.2"
         const val JUNIT_5 = "5.10.1"
-        const val KTOR = "2.3.6"
+        const val KTOR = "2.3.7"
         const val OKIO = "3.6.0"
         const val REACTIVE_EXTENSIONS = "2.0.0"
     }
