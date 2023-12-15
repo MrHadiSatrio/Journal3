@@ -7,7 +7,7 @@ object Dependencies {
         const val JUNIT_5 = "5.10.1"
         const val KTOR = "2.3.7"
         const val OKIO = "3.6.0"
-        const val REACTIVE_EXTENSIONS = "2.0.0"
+        const val REACTIVE_EXTENSIONS = "2.0.1"
     }
 
     object AndroidSdk {
