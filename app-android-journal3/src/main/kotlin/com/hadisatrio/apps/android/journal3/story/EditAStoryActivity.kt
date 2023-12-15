@@ -20,8 +20,6 @@ package com.hadisatrio.apps.android.journal3.story
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
-import com.badoo.reaktive.scheduler.computationScheduler
-import com.badoo.reaktive.scheduler.mainScheduler
 import com.hadisatrio.apps.android.journal3.R
 import com.hadisatrio.apps.android.journal3.id.getUuidExtra
 import com.hadisatrio.apps.android.journal3.journal3Application
@@ -30,7 +28,6 @@ import com.hadisatrio.apps.kotlin.journal3.story.EditAStoryUseCase
 import com.hadisatrio.apps.kotlin.journal3.story.EditableStoryInStories
 import com.hadisatrio.apps.kotlin.journal3.story.Story
 import com.hadisatrio.apps.kotlin.journal3.story.UpdateDeferringStory
-import com.hadisatrio.libs.android.foundation.ExecutorDispatchingUseCase
 import com.hadisatrio.libs.android.foundation.activity.ActivityCompletionEventSink
 import com.hadisatrio.libs.android.foundation.lifecycle.LifecycleTriggeredEventSource
 import com.hadisatrio.libs.android.foundation.presentation.ExecutorDispatchingPresenter
@@ -44,7 +41,6 @@ import com.hadisatrio.libs.kotlin.foundation.event.EventSink
 import com.hadisatrio.libs.kotlin.foundation.event.EventSinks
 import com.hadisatrio.libs.kotlin.foundation.event.EventSource
 import com.hadisatrio.libs.kotlin.foundation.event.EventSources
-import com.hadisatrio.libs.kotlin.foundation.event.SchedulingEventSource
 import com.hadisatrio.libs.kotlin.foundation.event.SelectionEvent
 import com.hadisatrio.libs.kotlin.foundation.presentation.AdaptingPresenter
 import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
@@ -53,26 +49,26 @@ import com.hadisatrio.libs.kotlin.foundation.presentation.Presenters
 class EditAStoryActivity : AppCompatActivity() {
 
     private val presenter: Presenter<Story> by lazy {
-        ExecutorDispatchingPresenter(
-            executor = journal3Application.foregroundExecutor,
-            origin = Presenters(
-                AdaptingPresenter(
-                    origin = TextViewStringPresenter(findViewById(R.id.title_text_field)),
-                    adapter = StoryStringAdapter("title")
-                ),
-                AdaptingPresenter(
-                    origin = TextViewStringPresenter(findViewById(R.id.synopsis_text_field)),
-                    adapter = StoryStringAdapter("synopsis")
+        journal3Application.presenterDecor<Story>().apply(
+            ExecutorDispatchingPresenter(
+                executor = journal3Application.foregroundExecutor,
+                origin = Presenters(
+                    AdaptingPresenter(
+                        origin = TextViewStringPresenter(findViewById(R.id.title_text_field)),
+                        adapter = StoryStringAdapter("title")
+                    ),
+                    AdaptingPresenter(
+                        origin = TextViewStringPresenter(findViewById(R.id.synopsis_text_field)),
+                        adapter = StoryStringAdapter("synopsis")
+                    )
                 )
             )
         )
     }
 
     private val eventSource: EventSource by lazy {
-        SchedulingEventSource(
-            subscriptionScheduler = mainScheduler,
-            observationScheduler = computationScheduler,
-            origin = EventSources(
+        journal3Application.eventSourceDecor.apply(
+            EventSources(
                 journal3Application.globalEventSource,
                 LifecycleTriggeredEventSource(
                     lifecycleOwner = this,
@@ -110,16 +106,17 @@ class EditAStoryActivity : AppCompatActivity() {
     }
 
     private val eventSink: EventSink by lazy {
-        EventSinks(
-            journal3Application.globalEventSink,
-            ActivityCompletionEventSink(this)
+        journal3Application.eventSinkDecor.apply(
+            EventSinks(
+                journal3Application.globalEventSink,
+                ActivityCompletionEventSink(this)
+            )
         )
     }
 
     private val useCase: UseCase by lazy {
-        ExecutorDispatchingUseCase(
-            executor = journal3Application.backgroundExecutor,
-            origin = EditAStoryUseCase(
+        journal3Application.useCaseDecor.apply(
+            EditAStoryUseCase(
                 story = UpdateDeferringStory(
                     origin = EditableStoryInStories(
                         storyId = intent.getUuidExtra("target_id"),

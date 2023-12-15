@@ -22,32 +22,34 @@ import androidx.appcompat.app.AppCompatActivity
 import com.benasher44.uuid.uuidFrom
 import com.hadisatrio.apps.android.journal3.journal3Application
 import com.hadisatrio.apps.kotlin.journal3.story.DeleteStoryUseCase
-import com.hadisatrio.libs.android.foundation.ExecutorDispatchingUseCase
 import com.hadisatrio.libs.android.foundation.activity.ActivityCompletionEventSink
 import com.hadisatrio.libs.android.foundation.presentation.ExecutorDispatchingPresenter
 import com.hadisatrio.libs.kotlin.foundation.event.EventSinks
-import com.hadisatrio.libs.kotlin.foundation.event.EventSources
+import com.hadisatrio.libs.kotlin.foundation.modal.Modal
 
 class DeleteAStoryActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        ExecutorDispatchingUseCase(
-            executor = journal3Application.backgroundExecutor,
-            origin = DeleteStoryUseCase(
+        journal3Application.useCaseDecor.apply(
+            DeleteStoryUseCase(
                 storyId = uuidFrom(intent.getStringExtra("target_id")!!),
                 stories = journal3Application.stories,
-                presenter = ExecutorDispatchingPresenter(
-                    executor = journal3Application.foregroundExecutor,
-                    origin = journal3Application.modalPresenter
+                presenter = journal3Application.presenterDecor<Modal>().apply(
+                    ExecutorDispatchingPresenter(
+                        executor = journal3Application.foregroundExecutor,
+                        origin = journal3Application.modalPresenter
+                    )
                 ),
-                eventSource = EventSources(
+                eventSource = journal3Application.eventSourceDecor.apply(
                     journal3Application.globalEventSource
                 ),
-                eventSink = EventSinks(
-                    journal3Application.globalEventSink,
-                    ActivityCompletionEventSink(this)
+                eventSink = journal3Application.eventSinkDecor.apply(
+                    EventSinks(
+                        journal3Application.globalEventSink,
+                        ActivityCompletionEventSink(this)
+                    )
                 )
             )
         )()

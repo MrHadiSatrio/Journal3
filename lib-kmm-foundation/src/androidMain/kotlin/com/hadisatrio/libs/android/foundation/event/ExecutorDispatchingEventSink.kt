@@ -15,26 +15,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.hadisatrio.apps.kotlin.journal3.datetime
+package com.hadisatrio.libs.android.foundation.event
 
-import kotlinx.datetime.Instant
-import kotlin.time.Duration
+import com.hadisatrio.libs.kotlin.foundation.event.Event
+import com.hadisatrio.libs.kotlin.foundation.event.EventSink
+import java.util.concurrent.Executor
 
-interface Timestamp : Comparable<Timestamp> {
+class ExecutorDispatchingEventSink(
+    private val executor: Executor,
+    private val origin: EventSink
+) : EventSink {
 
-    val value: Instant
-
-    fun toEpochMilliseconds(): Long {
-        return value.toEpochMilliseconds()
+    override fun sink(event: Event) {
+        executor.execute { origin.sink(event) }
     }
-
-    fun difference(other: Timestamp): Duration {
-        return this.value - other.value
-    }
-
-    override fun compareTo(other: Timestamp): Int {
-        return value.compareTo(other.value)
-    }
-
-    override fun toString(): String
 }

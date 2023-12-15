@@ -23,8 +23,6 @@ import android.view.LayoutInflater
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.RecyclerView
-import com.badoo.reaktive.scheduler.computationScheduler
-import com.badoo.reaktive.scheduler.mainScheduler
 import com.benasher44.uuid.uuidFrom
 import com.grzegorzojdana.spacingitemdecoration.Spacing
 import com.grzegorzojdana.spacingitemdecoration.SpacingItemDecoration
@@ -39,7 +37,6 @@ import com.hadisatrio.apps.kotlin.journal3.story.ShowStoryUseCase
 import com.hadisatrio.apps.kotlin.journal3.story.Story
 import com.hadisatrio.apps.kotlin.journal3.story.cache.CachingStoryPresenter
 import com.hadisatrio.libs.android.dimensions.dp
-import com.hadisatrio.libs.android.foundation.ExecutorDispatchingUseCase
 import com.hadisatrio.libs.android.foundation.activity.ActivityCompletionEventSink
 import com.hadisatrio.libs.android.foundation.lifecycle.LifecycleTriggeredEventSource
 import com.hadisatrio.libs.android.foundation.presentation.ExecutorDispatchingPresenter
@@ -54,10 +51,8 @@ import com.hadisatrio.libs.kotlin.foundation.event.EventSink
 import com.hadisatrio.libs.kotlin.foundation.event.EventSinks
 import com.hadisatrio.libs.kotlin.foundation.event.EventSource
 import com.hadisatrio.libs.kotlin.foundation.event.EventSources
-import com.hadisatrio.libs.kotlin.foundation.event.SchedulingEventSource
 import com.hadisatrio.libs.kotlin.foundation.event.SelectionEvent
 import com.hadisatrio.libs.kotlin.foundation.presentation.AdaptingPresenter
-import com.hadisatrio.libs.kotlin.foundation.presentation.PerfTrackingPresenter
 import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
 import com.hadisatrio.libs.kotlin.foundation.presentation.Presenters
 
@@ -98,15 +93,15 @@ class ViewStoryActivity : AppCompatActivity() {
             )
         )
 
-        ExecutorDispatchingPresenter(
-            executor = journal3Application.backgroundExecutor,
-            origin = PerfTrackingPresenter(
-                clock = journal3Application.clock,
-                eventSink = eventSink,
-                origin = CachingStoryPresenter(
-                    origin = ExecutorDispatchingPresenter(
-                        executor = journal3Application.foregroundExecutor,
-                        origin = Presenters(titlePresenter, synopsisPresenter, attachmentPresenter, momentsPresenter)
+        journal3Application.presenterDecor<Story>().apply(
+            CachingStoryPresenter(
+                origin = ExecutorDispatchingPresenter(
+                    executor = journal3Application.foregroundExecutor,
+                    origin = Presenters(
+                        titlePresenter,
+                        synopsisPresenter,
+                        attachmentPresenter,
+                        momentsPresenter
                     )
                 )
             )
@@ -114,10 +109,8 @@ class ViewStoryActivity : AppCompatActivity() {
     }
 
     private val eventSource: EventSource by lazy {
-        SchedulingEventSource(
-            subscriptionScheduler = mainScheduler,
-            observationScheduler = computationScheduler,
-            origin = EventSources(
+        journal3Application.eventSourceDecor.apply(
+            EventSources(
                 journal3Application.globalEventSource,
                 LifecycleTriggeredEventSource(
                     lifecycleOwner = this,
@@ -153,16 +146,17 @@ class ViewStoryActivity : AppCompatActivity() {
     }
 
     private val eventSink: EventSink by lazy {
-        EventSinks(
-            journal3Application.globalEventSink,
-            ActivityCompletionEventSink(this)
+        journal3Application.eventSinkDecor.apply(
+            EventSinks(
+                journal3Application.globalEventSink,
+                ActivityCompletionEventSink(this)
+            )
         )
     }
 
     private val useCase: UseCase by lazy {
-        ExecutorDispatchingUseCase(
-            executor = journal3Application.backgroundExecutor,
-            origin = ShowStoryUseCase(
+        journal3Application.useCaseDecor.apply(
+            ShowStoryUseCase(
                 storyId = uuidFrom(intent.getStringExtra("target_id")!!),
                 stories = journal3Application.stories,
                 presenter = presenter,

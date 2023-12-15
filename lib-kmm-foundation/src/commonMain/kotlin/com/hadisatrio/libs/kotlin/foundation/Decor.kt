@@ -15,26 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.hadisatrio.apps.kotlin.journal3.datetime
+package com.hadisatrio.libs.kotlin.foundation
 
-import kotlinx.datetime.Instant
-import kotlin.time.Duration
-
-interface Timestamp : Comparable<Timestamp> {
-
-    val value: Instant
-
-    fun toEpochMilliseconds(): Long {
-        return value.toEpochMilliseconds()
-    }
-
-    fun difference(other: Timestamp): Duration {
-        return this.value - other.value
-    }
-
-    override fun compareTo(other: Timestamp): Int {
-        return value.compareTo(other.value)
-    }
-
-    override fun toString(): String
+fun interface Decor<T> {
+    fun apply(thing: T): T
 }

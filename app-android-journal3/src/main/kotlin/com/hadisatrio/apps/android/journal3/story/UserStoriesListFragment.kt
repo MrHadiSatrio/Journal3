@@ -20,8 +20,6 @@ package com.hadisatrio.apps.android.journal3.story
 import android.view.LayoutInflater
 import android.widget.TextView
 import androidx.lifecycle.Lifecycle
-import com.badoo.reaktive.scheduler.computationScheduler
-import com.badoo.reaktive.scheduler.mainScheduler
 import com.hadisatrio.apps.android.journal3.R
 import com.hadisatrio.apps.android.journal3.journal3Application
 import com.hadisatrio.apps.kotlin.journal3.event.RefreshRequestEvent
@@ -34,9 +32,7 @@ import com.hadisatrio.libs.android.foundation.widget.recyclerview.RecyclerViewIt
 import com.hadisatrio.libs.kotlin.foundation.event.CancellationEvent
 import com.hadisatrio.libs.kotlin.foundation.event.EventSource
 import com.hadisatrio.libs.kotlin.foundation.event.EventSources
-import com.hadisatrio.libs.kotlin.foundation.event.SchedulingEventSource
 import com.hadisatrio.libs.kotlin.foundation.presentation.AdaptingPresenter
-import com.hadisatrio.libs.kotlin.foundation.presentation.PerfTrackingPresenter
 import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
 
 class UserStoriesListFragment : StoriesListFragment() {
@@ -46,30 +42,25 @@ class UserStoriesListFragment : StoriesListFragment() {
     }
 
     override val presenter: Presenter<Stories> by lazy {
-        ExecutorDispatchingPresenter(
-            executor = journal3Application.backgroundExecutor,
-            PerfTrackingPresenter(
-                clock = journal3Application.clock,
-                eventSink = journal3Application.globalEventSink,
-                origin = CachingStoriesPresenter(
-                    origin = ExecutorDispatchingPresenter(
-                        executor = journal3Application.foregroundExecutor,
-                        origin = AdaptingPresenter(
-                            adapter = { stories -> stories },
-                            origin = ListViewPresenter(
-                                recyclerView = storiesListView,
-                                viewFactory = { parent, _ ->
-                                    LayoutInflater.from(parent.context)
-                                        .inflate(R.layout.view_story_snippet_card, parent, false)
-                                },
-                                viewRenderer = { view, item ->
-                                    view.findViewById<TextView>(R.id.title_label).text = item.title
-                                    view.findViewById<TextView>(R.id.synopsis_label).text =
-                                        item.synopsis.toString()
-                                },
-                                differ = StoryItemDiffer,
-                                backgroundExecutor = journal3Application.backgroundExecutor
-                            )
+        journal3Application.presenterDecor<Stories>().apply(
+            CachingStoriesPresenter(
+                origin = ExecutorDispatchingPresenter(
+                    executor = journal3Application.foregroundExecutor,
+                    origin = AdaptingPresenter(
+                        adapter = { stories -> stories },
+                        origin = ListViewPresenter(
+                            recyclerView = storiesListView,
+                            viewFactory = { parent, _ ->
+                                LayoutInflater.from(parent.context)
+                                    .inflate(R.layout.view_story_snippet_card, parent, false)
+                            },
+                            viewRenderer = { view, item ->
+                                view.findViewById<TextView>(R.id.title_label).text = item.title
+                                view.findViewById<TextView>(R.id.synopsis_label).text =
+                                    item.synopsis.toString()
+                            },
+                            differ = StoryItemDiffer,
+                            backgroundExecutor = journal3Application.backgroundExecutor
                         )
                     )
                 )
@@ -78,10 +69,8 @@ class UserStoriesListFragment : StoriesListFragment() {
     }
 
     override val eventSource: EventSource by lazy {
-        SchedulingEventSource(
-            subscriptionScheduler = mainScheduler,
-            observationScheduler = computationScheduler,
-            origin = EventSources(
+        journal3Application.eventSourceDecor.apply(
+            EventSources(
                 journal3Application.globalEventSource,
                 LifecycleTriggeredEventSource(
                     lifecycleOwner = this,

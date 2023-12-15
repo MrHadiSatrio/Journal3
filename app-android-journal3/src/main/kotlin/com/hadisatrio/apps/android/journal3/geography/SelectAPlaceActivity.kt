@@ -24,15 +24,12 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.RecyclerView
-import com.badoo.reaktive.scheduler.computationScheduler
-import com.badoo.reaktive.scheduler.mainScheduler
 import com.grzegorzojdana.spacingitemdecoration.Spacing
 import com.grzegorzojdana.spacingitemdecoration.SpacingItemDecoration
 import com.hadisatrio.apps.android.journal3.R
 import com.hadisatrio.apps.android.journal3.journal3Application
 import com.hadisatrio.apps.kotlin.journal3.geography.SelectAPlaceUseCase
 import com.hadisatrio.libs.android.dimensions.dp
-import com.hadisatrio.libs.android.foundation.ExecutorDispatchingUseCase
 import com.hadisatrio.libs.android.foundation.activity.ActivityCompletionEventSink
 import com.hadisatrio.libs.android.foundation.activity.ActivityResultSettingEventSink
 import com.hadisatrio.libs.android.foundation.lifecycle.LifecycleTriggeredEventSource
@@ -51,7 +48,6 @@ import com.hadisatrio.libs.kotlin.foundation.event.EventSink
 import com.hadisatrio.libs.kotlin.foundation.event.EventSinks
 import com.hadisatrio.libs.kotlin.foundation.event.EventSource
 import com.hadisatrio.libs.kotlin.foundation.event.EventSources
-import com.hadisatrio.libs.kotlin.foundation.event.SchedulingEventSource
 import com.hadisatrio.libs.kotlin.foundation.event.SelectionEvent
 import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
 import com.hadisatrio.libs.kotlin.geography.Place
@@ -67,23 +63,23 @@ class SelectAPlaceActivity : AppCompatActivity() {
             view.findViewById<TextView>(R.id.name_label).text = item.name
         }
 
-        ExecutorDispatchingPresenter(
-            executor = journal3Application.foregroundExecutor,
-            origin = ListViewPresenter(
-                recyclerView = findViewById(R.id.places_list),
-                viewFactory = viewFactory,
-                viewRenderer = viewRenderer,
-                differ = PlaceItemDiffer,
-                backgroundExecutor = journal3Application.backgroundExecutor
+        journal3Application.presenterDecor<Iterable<Place>>().apply(
+            ExecutorDispatchingPresenter(
+                executor = journal3Application.foregroundExecutor,
+                origin = ListViewPresenter(
+                    recyclerView = findViewById(R.id.places_list),
+                    viewFactory = viewFactory,
+                    viewRenderer = viewRenderer,
+                    differ = PlaceItemDiffer,
+                    backgroundExecutor = journal3Application.backgroundExecutor
+                )
             )
         )
     }
 
     private val eventSource: EventSource by lazy {
-        SchedulingEventSource(
-            subscriptionScheduler = mainScheduler,
-            observationScheduler = computationScheduler,
-            origin = EventSources(
+        journal3Application.eventSourceDecor.apply(
+            EventSources(
                 journal3Application.globalEventSource,
                 LifecycleTriggeredEventSource(
                     lifecycleOwner = this,
@@ -107,26 +103,27 @@ class SelectAPlaceActivity : AppCompatActivity() {
     }
 
     private val eventSink: EventSink by lazy {
-        EventSinks(
-            journal3Application.globalEventSink,
-            ActivityResultSettingEventSink(
-                activity = this,
-                adapter = { event ->
-                    val values = mutableMapOf<String, Any>()
-                    if (event is SelectionEvent && event.selectionKind == "place") {
-                        values["place"] = event.selectedIdentifier
+        journal3Application.eventSinkDecor.apply(
+            EventSinks(
+                journal3Application.globalEventSink,
+                ActivityResultSettingEventSink(
+                    activity = this,
+                    adapter = { event ->
+                        val values = mutableMapOf<String, Any>()
+                        if (event is SelectionEvent && event.selectionKind == "place") {
+                            values["place"] = event.selectedIdentifier
+                        }
+                        values
                     }
-                    values
-                }
-            ),
-            ActivityCompletionEventSink(this)
+                ),
+                ActivityCompletionEventSink(this)
+            )
         )
     }
 
     private val useCase: UseCase by lazy {
-        ExecutorDispatchingUseCase(
-            executor = journal3Application.backgroundExecutor,
-            origin = SelectAPlaceUseCase(
+        journal3Application.useCaseDecor.apply(
+            SelectAPlaceUseCase(
                 places = journal3Application.places,
                 presenter = presenter,
                 modalPresenter = journal3Application.modalPresenter,

@@ -18,6 +18,8 @@
 package com.hadisatrio.apps.android.journal3
 
 import androidx.core.content.ContextCompat
+import com.badoo.reaktive.scheduler.computationScheduler
+import com.badoo.reaktive.scheduler.mainScheduler
 import com.badoo.reaktive.subject.publish.PublishSubject
 import com.google.android.material.color.DynamicColors
 import com.hadisatrio.apps.android.journal3.sentiment.TfliteSentimentAnalyst
@@ -45,18 +47,24 @@ import com.hadisatrio.apps.kotlin.journal3.story.Stories
 import com.hadisatrio.apps.kotlin.journal3.story.fake.FakeStories
 import com.hadisatrio.apps.kotlin.journal3.story.filesystem.FilesystemStories
 import com.hadisatrio.apps.kotlin.journal3.token.TokenableString
+import com.hadisatrio.libs.android.foundation.ExecutorDispatchingUseCase
 import com.hadisatrio.libs.android.foundation.activity.CurrentActivity
+import com.hadisatrio.libs.android.foundation.event.ExecutorDispatchingEventSink
 import com.hadisatrio.libs.android.foundation.modal.AlertDialogModalPresenter
 import com.hadisatrio.libs.android.foundation.os.SystemLog
 import com.hadisatrio.libs.android.foundation.presentation.ExecutorDispatchingPresenter
 import com.hadisatrio.libs.android.geography.LocationManagerCoordinates
 import com.hadisatrio.libs.android.geography.PermissionAwareCoordinates
 import com.hadisatrio.libs.android.io.content.ContentResolverSources
+import com.hadisatrio.libs.kotlin.foundation.Decor
+import com.hadisatrio.libs.kotlin.foundation.UseCase
 import com.hadisatrio.libs.kotlin.foundation.event.EventHub
 import com.hadisatrio.libs.kotlin.foundation.event.EventSink
 import com.hadisatrio.libs.kotlin.foundation.event.EventSinks
 import com.hadisatrio.libs.kotlin.foundation.event.EventSource
+import com.hadisatrio.libs.kotlin.foundation.event.SchedulingEventSource
 import com.hadisatrio.libs.kotlin.foundation.modal.Modal
+import com.hadisatrio.libs.kotlin.foundation.presentation.PerfTrackingPresenter
 import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
 import com.hadisatrio.libs.kotlin.geography.Places
 import com.hadisatrio.libs.kotlin.geography.here.HereNearbyPlaces
@@ -201,8 +209,29 @@ class RealJournal3Application : Journal3Application() {
         EventHub(PublishSubject())
     }
 
-    override val timestampDecor: Timestamp.Decor by lazy {
-        Timestamp.Decor { FormattedTimestamp("EEEE, d MMMM yyyy '·' hh:mm aa", it) }
+    override val timestampDecor: Decor<Timestamp> by lazy {
+        Decor { FormattedTimestamp("EEEE, d MMMM yyyy '·' hh:mm aa", it) }
+    }
+
+    override val useCaseDecor: Decor<UseCase> by lazy {
+        Decor { ExecutorDispatchingUseCase(backgroundExecutor, it) }
+    }
+
+    override val eventSourceDecor: Decor<EventSource> by lazy {
+        Decor { SchedulingEventSource(mainScheduler, computationScheduler, it) }
+    }
+
+    override val eventSinkDecor: Decor<EventSink> by lazy {
+        Decor { ExecutorDispatchingEventSink(backgroundExecutor, it) }
+    }
+
+    override fun <T> presenterDecor(): Decor<Presenter<T>> {
+        return Decor {
+            ExecutorDispatchingPresenter(
+                journal3Application.backgroundExecutor,
+                PerfTrackingPresenter(clock, globalEventSink, it)
+            )
+        }
     }
 
     override val inactivityAlertThreshold: Duration by lazy {

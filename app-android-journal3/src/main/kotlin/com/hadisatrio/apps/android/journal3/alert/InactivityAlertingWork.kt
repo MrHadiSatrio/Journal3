@@ -25,6 +25,7 @@ import com.hadisatrio.apps.android.journal3.notification.NotificationChannel
 import com.hadisatrio.apps.kotlin.journal3.alert.AlertInactivityUseCase
 import com.hadisatrio.libs.android.foundation.modal.NotificationModalPresenter
 import com.hadisatrio.libs.kotlin.foundation.event.NoOpEventSource
+import com.hadisatrio.libs.kotlin.foundation.modal.Modal
 
 @Suppress("unused")
 class InactivityAlertingWork(
@@ -33,18 +34,21 @@ class InactivityAlertingWork(
 ) : Worker(context, workerParams) {
 
     override fun doWork(): Result {
+        val application = context.journal3Application
         AlertInactivityUseCase(
-            threshold = context.journal3Application.inactivityAlertThreshold,
-            stories = context.journal3Application.stories,
-            presenter = NotificationModalPresenter(
-                context = context,
-                contentAdapter = InactivityAlertModalNotificationBuilderAdapter(
+            threshold = application.inactivityAlertThreshold,
+            stories = application.stories,
+            presenter = application.presenterDecor<Modal>().apply(
+                NotificationModalPresenter(
                     context = context,
-                    channel = NotificationChannel.ALERT_AND_REMINDERS
-                ),
+                    contentAdapter = InactivityAlertModalNotificationBuilderAdapter(
+                        context = context,
+                        channel = NotificationChannel.ALERT_AND_REMINDERS
+                    ),
+                )
             ),
-            eventSource = NoOpEventSource,
-            eventSink = context.journal3Application.globalEventSink
+            eventSource = application.eventSourceDecor.apply(NoOpEventSource),
+            eventSink = application.eventSinkDecor.apply(application.globalEventSink)
         )()
         return Result.success()
     }

@@ -23,8 +23,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.badoo.reaktive.scheduler.computationScheduler
-import com.badoo.reaktive.scheduler.mainScheduler
 import com.bumptech.glide.Glide
 import com.hadisatrio.apps.android.journal3.R
 import com.hadisatrio.apps.android.journal3.datetime.TimestampSelectionEventSource
@@ -39,7 +37,6 @@ import com.hadisatrio.apps.kotlin.journal3.moment.Moment
 import com.hadisatrio.apps.kotlin.journal3.moment.SentimentAnalyzingMoment
 import com.hadisatrio.apps.kotlin.journal3.moment.UpdateDeferringMoment
 import com.hadisatrio.apps.kotlin.journal3.story.EditableMomentInStory
-import com.hadisatrio.libs.android.foundation.ExecutorDispatchingUseCase
 import com.hadisatrio.libs.android.foundation.activity.ActivityCompletionEventSink
 import com.hadisatrio.libs.android.foundation.lifecycle.LifecycleTriggeredEventSource
 import com.hadisatrio.libs.android.foundation.material.SliderFloatPresenter
@@ -60,7 +57,6 @@ import com.hadisatrio.libs.kotlin.foundation.event.EventSink
 import com.hadisatrio.libs.kotlin.foundation.event.EventSinks
 import com.hadisatrio.libs.kotlin.foundation.event.EventSource
 import com.hadisatrio.libs.kotlin.foundation.event.EventSources
-import com.hadisatrio.libs.kotlin.foundation.event.SchedulingEventSource
 import com.hadisatrio.libs.kotlin.foundation.event.SelectionEvent
 import com.hadisatrio.libs.kotlin.foundation.presentation.AdaptingPresenter
 import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
@@ -73,52 +69,52 @@ class EditAMomentActivity : AppCompatActivity() {
     }
 
     private val presenter: Presenter<Moment> by lazy {
-        ExecutorDispatchingPresenter(
-            executor = journal3Application.foregroundExecutor,
-            origin = Presenters(
-                AdaptingPresenter(
-                    origin = TimestampSelectorButtonPresenter(findViewById(R.id.timestamp_selector_button)),
-                    adapter = { moment -> moment.timestamp }
-                ),
-                AdaptingPresenter(
-                    origin = TextViewStringPresenter(findViewById(R.id.place_selector_button)),
-                    adapter = { moment -> moment.place.name }
-                ),
-                AdaptingPresenter(
-                    origin = TextViewStringPresenter(findViewById(R.id.description_text_field)),
-                    adapter = { moment -> moment.description.toString() }
-                ),
-                AdaptingPresenter(
-                    origin = SliderFloatPresenter(findViewById(R.id.sentiment_slider)),
-                    adapter = { moment -> moment.sentiment.value }
-                ),
-                AdaptingPresenter(
-                    origin = RecyclerViewPresenter(
-                        recyclerView = photoGrid,
-                        layoutManager = GridLayoutManager(this, PHOTO_GRID_SPAN_COUNT),
-                        viewFactory = { parent, _ ->
-                            ImageView(parent.context).apply {
-                                layoutParams = RecyclerView.LayoutParams(
-                                    photoGrid.measuredHeight,
-                                    photoGrid.measuredHeight
-                                )
-                            }
-                        },
-                        viewRenderer = { view, item ->
-                            Glide.with(view).load(item.toAndroidUri()).centerCrop().into(view as ImageView)
-                        }
+        journal3Application.presenterDecor<Moment>().apply(
+            ExecutorDispatchingPresenter(
+                executor = journal3Application.foregroundExecutor,
+                origin = Presenters(
+                    AdaptingPresenter(
+                        origin = TimestampSelectorButtonPresenter(findViewById(R.id.timestamp_selector_button)),
+                        adapter = { moment -> moment.timestamp }
                     ),
-                    adapter = { moment -> moment.attachments }
+                    AdaptingPresenter(
+                        origin = TextViewStringPresenter(findViewById(R.id.place_selector_button)),
+                        adapter = { moment -> moment.place.name }
+                    ),
+                    AdaptingPresenter(
+                        origin = TextViewStringPresenter(findViewById(R.id.description_text_field)),
+                        adapter = { moment -> moment.description.toString() }
+                    ),
+                    AdaptingPresenter(
+                        origin = SliderFloatPresenter(findViewById(R.id.sentiment_slider)),
+                        adapter = { moment -> moment.sentiment.value }
+                    ),
+                    AdaptingPresenter(
+                        origin = RecyclerViewPresenter(
+                            recyclerView = photoGrid,
+                            layoutManager = GridLayoutManager(this, PHOTO_GRID_SPAN_COUNT),
+                            viewFactory = { parent, _ ->
+                                ImageView(parent.context).apply {
+                                    layoutParams = RecyclerView.LayoutParams(
+                                        photoGrid.measuredHeight,
+                                        photoGrid.measuredHeight
+                                    )
+                                }
+                            },
+                            viewRenderer = { view, item ->
+                                Glide.with(view).load(item.toAndroidUri()).centerCrop().into(view as ImageView)
+                            }
+                        ),
+                        adapter = { moment -> moment.attachments }
+                    )
                 )
             )
         )
     }
 
     private val eventSource: EventSource by lazy {
-        SchedulingEventSource(
-            subscriptionScheduler = mainScheduler,
-            observationScheduler = computationScheduler,
-            origin = EventSources(
+        journal3Application.eventSourceDecor.apply(
+            EventSources(
                 journal3Application.globalEventSource,
                 LifecycleTriggeredEventSource(
                     lifecycleOwner = this,
@@ -176,16 +172,17 @@ class EditAMomentActivity : AppCompatActivity() {
     }
 
     private val eventSink: EventSink by lazy {
-        EventSinks(
-            journal3Application.globalEventSink,
-            ActivityCompletionEventSink(this)
+        journal3Application.eventSinkDecor.apply(
+            EventSinks(
+                journal3Application.globalEventSink,
+                ActivityCompletionEventSink(this)
+            )
         )
     }
 
     private val useCase: UseCase by lazy {
-        ExecutorDispatchingUseCase(
-            executor = journal3Application.backgroundExecutor,
-            origin = EditAMomentUseCase(
+        journal3Application.useCaseDecor.apply(
+            EditAMomentUseCase(
                 moment = SentimentAnalyzingMoment(
                     analyst = journal3Application.sentimentAnalyst,
                     origin = ClockRespectingMoment(
