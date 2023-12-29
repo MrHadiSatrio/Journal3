@@ -44,7 +44,7 @@ jobs:
         run: ./gradlew clean build sonarqube
 
       - name: Archive built APKs and their mapping files
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: apk-and-mapping-artifacts
           path: |
