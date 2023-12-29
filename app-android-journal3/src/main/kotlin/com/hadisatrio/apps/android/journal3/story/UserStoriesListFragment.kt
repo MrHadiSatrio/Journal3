@@ -32,6 +32,7 @@ import com.hadisatrio.libs.android.foundation.widget.recyclerview.RecyclerViewIt
 import com.hadisatrio.libs.kotlin.foundation.event.CancellationEvent
 import com.hadisatrio.libs.kotlin.foundation.event.EventSource
 import com.hadisatrio.libs.kotlin.foundation.event.EventSources
+import com.hadisatrio.libs.kotlin.foundation.event.SkippingEventSource
 import com.hadisatrio.libs.kotlin.foundation.presentation.AdaptingPresenter
 import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
 
@@ -72,10 +73,13 @@ class UserStoriesListFragment : StoriesListFragment() {
         journal3Application.eventSourceDecor.apply(
             EventSources(
                 journal3Application.globalEventSource,
-                LifecycleTriggeredEventSource(
-                    lifecycleOwner = this,
-                    lifecycleEvent = Lifecycle.Event.ON_START,
-                    eventFactory = { RefreshRequestEvent("lifecycle") }
+                SkippingEventSource(
+                    count = 1,
+                    origin = LifecycleTriggeredEventSource(
+                        lifecycleOwner = this,
+                        lifecycleEvent = Lifecycle.Event.ON_START,
+                        eventFactory = { RefreshRequestEvent("lifecycle") }
+                    )
                 ),
                 LifecycleTriggeredEventSource(
                     lifecycleOwner = this,
