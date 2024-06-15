@@ -13,7 +13,7 @@ object Dependencies {
     object AndroidSdk {
         const val MINIMUM = 23
         const val COMPILE = 34
-        const val TARGET = 32
+        const val TARGET = 33
     }
 
     object AndroidArchitecture {
