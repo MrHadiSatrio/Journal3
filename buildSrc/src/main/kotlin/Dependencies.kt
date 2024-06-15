@@ -6,7 +6,7 @@ object Dependencies {
         const val ANDROIDX_LIFECYCLE = "2.8.2"
         const val JUNIT_5 = "5.10.1"
         const val KTOR = "2.3.7"
-        const val OKIO = "3.7.0"
+        const val OKIO = "3.9.0"
         const val REACTIVE_EXTENSIONS = "2.0.1"
     }
 
