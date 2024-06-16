@@ -43,11 +43,11 @@ kotlin {
 
 android {
     namespace = "com.hadisatrio.libs.android.io"
-    compileSdk = 33
+    compileSdk = Dependencies.AndroidSdk.COMPILE
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
     defaultConfig {
-        minSdk = 23
-        targetSdk = 32
+        minSdk = Dependencies.AndroidSdk.MINIMUM
+        targetSdk = Dependencies.AndroidSdk.TARGET
     }
     testOptions {
         unitTests {
