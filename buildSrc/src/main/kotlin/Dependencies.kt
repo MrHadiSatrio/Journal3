@@ -17,7 +17,7 @@ object Dependencies {
     }
 
     object AndroidArchitecture {
-        const val FRAGMENT = "androidx.fragment:fragment-ktx:1.6.2"
+        const val FRAGMENT = "androidx.fragment:fragment-ktx:1.8.2"
         const val VIEWMODEL = "androidx.lifecycle:lifecycle-viewmodel-ktx:${CollectiveDependencyVersions.ANDROIDX_LIFECYCLE}"
         const val LIFECYCLE = "androidx.lifecycle:lifecycle-runtime-ktx:${CollectiveDependencyVersions.ANDROIDX_LIFECYCLE}"
         const val STARTUP = "androidx.startup:startup-runtime:1.1.1"
