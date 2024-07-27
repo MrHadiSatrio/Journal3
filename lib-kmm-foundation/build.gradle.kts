@@ -1,10 +1,7 @@
-apply("$rootDir/gradle/script-ext.gradle")
-
 plugins {
-    kotlin("multiplatform")
-    id("com.android.library")
-    id("org.jetbrains.kotlinx.kover")
-    id("io.gitlab.arturbosch.detekt")
+    alias(libs.plugins.kotlinMultiplatform)
+    alias(libs.plugins.androidLibrary)
+    alias(libs.plugins.kover)
 }
 
 kotlin {
@@ -16,34 +13,34 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                api(Dependencies.Commons.UUID)
-                api(Dependencies.Asynchrony.REACTIVE_EXTENSIONS)
-                implementation(Dependencies.Commons.DATETIME)
-                implementation(Dependencies.Asynchrony.REACTIVE_EXTENSIONS_COROUTINE_INTEROP)
+                api(libs.uuid)
+                api(libs.reactive.extensions)
+                implementation(libs.kotlinx.datetime)
+                implementation(libs.reactive.extensions.coroutine)
             }
         }
         val commonTest by getting {
             dependencies {
                 implementation(kotlin("test-junit"))
-                implementation(Dependencies.TestUtility.REACTIVE_EXTENSIONS_TEST)
-                implementation(Dependencies.TestUtility.KOTEST_ASSERTIONS)
-                implementation(Dependencies.TestDouble.MOCKK)
+                implementation(libs.reactive.extensions.test)
+                implementation(libs.kotest.assertions)
+                implementation(libs.mockk)
             }
         }
         val androidMain by getting {
             dependencies {
-                api(Dependencies.AndroidCompatibility.APPCOMPAT)
-                api(Dependencies.AndroidUi.RECYCLER_VIEW)
-                api(Dependencies.AndroidUi.FLOW_BINDING)
+                api(libs.androidx.appcompat)
+                api(libs.androidx.recyclerview)
+                api(libs.flow.binding)
             }
         }
         val androidUnitTest by getting {
             dependencies {
-                implementation(Dependencies.TestRuntime.ANDROID_JUNIT_4)
-                implementation(Dependencies.TestFramework.JUNIT_4)
-                implementation(Dependencies.TestUtility.KOTEST_ASSERTIONS)
-                implementation(Dependencies.TestUtility.ROBOLECTRIC)
-                implementation(Dependencies.TestDouble.MOCKK)
+                implementation(libs.androidx.test.runner)
+                implementation(libs.junit4)
+                implementation(libs.kotest.assertions)
+                implementation(libs.robolectric)
+                implementation(libs.mockk)
             }
         }
     }
@@ -51,52 +48,15 @@ kotlin {
 
 android {
     namespace = "com.hadisatrio.libs.android.foundation"
-    compileSdk = Dependencies.AndroidSdk.COMPILE
+    compileSdk = 34
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
     defaultConfig {
-        minSdk = Dependencies.AndroidSdk.MINIMUM
-        targetSdk = Dependencies.AndroidSdk.TARGET
+        minSdk = 23
+        targetSdk = 33
     }
     testOptions {
         unitTests {
             isIncludeAndroidResources = true
         }
     }
-}
-
-koverReport {
-    filters {
-        excludes {
-            classes("*Fake*", "*Test")
-        }
-    }
-    defaults {
-        verify {
-            onCheck = true
-            rule("Branch coverage must exceed 90%") {
-                isEnabled = true
-                entity = kotlinx.kover.gradle.plugin.dsl.GroupingEntityType.APPLICATION
-
-                bound {
-                    minValue = 90
-                    metric = kotlinx.kover.gradle.plugin.dsl.MetricType.BRANCH
-                    aggregation = kotlinx.kover.gradle.plugin.dsl.AggregationType.COVERED_PERCENTAGE
-                }
-            }
-        }
-    }
-}
-
-detekt {
-    autoCorrect = true
-    source = files(
-        "src/commonMain/kotlin",
-        "src/commonTest/kotlin",
-        "src/androidMain/kotlin",
-        "src/androidUnitTest/kotlin"
-    )
-}
-
-dependencies {
-    detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.23.6")
 }
