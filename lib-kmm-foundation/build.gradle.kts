@@ -2,7 +2,6 @@ plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.kover)
-    alias(libs.plugins.detekt)
 }
 
 kotlin {
@@ -83,18 +82,4 @@ koverReport {
             }
         }
     }
-}
-
-detekt {
-    autoCorrect = true
-    source = files(
-        "src/commonMain/kotlin",
-        "src/commonTest/kotlin",
-        "src/androidMain/kotlin",
-        "src/androidUnitTest/kotlin"
-    )
-}
-
-dependencies {
-    detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.23.6")
 }

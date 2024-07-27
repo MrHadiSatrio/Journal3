@@ -1,3 +1,5 @@
+import io.gitlab.arturbosch.detekt.extensions.DetektExtension
+
 plugins {
     //trick: for the same plugin versions in all sub-modules
     alias(libs.plugins.androidApplication).apply(false)
@@ -14,6 +16,29 @@ allprojects {
         resolutionStrategy {
             force("org.xerial:sqlite-jdbc:3.46.0.0")
         }
+    }
+}
+
+subprojects {
+    val libs = rootProject.libs
+
+    apply(plugin = libs.plugins.detekt.get().pluginId)
+    extensions.configure<DetektExtension> {
+        autoCorrect = true
+        source.setFrom(
+            "src/main/kotlin",
+            "src/test/kotlin",
+            "src/commonMain/kotlin",
+            "src/commonTest/kotlin",
+            "src/androidMain/kotlin",
+            "src/androidUnitTest/kotlin",
+            "src/androidTest/kotlin",
+            "src/iosMain/kotlin",
+            "src/iosTest/kotlin"
+        )
+    }
+    dependencies {
+        add("detektPlugins", libs.detekt.formatting)
     }
 }
 

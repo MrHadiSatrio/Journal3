@@ -2,7 +2,6 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.kotlinAndroid)
     alias(libs.plugins.sentry)
-    alias(libs.plugins.detekt)
     alias(libs.plugins.appVersioning)
 }
 
@@ -84,18 +83,9 @@ dependencies {
     testImplementation(libs.robolectric)
 }
 
-detekt {
-    autoCorrect = true
-    source = files("src/main/kotlin", "src/test/kotlin", "src/androidTest/kotlin")
-}
-
 sentry {
     org.set("mrhadisatrio")
     projectName.set("journal3")
     authToken.set(System.getenv("SENTRY_TOKEN"))
     includeSourceContext.set(true)
-}
-
-dependencies {
-    detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.23.6")
 }
