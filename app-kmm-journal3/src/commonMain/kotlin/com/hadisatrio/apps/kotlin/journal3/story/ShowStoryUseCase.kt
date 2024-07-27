@@ -17,16 +17,10 @@
 
 package com.hadisatrio.apps.kotlin.journal3.story
 
-import com.badoo.reaktive.observable.doOnBeforeNext
-import com.badoo.reaktive.observable.merge
-import com.badoo.reaktive.observable.subscribe
-import com.badoo.reaktive.observable.takeUntil
-import com.badoo.reaktive.subject.replay.ReplaySubject
 import com.benasher44.uuid.Uuid
 import com.hadisatrio.apps.kotlin.journal3.event.RefreshRequestEvent
-import com.hadisatrio.libs.kotlin.foundation.UseCase
+import com.hadisatrio.libs.kotlin.foundation.EventHandlingUseCase
 import com.hadisatrio.libs.kotlin.foundation.event.CancellationEvent
-import com.hadisatrio.libs.kotlin.foundation.event.CompletionEvent
 import com.hadisatrio.libs.kotlin.foundation.event.Event
 import com.hadisatrio.libs.kotlin.foundation.event.EventSink
 import com.hadisatrio.libs.kotlin.foundation.event.EventSource
@@ -37,34 +31,24 @@ class ShowStoryUseCase(
     private val storyId: Uuid,
     private val stories: Stories,
     private val presenter: Presenter<Story>,
-    private val eventSource: EventSource,
-    private val eventSink: EventSink
-) : UseCase {
+    eventSource: EventSource,
+    eventSink: EventSink
+) : EventHandlingUseCase(eventSource, eventSink) {
 
-    private val completionEvents by lazy { ReplaySubject<CompletionEvent>(bufferSize = 1) }
-
-    override fun invoke() {
+    override fun invokeInternal() {
         presentState()
-        observeEvents()
     }
 
     private fun presentState() {
         val story = stories.findStory(storyId).firstOrNull()
         if (story == null) {
-            completionEvents.onNext(CompletionEvent())
+            complete()
         } else {
             presenter.present(story)
         }
     }
 
-    private fun observeEvents() {
-        merge(eventSource.events(), completionEvents)
-            .takeUntil { event -> event is CompletionEvent }
-            .doOnBeforeNext { event -> eventSink.sink(event) }
-            .subscribe { event -> handleEvent(event) }
-    }
-
-    private fun handleEvent(event: Event) {
+    override fun handleEvent(event: Event) {
         when (event) {
             is SelectionEvent -> handleSelectionEvent(event)
             is RefreshRequestEvent -> presentState()
@@ -111,6 +95,6 @@ class ShowStoryUseCase(
     }
 
     private fun handleCancellation() {
-        completionEvents.onNext(CompletionEvent())
+        complete()
     }
 }

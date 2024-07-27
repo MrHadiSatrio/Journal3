@@ -17,12 +17,8 @@
 
 package com.hadisatrio.apps.kotlin.journal3.geography
 
-import com.badoo.reaktive.observable.doOnBeforeNext
-import com.badoo.reaktive.observable.merge
-import com.badoo.reaktive.observable.subscribe
-import com.badoo.reaktive.observable.takeUntil
 import com.badoo.reaktive.subject.replay.ReplaySubject
-import com.hadisatrio.libs.kotlin.foundation.UseCase
+import com.hadisatrio.libs.kotlin.foundation.EventHandlingUseCase
 import com.hadisatrio.libs.kotlin.foundation.event.CancellationEvent
 import com.hadisatrio.libs.kotlin.foundation.event.CompletionEvent
 import com.hadisatrio.libs.kotlin.foundation.event.Event
@@ -43,17 +39,16 @@ class SelectAPlaceUseCase(
     private val places: Places,
     private val presenter: Presenter<Iterable<Place>>,
     private val modalPresenter: Presenter<Modal>,
-    private val eventSource: EventSource,
-    private val eventSink: EventSink,
-) : UseCase {
+    eventSource: EventSource,
+    eventSink: EventSink,
+) : EventHandlingUseCase(eventSource, eventSink) {
 
     private val completionEvents by lazy { ReplaySubject<CompletionEvent>(bufferSize = 1) }
 
     private var presentedPlaces: Iterable<Place> = emptyList()
 
-    override fun invoke() {
+    override fun invokeInternal() {
         presentState(places)
-        observeEvents()
     }
 
     @Suppress("TooGenericExceptionCaught")
@@ -68,14 +63,7 @@ class SelectAPlaceUseCase(
         }
     }
 
-    private fun observeEvents() {
-        merge(eventSource.events(), completionEvents)
-            .doOnBeforeNext { event -> eventSink.sink(event) }
-            .takeUntil { event -> event is CompletionEvent }
-            .subscribe { event -> handleEvent(event) }
-    }
-
-    private fun handleEvent(event: Event) {
+    override fun handleEvent(event: Event) {
         when (event) {
             is SelectionEvent -> handleSelection(event)
             is TextInputEvent -> handleTextInput(event)
