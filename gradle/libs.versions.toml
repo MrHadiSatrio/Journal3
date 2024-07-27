@@ -47,7 +47,7 @@ uuid = { module = "com.benasher44:uuid", version = "0.8.4" }
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
-appVersioning = { id = "io.github.reactivecircus.app-versioning", version = "1.3.1" }
+appVersioning = { id = "io.github.reactivecircus.app-versioning", version = "1.3.2" }
 kotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 kover = { id = "org.jetbrains.kotlinx.kover", version = "0.7.5" }
