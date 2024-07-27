@@ -1,10 +1,8 @@
-apply("$rootDir/gradle/script-ext.gradle")
-
 plugins {
-    kotlin("multiplatform")
-    id("com.android.library")
-    id("org.jetbrains.kotlinx.kover")
-    id("io.gitlab.arturbosch.detekt")
+    alias(libs.plugins.kotlinMultiplatform)
+    alias(libs.plugins.androidLibrary)
+    alias(libs.plugins.kover)
+    alias(libs.plugins.detekt)
 }
 
 kotlin {
@@ -17,15 +15,15 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 api(project(":lib-kmm-json"))
-                api(Dependencies.Network.KTOR)
+                api(libs.ktor)
             }
         }
         val commonTest by getting {
             dependencies {
                 implementation(kotlin("test-junit"))
-                implementation(Dependencies.TestUtility.KOTEST_ASSERTIONS)
-                implementation(Dependencies.TestDouble.MOCKK)
-                implementation(Dependencies.TestDouble.KTOR_MOCK_ENGINE)
+                implementation(libs.kotest.assertions)
+                implementation(libs.mockk)
+                implementation(libs.ktor.mock.engine)
             }
         }
         val androidMain by getting
@@ -35,11 +33,11 @@ kotlin {
 
 android {
     namespace = "com.hadisatrio.libs.android.paraphrase"
-    compileSdk = Dependencies.AndroidSdk.COMPILE
+    compileSdk = 34
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
     defaultConfig {
-        minSdk = Dependencies.AndroidSdk.MINIMUM
-        targetSdk = Dependencies.AndroidSdk.TARGET
+        minSdk = 23
+        targetSdk = 33
     }
     testOptions {
         unitTests {

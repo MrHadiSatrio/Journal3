@@ -1,10 +1,8 @@
-apply("$rootDir/gradle/script-ext.gradle")
-
 plugins {
-    kotlin("multiplatform")
-    id("com.android.library")
-    id("org.jetbrains.kotlinx.kover")
-    id("io.gitlab.arturbosch.detekt")
+    alias(libs.plugins.kotlinMultiplatform)
+    alias(libs.plugins.androidLibrary)
+    alias(libs.plugins.kover)
+    alias(libs.plugins.detekt)
 }
 
 kotlin {
@@ -21,16 +19,16 @@ kotlin {
                 api(project(":lib-kmm-json"))
                 api(project(":lib-kmm-geography"))
                 api(project(":lib-kmm-paraphrase"))
-                api(Dependencies.Commons.DATETIME)
+                api(libs.kotlinx.datetime)
             }
         }
         val commonTest by getting {
             dependencies {
                 implementation(kotlin("test-junit"))
-                implementation(Dependencies.TestUtility.REACTIVE_EXTENSIONS_TEST)
-                implementation(Dependencies.TestUtility.KOTEST_ASSERTIONS)
-                implementation(Dependencies.TestDouble.OKIO_FAKE_FS)
-                implementation(Dependencies.TestDouble.MOCKK)
+                implementation(libs.reactive.extensions.test)
+                implementation(libs.kotest.assertions)
+                implementation(libs.okio.fake.fs)
+                implementation(libs.mockk)
             }
         }
         val androidMain by getting
@@ -40,11 +38,11 @@ kotlin {
 
 android {
     namespace = "com.hadisatrio.apps.kotlin.journal3"
-    compileSdk = Dependencies.AndroidSdk.COMPILE
+    compileSdk = 34
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
     defaultConfig {
-        minSdk = Dependencies.AndroidSdk.MINIMUM
-        targetSdk = Dependencies.AndroidSdk.TARGET
+        minSdk = 23
+        targetSdk = 33
     }
 }
 

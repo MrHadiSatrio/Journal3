@@ -1,5 +1,0 @@
-ext {
-    gitVersionCode = 1 // grgit.tag.list().size()
-    gitVersionName = "1" // grgit.describe(tags: true, always: true)
-}
-

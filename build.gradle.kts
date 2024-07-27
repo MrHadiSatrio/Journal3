@@ -1,28 +1,15 @@
 plugins {
-    id("scripts.infrastructure")
-    id("org.jetbrains.kotlinx.kover").version("0.7.5")
-    id("io.gitlab.arturbosch.detekt").version("1.23.6")
-    id("org.sonarqube").version("4.0.0.2929")
-}
-
-buildscript {
-    repositories {
-        google()
-        gradlePluginPortal()
-        mavenLocal()
-        mavenCentral()
-        maven(url = "https://ajoberstar.org/bintray-backup/")
-    }
+    //trick: for the same plugin versions in all sub-modules
+    alias(libs.plugins.androidApplication).apply(false)
+    alias(libs.plugins.androidLibrary).apply(false)
+    alias(libs.plugins.kotlinAndroid).apply(false)
+    alias(libs.plugins.kotlinMultiplatform).apply(false)
+    alias(libs.plugins.kover).apply(false)
+    alias(libs.plugins.detekt).apply(false)
+    alias(libs.plugins.sonar)
 }
 
 allprojects {
-    repositories {
-        google()
-        mavenLocal()
-        mavenCentral()
-        maven(url = "https://jitpack.io")
-        maven(url = "https://repo.repsy.io/mvn/chrynan/public")
-    }
     configurations.all {
         resolutionStrategy {
             force("org.xerial:sqlite-jdbc:3.46.0.0")

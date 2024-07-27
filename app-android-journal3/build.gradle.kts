@@ -1,19 +1,24 @@
-import plugin.AndroidAppConfigurationPlugin
-
-apply<AndroidAppConfigurationPlugin>()
-apply("$rootDir/gradle/script-ext.gradle")
-
 plugins {
-    id("com.android.application")
-    kotlin("android")
-    kotlin("kapt")
-    id("io.sentry.android.gradle") version "4.7.1"
-    id("io.gitlab.arturbosch.detekt")
-    id("io.github.reactivecircus.app-versioning").version("1.3.1")
+    alias(libs.plugins.androidApplication)
+    alias(libs.plugins.kotlinAndroid)
+    alias(libs.plugins.sentry)
+    alias(libs.plugins.detekt)
+    alias(libs.plugins.appVersioning)
+}
+
+kotlin {
+    jvmToolchain(17)
 }
 
 android {
     namespace = "com.hadisatrio.apps.android.journal3"
+
+    compileSdk = 34
+    defaultConfig {
+        applicationId = "com.hadisatrio.apps.android.journal3"
+        minSdk = 23
+        targetSdk = 33
+    }
 
     signingConfigs {
         getByName("debug") {
@@ -60,15 +65,23 @@ android {
 
 dependencies {
     implementation(project(":app-kmm-journal3"))
-    implementation(Dependencies.AndroidArchitecture.FRAGMENT)
-    implementation(Dependencies.AndroidArchitecture.STARTUP)
-    implementation(Dependencies.AndroidAsynchrony.WORKMANAGER)
-    implementation(Dependencies.AndroidFramework.GLIDE)
-    implementation(Dependencies.AndroidFramework.TFLITE)
-    implementation(Dependencies.AndroidFramework.SENTRY)
-    implementation(Dependencies.AndroidNetwork.KTOR)
-    implementation(Dependencies.AndroidUi.VIEWPAGER)
-    implementation(Dependencies.AndroidUi.RECYCLER_VIEW_SPACING_DECORATION)
+    implementation(libs.androidx.fragment)
+    implementation(libs.androidx.startup)
+    implementation(libs.androidx.workmanager)
+    implementation(libs.androidx.recyclerview)
+    implementation(libs.androidx.viewpager2)
+    implementation(libs.glide)
+    implementation(libs.ktor)
+    implementation(libs.ktor.android)
+    implementation(libs.material)
+    implementation(libs.sentry)
+    implementation(libs.tflite)
+    implementation(libs.recycler.view.spacing)
+    testImplementation(libs.androidx.test.runner)
+    testImplementation(libs.junit4)
+    testImplementation(libs.mockk)
+    testImplementation(libs.kotest.assertions)
+    testImplementation(libs.robolectric)
 }
 
 detekt {
