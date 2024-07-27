@@ -17,13 +17,7 @@
 
 package com.hadisatrio.apps.kotlin.journal3.forgettable
 
-import com.badoo.reaktive.observable.doOnBeforeNext
-import com.badoo.reaktive.observable.merge
-import com.badoo.reaktive.observable.subscribe
-import com.badoo.reaktive.observable.takeUntil
-import com.badoo.reaktive.subject.replay.ReplaySubject
-import com.hadisatrio.libs.kotlin.foundation.UseCase
-import com.hadisatrio.libs.kotlin.foundation.event.CompletionEvent
+import com.hadisatrio.libs.kotlin.foundation.EventHandlingUseCase
 import com.hadisatrio.libs.kotlin.foundation.event.Event
 import com.hadisatrio.libs.kotlin.foundation.event.EventSink
 import com.hadisatrio.libs.kotlin.foundation.event.EventSource
@@ -35,15 +29,12 @@ import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
 
 abstract class DeleteForgettableUseCase(
     private val presenter: Presenter<Modal>,
-    private val eventSource: EventSource,
-    private val eventSink: EventSink
-) : UseCase {
+    eventSource: EventSource,
+    eventSink: EventSink
+) : EventHandlingUseCase(eventSource, eventSink) {
 
-    private val completionEvents by lazy { ReplaySubject<CompletionEvent>(bufferSize = 1) }
-
-    final override fun invoke() {
+    override fun invokeInternal() {
         present()
-        observeEvents()
     }
 
     abstract fun forgettable(): Forgettable?
@@ -57,14 +48,7 @@ abstract class DeleteForgettableUseCase(
         presenter.present(modal)
     }
 
-    private fun observeEvents() {
-        merge(eventSource.events(), completionEvents)
-            .takeUntil { event -> event is CompletionEvent }
-            .doOnBeforeNext { event -> eventSink.sink(event) }
-            .subscribe { event -> handleEvent(event) }
-    }
-
-    private fun handleEvent(event: Event) {
+    override fun handleEvent(event: Event) {
         when (event) {
             is ModalApprovalEvent -> handleApproval(event)
             is ModalDismissalEvent -> handleDismissal()
@@ -74,16 +58,16 @@ abstract class DeleteForgettableUseCase(
     private fun handleApproval(event: ModalApprovalEvent) {
         when (event.modalKind) {
             "forgettable_not_found_notification" -> {
-                completionEvents.onNext(CompletionEvent())
+                complete()
             }
             "forgettable_deletion_confirmation" -> {
                 forgettable()!!.forget()
-                completionEvents.onNext(CompletionEvent())
+                complete()
             }
         }
     }
 
     private fun handleDismissal() {
-        completionEvents.onNext(CompletionEvent())
+        complete()
     }
 }

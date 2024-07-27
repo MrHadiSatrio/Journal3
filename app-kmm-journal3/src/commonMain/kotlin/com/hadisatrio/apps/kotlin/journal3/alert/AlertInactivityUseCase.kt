@@ -17,15 +17,10 @@
 
 package com.hadisatrio.apps.kotlin.journal3.alert
 
-import com.badoo.reaktive.observable.doOnBeforeNext
-import com.badoo.reaktive.observable.subscribe
-import com.badoo.reaktive.observable.takeUntil
-import com.badoo.reaktive.subject.replay.ReplaySubject
 import com.hadisatrio.apps.kotlin.journal3.datetime.LiteralTimestamp
 import com.hadisatrio.apps.kotlin.journal3.story.Stories
-import com.hadisatrio.libs.kotlin.foundation.UseCase
+import com.hadisatrio.libs.kotlin.foundation.EventHandlingUseCase
 import com.hadisatrio.libs.kotlin.foundation.event.CancellationEvent
-import com.hadisatrio.libs.kotlin.foundation.event.CompletionEvent
 import com.hadisatrio.libs.kotlin.foundation.event.Event
 import com.hadisatrio.libs.kotlin.foundation.event.EventSink
 import com.hadisatrio.libs.kotlin.foundation.event.EventSource
@@ -41,16 +36,13 @@ class AlertInactivityUseCase(
     private val threshold: Duration,
     private val stories: Stories,
     private val presenter: Presenter<Modal>,
-    private val eventSource: EventSource,
-    private val eventSink: EventSink
-) : UseCase {
+    eventSource: EventSource,
+    eventSink: EventSink
+) : EventHandlingUseCase(eventSource, eventSink) {
 
-    private val completionEvents by lazy { ReplaySubject<CompletionEvent>(bufferSize = 1) }
-
-    override fun invoke() {
+    override fun invokeInternal() {
         if (!isAlertNecessary()) return
         presenter.present(BinaryConfirmationModal("inactivity_alert"))
-        observeEvents()
     }
 
     private fun isAlertNecessary(): Boolean {
@@ -60,14 +52,7 @@ class AlertInactivityUseCase(
         return currentTimestamp.difference(mostRecentTimestamp) > threshold
     }
 
-    private fun observeEvents() {
-        com.badoo.reaktive.observable.merge(eventSource.events(), completionEvents)
-            .takeUntil { event -> event is CompletionEvent }
-            .doOnBeforeNext { event -> eventSink.sink(event) }
-            .subscribe { event -> handleEvent(event) }
-    }
-
-    private fun handleEvent(event: Event) {
+    override fun handleEvent(event: Event) {
         when (event) {
             is ModalApprovalEvent -> handleModalApproval(event)
             is CancellationEvent -> handleCancellation()
@@ -83,10 +68,10 @@ class AlertInactivityUseCase(
                 "story_id" to stories.first().id.toString()
             )
         )
-        completionEvents.onNext(CompletionEvent())
+        complete()
     }
 
     private fun handleCancellation() {
-        completionEvents.onNext(CompletionEvent())
+        complete()
     }
 }

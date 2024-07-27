@@ -17,11 +17,6 @@
 
 package com.hadisatrio.apps.kotlin.journal3.moment
 
-import com.badoo.reaktive.observable.doOnBeforeNext
-import com.badoo.reaktive.observable.merge
-import com.badoo.reaktive.observable.subscribe
-import com.badoo.reaktive.observable.takeUntil
-import com.badoo.reaktive.subject.replay.ReplaySubject
 import com.benasher44.uuid.Uuid
 import com.benasher44.uuid.uuidFrom
 import com.chrynan.uri.core.Uri
@@ -31,9 +26,8 @@ import com.hadisatrio.apps.kotlin.journal3.event.RefreshRequestEvent
 import com.hadisatrio.apps.kotlin.journal3.sentiment.Sentiment
 import com.hadisatrio.apps.kotlin.journal3.story.Stories
 import com.hadisatrio.apps.kotlin.journal3.token.TokenableString
-import com.hadisatrio.libs.kotlin.foundation.UseCase
+import com.hadisatrio.libs.kotlin.foundation.EventHandlingUseCase
 import com.hadisatrio.libs.kotlin.foundation.event.CancellationEvent
-import com.hadisatrio.libs.kotlin.foundation.event.CompletionEvent
 import com.hadisatrio.libs.kotlin.foundation.event.Event
 import com.hadisatrio.libs.kotlin.foundation.event.EventSink
 import com.hadisatrio.libs.kotlin.foundation.event.EventSource
@@ -56,39 +50,30 @@ class EditAMomentUseCase(
     private val places: Places,
     private val presenter: Presenter<Moment>,
     private val modalPresenter: Presenter<Modal>,
-    private val eventSource: EventSource,
-    private val eventSink: EventSink,
+    eventSource: EventSource,
+    eventSink: EventSink,
     private val paraphraser: Paraphraser,
-) : UseCase {
+) : EventHandlingUseCase(eventSource, eventSink) {
 
-    private val completionEvents by lazy { ReplaySubject<CompletionEvent>(bufferSize = 1) }
     private val targetId: Uuid by lazy { moment.id }
     private val isTargetNew: Boolean by lazy { moment.isNewlyCreated() }
     private var isEditCancelled: Boolean = false
     private var isParaphrasingEnabled: Boolean = false
 
-    override operator fun invoke() {
+    override fun invokeInternal() {
         present()
-        observeEvents()
     }
 
     private fun present() {
         if (!isTargetNew && !stories.containsMoment(targetId)) {
             isEditCancelled = true
-            completionEvents.onNext(CompletionEvent())
+            complete()
         } else {
             presenter.present(moment)
         }
     }
 
-    private fun observeEvents() {
-        merge(eventSource.events(), completionEvents)
-            .doOnBeforeNext { event -> eventSink.sink(event) }
-            .takeUntil { event -> (event as? CompletionEvent)?.also { handleCompletion() } != null }
-            .subscribe { event -> handleEvent(event) }
-    }
-
-    private fun handleEvent(event: Event) {
+    override fun handleEvent(event: Event) {
         when (event) {
             is TextInputEvent -> handleTextInput(event)
             is SelectionEvent -> handleSelection(event)
@@ -131,7 +116,7 @@ class EditAMomentUseCase(
         } else {
             moment.commit()
         }
-        completionEvents.onNext(CompletionEvent())
+        complete()
     }
 
     private fun handleDeleteActionSelection() {
@@ -148,14 +133,14 @@ class EditAMomentUseCase(
         when (event.modalKind) {
             "edit_cancellation_confirmation" -> {
                 isEditCancelled = true
-                completionEvents.onNext(CompletionEvent())
+                complete()
             }
         }
     }
 
     private fun handleCancellation(event: CancellationEvent) {
         if (event.reason != "user") {
-            completionEvents.onNext(CompletionEvent())
+            complete()
             return
         }
 
@@ -164,11 +149,11 @@ class EditAMomentUseCase(
             modalPresenter.present(modal)
         } else {
             isEditCancelled = true
-            completionEvents.onNext(CompletionEvent())
+            complete()
         }
     }
 
-    private fun handleCompletion() {
+    override fun onComplete() {
         if (isEditCancelled && isTargetNew) moment.forget()
     }
 }

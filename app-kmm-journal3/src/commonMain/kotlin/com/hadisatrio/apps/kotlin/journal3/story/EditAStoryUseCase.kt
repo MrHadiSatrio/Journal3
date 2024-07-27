@@ -17,17 +17,11 @@
 
 package com.hadisatrio.apps.kotlin.journal3.story
 
-import com.badoo.reaktive.observable.doOnBeforeNext
-import com.badoo.reaktive.observable.merge
-import com.badoo.reaktive.observable.subscribe
-import com.badoo.reaktive.observable.takeUntil
-import com.badoo.reaktive.subject.replay.ReplaySubject
 import com.benasher44.uuid.Uuid
 import com.hadisatrio.apps.kotlin.journal3.event.RefreshRequestEvent
 import com.hadisatrio.apps.kotlin.journal3.token.TokenableString
-import com.hadisatrio.libs.kotlin.foundation.UseCase
+import com.hadisatrio.libs.kotlin.foundation.EventHandlingUseCase
 import com.hadisatrio.libs.kotlin.foundation.event.CancellationEvent
-import com.hadisatrio.libs.kotlin.foundation.event.CompletionEvent
 import com.hadisatrio.libs.kotlin.foundation.event.Event
 import com.hadisatrio.libs.kotlin.foundation.event.EventSink
 import com.hadisatrio.libs.kotlin.foundation.event.EventSource
@@ -47,37 +41,28 @@ class EditAStoryUseCase(
     private val stories: Stories,
     private val presenter: Presenter<Story>,
     private val modalPresenter: Presenter<Modal>,
-    private val eventSource: EventSource,
-    private val eventSink: EventSink
-) : UseCase {
+    eventSource: EventSource,
+    eventSink: EventSink
+) : EventHandlingUseCase(eventSource, eventSink) {
 
-    private val completionEvents by lazy { ReplaySubject<CompletionEvent>(bufferSize = 1) }
     private val targetId: Uuid by lazy { story.id }
     private val isTargetNew: Boolean by lazy { story.isNewlyCreated() }
     private var isEditCancelled: Boolean = false
 
-    override operator fun invoke() {
+    override fun invokeInternal() {
         present()
-        observeEvents()
     }
 
     private fun present() {
         if (!isTargetNew && !stories.containsStory(targetId)) {
             isEditCancelled = true
-            completionEvents.onNext(CompletionEvent())
+            complete()
         } else {
             presenter.present(story)
         }
     }
 
-    private fun observeEvents() {
-        merge(eventSource.events(), completionEvents)
-            .doOnBeforeNext { event -> eventSink.sink(event) }
-            .takeUntil { event -> (event as? CompletionEvent)?.also { handleCompletion() } != null }
-            .subscribe { event -> handleEvent(event) }
-    }
-
-    private fun handleEvent(event: Event) {
+    override fun handleEvent(event: Event) {
         when (event) {
             is TextInputEvent -> handleTextInput(event)
             is SelectionEvent -> handleSelection(event)
@@ -108,7 +93,7 @@ class EditAStoryUseCase(
 
     private fun handleCommitActionSelection() {
         story.commit()
-        completionEvents.onNext(CompletionEvent())
+        complete()
     }
 
     private fun handleDeleteActionSelection() {
@@ -125,14 +110,14 @@ class EditAStoryUseCase(
         when (event.modalKind) {
             "edit_cancellation_confirmation" -> {
                 isEditCancelled = true
-                completionEvents.onNext(CompletionEvent())
+                complete()
             }
         }
     }
 
     private fun handleCancellation(event: CancellationEvent) {
         if (event.reason != "user") {
-            completionEvents.onNext(CompletionEvent())
+            complete()
             return
         }
 
@@ -141,11 +126,11 @@ class EditAStoryUseCase(
             modalPresenter.present(modal)
         } else {
             isEditCancelled = true
-            completionEvents.onNext(CompletionEvent())
+            complete()
         }
     }
 
-    private fun handleCompletion() {
+    override fun onComplete() {
         if (isEditCancelled && isTargetNew) story.forget()
     }
 }
