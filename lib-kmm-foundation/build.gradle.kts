@@ -60,26 +60,3 @@ android {
         }
     }
 }
-
-koverReport {
-    filters {
-        excludes {
-            classes("*Fake*", "*Test")
-        }
-    }
-    defaults {
-        verify {
-            onCheck = true
-            rule("Branch coverage must exceed 90%") {
-                isEnabled = true
-                entity = kotlinx.kover.gradle.plugin.dsl.GroupingEntityType.APPLICATION
-
-                bound {
-                    minValue = 90
-                    metric = kotlinx.kover.gradle.plugin.dsl.MetricType.BRANCH
-                    aggregation = kotlinx.kover.gradle.plugin.dsl.AggregationType.COVERED_PERCENTAGE
-                }
-            }
-        }
-    }
-}

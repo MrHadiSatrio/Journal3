@@ -1,4 +1,8 @@
 import io.gitlab.arturbosch.detekt.extensions.DetektExtension
+import kotlinx.kover.gradle.plugin.dsl.AggregationType
+import kotlinx.kover.gradle.plugin.dsl.GroupingEntityType
+import kotlinx.kover.gradle.plugin.dsl.KoverReportExtension
+import kotlinx.kover.gradle.plugin.dsl.MetricType
 
 plugins {
     //trick: for the same plugin versions in all sub-modules
@@ -39,6 +43,30 @@ subprojects {
     }
     dependencies {
         add("detektPlugins", libs.detekt.formatting)
+    }
+
+    apply(plugin = libs.plugins.kover.get().pluginId)
+    extensions.configure<KoverReportExtension> {
+        filters {
+            excludes {
+                classes("*Fake*", "*Test")
+            }
+        }
+        defaults {
+            verify {
+                onCheck = true
+                rule("Branch coverage must exceed 90%") {
+                    isEnabled = true
+                    entity = GroupingEntityType.APPLICATION
+
+                    bound {
+                        minValue = 90
+                        metric = MetricType.BRANCH
+                        aggregation = AggregationType.COVERED_PERCENTAGE
+                    }
+                }
+            }
+        }
     }
 }
 
