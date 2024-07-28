@@ -2,7 +2,7 @@
 agp = "8.5.1"
 kotlin = "1.9.25"
 ktor = "2.3.12"
-okio = "3.7.0"
+okio = "3.9.0"
 reactive-extensions = "2.0.1"
 
 [libraries]
