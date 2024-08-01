@@ -15,7 +15,7 @@ androidx-workmanager = { module = "androidx.work:work-runtime-ktx", version = "2
 androidx-test-runner = { module = "androidx.test:runner", version = "1.6.1" }
 
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version = "0.6.0" }
-kotlinx-json-okio = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json-okio", version = "1.6.2" }
+kotlinx-json-okio = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json-okio", version = "1.7.1" }
 
 reactive-extensions = { module = "com.badoo.reaktive:reaktive", version.ref = "reactive-extensions" }
 reactive-extensions-coroutine = { module = "com.badoo.reaktive:coroutines-interop", version.ref = "reactive-extensions" }
