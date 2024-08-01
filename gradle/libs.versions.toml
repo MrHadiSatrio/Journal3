@@ -40,7 +40,7 @@ mockk = { module = "io.mockk:mockk", version = "1.13.12" }
 recycler-view-spacing = { module = "com.github.grzegorzojdana:SpacingItemDecoration", version = "1.1.0" }
 sentry = { module = "io.sentry:sentry-android", version = "7.13.0" }
 tflite = { module = "org.tensorflow:tensorflow-lite-task-text", version = "0.4.4" }
-robolectric = { module = "org.robolectric:robolectric", version = "4.11.1" }
+robolectric = { module = "org.robolectric:robolectric", version = "4.13" }
 uri = { module = "com.chrynan.uri:uri-core", version = "0.4.0" }
 uuid = { module = "com.benasher44:uuid", version = "0.8.4" }
 
