@@ -3,7 +3,7 @@ agp = "8.5.1"
 kotlin = "1.9.25"
 ktor = "2.3.12"
 okio = "3.9.0"
-reactive-extensions = "2.0.1"
+reactive-extensions = "2.2.0"
 
 [libraries]
 androidx-appcompat = { module = "androidx.appcompat:appcompat", version = "1.7.0" }
