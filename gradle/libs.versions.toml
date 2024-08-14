@@ -12,7 +12,7 @@ androidx-recyclerview = { module = "androidx.recyclerview:recyclerview", version
 androidx-viewpager2 = { module = "androidx.viewpager2:viewpager2", version = "1.1.0" }
 androidx-startup = { module = "androidx.startup:startup-runtime", version = "1.1.1" }
 androidx-workmanager = { module = "androidx.work:work-runtime-ktx", version = "2.9.0" }
-androidx-test-runner = { module = "androidx.test:runner", version = "1.6.1" }
+androidx-test-runner = { module = "androidx.test:runner", version = "1.6.2" }
 
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version = "0.6.0" }
 kotlinx-json-okio = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json-okio", version = "1.7.1" }
