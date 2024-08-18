@@ -24,7 +24,7 @@ android {
 
     defaultConfig {
         applicationId = "com.hadisatrio.apps.android.journal3"
-        minSdk = 23
+        minSdk = 24
         targetSdk = 33
         buildConfigField(
             type = "String",
