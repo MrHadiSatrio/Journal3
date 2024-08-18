@@ -1,0 +1,31 @@
+#!/bin/sh
+
+# Check if colima is installed.
+if ! command -v colima >/dev/null 2>&1; then
+    echo "Error: colima is not installed. Please install colima first."
+    exit 1
+fi
+
+# Check if docker is installed.
+if ! command -v docker >/dev/null 2>&1; then
+    echo "Error: docker is not installed. Please install docker first."
+    exit 1
+fi
+
+# Check if colima is running.
+if ! colima status >/dev/null 2>&1; then
+    colima start
+fi
+
+# Check if docker daemon is responsive.
+if ! docker info >/dev/null 2>&1; then
+    echo "Error: Docker daemon is not responsive. Please check your Docker installation."
+    exit 1
+fi
+
+# If all checks pass, run the docker container.
+docker run \
+    -p 0.0.0.0:3000:3000 \
+    -p 0.0.0.0:4317:4317 \
+    -p 0.0.0.0:4318:4318 \
+    --rm -it grafana/otel-lgtm
