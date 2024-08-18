@@ -56,6 +56,9 @@
             android:exported="false"
             tools:node="merge">
             <meta-data
+                android:name="com.hadisatrio.apps.android.journal3.OpenTelemetryInitializer"
+                android:value="androidx.startup" />
+            <meta-data
                 android:name="com.hadisatrio.apps.android.journal3.SentryInitializer"
                 android:value="androidx.startup" />
             <meta-data

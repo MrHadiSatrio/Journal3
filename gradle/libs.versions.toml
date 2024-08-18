@@ -28,9 +28,13 @@ ktor = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 ktor-android = { module = "io.ktor:ktor-client-android", version.ref = "ktor" }
 ktor-mock-engine = { module = "io.ktor:ktor-client-mock", version.ref = "ktor" }
 
+opentelemetry-exporter-otlp = { module = "io.opentelemetry:opentelemetry-exporter-otlp", version = "1.41.0" }
+opentelemetry-android = { module = "io.opentelemetry.android:android-agent", version = "0.7.0-alpha" }
+
 junit4 = { module = "junit:junit", version = "4.13.2" }
 
 assent = { module = "com.afollestad.assent:core", version = "3.0.2" }
+desugar = { module = "com.android.tools:desugar_jdk_libs", version = "2.0.4" }
 detekt-formatting = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", version = "1.23.6" }
 flow-binding = { module = "io.github.reactivecircus.flowbinding:flowbinding-android", version = "1.2.0" }
 glide = { module = "com.github.bumptech.glide:glide", version = "4.16.0" }

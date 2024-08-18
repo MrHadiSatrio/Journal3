@@ -13,10 +13,34 @@ android {
     namespace = "com.hadisatrio.apps.android.journal3"
 
     compileSdk = 34
+    compileOptions {
+        isCoreLibraryDesugaringEnabled = true
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+
     defaultConfig {
         applicationId = "com.hadisatrio.apps.android.journal3"
         minSdk = 23
         targetSdk = 33
+        buildConfigField(
+            type = "String",
+            name = "OPENTELEMETRY_AUTHORITY",
+            value = project.findProperty("opentelemetry.authority") as String? ?: "\"10.0.2.2:4318\""
+        )
+        buildConfigField(
+            type = "String",
+            name = "OPENTELEMETRY_TRACES_PATH",
+            value = project.findProperty("opentelemetry.traces.path") as String? ?: "\"v1/traces\""
+        )
+        buildConfigField(
+            type = "String",
+            name = "OPENTELEMETRY_LOGS_PATH",
+            value = project.findProperty("opentelemetry.logs.path") as String? ?: "\"v1/logs\""
+        )
     }
 
     signingConfigs {
@@ -63,6 +87,7 @@ android {
 }
 
 dependencies {
+    coreLibraryDesugaring(libs.desugar)
     implementation(project(":app-kmm-journal3"))
     implementation(libs.androidx.fragment)
     implementation(libs.androidx.startup)
@@ -76,6 +101,8 @@ dependencies {
     implementation(libs.sentry)
     implementation(libs.tflite)
     implementation(libs.recycler.view.spacing)
+    implementation(libs.opentelemetry.android)
+    implementation(libs.opentelemetry.exporter.otlp)
     testImplementation(libs.androidx.test.runner)
     testImplementation(libs.junit4)
     testImplementation(libs.mockk)
