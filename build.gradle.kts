@@ -1,8 +1,8 @@
 import io.gitlab.arturbosch.detekt.extensions.DetektExtension
 import kotlinx.kover.gradle.plugin.dsl.AggregationType
 import kotlinx.kover.gradle.plugin.dsl.GroupingEntityType
-import kotlinx.kover.gradle.plugin.dsl.KoverReportExtension
-import kotlinx.kover.gradle.plugin.dsl.MetricType
+import kotlinx.kover.gradle.plugin.dsl.KoverProjectExtension
+import kotlinx.kover.gradle.plugin.dsl.CoverageUnit
 
 plugins {
     //trick: for the same plugin versions in all sub-modules
@@ -18,7 +18,7 @@ plugins {
 allprojects {
     configurations.all {
         resolutionStrategy {
-            force("org.xerial:sqlite-jdbc:3.46.0.1")
+            force("org.xerial:sqlite-jdbc:3.46.0.0")
         }
     }
 }
@@ -46,23 +46,24 @@ subprojects {
     }
 
     apply(plugin = libs.plugins.kover.get().pluginId)
-    extensions.configure<KoverReportExtension> {
-        filters {
-            excludes {
-                classes("*Fake*", "*Test")
+    extensions.configure<KoverProjectExtension> {
+        reports {
+            filters {
+                excludes {
+                    classes("*Fake*", "*Test")
+                }
             }
-        }
-        defaults {
-            verify {
-                onCheck = true
-                rule("Branch coverage must exceed 90%") {
-                    isEnabled = true
-                    entity = GroupingEntityType.APPLICATION
+            total {
+                verify {
+                    onCheck = true
+                    rule("Branch coverage must exceed 90%") {
+                        groupBy = GroupingEntityType.APPLICATION
 
-                    bound {
-                        minValue = 90
-                        metric = MetricType.BRANCH
-                        aggregation = AggregationType.COVERED_PERCENTAGE
+                        bound {
+                            minValue = 90
+                            coverageUnits = CoverageUnit.BRANCH
+                            aggregationForGroup = AggregationType.COVERED_PERCENTAGE
+                        }
                     }
                 }
             }
