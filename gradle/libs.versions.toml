@@ -1,5 +1,5 @@
 [versions]
-agp = "8.5.1"
+agp = "8.7.1"
 kotlin = "2.0.0"
 ktor = "2.3.12"
 okio = "3.9.0"
