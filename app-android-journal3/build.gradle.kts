@@ -96,6 +96,13 @@ ruler {
     }
 }
 
+tasks.named("check").configure {
+    val isOnCi = providers.environmentVariable("CI").isPresent
+    
+    dependsOn("analyzeDebugBundle")
+    if (isOnCi) dependsOn("analyzeReleaseBundle")
+}
+
 sentry {
     org.set("mrhadisatrio")
     projectName.set("journal3")
