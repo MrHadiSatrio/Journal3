@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.kotlinAndroid)
     alias(libs.plugins.sentry)
+    alias(libs.plugins.ruler)
     alias(libs.plugins.appVersioning)
 }
 
@@ -81,6 +82,25 @@ dependencies {
     testImplementation(libs.mockk)
     testImplementation(libs.kotest.assertions)
     testImplementation(libs.robolectric)
+}
+
+ruler {
+    abi.set("arm64-v8a")
+    locale.set("en")
+    screenDensity.set(422)
+    sdkVersion.set(34)
+
+    verification {
+        downloadSizeThreshold = 15_000_000
+        installSizeThreshold = 35_000_000
+    }
+}
+
+tasks.named("check").configure {
+    val isOnCi = providers.environmentVariable("CI").isPresent
+    
+    dependsOn("analyzeDebugBundle")
+    if (isOnCi) dependsOn("analyzeReleaseBundle")
 }
 
 sentry {
