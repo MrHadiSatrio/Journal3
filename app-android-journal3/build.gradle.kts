@@ -89,6 +89,11 @@ ruler {
     locale.set("en")
     screenDensity.set(422)
     sdkVersion.set(34)
+
+    verification {
+        downloadSizeThreshold = 15_000_000
+        installSizeThreshold = 35_000_000
+    }
 }
 
 sentry {
