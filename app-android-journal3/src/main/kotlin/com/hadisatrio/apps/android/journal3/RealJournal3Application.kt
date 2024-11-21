@@ -17,6 +17,11 @@
 
 package com.hadisatrio.apps.android.journal3
 
+import android.app.Activity
+import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.badoo.reaktive.scheduler.computationScheduler
 import com.badoo.reaktive.scheduler.mainScheduler
@@ -47,6 +52,8 @@ import com.hadisatrio.apps.kotlin.journal3.story.Stories
 import com.hadisatrio.apps.kotlin.journal3.story.fake.FakeStories
 import com.hadisatrio.apps.kotlin.journal3.story.filesystem.FilesystemStories
 import com.hadisatrio.apps.kotlin.journal3.token.TokenableString
+import com.hadisatrio.libs.android.LayoutDepth
+import com.hadisatrio.libs.android.LayoutDepthOverlay
 import com.hadisatrio.libs.android.foundation.ExecutorDispatchingUseCase
 import com.hadisatrio.libs.android.foundation.activity.CurrentActivity
 import com.hadisatrio.libs.android.foundation.event.ExecutorDispatchingEventSink
@@ -283,5 +290,36 @@ class RealJournal3Application : Journal3Application() {
     override fun onCreate() {
         super.onCreate()
         DynamicColors.applyToActivitiesIfAvailable(this)
+        
+        registerActivityLifecycleCallbacks(
+            object : ActivityLifecycleCallbacks {
+
+                val h = Handler(Looper.getMainLooper())
+
+                override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
+                }
+
+                override fun onActivityStarted(activity: Activity) {
+                }
+
+                override fun onActivityResumed(activity: Activity) {
+                    h.postDelayed({
+                        LayoutDepthOverlay(activity).apply(3)
+                    }, 1000)
+                }
+
+                override fun onActivityPaused(activity: Activity) {
+                }
+
+                override fun onActivityStopped(activity: Activity) {
+                }
+
+                override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {
+                }
+
+                override fun onActivityDestroyed(activity: Activity) {
+                }
+            }
+        )
     }
 }

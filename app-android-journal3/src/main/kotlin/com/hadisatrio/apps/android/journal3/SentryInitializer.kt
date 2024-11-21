@@ -25,6 +25,7 @@ import io.sentry.android.core.SentryAndroid
 class SentryInitializer : Initializer<Unit> {
 
     override fun create(context: Context) {
+        return
         SentryAndroid.init(context) { options ->
             options.dsn = BuildConfig.KEY_SENTRY
             options.environment = BuildConfig.BUILD_TYPE
