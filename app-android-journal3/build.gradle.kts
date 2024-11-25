@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.kotlinAndroid)
+    alias(libs.plugins.compose)
     alias(libs.plugins.sentry)
     alias(libs.plugins.ruler)
     alias(libs.plugins.appVersioning)
@@ -18,6 +19,10 @@ android {
         applicationId = "com.hadisatrio.apps.android.journal3"
         minSdk = 23
         targetSdk = 33
+    }
+
+    buildFeatures {
+        compose = true
     }
 
     signingConfigs {
@@ -64,7 +69,15 @@ android {
 }
 
 dependencies {
+    val composeBom = platform(libs.androidx.compose.bom)
     implementation(project(":app-kmm-journal3"))
+    implementation(composeBom)
+    implementation(libs.androidx.compose.preview)
+    implementation(libs.androidx.compose.tooling)
+    implementation(libs.androidx.compose.foundation)
+    implementation(libs.androidx.compose.material)
+    implementation(libs.androidx.compose.activity)
+    implementation(libs.androidx.compose.viewmodel)
     implementation(libs.androidx.fragment)
     implementation(libs.androidx.startup)
     implementation(libs.androidx.workmanager)
