@@ -24,6 +24,7 @@ import com.hadisatrio.apps.android.journal3.moment.DeleteAMomentActivity
 import com.hadisatrio.apps.android.journal3.moment.EditAMomentActivity
 import com.hadisatrio.apps.android.journal3.story.DeleteAStoryActivity
 import com.hadisatrio.apps.android.journal3.story.EditAStoryActivity
+import com.hadisatrio.apps.android.journal3.story.EditAStoryComposeActivity
 import com.hadisatrio.apps.android.journal3.story.ViewStoryActivity
 import com.hadisatrio.libs.android.foundation.activity.CurrentActivity
 import com.hadisatrio.libs.kotlin.foundation.event.Event
@@ -71,7 +72,7 @@ class ActivityRoutingEventSink(
     }
 
     private fun Activity.startEditAStoryActivity(event: SelectionEvent) {
-        val intent = Intent(this, EditAStoryActivity::class.java)
+        val intent = Intent(this, EditAStoryComposeActivity::class.java)
         intent.putExtra("target_id", event["story_id"])
         startActivity(intent)
     }

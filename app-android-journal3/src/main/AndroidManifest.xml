@@ -87,15 +87,24 @@
             tools:node="remove" />
 
         <activity
-            android:name=".RootActivity"
+            android:name=".story.ViewStoriesComposeActivity"
             android:exported="true"
-            android:launchMode="singleTop"
-            android:theme="@style/Theme.Journal3.NoActionBar">
+            android:theme="@style/Theme.Journal3">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".story.EditAStoryComposeActivity"
+            android:theme="@style/Theme.Journal3" />
+
+        <activity
+            android:name=".RootActivity"
+            android:exported="true"
+            android:launchMode="singleTop"
+            android:theme="@style/Theme.Journal3.NoActionBar" />
 
         <activity
             android:name=".story.ViewStoryActivity"
