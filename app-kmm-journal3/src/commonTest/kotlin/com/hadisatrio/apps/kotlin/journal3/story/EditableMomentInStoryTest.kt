@@ -22,7 +22,7 @@ import com.hadisatrio.apps.kotlin.journal3.datetime.LiteralTimestamp
 import com.hadisatrio.apps.kotlin.journal3.id.INVALID_UUID
 import com.hadisatrio.apps.kotlin.journal3.moment.EditableMoment
 import com.hadisatrio.apps.kotlin.journal3.sentiment.Sentiment
-import com.hadisatrio.apps.kotlin.journal3.story.fake.FakeStories
+import com.hadisatrio.apps.kotlin.journal3.story.fake.FakeStory
 import com.hadisatrio.apps.kotlin.journal3.token.TokenableString
 import com.hadisatrio.libs.kotlin.geography.fake.FakePlace
 import io.kotest.matchers.shouldBe
@@ -31,16 +31,14 @@ import kotlin.test.Test
 
 class EditableMomentInStoryTest {
 
-    private val stories = SelfPopulatingStories(1, 1, FakeStories())
-    private val story = stories.first() as EditableStory
+    private val story = SelfPopulatingStory(1, FakeStory())
     private val moment = story.moments.first() as EditableMoment
 
     @Test
     fun `Finds and delegates to an existing moment given a valid target ID`() {
         val editableMoment = EditableMomentInStory(
-            storyId = story.id,
             targetId = moment.id,
-            stories = stories
+            story = story
         )
         editableMoment.id.shouldBe(moment.id)
         editableMoment.timestamp.shouldBe(moment.timestamp)
@@ -69,11 +67,10 @@ class EditableMomentInStoryTest {
     @Test
     fun `Delegates to a new moment given an empty target ID`() {
         val editableMoment = EditableMomentInStory(
-            storyId = story.id,
             targetId = INVALID_UUID,
-            stories = stories
+            story = story
         )
         editableMoment.id
-        stories.moments.count().shouldBe(2)
+        story.moments.count().shouldBe(2)
     }
 }

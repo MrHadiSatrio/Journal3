@@ -23,7 +23,6 @@ import android.view.LayoutInflater
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.RecyclerView
-import com.benasher44.uuid.uuidFrom
 import com.grzegorzojdana.spacingitemdecoration.Spacing
 import com.grzegorzojdana.spacingitemdecoration.SpacingItemDecoration
 import com.hadisatrio.apps.android.journal3.R
@@ -161,8 +160,7 @@ class ViewStoryActivity : AppCompatActivity() {
     private val useCase: UseCase by lazy {
         journal3Application.useCaseDecor.apply(
             ShowStoryUseCase(
-                storyId = uuidFrom(intent.getStringExtra("target_id")!!),
-                stories = journal3Application.stories,
+                story = journal3Application.story,
                 presenter = presenter,
                 eventSource = eventSource,
                 eventSink = eventSink

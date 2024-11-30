@@ -18,7 +18,7 @@
 package com.hadisatrio.apps.kotlin.journal3.alert
 
 import com.hadisatrio.apps.kotlin.journal3.datetime.LiteralTimestamp
-import com.hadisatrio.apps.kotlin.journal3.story.Stories
+import com.hadisatrio.apps.kotlin.journal3.story.Story
 import com.hadisatrio.libs.kotlin.foundation.EventHandlingUseCase
 import com.hadisatrio.libs.kotlin.foundation.event.CancellationEvent
 import com.hadisatrio.libs.kotlin.foundation.event.Event
@@ -34,7 +34,7 @@ import kotlin.time.Duration
 
 class AlertInactivityUseCase(
     private val threshold: Duration,
-    private val stories: Stories,
+    private val story: Story,
     private val presenter: Presenter<Modal>,
     eventSource: EventSource,
     eventSink: EventSink
@@ -46,9 +46,9 @@ class AlertInactivityUseCase(
     }
 
     private fun isAlertNecessary(): Boolean {
-        if (!stories.hasMoments()) return true
+        if (story.moments.count() < 1) return true
         val currentTimestamp = LiteralTimestamp(Clock.System.now())
-        val mostRecentTimestamp = stories.mostRecentMoment().timestamp
+        val mostRecentTimestamp = story.moments.mostRecent().timestamp
         return currentTimestamp.difference(mostRecentTimestamp) > threshold
     }
 
@@ -65,7 +65,7 @@ class AlertInactivityUseCase(
             SelectionEvent(
                 selectionKind = "action",
                 selectedIdentifier = "add_moment",
-                "story_id" to stories.first().id.toString()
+                "story_id" to story.id.toString()
             )
         )
         complete()

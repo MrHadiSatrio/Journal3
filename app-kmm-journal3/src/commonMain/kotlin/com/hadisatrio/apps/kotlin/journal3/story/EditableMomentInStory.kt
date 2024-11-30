@@ -28,17 +28,15 @@ import com.hadisatrio.apps.kotlin.journal3.token.TokenableString
 import com.hadisatrio.libs.kotlin.geography.Place
 
 class EditableMomentInStory(
-    private val storyId: Uuid,
     private val targetId: Uuid,
-    private val stories: Stories
+    private val story: Story
 ) : EditableMoment {
 
     private val origin: EditableMoment by lazy {
         if (targetId != INVALID_UUID) {
-            stories.findMoment(targetId).first() as EditableMoment
+            story.moments.find(targetId).first() as EditableMoment
         } else {
-            val story = stories.findStory(storyId).first() as EditableStory
-            story.new()
+            (story as EditableStory).new()
         }
     }
 

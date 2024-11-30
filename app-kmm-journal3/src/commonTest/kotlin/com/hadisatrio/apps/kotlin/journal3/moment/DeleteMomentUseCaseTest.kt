@@ -19,8 +19,8 @@ package com.hadisatrio.apps.kotlin.journal3.moment
 
 import com.hadisatrio.apps.kotlin.journal3.event.UnsupportedEvent
 import com.hadisatrio.apps.kotlin.journal3.id.INVALID_UUID
-import com.hadisatrio.apps.kotlin.journal3.story.SelfPopulatingStories
-import com.hadisatrio.apps.kotlin.journal3.story.fake.FakeStories
+import com.hadisatrio.apps.kotlin.journal3.story.SelfPopulatingStory
+import com.hadisatrio.apps.kotlin.journal3.story.fake.FakeStory
 import com.hadisatrio.libs.kotlin.foundation.event.CompletionEvent
 import com.hadisatrio.libs.kotlin.foundation.event.RecordedEventSource
 import com.hadisatrio.libs.kotlin.foundation.event.fake.FakeEventSink
@@ -36,8 +36,7 @@ import kotlin.test.Test
 
 class DeleteMomentUseCaseTest {
 
-    private val stories = SelfPopulatingStories(1, 1, FakeStories())
-    private val story = stories.first()
+    private val story = SelfPopulatingStory(1, FakeStory())
     private val moment = story.moments.first()
     private val presenter = FakePresenter<Modal>()
     private val eventSink = FakeEventSink()
@@ -46,7 +45,7 @@ class DeleteMomentUseCaseTest {
     fun `Deletes the moment after the user confirms the request`() {
         DeleteMomentUseCase(
             momentId = moment.id,
-            stories = stories,
+            story = story,
             presenter = presenter,
             eventSource = RecordedEventSource(
                 ModalApprovalEvent("forgettable_deletion_confirmation")
@@ -63,7 +62,7 @@ class DeleteMomentUseCaseTest {
     fun `Don't delete the moment if the user don't confirm the request`() {
         DeleteMomentUseCase(
             momentId = moment.id,
-            stories = stories,
+            story = story,
             presenter = presenter,
             eventSource = RecordedEventSource(
                 ModalDismissalEvent("forgettable_deletion_confirmation")
@@ -84,7 +83,7 @@ class DeleteMomentUseCaseTest {
         ).forEach { event ->
             DeleteMomentUseCase(
                 momentId = INVALID_UUID,
-                stories = stories,
+                story = story,
                 presenter = presenter,
                 eventSource = RecordedEventSource(event),
                 eventSink = eventSink
@@ -99,7 +98,7 @@ class DeleteMomentUseCaseTest {
     fun `Does nothing when given an unsupported event`() {
         DeleteMomentUseCase(
             momentId = INVALID_UUID,
-            stories = stories,
+            story = story,
             presenter = presenter,
             eventSource = RecordedEventSource(
                 ModalApprovalEvent("foo"),

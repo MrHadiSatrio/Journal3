@@ -24,7 +24,7 @@ import kotlinx.datetime.Clock
 class SelfPopulatingStory(
     noOfMoments: Int,
     origin: EditableStory
-) : Story by origin {
+) : EditableStory by origin {
 
     init {
         repeat(noOfMoments) { rep ->

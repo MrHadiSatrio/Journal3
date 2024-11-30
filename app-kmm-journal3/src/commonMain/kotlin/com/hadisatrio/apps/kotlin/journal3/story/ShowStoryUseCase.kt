@@ -17,7 +17,6 @@
 
 package com.hadisatrio.apps.kotlin.journal3.story
 
-import com.benasher44.uuid.Uuid
 import com.hadisatrio.apps.kotlin.journal3.event.RefreshRequestEvent
 import com.hadisatrio.libs.kotlin.foundation.EventHandlingUseCase
 import com.hadisatrio.libs.kotlin.foundation.event.CancellationEvent
@@ -28,8 +27,7 @@ import com.hadisatrio.libs.kotlin.foundation.event.SelectionEvent
 import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
 
 class ShowStoryUseCase(
-    private val storyId: Uuid,
-    private val stories: Stories,
+    private val story: Story,
     private val presenter: Presenter<Story>,
     eventSource: EventSource,
     eventSink: EventSink
@@ -40,12 +38,7 @@ class ShowStoryUseCase(
     }
 
     private fun presentState() {
-        val story = stories.findStory(storyId).firstOrNull()
-        if (story == null) {
-            complete()
-        } else {
-            presenter.present(story)
-        }
+        presenter.present(story)
     }
 
     override fun handleEvent(event: Event) {
@@ -59,7 +52,6 @@ class ShowStoryUseCase(
     private fun handleSelectionEvent(event: SelectionEvent) {
         val kind = event.selectionKind
         val identifier = event.selectedIdentifier
-        val story = stories.findStory(storyId).first()
         when (kind) {
             "item_position" -> handleItemPositionSelectionEvent(story, identifier)
             "action" -> handleActionSelectionEvent(identifier, story)
