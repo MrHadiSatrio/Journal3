@@ -148,7 +148,7 @@ class RealJournal3Application : Journal3Application() {
                                 origin = VicinityMoments(
                                     coordinates = coordinates,
                                     distanceLimitInM = 100.0,
-                                    origin = stories.moments
+                                    origin = story.moments
                                 )
                             )
                         )
@@ -163,7 +163,7 @@ class RealJournal3Application : Journal3Application() {
                                     timeRange = LiteralTimestamp(clock.now() - 7.days)..LiteralTimestamp(clock.now()),
                                     origin = SentimentRangedMoments(
                                         sentimentRange = PositiveishSentimentRange,
-                                        origin = stories.moments
+                                        origin = story.moments
                                     )
                                 )
                             )
@@ -177,7 +177,7 @@ class RealJournal3Application : Journal3Application() {
                             origin = OrderRandomizingMoments(
                                 origin = SentimentRangedMoments(
                                     sentimentRange = VeryPositiveSentimentRange,
-                                    origin = stories.moments
+                                    origin = story.moments
                                 )
                             )
                         )
@@ -190,7 +190,7 @@ class RealJournal3Application : Journal3Application() {
                             origin = OrderRandomizingMoments(
                                 origin = SentimentRangedMoments(
                                     sentimentRange = NegativeishSentimentRange,
-                                    origin = stories.moments
+                                    origin = story.moments
                                 )
                             )
                         )
