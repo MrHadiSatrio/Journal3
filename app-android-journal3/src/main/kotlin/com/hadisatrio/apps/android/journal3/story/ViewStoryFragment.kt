@@ -20,7 +20,9 @@ package com.hadisatrio.apps.android.journal3.story
 import android.graphics.Rect
 import android.os.Bundle
 import android.view.LayoutInflater
-import androidx.appcompat.app.AppCompatActivity
+import android.view.View
+import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.RecyclerView
 import com.grzegorzojdana.spacingitemdecoration.Spacing
@@ -56,20 +58,20 @@ import com.hadisatrio.libs.kotlin.foundation.presentation.AdaptingPresenter
 import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
 import com.hadisatrio.libs.kotlin.foundation.presentation.Presenters
 
-class ViewStoryActivity : AppCompatActivity() {
+class ViewStoryFragment : Fragment() {
 
     private val presenter: Presenter<Story> by lazy {
         val titlePresenter = AdaptingPresenter(
             adapter = StoryStringAdapter("title"),
-            origin = TextViewStringPresenter(findViewById(R.id.title_label))
+            origin = TextViewStringPresenter(requireView().findViewById(R.id.title_label))
         )
         val synopsisPresenter = AdaptingPresenter(
             adapter = StoryStringAdapter("synopsis"),
-            origin = TextViewStringPresenter(findViewById(R.id.synopsis_label))
+            origin = TextViewStringPresenter(requireView().findViewById(R.id.synopsis_label))
         )
         val attachmentPresenter = AdaptingPresenter(
             adapter = StoryStringAdapter("attachment_count"),
-            origin = TextViewStringPresenter(findViewById(R.id.attachment_count_label))
+            origin = TextViewStringPresenter(requireView().findViewById(R.id.attachment_count_label))
         )
         val momentsViewFactory = ViewFactory { parent, _ ->
             val inflater = LayoutInflater.from(parent.context)
@@ -84,7 +86,7 @@ class ViewStoryActivity : AppCompatActivity() {
         val momentsPresenter = AdaptingPresenter<Story, Iterable<Moment>>(
             adapter = { story -> story.moments },
             origin = ListViewPresenter(
-                recyclerView = findViewById(R.id.moments_list),
+                recyclerView = requireView().findViewById(R.id.moments_list),
                 orientation = RecyclerView.VERTICAL,
                 viewFactory = momentsViewFactory,
                 viewRenderer = MomentCardViewRenderer,
@@ -126,23 +128,23 @@ class ViewStoryActivity : AppCompatActivity() {
                     eventFactory = { CancellationEvent("system") }
                 ),
                 ViewClickEventSource(
-                    view = findViewById(R.id.add_button),
+                    view = requireView().findViewById(R.id.add_button),
                     eventFactory = { SelectionEvent("action", "add") }
                 ),
                 ViewClickEventSource(
-                    view = findViewById(R.id.edit_button),
+                    view = requireView().findViewById(R.id.edit_button),
                     eventFactory = { SelectionEvent("action", "edit") }
                 ),
                 ViewClickEventSource(
-                    view = findViewById(R.id.delete_button),
+                    view = requireView().findViewById(R.id.delete_button),
                     eventFactory = { SelectionEvent("action", "delete") }
                 ),
                 ViewClickEventSource(
-                    view = findViewById(R.id.back_button),
+                    view = requireView().findViewById(R.id.back_button),
                     eventFactory = { CancellationEvent("user") }
                 ),
                 RecyclerViewItemSelectionEventSource(
-                    recyclerView = findViewById(R.id.moments_list)
+                    recyclerView = requireView().findViewById(R.id.moments_list)
                 )
             )
         )
@@ -152,7 +154,7 @@ class ViewStoryActivity : AppCompatActivity() {
         journal3Application.eventSinkDecor.apply(
             EventSinks(
                 journal3Application.globalEventSink,
-                ActivityCompletionEventSink(this)
+                ActivityCompletionEventSink(requireActivity())
             )
         )
     }
@@ -168,16 +170,21 @@ class ViewStoryActivity : AppCompatActivity() {
         )
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        return inflater.inflate(R.layout.fragment_view_story, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         setupViews()
         useCase()
     }
 
     private fun setupViews() {
-        setContentView(R.layout.activity_view_story)
-        setSupportActionBar(findViewById(R.id.bottom_bar))
-        findViewById<RecyclerView>(R.id.moments_list).addItemDecoration(
+        requireView().findViewById<RecyclerView>(R.id.moments_list).addItemDecoration(
             SpacingItemDecoration(
                 Spacing(
                     edges = Rect(0.dp, 16.dp, 0.dp, 16.dp),

@@ -20,15 +20,10 @@ package com.hadisatrio.apps.android.journal3
 import android.app.Application
 import androidx.activity.ComponentActivity
 import androidx.test.runner.AndroidJUnit4
-import com.benasher44.uuid.uuid4
 import com.hadisatrio.apps.android.journal3.geography.SelectAPlaceActivity
 import com.hadisatrio.apps.android.journal3.story.EditAStoryActivity
-import com.hadisatrio.apps.android.journal3.story.ViewStoryActivity
 import com.hadisatrio.libs.android.foundation.activity.CurrentActivity
 import com.hadisatrio.libs.kotlin.foundation.event.SelectionEvent
-import io.kotest.assertions.throwables.shouldThrow
-import io.kotest.matchers.nulls.shouldNotBeNull
-import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
 import org.junit.Before
 import org.junit.Ignore
@@ -71,20 +66,9 @@ class ActivityRoutingEventSinkTest {
 
     @Test(timeout = 5_000)
     fun `Starts ViewStoryActivity post receiving valid 'action' selection of 'view_story'`() {
-        val storyId = uuid4().toString()
-        eventSink.sink(SelectionEvent("action", "view_story?id=$storyId"))
+        eventSink.sink(SelectionEvent("action", "view_story"))
 
         val startedActivity = currentActivity.acquire()
-        startedActivity.shouldBeInstanceOf<ViewStoryActivity>()
-        val intentExtras = startedActivity.intent.extras
-        intentExtras.shouldNotBeNull()
-        intentExtras.getString("target_id").shouldBe(storyId)
-    }
-
-    @Test(timeout = 5_000)
-    fun `Throws IllegalArgumentException post receiving invalid 'action' selection of 'view_story'`() {
-        shouldThrow<IllegalArgumentException> {
-            eventSink.sink(SelectionEvent("action", "view_story"))
-        }
+        startedActivity.shouldBeInstanceOf<RootActivity>()
     }
 }

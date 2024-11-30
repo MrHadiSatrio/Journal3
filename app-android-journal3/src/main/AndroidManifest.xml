@@ -98,10 +98,6 @@
         </activity>
 
         <activity
-            android:name=".story.ViewStoryActivity"
-            android:theme="@style/Theme.Journal3.NoActionBar" />
-
-        <activity
             android:name=".story.EditAStoryActivity"
             android:theme="@style/Theme.Journal3.NoActionBar" />
 

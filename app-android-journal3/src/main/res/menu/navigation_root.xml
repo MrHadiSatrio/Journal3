@@ -24,9 +24,9 @@
         android:title="Reflections" />
 
     <item
-        android:id="@+id/view_stories_menu_item"
+        android:id="@+id/view_moments_menu_item"
         android:enabled="true"
         android:icon="@drawable/ic24_stories"
-        android:title="Stories" />
+        android:title="Moments" />
 
 </menu>
