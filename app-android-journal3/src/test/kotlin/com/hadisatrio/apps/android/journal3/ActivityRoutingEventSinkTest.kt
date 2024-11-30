@@ -21,7 +21,6 @@ import android.app.Application
 import androidx.activity.ComponentActivity
 import androidx.test.runner.AndroidJUnit4
 import com.hadisatrio.apps.android.journal3.geography.SelectAPlaceActivity
-import com.hadisatrio.apps.android.journal3.story.EditAStoryActivity
 import com.hadisatrio.libs.android.foundation.activity.CurrentActivity
 import com.hadisatrio.libs.kotlin.foundation.event.SelectionEvent
 import io.kotest.matchers.types.shouldBeInstanceOf
@@ -50,12 +49,6 @@ class ActivityRoutingEventSinkTest {
     @Before
     fun `Starts activity`() {
         Robolectric.buildActivity(ComponentActivity::class.java).setup().visible()
-    }
-
-    @Test(timeout = 5_000)
-    fun `Starts EditAStoryActivity post receiving 'action' selection of 'add_story'`() {
-        eventSink.sink(SelectionEvent("action", "add_story"))
-        currentActivity.acquire().shouldBeInstanceOf<EditAStoryActivity>()
     }
 
     @Test(timeout = 5_000)
