@@ -41,8 +41,6 @@ import com.hadisatrio.libs.android.dimensions.dp
 import com.hadisatrio.libs.android.foundation.activity.ActivityCompletionEventSink
 import com.hadisatrio.libs.android.foundation.lifecycle.LifecycleTriggeredEventSource
 import com.hadisatrio.libs.android.foundation.presentation.ExecutorDispatchingPresenter
-import com.hadisatrio.libs.android.foundation.widget.TextViewStringPresenter
-import com.hadisatrio.libs.android.foundation.widget.ViewClickEventSource
 import com.hadisatrio.libs.android.foundation.widget.recyclerview.ListViewPresenter
 import com.hadisatrio.libs.android.foundation.widget.recyclerview.RecyclerViewItemSelectionEventSource
 import com.hadisatrio.libs.android.foundation.widget.recyclerview.ViewFactory
@@ -52,27 +50,13 @@ import com.hadisatrio.libs.kotlin.foundation.event.EventSink
 import com.hadisatrio.libs.kotlin.foundation.event.EventSinks
 import com.hadisatrio.libs.kotlin.foundation.event.EventSource
 import com.hadisatrio.libs.kotlin.foundation.event.EventSources
-import com.hadisatrio.libs.kotlin.foundation.event.SelectionEvent
 import com.hadisatrio.libs.kotlin.foundation.event.SkippingEventSource
 import com.hadisatrio.libs.kotlin.foundation.presentation.AdaptingPresenter
 import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
-import com.hadisatrio.libs.kotlin.foundation.presentation.Presenters
 
 class ViewStoryFragment : Fragment() {
 
     private val presenter: Presenter<Story> by lazy {
-        val titlePresenter = AdaptingPresenter(
-            adapter = StoryStringAdapter("title"),
-            origin = TextViewStringPresenter(requireView().findViewById(R.id.title_label))
-        )
-        val synopsisPresenter = AdaptingPresenter(
-            adapter = StoryStringAdapter("synopsis"),
-            origin = TextViewStringPresenter(requireView().findViewById(R.id.synopsis_label))
-        )
-        val attachmentPresenter = AdaptingPresenter(
-            adapter = StoryStringAdapter("attachment_count"),
-            origin = TextViewStringPresenter(requireView().findViewById(R.id.attachment_count_label))
-        )
         val momentsViewFactory = ViewFactory { parent, _ ->
             val inflater = LayoutInflater.from(parent.context)
             val view = inflater.inflate(R.layout.view_moment_horz_card, parent, false)
@@ -99,12 +83,7 @@ class ViewStoryFragment : Fragment() {
             CachingStoryPresenter(
                 origin = ExecutorDispatchingPresenter(
                     executor = journal3Application.foregroundExecutor,
-                    origin = Presenters(
-                        titlePresenter,
-                        synopsisPresenter,
-                        attachmentPresenter,
-                        momentsPresenter
-                    )
+                    origin = momentsPresenter
                 )
             )
         )
@@ -126,22 +105,6 @@ class ViewStoryFragment : Fragment() {
                     lifecycleOwner = this,
                     lifecycleEvent = Lifecycle.Event.ON_DESTROY,
                     eventFactory = { CancellationEvent("system") }
-                ),
-                ViewClickEventSource(
-                    view = requireView().findViewById(R.id.add_button),
-                    eventFactory = { SelectionEvent("action", "add") }
-                ),
-                ViewClickEventSource(
-                    view = requireView().findViewById(R.id.edit_button),
-                    eventFactory = { SelectionEvent("action", "edit") }
-                ),
-                ViewClickEventSource(
-                    view = requireView().findViewById(R.id.delete_button),
-                    eventFactory = { SelectionEvent("action", "delete") }
-                ),
-                ViewClickEventSource(
-                    view = requireView().findViewById(R.id.back_button),
-                    eventFactory = { CancellationEvent("user") }
                 ),
                 RecyclerViewItemSelectionEventSource(
                     recyclerView = requireView().findViewById(R.id.moments_list)
