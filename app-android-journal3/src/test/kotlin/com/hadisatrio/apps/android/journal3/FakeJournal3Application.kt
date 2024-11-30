@@ -23,8 +23,11 @@ import com.hadisatrio.apps.kotlin.journal3.datetime.Timestamp
 import com.hadisatrio.apps.kotlin.journal3.sentiment.DumbSentimentAnalyst
 import com.hadisatrio.apps.kotlin.journal3.sentiment.SentimentAnalyst
 import com.hadisatrio.apps.kotlin.journal3.story.SelfPopulatingStories
+import com.hadisatrio.apps.kotlin.journal3.story.SelfPopulatingStory
 import com.hadisatrio.apps.kotlin.journal3.story.Stories
+import com.hadisatrio.apps.kotlin.journal3.story.Story
 import com.hadisatrio.apps.kotlin.journal3.story.fake.FakeStories
+import com.hadisatrio.apps.kotlin.journal3.story.fake.FakeStory
 import com.hadisatrio.libs.android.foundation.activity.CurrentActivity
 import com.hadisatrio.libs.kotlin.foundation.Decor
 import com.hadisatrio.libs.kotlin.foundation.UseCase
@@ -49,6 +52,7 @@ import kotlin.time.Duration.Companion.hours
 class FakeJournal3Application : Journal3Application() {
 
     override val places: Places by lazy { SelfPopulatingPlaces(10, FakePlaces()) }
+    override val story: Story by lazy { SelfPopulatingStory(10, FakeStory()) }
     override val stories: Stories by lazy { SelfPopulatingStories(10, 10, FakeStories()) }
     override val reflections: Stories by lazy { FakeStories() }
     override val modalPresenter: Presenter<Modal> by lazy { FakePresenter() }
