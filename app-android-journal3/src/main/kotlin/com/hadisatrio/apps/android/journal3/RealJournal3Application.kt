@@ -46,7 +46,6 @@ import com.hadisatrio.apps.kotlin.journal3.story.Reflection
 import com.hadisatrio.apps.kotlin.journal3.story.Stories
 import com.hadisatrio.apps.kotlin.journal3.story.Story
 import com.hadisatrio.apps.kotlin.journal3.story.fake.FakeStories
-import com.hadisatrio.apps.kotlin.journal3.story.filesystem.FilesystemStories
 import com.hadisatrio.apps.kotlin.journal3.story.filesystem.FilesystemStory
 import com.hadisatrio.apps.kotlin.journal3.token.TokenableString
 import com.hadisatrio.libs.android.foundation.ExecutorDispatchingUseCase
@@ -102,14 +101,6 @@ class RealJournal3Application : Journal3Application() {
         FilesystemStory(
             fileSystem = FileSystem.SYSTEM,
             directory = filesDir.absolutePath.toPath() / "content" / "8ea250bc-b6ef-4ab1-812c-3d7d04b8e14a",
-            memorables = memorables
-        )
-    }
-
-    override val stories: Stories by lazy {
-        FilesystemStories(
-            fileSystem = FileSystem.SYSTEM,
-            path = filesDir.absolutePath.toPath() / "content" / "stories",
             memorables = memorables
         )
     }
