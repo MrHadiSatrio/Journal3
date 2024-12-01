@@ -17,10 +17,9 @@
 
 package com.hadisatrio.apps.kotlin.journal3.story
 
-import com.benasher44.uuid.uuid4
 import com.hadisatrio.apps.kotlin.journal3.event.RefreshRequestEvent
 import com.hadisatrio.apps.kotlin.journal3.event.UnsupportedEvent
-import com.hadisatrio.apps.kotlin.journal3.story.fake.FakeStories
+import com.hadisatrio.apps.kotlin.journal3.story.fake.FakeStory
 import com.hadisatrio.libs.kotlin.foundation.event.CancellationEvent
 import com.hadisatrio.libs.kotlin.foundation.event.CompletionEvent
 import com.hadisatrio.libs.kotlin.foundation.event.EventSink
@@ -36,20 +35,14 @@ import kotlin.test.Test
 
 class ShowStoryUseCaseTest {
 
-    private val stories = SelfPopulatingStories(
-        noOfStories = 1,
-        noOfMoments = 1,
-        origin = FakeStories()
-    )
+    private val story = SelfPopulatingStory(1, FakeStory())
 
     @Test
     fun `Forwards story to the presenter`() {
-        val story = stories.first()
         val presenter = mockk<Presenter<Story>>(relaxed = true)
 
         ShowStoryUseCase(
-            storyId = story.id,
-            stories = stories,
+            story = story,
             presenter = presenter,
             eventSource = RecordedEventSource(CompletionEvent()),
             eventSink = mockk(relaxed = true)
@@ -60,12 +53,10 @@ class ShowStoryUseCaseTest {
 
     @Test
     fun `Forwards story to the presenter again when refresh is requested`() {
-        val story = stories.first()
         val presenter = mockk<Presenter<Story>>(relaxed = true)
 
         ShowStoryUseCase(
-            storyId = story.id,
-            stories = stories,
+            story = story,
             presenter = presenter,
             eventSource = RecordedEventSource(
                 RefreshRequestEvent("test"),
@@ -81,12 +72,10 @@ class ShowStoryUseCaseTest {
 
     @Test
     fun `Forwards to the sink when action 'add' is selected`() {
-        val story = stories.first()
         val eventSink = mockk<EventSink>(relaxed = true)
 
         ShowStoryUseCase(
-            storyId = story.id,
-            stories = stories,
+            story = story,
             presenter = mockk(relaxed = true),
             eventSource = RecordedEventSource(
                 SelectionEvent("action", "add"),
@@ -109,12 +98,10 @@ class ShowStoryUseCaseTest {
 
     @Test
     fun `Forwards to the sink when action 'delete' is selected`() {
-        val story = stories.first()
         val eventSink = mockk<EventSink>(relaxed = true)
 
         ShowStoryUseCase(
-            storyId = story.id,
-            stories = stories,
+            story = story,
             presenter = mockk(relaxed = true),
             eventSource = RecordedEventSource(
                 SelectionEvent("action", "delete"),
@@ -137,12 +124,10 @@ class ShowStoryUseCaseTest {
 
     @Test
     fun `Forwards to the sink when action 'edit' is selected`() {
-        val story = stories.first()
         val eventSink = mockk<EventSink>(relaxed = true)
 
         ShowStoryUseCase(
-            storyId = story.id,
-            stories = stories,
+            story = story,
             presenter = mockk(relaxed = true),
             eventSource = RecordedEventSource(
                 SelectionEvent("action", "edit"),
@@ -165,13 +150,11 @@ class ShowStoryUseCaseTest {
 
     @Test
     fun `Forwards to the sink when action 'item_position' is selected`() {
-        val story = stories.first()
         val moment = story.moments.first()
         val eventSink = mockk<EventSink>(relaxed = true)
 
         ShowStoryUseCase(
-            storyId = story.id,
-            stories = stories,
+            story = story,
             presenter = mockk(relaxed = true),
             eventSource = RecordedEventSource(
                 SelectionEvent("item_position", "0"),
@@ -198,8 +181,7 @@ class ShowStoryUseCaseTest {
         val eventSink = FakeEventSink()
 
         ShowStoryUseCase(
-            storyId = uuid4(),
-            stories = stories,
+            story = story,
             presenter = mockk<Presenter<Story>>(relaxed = true),
             eventSource = RecordedEventSource(CompletionEvent()),
             eventSink = eventSink
@@ -210,12 +192,9 @@ class ShowStoryUseCaseTest {
 
     @Test(timeout = 5_000)
     fun `Stops upon receiving cancellation events`() {
-        val story = stories.first()
-
         listOf(CancellationEvent("user"), CancellationEvent("system")).forEach { event ->
             ShowStoryUseCase(
-                storyId = story.id,
-                stories = stories,
+                story = story,
                 presenter = mockk(relaxed = true),
                 eventSource = RecordedEventSource(event),
                 eventSink = mockk(relaxed = true)
@@ -225,11 +204,8 @@ class ShowStoryUseCaseTest {
 
     @Test
     fun `Does nothing when given an unsupported event`() {
-        val story = stories.first()
-
         ShowStoryUseCase(
-            storyId = story.id,
-            stories = stories,
+            story = story,
             presenter = mockk(relaxed = true),
             eventSource = RecordedEventSource(
                 SelectionEvent("foo", "foo"),

@@ -193,14 +193,13 @@ class EditAMomentActivity : AppCompatActivity() {
                         clock = journal3Application.clock,
                         origin = UpdateDeferringMoment(
                             origin = EditableMomentInStory(
-                                storyId = intent.getUuidExtra("story_id"),
                                 targetId = intent.getUuidExtra("target_id"),
-                                stories = journal3Application.stories
+                                story = journal3Application.story
                             )
                         )
                     )
                 ),
-                stories = journal3Application.stories,
+                story = journal3Application.story,
                 places = journal3Application.places,
                 presenter = presenter,
                 modalPresenter = journal3Application.modalPresenter,

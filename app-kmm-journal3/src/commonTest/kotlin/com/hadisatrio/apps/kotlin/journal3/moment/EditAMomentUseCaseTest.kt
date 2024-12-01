@@ -21,9 +21,8 @@ import com.hadisatrio.apps.kotlin.journal3.datetime.LiteralTimestamp
 import com.hadisatrio.apps.kotlin.journal3.event.RefreshRequestEvent
 import com.hadisatrio.apps.kotlin.journal3.event.UnsupportedEvent
 import com.hadisatrio.apps.kotlin.journal3.sentiment.Sentiment
-import com.hadisatrio.apps.kotlin.journal3.story.EditableStory
-import com.hadisatrio.apps.kotlin.journal3.story.SelfPopulatingStories
-import com.hadisatrio.apps.kotlin.journal3.story.fake.FakeStories
+import com.hadisatrio.apps.kotlin.journal3.story.SelfPopulatingStory
+import com.hadisatrio.apps.kotlin.journal3.story.fake.FakeStory
 import com.hadisatrio.apps.kotlin.journal3.token.TokenableString
 import com.hadisatrio.libs.kotlin.foundation.event.CancellationEvent
 import com.hadisatrio.libs.kotlin.foundation.event.RecordedEventSource
@@ -57,13 +56,12 @@ class EditAMomentUseCaseTest {
 
     @Test
     fun `Updates the target moment-in-edit`() {
-        val stories = SelfPopulatingStories(noOfStories = 1, noOfMoments = 1, origin = FakeStories())
-        val story = stories.first()
+        val story = SelfPopulatingStory(1, FakeStory())
         val moment = story.moments.first()
 
         EditAMomentUseCase(
             moment = UpdateDeferringMoment(moment as EditableMoment),
-            stories = stories,
+            story = story,
             places = places,
             presenter = presenter,
             modalPresenter = modalPresenter,
@@ -89,13 +87,12 @@ class EditAMomentUseCaseTest {
 
     @Test
     fun `Prevents accidental cancellation by the user when a meaningful edit has been made`() {
-        val stories = SelfPopulatingStories(noOfStories = 1, noOfMoments = 1, origin = FakeStories())
-        val story = stories.first()
+        val story = SelfPopulatingStory(1, FakeStory())
         val moment = story.moments.first()
 
         EditAMomentUseCase(
             moment = UpdateDeferringMoment(moment as EditableMoment),
-            stories = stories,
+            story = story,
             places = places,
             presenter = presenter,
             modalPresenter = modalPresenter,
@@ -119,13 +116,12 @@ class EditAMomentUseCaseTest {
 
     @Test
     fun `Does not prevent accidental cancellation by the user when a meaningful edit has not been made`() {
-        val stories = SelfPopulatingStories(noOfStories = 1, noOfMoments = 0, origin = FakeStories())
-        val story = stories.first() as EditableStory
+        val story = FakeStory()
         val moment = story.new()
 
         EditAMomentUseCase(
             moment = UpdateDeferringMoment(moment),
-            stories = stories,
+            story = story,
             places = FakePlaces(),
             presenter = presenter,
             modalPresenter = modalPresenter,
@@ -146,13 +142,12 @@ class EditAMomentUseCaseTest {
 
     @Test
     fun `Deletes the moment-in-edit when it is a new one and the user cancels without editing`() {
-        val stories = SelfPopulatingStories(noOfStories = 1, noOfMoments = 0, origin = FakeStories())
-        val story = stories.first() as EditableStory
+        val story = FakeStory()
         val moment = story.new()
 
         EditAMomentUseCase(
             moment = UpdateDeferringMoment(moment),
-            stories = stories,
+            story = story,
             places = FakePlaces(),
             presenter = presenter,
             modalPresenter = modalPresenter,
@@ -170,14 +165,13 @@ class EditAMomentUseCaseTest {
 
     @Test
     fun `Does not delete the moment-in-edit when it is an existing one even if the user cancels without editing`() {
-        val stories = SelfPopulatingStories(noOfStories = 1, noOfMoments = 1, origin = FakeStories())
-        val story = stories.first()
+        val story = SelfPopulatingStory(1, FakeStory())
         val moment = story.moments.first() as EditableMoment
 
         moment.update(TokenableString("Fizz"))
         EditAMomentUseCase(
             moment = UpdateDeferringMoment(moment),
-            stories = stories,
+            story = story,
             places = FakePlaces(),
             presenter = presenter,
             modalPresenter = modalPresenter,
@@ -196,13 +190,12 @@ class EditAMomentUseCaseTest {
 
     @Test
     fun `Forwards the moment to the presenter again when refresh is requested`() {
-        val stories = SelfPopulatingStories(noOfStories = 1, noOfMoments = 1, origin = FakeStories())
-        val story = stories.first()
+        val story = SelfPopulatingStory(1, FakeStory())
         val moment = story.moments.first()
 
         EditAMomentUseCase(
             moment = UpdateDeferringMoment(moment as EditableMoment),
-            stories = stories,
+            story = story,
             places = places,
             presenter = presenter,
             modalPresenter = modalPresenter,
@@ -221,13 +214,12 @@ class EditAMomentUseCaseTest {
 
     @Test
     fun `Forwards to the sink when action 'delete' is selected`() {
-        val stories = SelfPopulatingStories(noOfStories = 1, noOfMoments = 1, origin = FakeStories())
-        val story = stories.first()
+        val story = SelfPopulatingStory(1, FakeStory())
         val moment = story.moments.first()
 
         EditAMomentUseCase(
             moment = UpdateDeferringMoment(moment as EditableMoment),
-            stories = stories,
+            story = story,
             places = FakePlaces(),
             presenter = presenter,
             modalPresenter = modalPresenter,
@@ -249,14 +241,13 @@ class EditAMomentUseCaseTest {
 
     @Test
     fun `Consults the paraphraser upon request`() {
-        val stories = SelfPopulatingStories(noOfStories = 1, noOfMoments = 1, origin = FakeStories())
-        val story = stories.first()
+        val story = SelfPopulatingStory(1, FakeStory())
         val moment = story.moments.first()
         val paraphraser = spyk(DumbParaphraser)
 
         EditAMomentUseCase(
             moment = UpdateDeferringMoment(moment as EditableMoment),
-            stories = stories,
+            story = story,
             places = FakePlaces(),
             presenter = presenter,
             modalPresenter = modalPresenter,
@@ -276,14 +267,13 @@ class EditAMomentUseCaseTest {
 
     @Test(timeout = 5_000)
     fun `Stops upon receiving cancellation events`() {
-        val stories = SelfPopulatingStories(noOfStories = 1, noOfMoments = 1, origin = FakeStories())
-        val story = stories.first()
+        val story = SelfPopulatingStory(1, FakeStory())
         val moment = story.moments.first()
 
         listOf(CancellationEvent("system")).forEach { event ->
             EditAMomentUseCase(
                 moment = UpdateDeferringMoment(moment as EditableMoment),
-                stories = stories,
+                story = story,
                 places = places,
                 presenter = presenter,
                 modalPresenter = modalPresenter,
@@ -296,13 +286,12 @@ class EditAMomentUseCaseTest {
 
     @Test
     fun `Ignores unknown events without repercussions`() {
-        val stories = SelfPopulatingStories(noOfStories = 1, noOfMoments = 1, origin = FakeStories())
-        val story = stories.first()
+        val story = SelfPopulatingStory(1, FakeStory())
         val moment = story.moments.first()
 
         EditAMomentUseCase(
             moment = UpdateDeferringMoment(moment as EditableMoment),
-            stories = stories,
+            story = story,
             places = places,
             presenter = presenter,
             modalPresenter = modalPresenter,

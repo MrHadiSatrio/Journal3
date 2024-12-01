@@ -24,7 +24,7 @@ import com.chrynan.uri.core.fromString
 import com.hadisatrio.apps.kotlin.journal3.datetime.LiteralTimestamp
 import com.hadisatrio.apps.kotlin.journal3.event.RefreshRequestEvent
 import com.hadisatrio.apps.kotlin.journal3.sentiment.Sentiment
-import com.hadisatrio.apps.kotlin.journal3.story.Stories
+import com.hadisatrio.apps.kotlin.journal3.story.Story
 import com.hadisatrio.apps.kotlin.journal3.token.TokenableString
 import com.hadisatrio.libs.kotlin.foundation.EventHandlingUseCase
 import com.hadisatrio.libs.kotlin.foundation.event.CancellationEvent
@@ -46,7 +46,7 @@ import com.hadisatrio.libs.kotlin.paraphrase.Paraphraser
 )
 class EditAMomentUseCase(
     private val moment: MomentInEdit,
-    private val stories: Stories,
+    private val story: Story,
     private val places: Places,
     private val presenter: Presenter<Moment>,
     private val modalPresenter: Presenter<Modal>,
@@ -65,7 +65,7 @@ class EditAMomentUseCase(
     }
 
     private fun present() {
-        if (!isTargetNew && !stories.containsMoment(targetId)) {
+        if (!isTargetNew && story.moments.find(targetId).count() == 0) {
             isEditCancelled = true
             complete()
         } else {

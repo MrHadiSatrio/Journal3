@@ -22,9 +22,6 @@ import android.content.Intent
 import com.hadisatrio.apps.android.journal3.geography.SelectAPlaceActivity
 import com.hadisatrio.apps.android.journal3.moment.DeleteAMomentActivity
 import com.hadisatrio.apps.android.journal3.moment.EditAMomentActivity
-import com.hadisatrio.apps.android.journal3.story.DeleteAStoryActivity
-import com.hadisatrio.apps.android.journal3.story.EditAStoryActivity
-import com.hadisatrio.apps.android.journal3.story.ViewStoryActivity
 import com.hadisatrio.libs.android.foundation.activity.CurrentActivity
 import com.hadisatrio.libs.kotlin.foundation.event.Event
 import com.hadisatrio.libs.kotlin.foundation.event.EventSink
@@ -40,11 +37,7 @@ class ActivityRoutingEventSink(
         val activity = currentActivity.acquire()
         when (identifier) {
             "view_reflections" -> activity.startViewReflectionsActivity()
-            "add_story" -> activity.startActivity(Intent(activity, EditAStoryActivity::class.java))
-            "edit_story" -> activity.startEditAStoryActivity(event)
-            "delete_story" -> activity.startDeleteAStoryActivity(event)
-            "view_story" -> activity.startViewStoryActivity(event)
-            "view_stories" -> activity.startViewStoriesActivity()
+            "view_story" -> activity.startViewStoryActivity()
             "add_moment" -> activity.startAddAMomentActivity(event)
             "edit_moment" -> activity.startEditAMomentActivity(event)
             "delete_moment" -> activity.startDeleteAMomentActivity(event)
@@ -58,27 +51,9 @@ class ActivityRoutingEventSink(
         startActivity(intent)
     }
 
-    private fun Activity.startViewStoriesActivity() {
+    private fun Activity.startViewStoryActivity() {
         val intent = Intent(this, RootActivity::class.java)
-        intent.setAction("view_stories")
-        startActivity(intent)
-    }
-
-    private fun Activity.startViewStoryActivity(event: SelectionEvent) {
-        val intent = Intent(this, ViewStoryActivity::class.java)
-        intent.putExtra("target_id", event["story_id"])
-        startActivity(intent)
-    }
-
-    private fun Activity.startEditAStoryActivity(event: SelectionEvent) {
-        val intent = Intent(this, EditAStoryActivity::class.java)
-        intent.putExtra("target_id", event["story_id"])
-        startActivity(intent)
-    }
-
-    private fun Activity.startDeleteAStoryActivity(event: SelectionEvent) {
-        val intent = Intent(this, DeleteAStoryActivity::class.java)
-        intent.putExtra("target_id", event["story_id"])
+        intent.setAction("view_story")
         startActivity(intent)
     }
 

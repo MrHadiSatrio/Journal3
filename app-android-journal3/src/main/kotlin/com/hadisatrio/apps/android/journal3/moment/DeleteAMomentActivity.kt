@@ -35,7 +35,7 @@ class DeleteAMomentActivity : AppCompatActivity() {
         journal3Application.useCaseDecor.apply(
             DeleteMomentUseCase(
                 momentId = uuidFrom(intent.getStringExtra("target_id")!!),
-                stories = journal3Application.stories,
+                story = journal3Application.story,
                 presenter = journal3Application.presenterDecor<Modal>().apply(
                     ExecutorDispatchingPresenter(
                         executor = journal3Application.foregroundExecutor,

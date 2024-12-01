@@ -15,18 +15,14 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/margin">
 
-    <item
-        android:id="@+id/view_reflections_menu_item"
-        android:enabled="true"
-        android:icon="@drawable/ic24_reflections"
-        android:title="Reflections" />
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/moments_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
-    <item
-        android:id="@+id/view_moments_menu_item"
-        android:enabled="true"
-        android:icon="@drawable/ic24_stories"
-        android:title="Moments" />
-
-</menu>
+</FrameLayout>

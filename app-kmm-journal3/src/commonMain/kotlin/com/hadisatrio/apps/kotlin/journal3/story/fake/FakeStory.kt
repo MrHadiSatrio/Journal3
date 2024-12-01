@@ -29,8 +29,8 @@ import com.hadisatrio.apps.kotlin.journal3.story.Story
 import com.hadisatrio.apps.kotlin.journal3.token.TokenableString
 
 class FakeStory(
-    override val id: Uuid,
-    private val group: MutableList<Story>
+    override val id: Uuid = uuid4(),
+    private val group: MutableList<Story> = mutableListOf()
 ) : EditableStory {
 
     private var isForgotten: Boolean = false

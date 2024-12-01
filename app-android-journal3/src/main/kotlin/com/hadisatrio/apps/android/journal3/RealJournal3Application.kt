@@ -44,8 +44,9 @@ import com.hadisatrio.apps.kotlin.journal3.story.InitDeferringStories
 import com.hadisatrio.apps.kotlin.journal3.story.MomentfulStories
 import com.hadisatrio.apps.kotlin.journal3.story.Reflection
 import com.hadisatrio.apps.kotlin.journal3.story.Stories
+import com.hadisatrio.apps.kotlin.journal3.story.Story
 import com.hadisatrio.apps.kotlin.journal3.story.fake.FakeStories
-import com.hadisatrio.apps.kotlin.journal3.story.filesystem.FilesystemStories
+import com.hadisatrio.apps.kotlin.journal3.story.filesystem.FilesystemStory
 import com.hadisatrio.apps.kotlin.journal3.token.TokenableString
 import com.hadisatrio.libs.android.foundation.ExecutorDispatchingUseCase
 import com.hadisatrio.libs.android.foundation.activity.CurrentActivity
@@ -96,26 +97,30 @@ class RealJournal3Application : Journal3Application() {
         )
     }
 
-    override val stories: Stories by lazy {
-        FilesystemStories(
+    override val story: Story by lazy {
+        FilesystemStory(
             fileSystem = FileSystem.SYSTEM,
-            path = filesDir.absolutePath.toPath() / "content" / "stories",
-            memorables = MergedMemorables(
-                FilesystemMemorablePlaces(
-                    fileSystem = FileSystem.SYSTEM,
-                    path = filesDir.absolutePath.toPath() / "content" / "places",
-                ),
-                FilesystemMentionedPeople(
-                    fileSystem = FileSystem.SYSTEM,
-                    path = filesDir.absolutePath.toPath() / "content" / "people",
-                ),
-                FilesystemMemorableFiles(
-                    fileSystem = FileSystem.SYSTEM,
-                    path = filesDir.absolutePath.toPath() / "content" / "attachments",
-                    sources = SchemeWiseSources(
-                        "file" to FileSystemSources(FileSystem.SYSTEM),
-                        "content" to ContentResolverSources(contentResolver)
-                    )
+            directory = filesDir.absolutePath.toPath() / "content" / "8ea250bc-b6ef-4ab1-812c-3d7d04b8e14a",
+            memorables = memorables
+        )
+    }
+
+    private val memorables by lazy {
+        MergedMemorables(
+            FilesystemMemorablePlaces(
+                fileSystem = FileSystem.SYSTEM,
+                path = filesDir.absolutePath.toPath() / "content" / "places",
+            ),
+            FilesystemMentionedPeople(
+                fileSystem = FileSystem.SYSTEM,
+                path = filesDir.absolutePath.toPath() / "content" / "people",
+            ),
+            FilesystemMemorableFiles(
+                fileSystem = FileSystem.SYSTEM,
+                path = filesDir.absolutePath.toPath() / "content" / "attachments",
+                sources = SchemeWiseSources(
+                    "file" to FileSystemSources(FileSystem.SYSTEM),
+                    "content" to ContentResolverSources(contentResolver)
                 )
             )
         )
@@ -134,7 +139,7 @@ class RealJournal3Application : Journal3Application() {
                                 origin = VicinityMoments(
                                     coordinates = coordinates,
                                     distanceLimitInM = 100.0,
-                                    origin = stories.moments
+                                    origin = story.moments
                                 )
                             )
                         )
@@ -149,7 +154,7 @@ class RealJournal3Application : Journal3Application() {
                                     timeRange = LiteralTimestamp(clock.now() - 7.days)..LiteralTimestamp(clock.now()),
                                     origin = SentimentRangedMoments(
                                         sentimentRange = PositiveishSentimentRange,
-                                        origin = stories.moments
+                                        origin = story.moments
                                     )
                                 )
                             )
@@ -163,7 +168,7 @@ class RealJournal3Application : Journal3Application() {
                             origin = OrderRandomizingMoments(
                                 origin = SentimentRangedMoments(
                                     sentimentRange = VeryPositiveSentimentRange,
-                                    origin = stories.moments
+                                    origin = story.moments
                                 )
                             )
                         )
@@ -176,7 +181,7 @@ class RealJournal3Application : Journal3Application() {
                             origin = OrderRandomizingMoments(
                                 origin = SentimentRangedMoments(
                                     sentimentRange = NegativeishSentimentRange,
-                                    origin = stories.moments
+                                    origin = story.moments
                                 )
                             )
                         )

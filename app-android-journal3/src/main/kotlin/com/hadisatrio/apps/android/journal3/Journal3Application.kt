@@ -24,6 +24,7 @@ import androidx.fragment.app.Fragment
 import com.hadisatrio.apps.kotlin.journal3.datetime.Timestamp
 import com.hadisatrio.apps.kotlin.journal3.sentiment.SentimentAnalyst
 import com.hadisatrio.apps.kotlin.journal3.story.Stories
+import com.hadisatrio.apps.kotlin.journal3.story.Story
 import com.hadisatrio.libs.android.foundation.activity.CurrentActivity
 import com.hadisatrio.libs.kotlin.foundation.Decor
 import com.hadisatrio.libs.kotlin.foundation.UseCase
@@ -39,7 +40,7 @@ import kotlin.time.Duration
 
 abstract class Journal3Application : Application() {
     abstract val places: Places
-    abstract val stories: Stories
+    abstract val story: Story
     abstract val reflections: Stories
     abstract val modalPresenter: Presenter<Modal>
     abstract val currentActivity: CurrentActivity
