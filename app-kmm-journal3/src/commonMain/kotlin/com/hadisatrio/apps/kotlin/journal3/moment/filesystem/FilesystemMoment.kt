@@ -103,6 +103,14 @@ class FilesystemMoment(
         return file.exists().not()
     }
 
+    override fun updatesMade(): Boolean {
+        return true // We are directly committing any updates, so yeah, it's made.
+    }
+
+    override fun commit() {
+        // We are directly committing any updates, so no further action required.
+    }
+
     override fun forget() {
         file.delete()
     }

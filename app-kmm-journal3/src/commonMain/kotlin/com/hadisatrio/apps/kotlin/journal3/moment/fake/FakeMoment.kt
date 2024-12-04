@@ -81,6 +81,14 @@ class FakeMoment(
         return isNewlyCreated
     }
 
+    override fun updatesMade(): Boolean {
+        return true // We are directly committing any updates, so yeah, it's made.
+    }
+
+    override fun commit() {
+        // We are directly committing any updates, so no further action required.
+    }
+
     override fun forget() {
         isForgotten = true
         group.remove(this)

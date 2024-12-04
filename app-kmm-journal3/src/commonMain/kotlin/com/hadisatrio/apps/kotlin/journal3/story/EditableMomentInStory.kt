@@ -53,6 +53,15 @@ class EditableMomentInStory(
     override fun update(sentiment: Sentiment) = origin.update(sentiment)
     override fun update(place: Place) = origin.update(place)
     override fun update(attachments: Iterable<Uri>) = origin.update(attachments)
+
+    override fun updatesMade(): Boolean {
+        return true // We are directly committing any updates, so yeah, it's made.
+    }
+
+    override fun commit() {
+        // We are directly committing any updates, so no further action required.
+    }
+
     override fun compareTo(other: Moment): Int = origin.compareTo(other)
     override fun forget() = origin.forget()
 }

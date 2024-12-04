@@ -45,7 +45,7 @@ import com.hadisatrio.libs.kotlin.paraphrase.Paraphraser
     "TooManyFunctions"
 )
 class EditAMomentUseCase(
-    private val moment: MomentInEdit,
+    private val moment: EditableMoment,
     private val story: Story,
     private val places: Places,
     private val presenter: Presenter<Moment>,
