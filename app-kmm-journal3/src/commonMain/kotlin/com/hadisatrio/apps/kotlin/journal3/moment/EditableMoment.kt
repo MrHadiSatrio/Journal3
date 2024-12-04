@@ -30,6 +30,7 @@ interface EditableMoment : Moment {
     fun update(sentiment: Sentiment)
     fun update(place: Place)
     fun update(attachments: Iterable<Uri>)
+    fun update(isNotable: Boolean)
     fun updatesMade(): Boolean
     fun commit()
 }

@@ -34,6 +34,7 @@ class CachingMoment(
     override val sentiment: Sentiment,
     override val place: Place,
     override val attachments: Iterable<Uri>,
+    override val isNotable: Boolean,
     private val origin: Moment
 ) : Moment by origin {
 
@@ -44,6 +45,7 @@ class CachingMoment(
         origin.sentiment,
         CachingPlace(origin.place),
         origin.attachments,
+        origin.isNotable,
         origin
     )
 }

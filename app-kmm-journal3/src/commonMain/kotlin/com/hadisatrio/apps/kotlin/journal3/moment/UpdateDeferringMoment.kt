@@ -32,12 +32,14 @@ class UpdateDeferringMoment(
     private var sentimentInEdit: Sentiment = origin.sentiment
     private var placeInEdit: Place = origin.place
     private var attachmentsInEdit: Iterable<Uri> = origin.attachments
+    private var isNotableInEdit: Boolean = origin.isNotable
 
     override val timestamp: Timestamp get() = timestampInEdit
     override val description: TokenableString get() = descriptionInEdit
     override val sentiment: Sentiment get() = sentimentInEdit
     override val place: Place get() = placeInEdit
     override val attachments: Iterable<Uri> get() = attachmentsInEdit
+    override val isNotable: Boolean get() = isNotableInEdit
 
     override fun update(timestamp: Timestamp) {
         timestampInEdit = timestamp
@@ -59,6 +61,10 @@ class UpdateDeferringMoment(
         attachmentsInEdit = attachments.toList()
     }
 
+    override fun update(isNotable: Boolean) {
+        isNotableInEdit = isNotable
+    }
+
     override fun compareTo(other: Moment): Int {
         return timestampInEdit.compareTo(other.timestamp)
     }
@@ -68,7 +74,8 @@ class UpdateDeferringMoment(
             descriptionInEdit != origin.description ||
             sentimentInEdit != origin.sentiment ||
             placeInEdit != origin.place ||
-            attachmentsInEdit != origin.attachments
+            attachmentsInEdit != origin.attachments ||
+            isNotableInEdit != origin.isNotable
     }
 
     override fun commit() {
@@ -77,5 +84,6 @@ class UpdateDeferringMoment(
         origin.update(sentimentInEdit)
         origin.update(placeInEdit)
         origin.update(attachmentsInEdit)
+        origin.update(isNotableInEdit)
     }
 }

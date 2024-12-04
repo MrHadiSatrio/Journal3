@@ -28,6 +28,7 @@ import com.hadisatrio.apps.kotlin.journal3.token.TokenableString
 import com.hadisatrio.libs.kotlin.geography.NullIsland
 import com.hadisatrio.libs.kotlin.geography.Place
 
+@Suppress("TooManyFunctions")
 class FakeMoment(
     override val id: Uuid,
     private val group: MutableList<Moment>
@@ -45,6 +46,8 @@ class FakeMoment(
     override var place: Place = NullIsland
         private set
     override var attachments: Iterable<Uri> = mutableListOf()
+        private set
+    override var isNotable: Boolean = false
         private set
 
     override fun update(timestamp: Timestamp) {
@@ -75,6 +78,12 @@ class FakeMoment(
         require(!isForgotten) { "This moment has already been forgotten." }
         isNewlyCreated = false
         this.attachments = attachments
+    }
+
+    override fun update(isNotable: Boolean) {
+        require(!isForgotten) { "This moment has already been forgotten." }
+        isNewlyCreated = false
+        this.isNotable = isNotable
     }
 
     override fun isNewlyCreated(): Boolean {

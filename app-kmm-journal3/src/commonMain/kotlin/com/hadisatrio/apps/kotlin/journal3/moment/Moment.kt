@@ -32,4 +32,5 @@ interface Moment : Comparable<Moment>, Forgettable {
     val sentiment: Sentiment
     val place: Place
     val attachments: Iterable<Uri>
+    val isNotable: Boolean
 }
