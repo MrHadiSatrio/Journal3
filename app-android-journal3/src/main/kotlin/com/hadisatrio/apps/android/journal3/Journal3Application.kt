@@ -21,6 +21,7 @@ import android.app.Application
 import android.content.Context
 import android.view.View
 import androidx.fragment.app.Fragment
+import androidx.work.ListenableWorker
 import com.hadisatrio.apps.kotlin.journal3.datetime.Timestamp
 import com.hadisatrio.apps.kotlin.journal3.sentiment.SentimentAnalyst
 import com.hadisatrio.apps.kotlin.journal3.story.Stories
@@ -33,12 +34,14 @@ import com.hadisatrio.libs.kotlin.foundation.event.EventSource
 import com.hadisatrio.libs.kotlin.foundation.modal.Modal
 import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
 import com.hadisatrio.libs.kotlin.geography.Places
+import com.hadisatrio.libs.kotlin.geography.Speed
 import com.hadisatrio.libs.kotlin.paraphrase.Paraphraser
 import kotlinx.datetime.Clock
 import java.util.concurrent.Executor
 import kotlin.time.Duration
 
 abstract class Journal3Application : Application() {
+    abstract val speed: Speed
     abstract val places: Places
     abstract val story: Story
     abstract val reflections: Stories
@@ -67,3 +70,6 @@ val Fragment.journal3Application: Journal3Application
 
 val View.journal3Application: Journal3Application
     get() = context.journal3Application
+
+val ListenableWorker.journal3Application: Journal3Application
+    get() = applicationContext.journal3Application
