@@ -21,9 +21,11 @@ import com.hadisatrio.apps.kotlin.journal3.story.fake.FakeStory
 import com.hadisatrio.libs.kotlin.geography.LiteralCoordinates
 import com.hadisatrio.libs.kotlin.geography.Place
 import com.hadisatrio.libs.kotlin.geography.SelfPopulatingPlaces
+import com.hadisatrio.libs.kotlin.geography.Speed
 import com.hadisatrio.libs.kotlin.geography.fake.FakePlace
 import com.hadisatrio.libs.kotlin.geography.fake.FakePlaces
 import io.kotest.matchers.booleans.shouldBeFalse
+import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.equals.shouldBeEqual
 import io.mockk.every
@@ -36,12 +38,14 @@ class CaptureAMomentUseCaseTest {
 
     private val story = FakeStory()
     private val places = SelfPopulatingPlaces(1, FakePlaces())
+    private val speed = mockk<Speed>()
     private val clock = mockk<Clock>()
 
-    private val useCase = CaptureAMomentUseCase(story, places, clock)
+    private val useCase = CaptureAMomentUseCase(story, places, speed, clock)
 
     @Test
     fun `Captures a non-notable moment about the currently visited place`() {
+        every { speed.value } returns 0.0
         every { clock.now() } returns Instant.DISTANT_FUTURE
 
         useCase()
@@ -55,12 +59,13 @@ class CaptureAMomentUseCaseTest {
 
     @Test
     fun `Prioritizes a known nearby place whilst capturing`() {
+        every { speed.value } returns 0.0
         every { clock.now() } returns Instant.DISTANT_FUTURE
         val onePlace = FakePlace(coordinates = LiteralCoordinates("-6.275489,107.050648"))
         val another10mAway = FakePlace(coordinates = LiteralCoordinates("-6.275500,107.050740"))
         val placesList = mutableListOf<Place>(onePlace, another10mAway)
         val places = FakePlaces(placesList)
-        val useCase = CaptureAMomentUseCase(story, places, clock)
+        val useCase = CaptureAMomentUseCase(story, places, speed, clock)
 
         useCase()
         placesList.removeFirst() // …so that the next execution would pick up the 2nd place.
@@ -73,6 +78,7 @@ class CaptureAMomentUseCaseTest {
 
     @Test
     fun `Skips capturing if there is an existing moment about the place written today`() {
+        every { speed.value } returns 0.0
         every { clock.now() } returns Instant.DISTANT_FUTURE
 
         // Places stay intact, so multiple execution would point to the same place to
@@ -80,5 +86,15 @@ class CaptureAMomentUseCaseTest {
         repeat(10) { useCase() }
 
         story.moments.shouldHaveSize(1)
+    }
+
+    @Test
+    fun `Skips capture if the user is moving`() {
+        every { speed.value } returns 100.0
+        every { clock.now() } returns Instant.DISTANT_FUTURE
+
+        useCase()
+
+        story.moments.shouldBeEmpty()
     }
 }

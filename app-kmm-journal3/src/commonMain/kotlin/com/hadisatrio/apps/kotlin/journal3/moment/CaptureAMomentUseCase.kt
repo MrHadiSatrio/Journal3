@@ -24,16 +24,20 @@ import com.hadisatrio.apps.kotlin.journal3.story.Story
 import com.hadisatrio.apps.kotlin.journal3.story.cache.CachingStory
 import com.hadisatrio.libs.kotlin.foundation.UseCase
 import com.hadisatrio.libs.kotlin.geography.Places
+import com.hadisatrio.libs.kotlin.geography.Speed
 import kotlinx.datetime.Clock
 import kotlin.time.Duration.Companion.hours
 
 class CaptureAMomentUseCase(
     private val story: Story,
     private val places: Places,
+    private val speed: Speed,
     private val clock: Clock
 ) : UseCase {
 
     override fun invoke() {
+        if (speed.value > SPEED_LIMIT_METER_PER_SECOND) return
+
         val cachedStory = CachingStory(story)
 
         val currentTimestamp = LiteralTimestamp(clock.now())
@@ -55,6 +59,7 @@ class CaptureAMomentUseCase(
     }
 
     companion object {
+        private const val SPEED_LIMIT_METER_PER_SECOND = 5
         private const val DISTANCE_LIMIT_METER = 25.0
     }
 }
