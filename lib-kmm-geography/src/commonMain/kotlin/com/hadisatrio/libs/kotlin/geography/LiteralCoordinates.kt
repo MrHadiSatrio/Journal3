@@ -18,8 +18,8 @@
 package com.hadisatrio.libs.kotlin.geography
 
 class LiteralCoordinates(
-    override val latitude: Double,
-    override val longitude: Double
+    private val latitude: Double,
+    private val longitude: Double
 ) : Coordinates() {
 
     override val latlng: Pair<Double, Double> get() = latitude to longitude

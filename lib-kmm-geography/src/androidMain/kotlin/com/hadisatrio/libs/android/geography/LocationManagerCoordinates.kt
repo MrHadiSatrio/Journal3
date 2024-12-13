@@ -41,12 +41,6 @@ class LocationManagerCoordinates(
         clock
     )
 
-    override val latitude: Double
-        @RequiresPermission(allOf = [ ACCESS_COARSE_LOCATION, ACCESS_FINE_LOCATION ])
-        get() = location().latitude
-    override val longitude: Double
-        @RequiresPermission(allOf = [ ACCESS_COARSE_LOCATION, ACCESS_FINE_LOCATION ])
-        get() = location().longitude
     override val latlng: Pair<Double, Double>
         @RequiresPermission(allOf = [ ACCESS_COARSE_LOCATION, ACCESS_FINE_LOCATION ])
         get() = location().let { it.latitude to it.longitude }

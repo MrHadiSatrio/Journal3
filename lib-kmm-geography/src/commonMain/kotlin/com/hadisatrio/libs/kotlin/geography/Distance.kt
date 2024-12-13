@@ -30,10 +30,12 @@ class Distance(
 ) : Comparable<Distance> {
 
     val value: Double by lazy {
-        val dLat = (other.latitude - one.latitude).toRadians()
-        val dLon = (other.longitude - one.longitude).toRadians()
-        val originLat = (one.latitude).toRadians()
-        val destinationLat = (other.latitude).toRadians()
+        val oneLatLng = one.latlng
+        val otherLatLng = other.latlng
+        val dLat = (otherLatLng.first - oneLatLng.first).toRadians()
+        val dLon = (otherLatLng.second - oneLatLng.second).toRadians()
+        val originLat = (oneLatLng.first).toRadians()
+        val destinationLat = (otherLatLng.first).toRadians()
 
         val a = sin(dLat / 2).pow(2.toDouble()) +
             sin(dLon / 2).pow(2.toDouble()) *

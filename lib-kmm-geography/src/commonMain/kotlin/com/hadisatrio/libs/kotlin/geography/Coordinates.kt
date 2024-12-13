@@ -19,12 +19,6 @@ package com.hadisatrio.libs.kotlin.geography
 
 abstract class Coordinates {
 
-    @Deprecated("Inefficient; Use latlng instead.", replaceWith = ReplaceWith("latlng"))
-    abstract val latitude: Double
-
-    @Deprecated("Inefficient; Use latlng instead.", replaceWith = ReplaceWith("latlng"))
-    abstract val longitude: Double
-
     abstract val latlng: Pair<Double, Double>
 
     fun distanceTo(other: Coordinates): Distance {

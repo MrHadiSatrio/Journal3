@@ -49,7 +49,6 @@ class PermissionAwareCoordinatesTest {
     fun `Forwards the call to origin when permissions are already granted`() {
         shadowActivity.grantPermissions(Manifest.permission.ACCESS_FINE_LOCATION)
 
-        coordinates.latitude.shouldBe(origin.latitude)
-        coordinates.longitude.shouldBe(origin.longitude)
+        coordinates.latlng.shouldBe(origin.latlng)
     }
 }

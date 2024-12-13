@@ -57,29 +57,24 @@ class LocationManagerCoordinatesTest {
 
     @Test(timeout = 10_000)
     fun `Returns device location`() {
-        var lat = 0.0
-        var lng = 0.0
+        var latlng = 0.0 to 0.0
         val thread = Thread {
-            lat = coordinates.latitude
-            lng = coordinates.longitude
+            latlng = coordinates.latlng
         }
 
         thread.start()
         shadowLocationManager.enqueueSimulateLocation(gpsLocation)
         thread.join()
 
-        lat.shouldBe(gpsLocation.latitude)
-        lng.shouldBe(gpsLocation.longitude)
+        latlng.shouldBe(gpsLocation.latitude to gpsLocation.longitude)
     }
 
     @Test(timeout = 10_000)
     fun `Prevents spamming the LocationManager on rapid requests`() {
         val thread = Thread {
-            repeat(10) { coordinates.latitude }
-            repeat(10) { coordinates.longitude }
+            repeat(10) { coordinates.latlng }
             clock.advanceBy(11.seconds)
-            repeat(10) { coordinates.latitude }
-            repeat(10) { coordinates.longitude }
+            repeat(10) { coordinates.latlng }
         }
 
         thread.start()
@@ -96,8 +91,7 @@ class LocationManagerCoordinatesTest {
         repeat(2) {
             threads.add(
                 Thread {
-                    coordinates.latitude
-                    coordinates.longitude
+                    coordinates.latlng
                 }
             )
         }
@@ -114,8 +108,7 @@ class LocationManagerCoordinatesTest {
         shadowLocationManager.setProviderEnabled(LocationManager.GPS_PROVIDER, false)
         shadowLocationManager.setProviderEnabled(LocationManager.PASSIVE_PROVIDER, false)
         val thread = Thread {
-            shouldThrow<IllegalStateException> { coordinates.latitude }
-            shouldThrow<IllegalStateException> { coordinates.longitude }
+            shouldThrow<IllegalStateException> { coordinates.latlng }
         }
 
         thread.start()
