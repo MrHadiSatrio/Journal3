@@ -56,7 +56,6 @@ import com.hadisatrio.libs.android.foundation.os.SystemLog
 import com.hadisatrio.libs.android.foundation.presentation.ExecutorDispatchingPresenter
 import com.hadisatrio.libs.android.geography.LocationManagerCoordinates
 import com.hadisatrio.libs.android.geography.PermissionAwareCoordinates
-import com.hadisatrio.libs.android.geography.Speed
 import com.hadisatrio.libs.android.io.content.ContentResolverSources
 import com.hadisatrio.libs.kotlin.foundation.Decor
 import com.hadisatrio.libs.kotlin.foundation.UseCase
@@ -68,6 +67,7 @@ import com.hadisatrio.libs.kotlin.foundation.event.SchedulingEventSource
 import com.hadisatrio.libs.kotlin.foundation.modal.Modal
 import com.hadisatrio.libs.kotlin.foundation.presentation.PerfTrackingPresenter
 import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
+import com.hadisatrio.libs.kotlin.geography.Coordinates
 import com.hadisatrio.libs.kotlin.geography.Places
 import com.hadisatrio.libs.kotlin.geography.Speed
 import com.hadisatrio.libs.kotlin.geography.here.HereNearbyPlaces
@@ -91,7 +91,7 @@ class RealJournal3Application : Journal3Application() {
     private val httpClient = HttpClient()
 
     override val speed: Speed by lazy {
-        Speed(coordinates)
+        locationManagerCoordinates
     }
 
     override val places: Places by lazy {
@@ -266,9 +266,9 @@ class RealJournal3Application : Journal3Application() {
     override val paraphraser: Paraphraser by lazy {
         OpenAiParaphraser(
             prompt = "You will be provided with diary entry drafts, " +
-                "and your task is to refine their quality without changing too much " +
-                "of the author's tonality and writing style. Don't use overly complex words unless " +
-                "you saw the author use them.",
+                    "and your task is to refine their quality without changing too much " +
+                    "of the author's tonality and writing style. Don't use overly complex words unless " +
+                    "you saw the author use them.",
             apiKey = BuildConfig.KEY_OAI_API,
             httpClient = httpClient,
         )
@@ -278,10 +278,14 @@ class RealJournal3Application : Journal3Application() {
         Clock.System
     }
 
-    private val coordinates by lazy {
+    private val locationManagerCoordinates: LocationManagerCoordinates by lazy {
+        LocationManagerCoordinates(this, clock)
+    }
+
+    private val coordinates: Coordinates by lazy {
         PermissionAwareCoordinates(
             currentActivity = currentActivity,
-            origin = LocationManagerCoordinates(this, clock)
+            origin = locationManagerCoordinates
         )
     }
 
