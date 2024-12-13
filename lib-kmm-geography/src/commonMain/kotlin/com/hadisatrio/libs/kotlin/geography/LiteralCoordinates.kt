@@ -22,6 +22,8 @@ class LiteralCoordinates(
     override val longitude: Double
 ) : Coordinates() {
 
+    override val latlng: Pair<Double, Double> get() = latitude to longitude
+
     constructor(string: String) : this(
         string.split(',', limit = 2).first().trim().toDouble(),
         string.split(',', limit = 2).last().trim().toDouble()

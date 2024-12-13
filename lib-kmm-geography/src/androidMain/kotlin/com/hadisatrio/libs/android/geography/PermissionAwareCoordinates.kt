@@ -45,6 +45,13 @@ class PermissionAwareCoordinates(
             throw SecurityException("Required permission(s) is not granted.")
         }
     }
+    override val latlng: Pair<Double, Double> get() {
+        return if (checkPermission()) {
+            origin.latlng
+        } else {
+            throw SecurityException("Required permission(s) is not granted.")
+        }
+    }
 
     private fun checkPermission(): Boolean {
         val activity = currentActivity.acquire()

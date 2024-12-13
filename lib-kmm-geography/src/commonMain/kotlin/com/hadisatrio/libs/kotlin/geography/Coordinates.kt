@@ -19,15 +19,20 @@ package com.hadisatrio.libs.kotlin.geography
 
 abstract class Coordinates {
 
+    @Deprecated("Inefficient; Use latlng instead.", replaceWith = ReplaceWith("latlng"))
     abstract val latitude: Double
+
+    @Deprecated("Inefficient; Use latlng instead.", replaceWith = ReplaceWith("latlng"))
     abstract val longitude: Double
+
+    abstract val latlng: Pair<Double, Double>
 
     fun distanceTo(other: Coordinates): Distance {
         return Distance(this, other)
     }
 
     final override fun toString(): String {
-        return "$latitude,$longitude"
+        return latlng.let { (lat, lng) -> "$lat,$lng" }
     }
 
     final override fun equals(other: Any?): Boolean {

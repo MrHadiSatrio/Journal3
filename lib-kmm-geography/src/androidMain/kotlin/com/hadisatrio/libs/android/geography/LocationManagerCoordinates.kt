@@ -47,6 +47,9 @@ class LocationManagerCoordinates(
     override val longitude: Double
         @RequiresPermission(allOf = [ ACCESS_COARSE_LOCATION, ACCESS_FINE_LOCATION ])
         get() = location().longitude
+    override val latlng: Pair<Double, Double>
+        @RequiresPermission(allOf = [ ACCESS_COARSE_LOCATION, ACCESS_FINE_LOCATION ])
+        get() = location().let { it.latitude to it.longitude }
 
     private val provider: String? get() {
         val criteria = Criteria().apply { accuracy = Criteria.ACCURACY_FINE }
