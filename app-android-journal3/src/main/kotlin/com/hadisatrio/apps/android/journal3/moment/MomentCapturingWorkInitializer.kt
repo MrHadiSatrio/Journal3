@@ -17,7 +17,12 @@
 
 package com.hadisatrio.apps.android.journal3.moment
 
+import android.Manifest.permission.ACCESS_BACKGROUND_LOCATION
+import android.Manifest.permission.ACCESS_COARSE_LOCATION
+import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.content.Context
+import android.content.pm.PackageManager
+import android.os.Build
 import androidx.startup.Initializer
 import androidx.work.Constraints
 import androidx.work.ExistingPeriodicWorkPolicy
@@ -32,6 +37,12 @@ class MomentCapturingWorkInitializer : Initializer<Unit> {
 
     override fun create(context: Context) {
         val workManager = WorkManager.getInstance(context)
+
+        if (!hasRequiredPermissions(context)) {
+            workManager.cancelUniqueWork(WORK_ID)
+            return
+        }
+
         val constraints = Constraints.Builder()
             .setRequiredNetworkType(NetworkType.CONNECTED)
             .setRequiresBatteryNotLow(true)
@@ -42,10 +53,9 @@ class MomentCapturingWorkInitializer : Initializer<Unit> {
             flexTimeInterval = 5,
             flexTimeIntervalUnit = TimeUnit.MINUTES
         )
-
         workManager.enqueueUniquePeriodicWork(
             /* uniqueWorkName = */
-            MomentCapturingWork::class.java.simpleName,
+            WORK_ID,
             /* existingPeriodicWorkPolicy = */
             ExistingPeriodicWorkPolicy.KEEP,
             /* periodicWork = */
@@ -53,7 +63,21 @@ class MomentCapturingWorkInitializer : Initializer<Unit> {
         )
     }
 
+    private fun hasRequiredPermissions(context: Context): Boolean {
+        var permissions = 0
+        permissions += context.checkSelfPermission(ACCESS_COARSE_LOCATION)
+        permissions += context.checkSelfPermission(ACCESS_FINE_LOCATION)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            permissions += context.checkSelfPermission(ACCESS_BACKGROUND_LOCATION)
+        }
+        return permissions == PackageManager.PERMISSION_GRANTED
+    }
+
     override fun dependencies(): MutableList<Class<out Initializer<*>>> {
         return mutableListOf(WorkManagerInitializer::class.java)
+    }
+
+    private companion object {
+        const val WORK_ID = "91073087-9cae-4c08-818d-45537d222390"
     }
 }

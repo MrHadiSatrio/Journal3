@@ -17,7 +17,12 @@
 
 package com.hadisatrio.apps.android.journal3.moment
 
+import android.Manifest.permission.ACCESS_BACKGROUND_LOCATION
+import android.Manifest.permission.ACCESS_COARSE_LOCATION
+import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.content.Context
+import android.content.pm.PackageManager
+import android.os.Build
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.hadisatrio.apps.android.journal3.journal3Application
@@ -29,6 +34,9 @@ class MomentCapturingWork(
 ) : Worker(context, workerParams) {
 
     override fun doWork(): Result {
+        if (!hasRequiredPermissions(applicationContext)) {
+            return Result.failure()
+        }
         CaptureAMomentUseCase(
             story = journal3Application.story,
             places = journal3Application.places,
@@ -36,5 +44,15 @@ class MomentCapturingWork(
             clock = journal3Application.clock
         )()
         return Result.success()
+    }
+
+    private fun hasRequiredPermissions(context: Context): Boolean {
+        var permissions = 0
+        permissions += context.checkSelfPermission(ACCESS_COARSE_LOCATION)
+        permissions += context.checkSelfPermission(ACCESS_FINE_LOCATION)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            permissions += context.checkSelfPermission(ACCESS_BACKGROUND_LOCATION)
+        }
+        return permissions == PackageManager.PERMISSION_GRANTED
     }
 }
