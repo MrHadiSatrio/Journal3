@@ -284,7 +284,7 @@ class RealJournal3Application : Journal3Application() {
 
     private val coordinates: Coordinates by lazy {
         PermissionAwareCoordinates(
-            currentActivity = currentActivity,
+            application = this,
             origin = locationManagerCoordinates
         )
     }
