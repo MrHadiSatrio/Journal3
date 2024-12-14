@@ -31,16 +31,9 @@ class PermissionAwareCoordinates(
     private val origin: Coordinates
 ) : Coordinates() {
 
-    override val latitude: Double get() {
+    override val latlng: Pair<Double, Double> get() {
         return if (checkPermission()) {
-            origin.latitude
-        } else {
-            throw SecurityException("Required permission(s) is not granted.")
-        }
-    }
-    override val longitude: Double get() {
-        return if (checkPermission()) {
-            origin.longitude
+            origin.latlng
         } else {
             throw SecurityException("Required permission(s) is not granted.")
         }
