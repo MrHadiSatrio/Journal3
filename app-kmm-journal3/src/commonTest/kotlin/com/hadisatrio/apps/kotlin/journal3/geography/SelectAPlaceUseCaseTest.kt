@@ -35,6 +35,7 @@ import com.hadisatrio.libs.kotlin.geography.Place
 import com.hadisatrio.libs.kotlin.geography.SelfPopulatingPlaces
 import com.hadisatrio.libs.kotlin.geography.fake.FakePlaces
 import io.kotest.matchers.collections.shouldHaveSize
+import io.kotest.matchers.doubles.exactly
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
 import io.mockk.every
@@ -186,8 +187,10 @@ class SelectAPlaceUseCaseTest {
     }
 
     @Test(timeout = 5_000)
-    fun `Stops upon receiving cancellation events`() {
+    fun `Completes upon receiving cancellation events`() {
         listOf(CancellationEvent("user"), CancellationEvent("system")).forEach { event ->
+            val eventSink = mockk<EventSink>(relaxed = true)
+
             SelectAPlaceUseCase(
                 places = places,
                 presenter = presenter,
@@ -195,6 +198,10 @@ class SelectAPlaceUseCaseTest {
                 eventSource = RecordedEventSource(event),
                 eventSink = eventSink
             )()
+
+            verify(exactly = 1) {
+                eventSink.sink(withArg { it.shouldBeInstanceOf<CompletionEvent>() })
+            }
         }
     }
 

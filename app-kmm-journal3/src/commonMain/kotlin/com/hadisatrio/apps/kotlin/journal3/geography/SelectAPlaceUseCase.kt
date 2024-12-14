@@ -17,10 +17,8 @@
 
 package com.hadisatrio.apps.kotlin.journal3.geography
 
-import com.badoo.reaktive.subject.replay.ReplaySubject
 import com.hadisatrio.libs.kotlin.foundation.EventHandlingUseCase
 import com.hadisatrio.libs.kotlin.foundation.event.CancellationEvent
-import com.hadisatrio.libs.kotlin.foundation.event.CompletionEvent
 import com.hadisatrio.libs.kotlin.foundation.event.Event
 import com.hadisatrio.libs.kotlin.foundation.event.EventSink
 import com.hadisatrio.libs.kotlin.foundation.event.EventSource
@@ -42,8 +40,6 @@ class SelectAPlaceUseCase(
     eventSource: EventSource,
     eventSink: EventSink,
 ) : EventHandlingUseCase(eventSource, eventSink) {
-
-    private val completionEvents by lazy { ReplaySubject<CompletionEvent>(bufferSize = 1) }
 
     private var presentedPlaces: Iterable<Place> = emptyList()
 
@@ -81,7 +77,7 @@ class SelectAPlaceUseCase(
                 val position = identifier.toInt()
                 val target = presentedPlaces.elementAt(position)
                 eventSink.sink(SelectionEvent("place", target.id.toString()))
-                completionEvents.onNext(CompletionEvent())
+                complete()
             }
         }
     }
@@ -102,10 +98,10 @@ class SelectAPlaceUseCase(
 
     private fun handleModalDismissal(event: ModalDismissalEvent) {
         if (event.modalKind != "presentation_retrial_confirmation") return
-        completionEvents.onNext(CompletionEvent())
+        complete()
     }
 
     private fun handleCancellation() {
-        completionEvents.onNext(CompletionEvent())
+        complete()
     }
 }
