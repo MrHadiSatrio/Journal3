@@ -67,7 +67,9 @@ import com.hadisatrio.libs.kotlin.foundation.event.SchedulingEventSource
 import com.hadisatrio.libs.kotlin.foundation.modal.Modal
 import com.hadisatrio.libs.kotlin.foundation.presentation.PerfTrackingPresenter
 import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
+import com.hadisatrio.libs.kotlin.geography.Coordinates
 import com.hadisatrio.libs.kotlin.geography.Places
+import com.hadisatrio.libs.kotlin.geography.Speed
 import com.hadisatrio.libs.kotlin.geography.here.HereNearbyPlaces
 import com.hadisatrio.libs.kotlin.io.SchemeWiseSources
 import com.hadisatrio.libs.kotlin.io.filesystem.FileSystemSources
@@ -87,6 +89,10 @@ import kotlin.time.Duration.Companion.hours
 class RealJournal3Application : Journal3Application() {
 
     private val httpClient = HttpClient()
+
+    override val speed: Speed by lazy {
+        locationManagerCoordinates
+    }
 
     override val places: Places by lazy {
         HereNearbyPlaces(
@@ -151,7 +157,9 @@ class RealJournal3Application : Journal3Application() {
                             limit = 10,
                             origin = OrderRandomizingMoments(
                                 origin = TimeRangedMoments(
-                                    timeRange = LiteralTimestamp(clock.now() - 7.days)..LiteralTimestamp(clock.now()),
+                                    timeRange = LiteralTimestamp(clock.now() - 7.days)..LiteralTimestamp(
+                                        clock.now()
+                                    ),
                                     origin = SentimentRangedMoments(
                                         sentimentRange = PositiveishSentimentRange,
                                         origin = story.moments
@@ -270,10 +278,14 @@ class RealJournal3Application : Journal3Application() {
         Clock.System
     }
 
-    private val coordinates by lazy {
+    private val locationManagerCoordinates: LocationManagerCoordinates by lazy {
+        LocationManagerCoordinates(this, clock)
+    }
+
+    private val coordinates: Coordinates by lazy {
         PermissionAwareCoordinates(
-            currentActivity = currentActivity,
-            origin = LocationManagerCoordinates(this, clock)
+            application = this,
+            origin = locationManagerCoordinates
         )
     }
 

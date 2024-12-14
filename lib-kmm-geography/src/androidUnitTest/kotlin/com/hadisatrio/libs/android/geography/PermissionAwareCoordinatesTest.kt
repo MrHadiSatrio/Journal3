@@ -20,7 +20,6 @@ package com.hadisatrio.libs.android.geography
 import android.Manifest
 import androidx.activity.ComponentActivity
 import androidx.test.runner.AndroidJUnit4
-import com.hadisatrio.libs.android.foundation.activity.CurrentActivity
 import com.hadisatrio.libs.kotlin.geography.LiteralCoordinates
 import io.kotest.matchers.shouldBe
 import io.mockk.spyk
@@ -36,9 +35,8 @@ class PermissionAwareCoordinatesTest {
 
     private val activityController = Robolectric.buildActivity(ComponentActivity::class.java)
     private val shadowActivity = Shadows.shadowOf(activityController.get())
-    private val currentActivity = CurrentActivity(RuntimeEnvironment.getApplication())
     private val origin = spyk(LiteralCoordinates("-7.607355,110.203804"))
-    private val coordinates = PermissionAwareCoordinates(currentActivity, origin)
+    private val coordinates = PermissionAwareCoordinates(RuntimeEnvironment.getApplication(), origin)
 
     @Before
     fun `Setup activity`() {

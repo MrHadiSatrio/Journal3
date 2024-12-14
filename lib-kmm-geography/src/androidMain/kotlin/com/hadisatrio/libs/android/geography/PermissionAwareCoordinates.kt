@@ -18,6 +18,7 @@
 package com.hadisatrio.libs.android.geography
 
 import android.Manifest
+import android.app.Application
 import android.content.pm.PackageManager.PERMISSION_GRANTED
 import com.afollestad.assent.Permission
 import com.afollestad.assent.askForPermissions
@@ -27,6 +28,7 @@ import java.util.concurrent.LinkedBlockingQueue
 import java.util.concurrent.TimeUnit
 
 class PermissionAwareCoordinates(
+    private val application: Application,
     private val currentActivity: CurrentActivity,
     private val origin: Coordinates
 ) : Coordinates() {
@@ -39,14 +41,19 @@ class PermissionAwareCoordinates(
         }
     }
 
-    private fun checkPermission(): Boolean {
-        val activity = currentActivity.acquire()
-        val blockingQueue = LinkedBlockingQueue<Boolean>()
+    constructor(application: Application, origin: Coordinates) : this(
+        application,
+        CurrentActivity(application),
+        origin
+    )
 
-        if (activity.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PERMISSION_GRANTED) {
+    private fun checkPermission(): Boolean {
+        if (application.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PERMISSION_GRANTED) {
             return true
         }
 
+        val activity = currentActivity.acquire()
+        val blockingQueue = LinkedBlockingQueue<Boolean>()
         activity.runOnUiThread {
             activity.askForPermissions(Permission.ACCESS_FINE_LOCATION) { result ->
                 blockingQueue.offer(result.isAllGranted(Permission.ACCESS_FINE_LOCATION))

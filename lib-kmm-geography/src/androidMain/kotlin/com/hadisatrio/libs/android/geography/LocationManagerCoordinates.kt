@@ -27,6 +27,7 @@ import android.os.Handler
 import android.os.HandlerThread
 import androidx.annotation.RequiresPermission
 import com.hadisatrio.libs.kotlin.geography.Coordinates
+import com.hadisatrio.libs.kotlin.geography.Speed
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import kotlin.time.Duration.Companion.seconds
@@ -34,7 +35,7 @@ import kotlin.time.Duration.Companion.seconds
 class LocationManagerCoordinates(
     private val manager: LocationManager,
     private val clock: Clock
-) : Coordinates() {
+) : Coordinates(), Speed {
 
     constructor(context: Context, clock: Clock) : this(
         context.getSystemService(Context.LOCATION_SERVICE) as LocationManager,
@@ -44,6 +45,10 @@ class LocationManagerCoordinates(
     override val latlng: Pair<Double, Double>
         @RequiresPermission(allOf = [ ACCESS_COARSE_LOCATION, ACCESS_FINE_LOCATION ])
         get() = location().let { it.latitude to it.longitude }
+
+    override val value: Double
+        @RequiresPermission(allOf = [ ACCESS_COARSE_LOCATION, ACCESS_FINE_LOCATION ])
+        get() = location().speed.toDouble()
 
     private val provider: String? get() {
         val criteria = Criteria().apply { accuracy = Criteria.ACCURACY_FINE }

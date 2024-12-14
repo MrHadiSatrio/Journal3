@@ -15,9 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.hadisatrio.apps.kotlin.journal3.moment
+package com.hadisatrio.libs.kotlin.geography.time
 
-interface MomentInEdit : EditableMoment {
-    fun updatesMade(): Boolean
-    fun commit()
+fun interface Delay {
+    operator fun invoke(millis: Long)
 }

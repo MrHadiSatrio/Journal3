@@ -25,6 +25,7 @@ import com.hadisatrio.apps.kotlin.journal3.sentiment.Sentiment
 import com.hadisatrio.apps.kotlin.journal3.story.fake.FakeStory
 import com.hadisatrio.apps.kotlin.journal3.token.TokenableString
 import com.hadisatrio.libs.kotlin.geography.fake.FakePlace
+import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.shouldBe
 import io.mockk.mockk
 import kotlin.test.Test
@@ -62,6 +63,8 @@ class EditableMomentInStoryTest {
         val uris = listOf(mockk<Uri>())
         editableMoment.update(uris)
         moment.attachments.shouldBe(uris)
+        editableMoment.update(isNotable = true)
+        moment.isNotable.shouldBeTrue()
     }
 
     @Test

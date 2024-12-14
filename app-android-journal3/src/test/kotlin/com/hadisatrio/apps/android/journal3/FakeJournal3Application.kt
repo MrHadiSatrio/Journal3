@@ -39,6 +39,8 @@ import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
 import com.hadisatrio.libs.kotlin.foundation.presentation.fake.FakePresenter
 import com.hadisatrio.libs.kotlin.geography.Places
 import com.hadisatrio.libs.kotlin.geography.SelfPopulatingPlaces
+import com.hadisatrio.libs.kotlin.geography.Speed
+import com.hadisatrio.libs.kotlin.geography.StaticSpeed
 import com.hadisatrio.libs.kotlin.geography.fake.FakePlaces
 import com.hadisatrio.libs.kotlin.paraphrase.DumbParaphraser
 import com.hadisatrio.libs.kotlin.paraphrase.Paraphraser
@@ -50,6 +52,7 @@ import kotlin.time.Duration.Companion.hours
 
 class FakeJournal3Application : Journal3Application() {
 
+    override val speed: Speed by lazy { StaticSpeed(5.0) }
     override val places: Places by lazy { SelfPopulatingPlaces(10, FakePlaces()) }
     override val story: Story by lazy { SelfPopulatingStory(10, FakeStory()) }
     override val reflections: Stories by lazy { FakeStories() }

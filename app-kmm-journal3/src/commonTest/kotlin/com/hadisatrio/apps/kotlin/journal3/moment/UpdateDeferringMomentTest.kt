@@ -53,12 +53,14 @@ class UpdateDeferringMomentTest {
         updateDeferring.update(Sentiment(0.75F))
         updateDeferring.update(FakePlace())
         updateDeferring.update(listOf(Uri.fromString("https://foo.com")))
+        updateDeferring.update(isNotable = true)
 
         original.timestamp.shouldNotBeEqual(updateDeferring.timestamp)
         original.description.shouldNotBeEqual(updateDeferring.description)
         original.sentiment.shouldNotBeEqual(updateDeferring.sentiment)
         original.place.shouldNotBeEqual(updateDeferring.place)
         original.attachments.shouldNotBeEqual(updateDeferring.attachments)
+        original.isNotable.shouldNotBeEqual(updateDeferring.isNotable)
 
         updateDeferring.commit()
 
@@ -67,6 +69,7 @@ class UpdateDeferringMomentTest {
         original.sentiment.shouldBeEqual(updateDeferring.sentiment)
         original.place.shouldBeEqual(updateDeferring.place)
         original.attachments.shouldBeEqual(updateDeferring.attachments)
+        original.isNotable.shouldBeEqual(updateDeferring.isNotable)
     }
 
     @Test
@@ -92,6 +95,10 @@ class UpdateDeferringMomentTest {
         }
         UpdateDeferringMoment(original).run {
             update(listOf(Uri.fromString("https://foo.com")))
+            updatesMade().shouldBeTrue()
+        }
+        UpdateDeferringMoment(original).run {
+            update(isNotable = true)
             updatesMade().shouldBeTrue()
         }
     }

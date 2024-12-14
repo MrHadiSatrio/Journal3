@@ -22,8 +22,8 @@ import com.hadisatrio.libs.kotlin.paraphrase.Paraphraser
 
 class DescriptionParaphrasingMoment(
     private val paraphraser: Paraphraser,
-    private val origin: MomentInEdit
-) : MomentInEdit by origin {
+    private val origin: EditableMoment
+) : EditableMoment by origin {
 
     override fun commit() {
         val original = origin.description.toString()

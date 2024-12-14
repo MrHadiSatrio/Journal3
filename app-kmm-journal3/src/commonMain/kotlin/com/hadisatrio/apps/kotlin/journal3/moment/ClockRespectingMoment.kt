@@ -23,8 +23,8 @@ import kotlinx.datetime.Clock
 
 class ClockRespectingMoment(
     private val clock: Clock,
-    private val origin: MomentInEdit
-) : MomentInEdit by origin {
+    private val origin: EditableMoment
+) : EditableMoment by origin {
 
     override val timestamp: Timestamp get() {
         return if (origin.isNewlyCreated() && !updatesMade()) {

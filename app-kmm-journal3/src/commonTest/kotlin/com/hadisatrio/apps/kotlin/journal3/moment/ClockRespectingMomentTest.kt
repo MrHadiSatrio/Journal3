@@ -30,7 +30,7 @@ import kotlin.time.Duration.Companion.hours
 class ClockRespectingMomentTest {
 
     private val clock = mockk<Clock>(relaxed = true)
-    private val origin = mockk<MomentInEdit>(relaxed = true)
+    private val origin = mockk<EditableMoment>(relaxed = true)
     private val current = Clock.System.now()
     private val currentTimestamp = LiteralTimestamp(current)
 

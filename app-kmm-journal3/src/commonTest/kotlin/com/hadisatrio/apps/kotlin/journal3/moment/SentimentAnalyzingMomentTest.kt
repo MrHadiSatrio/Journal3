@@ -27,7 +27,7 @@ import kotlin.test.Test
 class SentimentAnalyzingMomentTest {
 
     private val analyst = mockk<SentimentAnalyst>(relaxed = true)
-    private val origin = mockk<MomentInEdit>(relaxed = true)
+    private val origin = mockk<EditableMoment>(relaxed = true)
     private val moment = SentimentAnalyzingMoment(analyst, origin)
 
     @Test

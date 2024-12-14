@@ -23,8 +23,8 @@ import com.hadisatrio.apps.kotlin.journal3.token.TokenableString
 
 class SentimentAnalyzingMoment(
     private val analyst: SentimentAnalyst,
-    private val origin: MomentInEdit
-) : MomentInEdit by origin {
+    private val origin: EditableMoment
+) : EditableMoment by origin {
 
     private var isSentimentOverridden: Boolean = false
 

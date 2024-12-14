@@ -15,22 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.hadisatrio.apps.kotlin.journal3.moment
+package com.hadisatrio.libs.kotlin.geography
 
-import com.chrynan.uri.core.Uri
-import com.hadisatrio.apps.kotlin.journal3.datetime.Timestamp
-import com.hadisatrio.apps.kotlin.journal3.sentiment.Sentiment
-import com.hadisatrio.apps.kotlin.journal3.token.TokenableString
-import com.hadisatrio.libs.kotlin.geography.Place
-
-interface EditableMoment : Moment {
-    fun isNewlyCreated(): Boolean
-    fun update(timestamp: Timestamp)
-    fun update(description: TokenableString)
-    fun update(sentiment: Sentiment)
-    fun update(place: Place)
-    fun update(attachments: Iterable<Uri>)
-    fun update(isNotable: Boolean)
-    fun updatesMade(): Boolean
-    fun commit()
+interface Speed {
+    val value: Double
 }

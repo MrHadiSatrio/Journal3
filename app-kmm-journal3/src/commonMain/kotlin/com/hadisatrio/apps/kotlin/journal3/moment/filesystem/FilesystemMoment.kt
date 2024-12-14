@@ -33,9 +33,12 @@ import com.hadisatrio.libs.kotlin.geography.NullIsland
 import com.hadisatrio.libs.kotlin.geography.Place
 import com.hadisatrio.libs.kotlin.json.JsonFile
 import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.boolean
+import kotlinx.serialization.json.jsonPrimitive
 import okio.FileSystem
 import okio.Path
 
+@Suppress("TooManyFunctions")
 class FilesystemMoment(
     private val file: JsonFile,
     private val memorables: Memorables
@@ -65,6 +68,10 @@ class FilesystemMoment(
     override val attachments: Iterable<Uri> get() {
         val relevantItems = memorables.relevantTo(this.id)
         return relevantItems.asSequence().filterIsInstance<MemorableFile>().map { it.uri }.toList()
+    }
+
+    override val isNotable: Boolean get() {
+        return file.get("is_notable")?.jsonPrimitive?.boolean ?: false
     }
 
     constructor(fileSystem: FileSystem, parentDirectory: Path, id: Uuid, memorables: Memorables) : this(
@@ -99,8 +106,20 @@ class FilesystemMoment(
         memorables.relate(id, attachments)
     }
 
+    override fun update(isNotable: Boolean) {
+        file.put("is_notable", JsonPrimitive(isNotable))
+    }
+
     override fun isNewlyCreated(): Boolean {
         return file.exists().not()
+    }
+
+    override fun updatesMade(): Boolean {
+        return true // We are directly committing any updates, so yeah, it's made.
+    }
+
+    override fun commit() {
+        // We are directly committing any updates, so no further action required.
     }
 
     override fun forget() {

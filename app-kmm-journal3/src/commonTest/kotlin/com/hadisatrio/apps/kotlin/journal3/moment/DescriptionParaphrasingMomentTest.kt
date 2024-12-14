@@ -27,7 +27,7 @@ import kotlin.test.Test
 class DescriptionParaphrasingMomentTest {
 
     private val paraphraser: Paraphraser = mockk(relaxed = true)
-    private val origin: MomentInEdit = mockk(relaxed = true)
+    private val origin: EditableMoment = mockk(relaxed = true)
     private val moment: DescriptionParaphrasingMoment = DescriptionParaphrasingMoment(paraphraser, origin)
 
     @Test

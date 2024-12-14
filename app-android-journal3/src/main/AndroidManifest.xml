@@ -23,6 +23,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
@@ -63,6 +64,9 @@
                 android:value="androidx.startup" />
             <meta-data
                 android:name="com.hadisatrio.apps.android.journal3.alert.InactivityAlertingWorkInitializer"
+                android:value="androidx.startup" />
+            <meta-data
+                android:name="com.hadisatrio.apps.android.journal3.moment.MomentCapturingWorkInitializer"
                 android:value="androidx.startup" />
         </provider>
 

@@ -27,6 +27,7 @@ import com.hadisatrio.apps.kotlin.journal3.sentiment.Sentiment
 import com.hadisatrio.apps.kotlin.journal3.token.TokenableString
 import com.hadisatrio.libs.kotlin.geography.Place
 
+@Suppress("TooManyFunctions")
 class EditableMomentInStory(
     private val targetId: Uuid,
     private val story: Story
@@ -46,6 +47,7 @@ class EditableMomentInStory(
     override val sentiment: Sentiment get() = origin.sentiment
     override val place: Place get() = origin.place
     override val attachments: Iterable<Uri> get() = origin.attachments
+    override val isNotable: Boolean get() = origin.isNotable
 
     override fun isNewlyCreated(): Boolean = origin.isNewlyCreated()
     override fun update(timestamp: Timestamp) = origin.update(timestamp)
@@ -53,6 +55,16 @@ class EditableMomentInStory(
     override fun update(sentiment: Sentiment) = origin.update(sentiment)
     override fun update(place: Place) = origin.update(place)
     override fun update(attachments: Iterable<Uri>) = origin.update(attachments)
+    override fun update(isNotable: Boolean) = origin.update(isNotable)
+
+    override fun updatesMade(): Boolean {
+        return true // We are directly committing any updates, so yeah, it's made.
+    }
+
+    override fun commit() {
+        // We are directly committing any updates, so no further action required.
+    }
+
     override fun compareTo(other: Moment): Int = origin.compareTo(other)
     override fun forget() = origin.forget()
 }

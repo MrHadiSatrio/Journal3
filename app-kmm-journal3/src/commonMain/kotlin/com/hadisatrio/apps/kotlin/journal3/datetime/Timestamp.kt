@@ -32,6 +32,10 @@ interface Timestamp : Comparable<Timestamp> {
         return this.value - other.value
     }
 
+    operator fun minus(duration: Duration): Timestamp {
+        return LiteralTimestamp(value - duration)
+    }
+
     override fun compareTo(other: Timestamp): Int {
         return value.compareTo(other.value)
     }
