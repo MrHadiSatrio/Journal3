@@ -266,9 +266,9 @@ class RealJournal3Application : Journal3Application() {
     override val paraphraser: Paraphraser by lazy {
         OpenAiParaphraser(
             prompt = "You will be provided with diary entry drafts, " +
-                    "and your task is to refine their quality without changing too much " +
-                    "of the author's tonality and writing style. Don't use overly complex words unless " +
-                    "you saw the author use them.",
+                "and your task is to refine their quality without changing too much " +
+                "of the author's tonality and writing style. Don't use overly complex words unless " +
+                "you saw the author use them.",
             apiKey = BuildConfig.KEY_OAI_API,
             httpClient = httpClient,
         )
