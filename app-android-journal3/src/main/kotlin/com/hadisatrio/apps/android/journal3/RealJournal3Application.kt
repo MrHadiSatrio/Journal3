@@ -54,7 +54,7 @@ import com.hadisatrio.libs.android.foundation.event.ExecutorDispatchingEventSink
 import com.hadisatrio.libs.android.foundation.modal.AlertDialogModalPresenter
 import com.hadisatrio.libs.android.foundation.os.SystemLog
 import com.hadisatrio.libs.android.foundation.presentation.ExecutorDispatchingPresenter
-import com.hadisatrio.libs.android.geography.LocationManagerCoordinates
+import com.hadisatrio.libs.android.geography.AndroidCoordinates
 import com.hadisatrio.libs.android.geography.PermissionAwareCoordinates
 import com.hadisatrio.libs.android.io.content.ContentResolverSources
 import com.hadisatrio.libs.kotlin.foundation.Decor
@@ -278,8 +278,8 @@ class RealJournal3Application : Journal3Application() {
         Clock.System
     }
 
-    private val locationManagerCoordinates: LocationManagerCoordinates by lazy {
-        LocationManagerCoordinates(this, clock)
+    private val locationManagerCoordinates: AndroidCoordinates by lazy {
+        AndroidCoordinates(this, clock)
     }
 
     private val coordinates: Coordinates by lazy {
