@@ -54,6 +54,6 @@ kover = { id = "org.jetbrains.kotlinx.kover", version = "0.7.5" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version = "1.23.7" }
 ruler = { id = "com.hadisatrio.libs.android.ruler", version = "1.0.0-alpha.2" }
 sentry = { id = "io.sentry.android.gradle", version = "4.14.1" }
-sonar = { id = "org.sonarqube", version = "4.0.0.2929" }
+sonar = { id = "org.sonarqube", version = "6.0.1.5171" }
 
 [bundles]
