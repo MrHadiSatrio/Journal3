@@ -32,6 +32,7 @@ kotlin {
         val androidMain by getting {
             dependencies {
                 implementation(libs.assent)
+                implementation(libs.gms.location)
             }
         }
         val androidUnitTest by getting {
