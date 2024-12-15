@@ -1,7 +1,7 @@
 [versions]
 agp = "8.7.2"
 kotlin = "2.1.0"
-ktor = "2.3.12"
+ktor = "2.3.13"
 okio = "3.9.0"
 reactive-extensions = "2.2.0"
 
