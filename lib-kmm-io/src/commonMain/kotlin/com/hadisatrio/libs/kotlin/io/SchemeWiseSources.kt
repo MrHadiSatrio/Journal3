@@ -30,6 +30,6 @@ class SchemeWiseSources(
         require(sources.containsKey(uri.scheme)) {
             "No sources registered for the scheme '${uri.scheme}'."
         }
-        return sources[uri.scheme]!!.open(uri)
+        return sources.getValue(uri.scheme).open(uri)
     }
 }

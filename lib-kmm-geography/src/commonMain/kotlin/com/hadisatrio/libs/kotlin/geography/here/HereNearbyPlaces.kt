@@ -97,7 +97,7 @@ class HereNearbyPlaces(
 
     private fun jsonPlaces(json: String): Iterable<HerePlace> {
         val responseObject = Json.parseToJsonElement(json).jsonObject
-        val responseArray = responseObject["items"]!!.jsonArray
+        val responseArray = responseObject.getValue("items").jsonArray
         return responseArray.map { HerePlace(it) }
     }
 

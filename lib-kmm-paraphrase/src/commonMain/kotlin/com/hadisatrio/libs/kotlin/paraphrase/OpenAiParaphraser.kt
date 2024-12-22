@@ -68,10 +68,10 @@ class OpenAiParaphraser(
         if (!response.status.isSuccess()) throw IOException(response.status.toString())
         val responseBody = runBlocking { response.body<String>() }
         val responseObject = Json.parseToJsonElement(responseBody).jsonObject
-        val choices = responseObject["choices"]!!.jsonArray
-        val message = choices.first().jsonObject["message"]!!.jsonObject
+        val choices = responseObject.getValue("choices").jsonArray
+        val message = choices.first().jsonObject.getValue("message").jsonObject
 
-        return message["content"]!!.jsonPrimitive.content
+        return message.getValue("content").jsonPrimitive.content
     }
 
     private fun message(role: String, content: String): JsonObject {

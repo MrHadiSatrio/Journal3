@@ -31,22 +31,22 @@ internal class GooglePlace(
 ) : Place {
 
     override val id: Uuid by lazy {
-        val googleId = jsonObject["id"]!!.jsonPrimitive.content // "ChIJJUGQ2fHzaS4RVMXJKuiojVE"
+        val googleId = jsonObject.getValue("id").jsonPrimitive.content // "ChIJJUGQ2fHzaS4RVMXJKuiojVE"
         Uuid.nameUUIDFromBytes(googleId.toByteArray())
     }
 
     override val name: String by lazy {
-        val displayName = jsonObject["displayName"]!!.jsonObject
-        displayName["text"]!!.jsonPrimitive.content
+        val displayName = jsonObject.getValue("displayName").jsonObject
+        displayName.getValue("text").jsonPrimitive.content
     }
 
     override val address: String by lazy {
-        jsonObject["shortFormattedAddress"]!!.jsonPrimitive.content
+        jsonObject.getValue("shortFormattedAddress").jsonPrimitive.content
     }
 
     override val coordinates: Coordinates by lazy {
-        val position = jsonObject["location"]!!.jsonObject
-        LiteralCoordinates("${position["latitude"]!!},${position["longitude"]!!}")
+        val position = jsonObject.getValue("location").jsonObject
+        LiteralCoordinates("${position.getValue("latitude")},${position.getValue("longitude")}")
     }
 
     constructor(jsonElement: JsonElement) : this(jsonElement.jsonObject)

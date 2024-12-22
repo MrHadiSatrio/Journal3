@@ -48,7 +48,7 @@ class FilesystemMemorableFiles(
         // If it exists in new, but not in old, then it's a new attachment.
         // It can either be for an existing/equivalent file, or a new one.
         (newIds - oldIds).asSequence()
-            .map { find(it).firstOrNull() ?: remember(it, idToPath[it]!!) }
+            .map { find(it).firstOrNull() ?: remember(it, idToPath.getValue(it)) }
             .forEach { it.link(momentId) }
     }
 
