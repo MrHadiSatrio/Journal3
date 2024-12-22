@@ -48,7 +48,10 @@ abstract class EventHandlingUseCase(
             .subscribe { event -> handleEvent(event) }
     }
 
-    protected open fun onComplete() {}
+    protected open fun onComplete() {
+        // Nothing to do here. This essentially is an optional hook for subclasses that
+        // might need to do some ceremonies when we are completing.
+    }
 
     abstract fun handleEvent(event: Event)
 
