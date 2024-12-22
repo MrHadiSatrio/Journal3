@@ -19,6 +19,6 @@ package com.hadisatrio.libs.kotlin.foundation.event
 
 import com.badoo.reaktive.observable.Observable
 
-interface EventSource {
+fun interface EventSource {
     fun events(): Observable<Event>
 }

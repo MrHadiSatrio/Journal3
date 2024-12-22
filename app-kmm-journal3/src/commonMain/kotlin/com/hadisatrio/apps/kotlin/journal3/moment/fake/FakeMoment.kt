@@ -51,43 +51,47 @@ class FakeMoment(
         private set
 
     override fun update(timestamp: Timestamp) {
-        require(!isForgotten) { "This moment has already been forgotten." }
+        requireNotForgotten()
         isNewlyCreated = false
         this.timestamp = timestamp
     }
 
     override fun update(description: TokenableString) {
-        require(!isForgotten) { "This moment has already been forgotten." }
+        requireNotForgotten()
         isNewlyCreated = false
         this.description = description
     }
 
     override fun update(sentiment: Sentiment) {
-        require(!isForgotten) { "This moment has already been forgotten." }
+        requireNotForgotten()
         isNewlyCreated = false
         this.sentiment = sentiment
     }
 
     override fun update(place: Place) {
-        require(!isForgotten) { "This moment has already been forgotten." }
+        requireNotForgotten()
         isNewlyCreated = false
         this.place = place
     }
 
     override fun update(attachments: Iterable<Uri>) {
-        require(!isForgotten) { "This moment has already been forgotten." }
+        requireNotForgotten()
         isNewlyCreated = false
         this.attachments = attachments
     }
 
     override fun update(isNotable: Boolean) {
-        require(!isForgotten) { "This moment has already been forgotten." }
+        requireNotForgotten()
         isNewlyCreated = false
         this.isNotable = isNotable
     }
 
     override fun isNewlyCreated(): Boolean {
         return isNewlyCreated
+    }
+
+    private fun requireNotForgotten() {
+        require(!isForgotten) { "This moment has already been forgotten." }
     }
 
     override fun updatesMade(): Boolean {

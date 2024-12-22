@@ -26,7 +26,7 @@ import io.ktor.client.engine.mock.respondError
 import io.ktor.client.engine.mock.respondOk
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
-import io.ktor.utils.io.errors.IOException
+import kotlinx.io.IOException
 import kotlin.test.Test
 
 class OpenAiParaphraserTest {

@@ -17,6 +17,6 @@
 
 package com.hadisatrio.apps.kotlin.journal3.forgettable
 
-interface Forgettable {
+fun interface Forgettable {
     fun forget()
 }

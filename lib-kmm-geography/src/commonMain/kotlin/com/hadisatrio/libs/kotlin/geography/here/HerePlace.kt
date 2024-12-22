@@ -31,22 +31,22 @@ class HerePlace(
 ) : Place {
 
     override val id: Uuid by lazy {
-        val hereId = jsonObject["id"]!!.jsonPrimitive.content // "here:af:street:fnY9KMvsOadjmoSObWB8oB"
+        val hereId = jsonObject.getValue("id").jsonPrimitive.content // "here:af:street:fnY9KMvsOadjmoSObWB8oB"
         Uuid.nameUUIDFromBytes(hereId.toByteArray())
     }
 
     override val name: String by lazy {
-        jsonObject["title"]!!.jsonPrimitive.content
+        jsonObject.getValue("title").jsonPrimitive.content
     }
 
     override val address: String by lazy {
-        val address = jsonObject["address"]!!.jsonObject
-        address["label"]!!.jsonPrimitive.content
+        val address = jsonObject.getValue("address").jsonObject
+        address.getValue("label").jsonPrimitive.content
     }
 
     override val coordinates: Coordinates by lazy {
-        val position = jsonObject["position"]!!.jsonObject
-        LiteralCoordinates("${position["lat"]!!},${position["lng"]!!}")
+        val position = jsonObject.getValue("position").jsonObject
+        LiteralCoordinates("${position.getValue("lat")},${position.getValue("lng")}")
     }
 
     constructor(jsonElement: JsonElement) : this(jsonElement.jsonObject)

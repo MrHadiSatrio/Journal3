@@ -20,6 +20,6 @@ package com.hadisatrio.libs.kotlin.io
 import com.chrynan.uri.core.Uri
 import okio.Source
 
-interface Sources {
+fun interface Sources {
     fun open(uri: Uri): Source
 }

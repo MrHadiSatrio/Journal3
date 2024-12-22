@@ -29,8 +29,8 @@ import io.ktor.client.statement.HttpResponse
 import io.ktor.http.URLBuilder
 import io.ktor.http.clone
 import io.ktor.http.isSuccess
-import io.ktor.utils.io.errors.IOException
 import kotlinx.coroutines.runBlocking
+import kotlinx.io.IOException
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
@@ -97,7 +97,7 @@ class HereNearbyPlaces(
 
     private fun jsonPlaces(json: String): Iterable<HerePlace> {
         val responseObject = Json.parseToJsonElement(json).jsonObject
-        val responseArray = responseObject["items"]!!.jsonArray
+        val responseArray = responseObject.getValue("items").jsonArray
         return responseArray.map { HerePlace(it) }
     }
 

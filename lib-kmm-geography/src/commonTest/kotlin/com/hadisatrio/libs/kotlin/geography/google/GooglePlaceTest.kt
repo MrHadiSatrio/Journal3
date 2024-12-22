@@ -66,7 +66,7 @@ class GooglePlaceTest {
 
     @Test
     fun `Infers ID from the Google ID consistently`() {
-        val tageHeuerJsonId = tagHeuerJson["id"]!!.jsonPrimitive.content
+        val tageHeuerJsonId = tagHeuerJson.getValue("id").jsonPrimitive.content
         tagHeuer.id.shouldBe(Uuid.nameUUIDFromBytes(tageHeuerJsonId.toByteArray()))
         tagHeuer.id.shouldBe(tagHeuer.id)
         tagHeuer.id.shouldBe(otherTagHeuer.id)
@@ -74,16 +74,16 @@ class GooglePlaceTest {
 
     @Test
     fun `Infers name from displayName`() {
-        val tagHeuerJsonName = tagHeuerJson["displayName"]!!.jsonObject["text"]!!.jsonPrimitive.content
-        val montblancJsonName = montblancJson["displayName"]!!.jsonObject["text"]!!.jsonPrimitive.content
+        val tagHeuerJsonName = tagHeuerJson.getValue("displayName").jsonObject.getValue("text").jsonPrimitive.content
+        val montblancJsonName = montblancJson.getValue("displayName").jsonObject.getValue("text").jsonPrimitive.content
         tagHeuer.name.shouldBe(tagHeuerJsonName)
         montblanc.name.shouldBe(montblancJsonName)
     }
 
     @Test
     fun `Infers address from shortFormattedAddress`() {
-        tagHeuer.address.shouldBe(tagHeuerJson["shortFormattedAddress"]!!.jsonPrimitive.content)
-        montblanc.address.shouldBe(montblancJson["shortFormattedAddress"]!!.jsonPrimitive.content)
+        tagHeuer.address.shouldBe(tagHeuerJson.getValue("shortFormattedAddress").jsonPrimitive.content)
+        montblanc.address.shouldBe(montblancJson.getValue("shortFormattedAddress").jsonPrimitive.content)
     }
 
     @Test

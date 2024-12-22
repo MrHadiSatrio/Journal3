@@ -17,6 +17,6 @@
 
 package com.hadisatrio.libs.kotlin.foundation.presentation
 
-interface Presenter<T> {
+fun interface Presenter<T> {
     fun present(thing: T)
 }

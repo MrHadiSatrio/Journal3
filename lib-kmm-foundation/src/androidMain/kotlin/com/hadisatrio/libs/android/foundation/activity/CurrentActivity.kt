@@ -38,16 +38,21 @@ class CurrentActivity(
         return activity
     }
 
-    @Suppress("EmptyFunctionBlock")
     private class ActivityLifecycleCallback(
         private val activityRef: AtomicReference<Activity>
     ) : Application.ActivityLifecycleCallbacks {
 
-        override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {}
+        override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
+            // Nothing to do.
+        }
 
-        override fun onActivityStarted(activity: Activity) {}
+        override fun onActivityStarted(activity: Activity) {
+            // Nothing to do.
+        }
 
-        override fun onActivityResumed(activity: Activity) {}
+        override fun onActivityResumed(activity: Activity) {
+            // Nothing to do.
+        }
 
         override fun onActivityPostResumed(activity: Activity) {
             activityRef.set(activity)
@@ -57,12 +62,20 @@ class CurrentActivity(
             activityRef.set(null)
         }
 
-        override fun onActivityPaused(activity: Activity) {}
+        override fun onActivityPaused(activity: Activity) {
+            // Nothing to do.
+        }
 
-        override fun onActivityStopped(activity: Activity) {}
+        override fun onActivityStopped(activity: Activity) {
+            // Nothing to do.
+        }
 
-        override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {}
+        override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {
+            // Nothing to do.
+        }
 
-        override fun onActivityDestroyed(activity: Activity) {}
+        override fun onActivityDestroyed(activity: Activity) {
+            // Nothing to do.
+        }
     }
 }

@@ -59,7 +59,7 @@ class HerePlaceTest {
 
     @Test
     fun `Infers ID from the Here ID consistently`() {
-        val lifemarkStreetJsonId = lifemarkStreetJson["id"]!!.jsonPrimitive.content
+        val lifemarkStreetJsonId = lifemarkStreetJson.getValue("id").jsonPrimitive.content
         lifemarkStreet.id.shouldBe(Uuid.nameUUIDFromBytes(lifemarkStreetJsonId.toByteArray()))
         lifemarkStreet.id.shouldBe(lifemarkStreet.id)
         lifemarkStreet.id.shouldBe(otherLifemarkStreet.id)
@@ -67,16 +67,20 @@ class HerePlaceTest {
 
     @Test
     fun `Infers name from the title`() {
-        val lifemarkStreetJsonTitle = lifemarkStreetJson["title"]!!.jsonPrimitive.content
-        val anglersPlaceJsonTitle = anglersPlaceJson["title"]!!.jsonPrimitive.content
+        val lifemarkStreetJsonTitle = lifemarkStreetJson.getValue("title").jsonPrimitive.content
+        val anglersPlaceJsonTitle = anglersPlaceJson.getValue("title").jsonPrimitive.content
         lifemarkStreet.name.shouldBe(lifemarkStreetJsonTitle)
         anglersPlace.name.shouldBe(anglersPlaceJsonTitle)
     }
 
     @Test
     fun `Infers address from the address label`() {
-        lifemarkStreet.address.shouldBe(lifemarkStreetJson["address"]!!.jsonObject["label"]!!.jsonPrimitive.content)
-        anglersPlace.address.shouldBe(anglersPlaceJson["address"]!!.jsonObject["label"]!!.jsonPrimitive.content)
+        lifemarkStreet.address.shouldBe(
+            lifemarkStreetJson.getValue("address").jsonObject.getValue("label").jsonPrimitive.content
+        )
+        anglersPlace.address.shouldBe(
+            anglersPlaceJson.getValue("address").jsonObject.getValue("label").jsonPrimitive.content
+        )
     }
 
     @Test
