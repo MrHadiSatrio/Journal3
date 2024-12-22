@@ -70,7 +70,7 @@ import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
 import com.hadisatrio.libs.kotlin.geography.Coordinates
 import com.hadisatrio.libs.kotlin.geography.Places
 import com.hadisatrio.libs.kotlin.geography.Speed
-import com.hadisatrio.libs.kotlin.geography.here.HereNearbyPlaces
+import com.hadisatrio.libs.kotlin.geography.google.GoogleNearbyPlaces
 import com.hadisatrio.libs.kotlin.io.SchemeWiseSources
 import com.hadisatrio.libs.kotlin.io.filesystem.FileSystemSources
 import com.hadisatrio.libs.kotlin.paraphrase.OpenAiParaphraser
@@ -95,10 +95,10 @@ class RealJournal3Application : Journal3Application() {
     }
 
     override val places: Places by lazy {
-        HereNearbyPlaces(
+        GoogleNearbyPlaces(
             coordinates = coordinates,
             limit = 100,
-            apiKey = BuildConfig.KEY_HERE_API,
+            apiKey = BuildConfig.KEY_GOOGLE_API,
             httpClient = HttpClient()
         )
     }
