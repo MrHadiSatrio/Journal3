@@ -32,8 +32,8 @@ import io.ktor.http.URLBuilder
 import io.ktor.http.appendEncodedPathSegments
 import io.ktor.http.clone
 import io.ktor.http.isSuccess
-import io.ktor.utils.io.errors.IOException
 import kotlinx.coroutines.runBlocking
+import kotlinx.io.IOException
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
