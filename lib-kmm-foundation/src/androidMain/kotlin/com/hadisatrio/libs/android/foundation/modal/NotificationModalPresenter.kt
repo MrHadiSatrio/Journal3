@@ -38,7 +38,7 @@ class NotificationModalPresenter(
         manager.notify(thing.kind.hashCode(), builder.build())
     }
 
-    interface NotificationBuilderFactory {
+    fun interface NotificationBuilderFactory {
         fun create(): NotificationCompat.Builder
     }
 }

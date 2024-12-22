@@ -17,6 +17,6 @@
 
 package com.hadisatrio.apps.kotlin.journal3.token
 
-interface TokenAnalyst {
+fun interface TokenAnalyst {
     fun analyze(string: String): Set<Token>
 }

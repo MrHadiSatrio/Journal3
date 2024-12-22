@@ -17,6 +17,6 @@
 
 package com.hadisatrio.libs.kotlin.foundation
 
-interface UseCase {
+fun interface UseCase {
     operator fun invoke()
 }

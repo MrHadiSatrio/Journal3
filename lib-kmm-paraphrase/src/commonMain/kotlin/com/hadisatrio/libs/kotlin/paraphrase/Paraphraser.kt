@@ -17,6 +17,6 @@
 
 package com.hadisatrio.libs.kotlin.paraphrase
 
-interface Paraphraser {
+fun interface Paraphraser {
     fun paraphrase(text: String): String
 }

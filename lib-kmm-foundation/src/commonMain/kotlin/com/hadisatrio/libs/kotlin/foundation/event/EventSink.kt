@@ -17,7 +17,7 @@
 
 package com.hadisatrio.libs.kotlin.foundation.event
 
-interface EventSink {
+fun interface EventSink {
 
     fun sink(event: Event)
 }
