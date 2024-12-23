@@ -38,6 +38,8 @@ jobs:
           RELEASE_KEY_STORE_PASSWORD: ${{ secrets.RELEASE_KEY_STORE_PASSWORD }}
           RELEASE_KEY_ALIAS: ${{ secrets.RELEASE_KEY_ALIAS }}
           RELEASE_KEY_PASSWORD: ${{ secrets.RELEASE_KEY_PASSWORD }}
+          RELEASE_KEY_GOOGLE_API: ${{ secrets.RELEASE_KEY_GOOGLE_API }}
+          DEBUG_KEY_GOOGLE_API: ${{ secrets.DEBUG_KEY_GOOGLE_API }}
           RELEASE_KEY_HERE_API: ${{ secrets.RELEASE_KEY_HERE_API }}
           DEBUG_KEY_HERE_API: ${{ secrets.DEBUG_KEY_HERE_API }}
           RELEASE_KEY_OAI_API: ${{ secrets.RELEASE_KEY_OAI_API }}
