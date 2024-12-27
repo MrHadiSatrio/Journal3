@@ -37,6 +37,8 @@ import com.hadisatrio.libs.kotlin.foundation.event.fake.FakeEventSink
 import com.hadisatrio.libs.kotlin.foundation.modal.Modal
 import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
 import com.hadisatrio.libs.kotlin.foundation.presentation.fake.FakePresenter
+import com.hadisatrio.libs.kotlin.geography.Coordinates
+import com.hadisatrio.libs.kotlin.geography.LiteralCoordinates
 import com.hadisatrio.libs.kotlin.geography.Places
 import com.hadisatrio.libs.kotlin.geography.SelfPopulatingPlaces
 import com.hadisatrio.libs.kotlin.geography.Speed
@@ -52,6 +54,7 @@ import kotlin.time.Duration.Companion.hours
 
 class FakeJournal3Application : Journal3Application() {
 
+    override val coordinates: Coordinates by lazy { LiteralCoordinates("-6.275489,107.050648") }
     override val speed: Speed by lazy { StaticSpeed(5.0) }
     override val places: Places by lazy { SelfPopulatingPlaces(10, FakePlaces()) }
     override val story: Story by lazy { SelfPopulatingStory(10, FakeStory()) }

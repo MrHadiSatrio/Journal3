@@ -18,6 +18,7 @@
 package com.hadisatrio.apps.kotlin.journal3.moment
 
 import com.hadisatrio.apps.kotlin.journal3.story.fake.FakeStory
+import com.hadisatrio.libs.kotlin.geography.Coordinates
 import com.hadisatrio.libs.kotlin.geography.LiteralCoordinates
 import com.hadisatrio.libs.kotlin.geography.Place
 import com.hadisatrio.libs.kotlin.geography.Speed
@@ -42,23 +43,22 @@ class CaptureAMomentUseCaseTest {
     private val gambirStation = FakePlace(coordinates = LiteralCoordinates("-6.1765638,106.8299464"))
     private val gambirBusDepot = FakePlace(coordinates = LiteralCoordinates("-6.1766638,106.8300464"))
     private val places = FakePlaces(gambirStation, gambirBusDepot)
+    private val coordinates = mockk<Coordinates>()
     private val speed = mockk<Speed>()
     private val arbitraryInstant = Instant.fromEpochMilliseconds(1735316550)
     private val clock = mockk<Clock>()
 
-    private val useCase = CaptureAMomentUseCase(story, places, speed, clock)
+    private val useCase = CaptureAMomentUseCase(story, places, coordinates, speed, clock)
 
     @BeforeTest
     fun `Init mocks`() {
         every { speed.value } returns 0.0
+        every { coordinates.accuracyInMeters } returns 50F
         every { clock.now() } returns arbitraryInstant
     }
 
     @Test
     fun `Captures a non-notable moment about the currently visited place`() {
-        every { speed.value } returns 0.0
-        every { clock.now() } returns Instant.DISTANT_FUTURE
-
         useCase()
 
         story.moments.shouldHaveSize(1)
@@ -72,7 +72,7 @@ class CaptureAMomentUseCaseTest {
     fun `Prioritizes a known nearby place whilst capturing`() {
         val placesList = mutableListOf<Place>(gambirStation, gambirBusDepot)
         val places = FakePlaces(placesList)
-        val useCase = CaptureAMomentUseCase(story, places, speed, clock)
+        val useCase = CaptureAMomentUseCase(story, places, coordinates, speed, clock)
 
         useCase() // …captures visit to Gambir Station.
         placesList.removeFirst() // …so that the next execution would pick up the bus depot.
@@ -86,9 +86,6 @@ class CaptureAMomentUseCaseTest {
 
     @Test
     fun `Skips capturing if there is an existing moment about the place written today`() {
-        every { speed.value } returns 0.0
-        every { clock.now() } returns Instant.DISTANT_FUTURE
-
         // Places stay intact, so multiple execution would point to the same place to
         // be captured. Hence sufficient to simulate the scenario we want.
         repeat(10) { useCase() }
@@ -100,7 +97,7 @@ class CaptureAMomentUseCaseTest {
     fun `Skips capturing if the place, post correction, is already written for today`() {
         val placesList = mutableListOf<Place>(gambirStation, gambirBusDepot)
         val places = FakePlaces(placesList)
-        val useCase = CaptureAMomentUseCase(story, places, speed, clock)
+        val useCase = CaptureAMomentUseCase(story, places, coordinates, speed, clock)
 
         useCase() // …captures visit to Gambir Station.
         placesList.removeFirst() // …so that the next execution would pick up the bus depot.
@@ -113,9 +110,17 @@ class CaptureAMomentUseCaseTest {
     }
 
     @Test
+    fun `Skips capturing when coordinates accuracy is greater than 50 meters`() {
+        every { coordinates.accuracyInMeters } returns 51F
+
+        useCase()
+
+        story.moments.shouldBeEmpty()
+    }
+
+    @Test
     fun `Skips capture if the user is moving`() {
         every { speed.value } returns 100.0
-        every { clock.now() } returns Instant.DISTANT_FUTURE
 
         useCase()
 

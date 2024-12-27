@@ -33,6 +33,7 @@ import com.hadisatrio.libs.kotlin.foundation.event.EventSink
 import com.hadisatrio.libs.kotlin.foundation.event.EventSource
 import com.hadisatrio.libs.kotlin.foundation.modal.Modal
 import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
+import com.hadisatrio.libs.kotlin.geography.Coordinates
 import com.hadisatrio.libs.kotlin.geography.Places
 import com.hadisatrio.libs.kotlin.geography.Speed
 import com.hadisatrio.libs.kotlin.paraphrase.Paraphraser
@@ -41,6 +42,7 @@ import java.util.concurrent.Executor
 import kotlin.time.Duration
 
 abstract class Journal3Application : Application() {
+    abstract val coordinates: Coordinates
     abstract val speed: Speed
     abstract val places: Places
     abstract val story: Story

@@ -41,6 +41,7 @@ class MomentCapturingWork(
             story = journal3Application.story,
             places = journal3Application.places,
             speed = journal3Application.speed,
+            coordinates = journal3Application.coordinates,
             clock = journal3Application.clock
         )()
         return Result.success()

@@ -23,6 +23,7 @@ import com.hadisatrio.apps.kotlin.journal3.story.EditableMomentInStory
 import com.hadisatrio.apps.kotlin.journal3.story.Story
 import com.hadisatrio.apps.kotlin.journal3.story.cache.CachingStory
 import com.hadisatrio.libs.kotlin.foundation.UseCase
+import com.hadisatrio.libs.kotlin.geography.Coordinates
 import com.hadisatrio.libs.kotlin.geography.Places
 import com.hadisatrio.libs.kotlin.geography.Speed
 import kotlinx.datetime.Clock
@@ -31,12 +32,15 @@ import kotlin.time.Duration.Companion.hours
 class CaptureAMomentUseCase(
     private val story: Story,
     private val places: Places,
+    private val coordinates: Coordinates,
     private val speed: Speed,
     private val clock: Clock
 ) : UseCase {
 
     override fun invoke() {
-        if (speed.value > SPEED_LIMIT_METER_PER_SECOND) return
+        val userIsMoving = speed.value > SPEED_LIMIT_METER_PER_SECOND
+        val coordinatesIsInaccurate = coordinates.accuracyInMeters > ACCURACY_LIMIT_METER
+        if (userIsMoving || coordinatesIsInaccurate) return
 
         val cachedStory = CachingStory(story)
 
@@ -61,5 +65,6 @@ class CaptureAMomentUseCase(
     companion object {
         private const val SPEED_LIMIT_METER_PER_SECOND = 5
         private const val DISTANCE_LIMIT_METER = 25.0
+        private const val ACCURACY_LIMIT_METER = 50
     }
 }
