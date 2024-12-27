@@ -20,7 +20,6 @@ package com.hadisatrio.apps.kotlin.journal3.moment
 import com.hadisatrio.apps.kotlin.journal3.story.fake.FakeStory
 import com.hadisatrio.libs.kotlin.geography.LiteralCoordinates
 import com.hadisatrio.libs.kotlin.geography.Place
-import com.hadisatrio.libs.kotlin.geography.SelfPopulatingPlaces
 import com.hadisatrio.libs.kotlin.geography.Speed
 import com.hadisatrio.libs.kotlin.geography.fake.FakePlace
 import com.hadisatrio.libs.kotlin.geography.fake.FakePlaces
@@ -32,16 +31,28 @@ import io.mockk.every
 import io.mockk.mockk
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
+import kotlin.test.BeforeTest
 import kotlin.test.Test
+import kotlin.time.Duration.Companion.days
+import kotlin.time.Duration.Companion.seconds
 
 class CaptureAMomentUseCaseTest {
 
     private val story = FakeStory()
-    private val places = SelfPopulatingPlaces(1, FakePlaces())
+    private val gambirStation = FakePlace(coordinates = LiteralCoordinates("-6.1765638,106.8299464"))
+    private val gambirBusDepot = FakePlace(coordinates = LiteralCoordinates("-6.1766638,106.8300464"))
+    private val places = FakePlaces(gambirStation, gambirBusDepot)
     private val speed = mockk<Speed>()
+    private val arbitraryInstant = Instant.fromEpochMilliseconds(1735316550)
     private val clock = mockk<Clock>()
 
     private val useCase = CaptureAMomentUseCase(story, places, speed, clock)
+
+    @BeforeTest
+    fun `Init mocks`() {
+        every { speed.value } returns 0.0
+        every { clock.now() } returns arbitraryInstant
+    }
 
     @Test
     fun `Captures a non-notable moment about the currently visited place`() {
@@ -52,28 +63,25 @@ class CaptureAMomentUseCaseTest {
 
         story.moments.shouldHaveSize(1)
         val captured = story.moments.first()
-        captured.timestamp.value.shouldBeEqual(Instant.DISTANT_FUTURE)
+        captured.timestamp.value.shouldBeEqual(arbitraryInstant)
         captured.isNotable.shouldBeFalse()
         captured.place.id.shouldBeEqual(places.first().id)
     }
 
     @Test
     fun `Prioritizes a known nearby place whilst capturing`() {
-        every { speed.value } returns 0.0
-        every { clock.now() } returns Instant.DISTANT_FUTURE
-        val onePlace = FakePlace(coordinates = LiteralCoordinates("-6.275489,107.050648"))
-        val another10mAway = FakePlace(coordinates = LiteralCoordinates("-6.275500,107.050740"))
-        val placesList = mutableListOf<Place>(onePlace, another10mAway)
+        val placesList = mutableListOf<Place>(gambirStation, gambirBusDepot)
         val places = FakePlaces(placesList)
         val useCase = CaptureAMomentUseCase(story, places, speed, clock)
 
-        useCase()
-        placesList.removeFirst() // …so that the next execution would pick up the 2nd place.
-        useCase()
+        useCase() // …captures visit to Gambir Station.
+        placesList.removeFirst() // …so that the next execution would pick up the bus depot.
+        every { clock.now() } returns arbitraryInstant + 1.days + 1.seconds
+        useCase() // …attempts to capture the bus depot.
 
         story.moments.shouldHaveSize(2)
         story.moments.distinctBy { it.place.id }.shouldHaveSize(1)
-        story.moments.map { it.place.id }.first().shouldBeEqual(onePlace.id)
+        story.moments.map { it.place.id }.first().shouldBeEqual(gambirStation.id)
     }
 
     @Test
@@ -86,6 +94,22 @@ class CaptureAMomentUseCaseTest {
         repeat(10) { useCase() }
 
         story.moments.shouldHaveSize(1)
+    }
+
+    @Test
+    fun `Skips capturing if the place, post correction, is already written for today`() {
+        val placesList = mutableListOf<Place>(gambirStation, gambirBusDepot)
+        val places = FakePlaces(placesList)
+        val useCase = CaptureAMomentUseCase(story, places, speed, clock)
+
+        useCase() // …captures visit to Gambir Station.
+        placesList.removeFirst() // …so that the next execution would pick up the bus depot.
+        // Unlike the previous test case, we don't advance the time.
+        useCase() // …attempts to capture the bus depot.
+
+        story.moments.shouldHaveSize(1)
+        story.moments.distinctBy { it.place.id }.shouldHaveSize(1)
+        story.moments.map { it.place.id }.first().shouldBeEqual(gambirStation.id)
     }
 
     @Test

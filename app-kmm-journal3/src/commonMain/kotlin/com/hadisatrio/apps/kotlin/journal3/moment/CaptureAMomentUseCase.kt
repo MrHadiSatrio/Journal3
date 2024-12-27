@@ -45,11 +45,11 @@ class CaptureAMomentUseCase(
         val todaysMoments = TimeRangedMoments(last24h, cachedStory.moments)
 
         var place = places.first()
-        val beenHereRecently = todaysMoments.any { it.place.id == place.id }
-        if (beenHereRecently) return
-
         val vicinityMoments = VicinityMoments(place.coordinates, DISTANCE_LIMIT_METER, cachedStory.moments)
         place = vicinityMoments.firstOrNull()?.place ?: place
+
+        val beenHereRecently = todaysMoments.any { it.place.id == place.id }
+        if (beenHereRecently) return
 
         val moment = EditableMomentInStory(INVALID_UUID, story)
         moment.update(currentTimestamp)
