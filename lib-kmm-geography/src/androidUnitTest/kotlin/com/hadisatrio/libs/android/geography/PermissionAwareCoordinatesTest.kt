@@ -48,5 +48,6 @@ class PermissionAwareCoordinatesTest {
         shadowActivity.grantPermissions(Manifest.permission.ACCESS_FINE_LOCATION)
 
         coordinates.latlng.shouldBe(origin.latlng)
+        coordinates.accuracyInMeters.shouldBe(origin.accuracyInMeters)
     }
 }

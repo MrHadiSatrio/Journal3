@@ -20,6 +20,7 @@ package com.hadisatrio.libs.kotlin.geography
 abstract class Coordinates {
 
     abstract val latlng: Pair<Double, Double>
+    abstract val accuracyInMeters: Float
 
     fun distanceTo(other: Coordinates): Distance {
         return Distance(this, other)

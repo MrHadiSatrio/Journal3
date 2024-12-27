@@ -32,6 +32,7 @@ class AndroidCoordinates(
 ) : Coordinates(), Speed {
 
     override val latlng: Pair<Double, Double> get() = delegate.latlng
+    override val accuracyInMeters: Float get() = delegate.accuracyInMeters
     override val value: Double get() = (delegate as Speed).value
 
     @VisibleForTesting(otherwise = PRIVATE)

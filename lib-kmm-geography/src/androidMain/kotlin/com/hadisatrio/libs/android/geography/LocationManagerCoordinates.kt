@@ -46,6 +46,10 @@ class LocationManagerCoordinates(
         @RequiresPermission(allOf = [ ACCESS_COARSE_LOCATION, ACCESS_FINE_LOCATION ])
         get() = location().let { it.latitude to it.longitude }
 
+    override val accuracyInMeters: Float
+        @RequiresPermission(allOf = [ ACCESS_COARSE_LOCATION, ACCESS_FINE_LOCATION ])
+        get() = location().accuracy
+
     override val value: Double
         @RequiresPermission(allOf = [ ACCESS_COARSE_LOCATION, ACCESS_FINE_LOCATION ])
         get() = location().speed.toDouble()

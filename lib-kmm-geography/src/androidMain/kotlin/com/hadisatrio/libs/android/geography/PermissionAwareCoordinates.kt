@@ -40,6 +40,13 @@ class PermissionAwareCoordinates(
             throw SecurityException("Required permission(s) is not granted.")
         }
     }
+    override val accuracyInMeters: Float get() {
+        return if (checkPermission()) {
+            origin.accuracyInMeters
+        } else {
+            throw SecurityException("Required permission(s) is not granted.")
+        }
+    }
 
     constructor(application: Application, origin: Coordinates) : this(
         application,

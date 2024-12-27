@@ -47,6 +47,11 @@ class GmsCoordinates(
         get() {
             return location().let { it.latitude to it.longitude }
         }
+    override val accuracyInMeters: Float
+        @RequiresPermission(allOf = [ACCESS_COARSE_LOCATION, ACCESS_FINE_LOCATION])
+        get() {
+            return location().accuracy
+        }
     override val value: Double
         @RequiresPermission(allOf = [ACCESS_COARSE_LOCATION, ACCESS_FINE_LOCATION])
         get() {

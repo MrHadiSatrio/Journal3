@@ -47,22 +47,26 @@ class GmsCoordinatesTest {
         gpsLocation.latitude = -6.2244727
         gpsLocation.longitude = 106.8101278
         gpsLocation.speed = 3F
+        gpsLocation.accuracy = 10F
         every { client.getCurrentLocation(any<Int>(), anyNullable()) } returns Tasks.forResult(
             gpsLocation
         )
     }
 
     @Test
-    fun `Returns device location`() {
+    fun `Returns device location and its accuracy`() {
         var latlng = 0.0 to 0.0
+        var accuracy = 0F
         val thread = Thread {
             latlng = coordinates.latlng
+            accuracy = coordinates.accuracyInMeters
         }
 
         thread.start()
         thread.join()
 
         latlng.shouldBe(gpsLocation.latitude to gpsLocation.longitude)
+        accuracy.shouldBe(gpsLocation.accuracy)
     }
 
     @Test
