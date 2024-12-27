@@ -49,7 +49,7 @@ class CaptureAMomentUseCase(
         val todaysMoments = TimeRangedMoments(last24h, cachedStory.moments)
 
         var place = places.first()
-        val vicinityMoments = VicinityMoments(place.coordinates, DISTANCE_LIMIT_METER, cachedStory.moments)
+        val vicinityMoments = VicinityMoments(place.coordinates, coordinates.accuracyInMeters, cachedStory.moments)
         place = vicinityMoments.firstOrNull()?.place ?: place
 
         val beenHereRecently = todaysMoments.any { it.place.id == place.id }
@@ -64,7 +64,6 @@ class CaptureAMomentUseCase(
 
     companion object {
         private const val SPEED_LIMIT_METER_PER_SECOND = 5
-        private const val DISTANCE_LIMIT_METER = 25.0
         private const val ACCURACY_LIMIT_METER = 50
     }
 }
