@@ -56,10 +56,12 @@ class LocationManagerCoordinatesTest {
     }
 
     @Test(timeout = 10_000)
-    fun `Returns device location`() {
+    fun `Returns device location and its accuracy`() {
         var latlng = 0.0 to 0.0
+        var accuracy = 0F
         val thread = Thread {
             latlng = coordinates.latlng
+            accuracy = coordinates.accuracyInMeters
         }
 
         thread.start()
@@ -67,6 +69,7 @@ class LocationManagerCoordinatesTest {
         thread.join()
 
         latlng.shouldBe(gpsLocation.latitude to gpsLocation.longitude)
+        accuracy.shouldBe(gpsLocation.accuracy)
     }
 
     @Test(timeout = 10_000)

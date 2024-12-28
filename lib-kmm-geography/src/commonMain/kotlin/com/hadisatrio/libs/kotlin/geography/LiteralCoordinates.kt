@@ -23,6 +23,7 @@ class LiteralCoordinates(
 ) : Coordinates() {
 
     override val latlng: Pair<Double, Double> get() = latitude to longitude
+    override val accuracyInMeters: Float get() = 0F // …assume highest accuracy as we're a literal.
 
     constructor(string: String) : this(
         string.split(',', limit = 2).first().trim().toDouble(),

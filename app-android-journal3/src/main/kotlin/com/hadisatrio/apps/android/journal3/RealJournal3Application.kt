@@ -282,7 +282,7 @@ class RealJournal3Application : Journal3Application() {
         AndroidCoordinates(this, clock)
     }
 
-    private val coordinates: Coordinates by lazy {
+    override val coordinates: Coordinates by lazy {
         PermissionAwareCoordinates(
             application = this,
             origin = locationManagerCoordinates

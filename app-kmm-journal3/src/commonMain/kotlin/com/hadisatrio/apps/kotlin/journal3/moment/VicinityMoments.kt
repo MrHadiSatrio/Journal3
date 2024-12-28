@@ -27,6 +27,12 @@ class VicinityMoments(
     private val origin: Moments
 ) : Moments {
 
+    constructor(
+        coordinates: Coordinates,
+        distanceLimitInM: Number,
+        origin: Moments
+    ) : this(coordinates, distanceLimitInM.toDouble(), origin)
+
     override fun count(): Int {
         return toList().size
     }
