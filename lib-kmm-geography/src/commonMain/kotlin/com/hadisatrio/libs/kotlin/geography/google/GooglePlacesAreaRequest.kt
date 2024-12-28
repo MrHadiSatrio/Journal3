@@ -18,53 +18,26 @@
 package com.hadisatrio.libs.kotlin.geography.google
 
 import com.hadisatrio.libs.kotlin.geography.Coordinates
+import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
 import kotlinx.serialization.json.putJsonObject
 
-class GooglePlacesRequest(
+internal class GooglePlacesAreaRequest(
     private val coordinates: Coordinates,
-    private val radiusLimit: Int,
-    private val countLimit: Int,
-    private val textQuery: String
+    private val radiusLimitInM: Int,
 ) {
 
-    constructor(
-        coordinates: Coordinates,
-        radiusLimit: Int,
-        countLimit: Int
-    ) : this(coordinates, radiusLimit, countLimit, "")
-
-    override fun toString(): String {
+    fun toJsonObject(): JsonObject {
         val (latitude, longitude) = coordinates.latlng
-
-        val restriction = buildJsonObject {
+        return buildJsonObject {
             putJsonObject("circle") {
-                put("radius", radiusLimit)
+                put("radius", radiusLimitInM)
                 putJsonObject("center") {
                     put("latitude", latitude)
                     put("longitude", longitude)
                 }
             }
         }
-        val request = buildJsonObject {
-            put("rankPreference", "DISTANCE")
-            put("maxResultCount", countLimit.coerceIn(VALID_LIMIT_RANGE))
-            if (textQuery.isNotBlank()) {
-                // Means we're dealing with a textual search request, which
-                // does not support circular location restriction. Hence we
-                // are using bias here.
-                put("locationBias", restriction)
-                put("textQuery", textQuery)
-            } else {
-                put("locationRestriction", restriction)
-            }
-        }
-
-        return request.toString()
-    }
-
-    companion object {
-        private val VALID_LIMIT_RANGE = 1..20
     }
 }

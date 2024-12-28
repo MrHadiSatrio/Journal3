@@ -18,25 +18,14 @@
 package com.hadisatrio.libs.kotlin.geography.google
 
 import com.benasher44.uuid.Uuid
+import com.hadisatrio.libs.kotlin.collection.IteratorIterable
+import com.hadisatrio.libs.kotlin.collection.PagingIterator
 import com.hadisatrio.libs.kotlin.geography.Coordinates
 import com.hadisatrio.libs.kotlin.geography.LiteralCoordinates
 import com.hadisatrio.libs.kotlin.geography.Place
 import com.hadisatrio.libs.kotlin.geography.Places
 import io.ktor.client.HttpClient
-import io.ktor.client.call.body
-import io.ktor.client.request.header
-import io.ktor.client.request.post
-import io.ktor.client.request.setBody
-import io.ktor.client.statement.HttpResponse
-import io.ktor.http.URLBuilder
-import io.ktor.http.appendEncodedPathSegments
-import io.ktor.http.clone
-import io.ktor.http.isSuccess
 import kotlinx.coroutines.runBlocking
-import kotlinx.io.IOException
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.jsonArray
-import kotlinx.serialization.json.jsonObject
 
 class GoogleNearbyPlaces(
     private val coordinates: Coordinates,
@@ -44,10 +33,6 @@ class GoogleNearbyPlaces(
     private val apiKey: String,
     private val httpClient: HttpClient
 ) : Places {
-
-    private val urlBuilder: URLBuilder by lazy {
-        URLBuilder("https://places.googleapis.com/v1")
-    }
 
     private val pastResponses: MutableMap<Coordinates, Set<GooglePlace>> by lazy { mutableMapOf() }
     private val pastSearchResults: MutableSet<GooglePlace> by lazy { mutableSetOf() }
@@ -67,12 +52,16 @@ class GoogleNearbyPlaces(
         return pastSearchResults.filter { it.id == id } + this.filter { it.id == id }
     }
 
-    override fun findPlace(name: String): Iterable<Place> = runBlocking {
-        val urlBuilder = urlBuilder.clone().appendEncodedPathSegments("places:searchText")
-        val request = GooglePlacesRequest(coordinates, DISTANCE_THRESHOLD_METERS, limit, name)
-        val places = jsonPlaces(urlBuilder.buildAndCall(request.toString()).body())
-        pastSearchResults.addAll(places)
-        return@runBlocking places
+    override fun findPlace(name: String): Iterable<Place> {
+        val source = GooglePlacesTextSearchEndpoint(
+            httpClient = httpClient,
+            apiKey = apiKey,
+            coordinates = coordinates,
+            radiusLimitInM = DISTANCE_THRESHOLD_METERS,
+            textQuery = name,
+            onResponse = { pastSearchResults.addAll(it) }
+        )
+        return IteratorIterable { PagingIterator(source, limit.coerceIn(VALID_LIMIT_RANGE)) }
     }
 
     override fun iterator(): Iterator<Place> = runBlocking {
@@ -86,32 +75,19 @@ class GoogleNearbyPlaces(
             ?.value
     }
 
-    private suspend fun httpPlaces(coordinates: Coordinates): Iterable<GooglePlace> {
-        val urlBuilder = urlBuilder.clone().appendEncodedPathSegments("places:searchNearby")
-        val request = GooglePlacesRequest(coordinates, DISTANCE_THRESHOLD_METERS, limit)
-        val places = jsonPlaces(urlBuilder.buildAndCall(request.toString()).body())
-        pastResponses[coordinates] = places.toSet()
-        return places
-    }
-
-    private fun jsonPlaces(json: String): Iterable<GooglePlace> {
-        val responseObject = Json.parseToJsonElement(json).jsonObject
-        val responseArray = responseObject["places"]?.jsonArray
-        return responseArray?.map { GooglePlace(it) }.orEmpty()
-    }
-
-    private suspend fun URLBuilder.buildAndCall(body: String): HttpResponse {
-        val url = this.build()
-        val response = httpClient.post(url) {
-            header("X-Goog-Api-Key", apiKey)
-            header("X-Goog-FieldMask", "places.id,places.displayName,places.shortFormattedAddress,places.location")
-            setBody(body)
-        }
-        if (!response.status.isSuccess()) throw IOException("HTTP ${response.status}: ${response.body<String>()}.")
-        return response
+    private fun httpPlaces(coordinates: Coordinates): Iterable<GooglePlace> {
+        val source = GooglePlacesNearbySearchEndpoint(
+            httpClient = httpClient,
+            apiKey = apiKey,
+            coordinates = coordinates,
+            radiusLimitInM = DISTANCE_THRESHOLD_METERS,
+            onResponse = { pastResponses[coordinates] = it.toSet() }
+        )
+        return IteratorIterable { PagingIterator(source, limit.coerceIn(VALID_LIMIT_RANGE)) }
     }
 
     companion object {
+        private val VALID_LIMIT_RANGE = 1..20
         private const val DISTANCE_THRESHOLD_METERS = 100
     }
 }
