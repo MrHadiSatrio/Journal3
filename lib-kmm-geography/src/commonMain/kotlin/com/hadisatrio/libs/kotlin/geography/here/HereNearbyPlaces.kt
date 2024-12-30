@@ -18,22 +18,14 @@
 package com.hadisatrio.libs.kotlin.geography.here
 
 import com.benasher44.uuid.Uuid
+import com.hadisatrio.libs.kotlin.collection.IteratorIterable
+import com.hadisatrio.libs.kotlin.collection.PagingIterator
 import com.hadisatrio.libs.kotlin.geography.Coordinates
 import com.hadisatrio.libs.kotlin.geography.LiteralCoordinates
 import com.hadisatrio.libs.kotlin.geography.Place
 import com.hadisatrio.libs.kotlin.geography.Places
 import io.ktor.client.HttpClient
-import io.ktor.client.call.body
-import io.ktor.client.request.get
-import io.ktor.client.statement.HttpResponse
-import io.ktor.http.URLBuilder
-import io.ktor.http.clone
-import io.ktor.http.isSuccess
 import kotlinx.coroutines.runBlocking
-import kotlinx.io.IOException
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.jsonArray
-import kotlinx.serialization.json.jsonObject
 
 class HereNearbyPlaces(
     private val coordinates: Coordinates,
@@ -41,13 +33,6 @@ class HereNearbyPlaces(
     private val apiKey: String,
     private val httpClient: HttpClient
 ) : Places {
-
-    private val urlBuilder: URLBuilder by lazy {
-        val builder = URLBuilder("https://browse.search.hereapi.com/v1/browse")
-        builder.parameters.append("limit", limit.coerceIn(VALID_LIMIT_RANGE).toString())
-        builder.parameters.append("apiKey", apiKey)
-        builder
-    }
 
     private val pastResponses: MutableMap<Coordinates, Set<HerePlace>> by lazy { mutableMapOf() }
     private val pastSearchResults: MutableSet<HerePlace> by lazy { mutableSetOf() }
@@ -67,13 +52,11 @@ class HereNearbyPlaces(
         return pastSearchResults.filter { it.id == id } + this.filter { it.id == id }
     }
 
-    override fun findPlace(name: String): Iterable<Place> = runBlocking {
-        val urlBuilder = urlBuilder.clone()
-        urlBuilder.parameters.append("name", name)
-        urlBuilder.parameters.append("at", coordinates.toString())
-        val places = jsonPlaces(urlBuilder.buildAndCall().body())
-        pastSearchResults.addAll(places)
-        return@runBlocking places
+    override fun findPlace(name: String): Iterable<Place> {
+        val source = HereBrowseEndpoint(httpClient, apiKey, coordinates, name) {
+            pastSearchResults.addAll(it.toSet())
+        }
+        return IteratorIterable { PagingIterator(source, limit.coerceIn(VALID_LIMIT_RANGE)) }
     }
 
     override fun iterator(): Iterator<Place> = runBlocking {
@@ -87,25 +70,11 @@ class HereNearbyPlaces(
             ?.value
     }
 
-    private suspend fun httpPlaces(coordinates: Coordinates): Iterable<HerePlace> {
-        val urlBuilder = urlBuilder.clone()
-        urlBuilder.parameters.append("at", coordinates.toString())
-        val places = jsonPlaces(urlBuilder.buildAndCall().body())
-        pastResponses[coordinates] = places.toSet()
-        return places
-    }
-
-    private fun jsonPlaces(json: String): Iterable<HerePlace> {
-        val responseObject = Json.parseToJsonElement(json).jsonObject
-        val responseArray = responseObject.getValue("items").jsonArray
-        return responseArray.map { HerePlace(it) }
-    }
-
-    private suspend fun URLBuilder.buildAndCall(): HttpResponse {
-        val url = this.build()
-        val response = httpClient.get(url)
-        if (!response.status.isSuccess()) throw IOException("HTTP ${response.status}: ${response.body<String>()}.")
-        return response
+    private fun httpPlaces(coordinates: Coordinates): Iterable<HerePlace> {
+        val source = HereBrowseEndpoint(httpClient, apiKey, coordinates) {
+            pastResponses[coordinates] = it.toSet()
+        }
+        return IteratorIterable { PagingIterator(source, limit.coerceIn(VALID_LIMIT_RANGE)) }
     }
 
     companion object {

@@ -14,6 +14,7 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 api(project(":lib-kmm-foundation"))
+                api(project(":lib-kmm-collection"))
                 api(project(":lib-kmm-json"))
                 api(libs.uuid)
                 api(libs.kotlinx.datetime)

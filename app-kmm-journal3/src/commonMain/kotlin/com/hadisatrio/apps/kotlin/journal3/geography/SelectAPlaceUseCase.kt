@@ -17,6 +17,7 @@
 
 package com.hadisatrio.apps.kotlin.journal3.geography
 
+import com.hadisatrio.libs.kotlin.collection.ExceptionCatchingIterable
 import com.hadisatrio.libs.kotlin.foundation.EventHandlingUseCase
 import com.hadisatrio.libs.kotlin.foundation.event.CancellationEvent
 import com.hadisatrio.libs.kotlin.foundation.event.Event
@@ -50,13 +51,17 @@ class SelectAPlaceUseCase(
     @Suppress("TooGenericExceptionCaught")
     private fun presentState(places: Iterable<Place>) {
         try {
-            presenter.present(places)
+            presenter.present(ExceptionCatchingIterable({ handlePresentationException(it) }, places))
             presentedPlaces = places
         } catch (e: Exception) {
-            val modal = BinaryConfirmationModal("presentation_retrial_confirmation")
-            modalPresenter.present(modal)
-            eventSink.sink(ExceptionalEvent(e))
+            handlePresentationException(e)
         }
+    }
+
+    private fun handlePresentationException(e: Exception) {
+        val modal = BinaryConfirmationModal("presentation_retrial_confirmation")
+        modalPresenter.present(modal)
+        eventSink.sink(ExceptionalEvent(e))
     }
 
     override fun handleEvent(event: Event) {

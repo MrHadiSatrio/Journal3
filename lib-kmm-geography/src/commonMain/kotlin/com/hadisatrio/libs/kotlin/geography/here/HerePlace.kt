@@ -26,7 +26,7 @@ import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 
-class HerePlace(
+internal class HerePlace(
     private val jsonObject: JsonObject
 ) : Place {
 
