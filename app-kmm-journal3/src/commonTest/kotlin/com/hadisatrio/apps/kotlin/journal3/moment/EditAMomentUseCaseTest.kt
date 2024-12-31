@@ -83,6 +83,7 @@ class EditAMomentUseCaseTest {
         moment.sentiment.shouldBe(Sentiment(0.75F))
         moment.place.id.shouldBe(place.id)
         moment.attachments.shouldHaveSize(2)
+        moment.isNotable.shouldBeTrue()
     }
 
     @Test

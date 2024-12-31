@@ -111,6 +111,7 @@ class EditAMomentUseCase(
     }
 
     private fun handleCommitActionSelection() {
+        moment.update(isNotable = true)
         if (isParaphrasingEnabled) {
             DescriptionParaphrasingMoment(paraphraser, moment).commit()
         } else {
