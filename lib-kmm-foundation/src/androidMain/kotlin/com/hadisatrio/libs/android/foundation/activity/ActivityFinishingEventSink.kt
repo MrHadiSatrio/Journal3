@@ -21,13 +21,15 @@ import android.app.Activity
 import com.hadisatrio.libs.kotlin.foundation.event.CompletionEvent
 import com.hadisatrio.libs.kotlin.foundation.event.Event
 import com.hadisatrio.libs.kotlin.foundation.event.EventSink
+import com.hadisatrio.libs.kotlin.foundation.event.Predicate
 
-class ActivityCompletionEventSink(
-    private val activity: Activity
+class ActivityFinishingEventSink(
+    private val activity: Activity,
+    private val additionalPredicate: Predicate<Event> = Predicate { false }
 ) : EventSink {
 
     override fun sink(event: Event) {
-        if (event !is CompletionEvent) return
+        if (event !is CompletionEvent && !additionalPredicate.applicable(event)) return
         if (activity.isFinishing || activity.isChangingConfigurations) return
         activity.finish()
     }

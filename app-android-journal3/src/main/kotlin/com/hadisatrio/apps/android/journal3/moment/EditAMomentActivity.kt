@@ -37,7 +37,7 @@ import com.hadisatrio.apps.kotlin.journal3.moment.Moment
 import com.hadisatrio.apps.kotlin.journal3.moment.SentimentAnalyzingMoment
 import com.hadisatrio.apps.kotlin.journal3.moment.UpdateDeferringMoment
 import com.hadisatrio.apps.kotlin.journal3.story.EditableMomentInStory
-import com.hadisatrio.libs.android.foundation.activity.ActivityCompletionEventSink
+import com.hadisatrio.libs.android.foundation.activity.ActivityFinishingEventSink
 import com.hadisatrio.libs.android.foundation.lifecycle.LifecycleTriggeredEventSource
 import com.hadisatrio.libs.android.foundation.material.SliderFloatPresenter
 import com.hadisatrio.libs.android.foundation.material.SliderSelectionEventSource
@@ -179,7 +179,7 @@ class EditAMomentActivity : AppCompatActivity() {
         journal3Application.eventSinkDecor.apply(
             EventSinks(
                 journal3Application.globalEventSink,
-                ActivityCompletionEventSink(this)
+                ActivityFinishingEventSink(this)
             )
         )
     }

@@ -38,7 +38,7 @@ import com.hadisatrio.apps.kotlin.journal3.story.ShowStoryUseCase
 import com.hadisatrio.apps.kotlin.journal3.story.Story
 import com.hadisatrio.apps.kotlin.journal3.story.cache.CachingStoryPresenter
 import com.hadisatrio.libs.android.dimensions.dp
-import com.hadisatrio.libs.android.foundation.activity.ActivityCompletionEventSink
+import com.hadisatrio.libs.android.foundation.activity.ActivityFinishingEventSink
 import com.hadisatrio.libs.android.foundation.lifecycle.LifecycleTriggeredEventSource
 import com.hadisatrio.libs.android.foundation.presentation.ExecutorDispatchingPresenter
 import com.hadisatrio.libs.android.foundation.widget.ViewClickEventSource
@@ -130,7 +130,7 @@ class ViewWritingSuggestionsActivity : AppCompatActivity() {
             journal3Application.eventSinkDecor.apply(
                 EventSinks(
                     journal3Application.globalEventSink,
-                    ActivityCompletionEventSink(requireActivity())
+                    ActivityFinishingEventSink(requireActivity())
                 )
             )
         }
