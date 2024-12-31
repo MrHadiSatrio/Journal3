@@ -46,6 +46,7 @@ import com.hadisatrio.libs.android.foundation.widget.recyclerview.ListViewPresen
 import com.hadisatrio.libs.android.foundation.widget.recyclerview.RecyclerViewItemSelectionEventSource
 import com.hadisatrio.libs.android.foundation.widget.recyclerview.ViewFactory
 import com.hadisatrio.libs.kotlin.foundation.UseCase
+import com.hadisatrio.libs.kotlin.foundation.event.ActionSelectionEventPredicate
 import com.hadisatrio.libs.kotlin.foundation.event.CancellationEvent
 import com.hadisatrio.libs.kotlin.foundation.event.EventSink
 import com.hadisatrio.libs.kotlin.foundation.event.EventSinks
@@ -130,7 +131,10 @@ class ViewWritingSuggestionsActivity : AppCompatActivity() {
             journal3Application.eventSinkDecor.apply(
                 EventSinks(
                     journal3Application.globalEventSink,
-                    ActivityFinishingEventSink(requireActivity())
+                    ActivityFinishingEventSink(
+                        activity = requireActivity(),
+                        additionalPredicate = ActionSelectionEventPredicate("edit_moment", "add_moment")
+                    )
                 )
             )
         }
