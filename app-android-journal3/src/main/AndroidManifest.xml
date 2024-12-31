@@ -102,6 +102,10 @@
         </activity>
 
         <activity
+            android:name=".moment.ViewWritingSuggestionsActivity"
+            android:theme="@style/Theme.Journal3.Translucent" />
+
+        <activity
             android:name=".moment.EditAMomentActivity"
             android:theme="@style/Theme.Journal3.NoActionBar" />
 
