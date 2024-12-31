@@ -59,7 +59,7 @@ class RootActivity : AppCompatActivity() {
                 ),
                 ViewClickEventSource(
                     view = findViewById(R.id.add_button),
-                    eventFactory = { SelectionEvent("action", "add_moment") }
+                    eventFactory = { SelectionEvent("action", "view_writing_suggestions") }
                 ),
                 NavigationBarSelectionEventSource(
                     view = bottomBar,

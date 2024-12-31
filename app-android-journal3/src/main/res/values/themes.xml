@@ -28,6 +28,7 @@
     </style>
 
     <style name="Theme.Journal3.Translucent" parent="Theme.Journal3">
+        <item name="windowNoTitle">true</item>
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:windowContentOverlay">@null</item>

@@ -22,6 +22,7 @@ import android.content.Intent
 import com.hadisatrio.apps.android.journal3.geography.SelectAPlaceActivity
 import com.hadisatrio.apps.android.journal3.moment.DeleteAMomentActivity
 import com.hadisatrio.apps.android.journal3.moment.EditAMomentActivity
+import com.hadisatrio.apps.android.journal3.moment.ViewWritingSuggestionsActivity
 import com.hadisatrio.libs.android.foundation.activity.CurrentActivity
 import com.hadisatrio.libs.kotlin.foundation.event.Event
 import com.hadisatrio.libs.kotlin.foundation.event.EventSink
@@ -38,6 +39,7 @@ class ActivityRoutingEventSink(
         when (identifier) {
             "view_reflections" -> activity.startViewReflectionsActivity()
             "view_story" -> activity.startViewStoryActivity()
+            "view_writing_suggestions" -> activity.startViewWritingSuggestionsActivity()
             "add_moment" -> activity.startAddAMomentActivity(event)
             "edit_moment" -> activity.startEditAMomentActivity(event)
             "delete_moment" -> activity.startDeleteAMomentActivity(event)
@@ -54,6 +56,11 @@ class ActivityRoutingEventSink(
     private fun Activity.startViewStoryActivity() {
         val intent = Intent(this, RootActivity::class.java)
         intent.setAction("view_story")
+        startActivity(intent)
+    }
+
+    private fun Activity.startViewWritingSuggestionsActivity() {
+        val intent = Intent(this, ViewWritingSuggestionsActivity::class.java)
         startActivity(intent)
     }
 

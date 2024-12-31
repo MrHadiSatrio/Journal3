@@ -30,7 +30,7 @@ import com.hadisatrio.apps.android.journal3.R
 import com.hadisatrio.apps.android.journal3.journal3Application
 import com.hadisatrio.apps.kotlin.journal3.geography.SelectAPlaceUseCase
 import com.hadisatrio.libs.android.dimensions.dp
-import com.hadisatrio.libs.android.foundation.activity.ActivityCompletionEventSink
+import com.hadisatrio.libs.android.foundation.activity.ActivityFinishingEventSink
 import com.hadisatrio.libs.android.foundation.activity.ActivityResultSettingEventSink
 import com.hadisatrio.libs.android.foundation.lifecycle.LifecycleTriggeredEventSource
 import com.hadisatrio.libs.android.foundation.presentation.ExecutorDispatchingPresenter
@@ -116,7 +116,7 @@ class SelectAPlaceActivity : AppCompatActivity() {
                         values
                     }
                 ),
-                ActivityCompletionEventSink(this)
+                ActivityFinishingEventSink(this)
             )
         )
     }

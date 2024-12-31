@@ -22,7 +22,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.benasher44.uuid.uuidFrom
 import com.hadisatrio.apps.android.journal3.journal3Application
 import com.hadisatrio.apps.kotlin.journal3.moment.DeleteMomentUseCase
-import com.hadisatrio.libs.android.foundation.activity.ActivityCompletionEventSink
+import com.hadisatrio.libs.android.foundation.activity.ActivityFinishingEventSink
 import com.hadisatrio.libs.android.foundation.presentation.ExecutorDispatchingPresenter
 import com.hadisatrio.libs.kotlin.foundation.event.EventSinks
 import com.hadisatrio.libs.kotlin.foundation.modal.Modal
@@ -48,7 +48,7 @@ class DeleteAMomentActivity : AppCompatActivity() {
                 eventSink = journal3Application.eventSinkDecor.apply(
                     EventSinks(
                         journal3Application.globalEventSink,
-                        ActivityCompletionEventSink(this)
+                        ActivityFinishingEventSink(this)
                     )
                 )
             )

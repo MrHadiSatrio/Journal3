@@ -21,8 +21,10 @@ import androidx.activity.ComponentActivity
 import androidx.test.runner.AndroidJUnit4
 import com.hadisatrio.libs.kotlin.foundation.event.CancellationEvent
 import com.hadisatrio.libs.kotlin.foundation.event.CompletionEvent
+import com.hadisatrio.libs.kotlin.foundation.event.Event
 import com.hadisatrio.libs.kotlin.foundation.event.SelectionEvent
 import com.hadisatrio.libs.kotlin.foundation.event.TextInputEvent
+import com.hadisatrio.libs.kotlin.foundation.event.fake.FakeEvent
 import com.hadisatrio.libs.kotlin.foundation.modal.ModalApprovalEvent
 import io.mockk.every
 import io.mockk.spyk
@@ -33,11 +35,12 @@ import org.junit.runner.RunWith
 import org.robolectric.Robolectric
 
 @RunWith(AndroidJUnit4::class)
-class ActivityCompletionEventSinkTest {
+class ActivityFinishingEventSinkTest {
 
     private val activityController = Robolectric.buildActivity(ComponentActivity::class.java)
     private val activity = spyk(activityController.get())
-    private val eventSink = ActivityCompletionEventSink(activity)
+    private val additionalPredicate = { event: Event -> event is FakeEvent }
+    private val eventSink = ActivityFinishingEventSink(activity, additionalPredicate)
 
     @Before
     fun `Starts activity`() {
@@ -47,6 +50,12 @@ class ActivityCompletionEventSinkTest {
     @Test
     fun `Finishes the activity upon receiving a completion event`() {
         eventSink.sink(CompletionEvent())
+        verify(exactly = 1) { activity.finish() }
+    }
+
+    @Test
+    fun `Finishes the activity upon receiving an event matching the given predicate`() {
+        eventSink.sink(FakeEvent())
         verify(exactly = 1) { activity.finish() }
     }
 

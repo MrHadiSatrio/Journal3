@@ -15,20 +15,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.hadisatrio.libs.android.foundation.activity
+package com.hadisatrio.libs.kotlin.foundation.event
 
-import android.app.Activity
-import com.hadisatrio.libs.kotlin.foundation.event.CompletionEvent
-import com.hadisatrio.libs.kotlin.foundation.event.Event
-import com.hadisatrio.libs.kotlin.foundation.event.EventSink
+class ActionSelectionEventPredicate(
+    private val identifiers: Set<String>
+) : Predicate<Event> {
 
-class ActivityCompletionEventSink(
-    private val activity: Activity
-) : EventSink {
+    constructor(vararg identifiers: String) : this(identifiers.toSet())
 
-    override fun sink(event: Event) {
-        if (event !is CompletionEvent) return
-        if (activity.isFinishing || activity.isChangingConfigurations) return
-        activity.finish()
+    override fun applicable(thing: Event): Boolean {
+        val selection = (thing as? SelectionEvent) ?: return false
+        val isAction = selection.selectionKind == "action"
+        val idMatches = selection.selectedIdentifier in identifiers
+        return isAction && idMatches
     }
 }

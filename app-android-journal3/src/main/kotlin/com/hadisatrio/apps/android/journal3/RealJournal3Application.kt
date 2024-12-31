@@ -42,6 +42,7 @@ import com.hadisatrio.apps.kotlin.journal3.sentiment.SentimentAnalyst
 import com.hadisatrio.apps.kotlin.journal3.sentiment.VeryPositiveSentimentRange
 import com.hadisatrio.apps.kotlin.journal3.story.InitDeferringStories
 import com.hadisatrio.apps.kotlin.journal3.story.MomentfulStories
+import com.hadisatrio.apps.kotlin.journal3.story.NotabilityFilteringStory
 import com.hadisatrio.apps.kotlin.journal3.story.Reflection
 import com.hadisatrio.apps.kotlin.journal3.story.Stories
 import com.hadisatrio.apps.kotlin.journal3.story.Story
@@ -111,6 +112,10 @@ class RealJournal3Application : Journal3Application() {
         )
     }
 
+    override val notableStory: Story by lazy {
+        NotabilityFilteringStory(notable = true, story)
+    }
+
     private val memorables by lazy {
         MergedMemorables(
             FilesystemMemorablePlaces(
@@ -145,7 +150,7 @@ class RealJournal3Application : Journal3Application() {
                                 origin = VicinityMoments(
                                     coordinates = coordinates,
                                     distanceLimitInM = 100.0,
-                                    origin = story.moments
+                                    origin = notableStory.moments
                                 )
                             )
                         )
@@ -162,7 +167,7 @@ class RealJournal3Application : Journal3Application() {
                                     ),
                                     origin = SentimentRangedMoments(
                                         sentimentRange = PositiveishSentimentRange,
-                                        origin = story.moments
+                                        origin = notableStory.moments
                                     )
                                 )
                             )
@@ -176,7 +181,7 @@ class RealJournal3Application : Journal3Application() {
                             origin = OrderRandomizingMoments(
                                 origin = SentimentRangedMoments(
                                     sentimentRange = VeryPositiveSentimentRange,
-                                    origin = story.moments
+                                    origin = notableStory.moments
                                 )
                             )
                         )
@@ -189,7 +194,7 @@ class RealJournal3Application : Journal3Application() {
                             origin = OrderRandomizingMoments(
                                 origin = SentimentRangedMoments(
                                     sentimentRange = NegativeishSentimentRange,
-                                    origin = story.moments
+                                    origin = notableStory.moments
                                 )
                             )
                         )
