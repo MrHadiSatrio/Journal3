@@ -125,7 +125,7 @@ class ViewStoryFragment : Fragment() {
     private val useCase: UseCase by lazy {
         journal3Application.useCaseDecor.apply(
             ShowStoryUseCase(
-                story = journal3Application.story,
+                story = journal3Application.notableStory,
                 presenter = presenter,
                 eventSource = eventSource,
                 eventSink = eventSink

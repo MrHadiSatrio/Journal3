@@ -46,6 +46,7 @@ abstract class Journal3Application : Application() {
     abstract val speed: Speed
     abstract val places: Places
     abstract val story: Story
+    abstract val notableStory: Story
     abstract val reflections: Stories
     abstract val modalPresenter: Presenter<Modal>
     abstract val currentActivity: CurrentActivity
