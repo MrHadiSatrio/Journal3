@@ -18,7 +18,7 @@
 package com.hadisatrio.apps.kotlin.journal3.moment
 
 import com.benasher44.uuid.uuid4
-import com.hadisatrio.apps.kotlin.journal3.story.fake.FakeStories
+import com.hadisatrio.apps.kotlin.journal3.moment.fake.FakeMoments
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.collections.shouldNotBeEmpty
@@ -28,15 +28,15 @@ import kotlin.test.Test
 
 class MergedMomentsTest {
 
-    private val firstStory = FakeStories().new()
-    private val secondStory = FakeStories().new()
-    private val merged = MergedMoments(firstStory.moments, secondStory.moments)
+    private val firstMoments = FakeMoments()
+    private val secondMoments = FakeMoments()
+    private val merged = MergedMoments(firstMoments, secondMoments)
 
     @BeforeTest
     fun `Populate moments`() {
         repeat(10) {
-            firstStory.new()
-            secondStory.new()
+            firstMoments.new()
+            secondMoments.new()
         }
     }
 
@@ -47,8 +47,8 @@ class MergedMomentsTest {
 
     @Test
     fun `Finds moments in the merged collection`() {
-        val firstId = firstStory.moments.shuffled().first().id
-        val secondId = secondStory.moments.shuffled().first().id
+        val firstId = firstMoments.shuffled().first().id
+        val secondId = secondMoments.shuffled().first().id
         val invalidId = uuid4()
         merged.find(firstId).shouldNotBeEmpty()
         merged.find(secondId).shouldNotBeEmpty()
@@ -57,7 +57,7 @@ class MergedMomentsTest {
 
     @Test
     fun `Finds the most recent moment over the merged collection`() {
-        val mostRecent = (firstStory.moments + secondStory.moments).maxBy { it.timestamp }
+        val mostRecent = (firstMoments + secondMoments).maxBy { it.timestamp }
         merged.mostRecent().id.shouldBe(mostRecent.id)
     }
 

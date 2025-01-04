@@ -20,9 +20,8 @@ package com.hadisatrio.apps.kotlin.journal3.moment
 import com.chrynan.uri.core.Uri
 import com.chrynan.uri.core.fromString
 import com.hadisatrio.apps.kotlin.journal3.datetime.LiteralTimestamp
+import com.hadisatrio.apps.kotlin.journal3.moment.fake.FakeMoments
 import com.hadisatrio.apps.kotlin.journal3.sentiment.Sentiment
-import com.hadisatrio.apps.kotlin.journal3.story.SelfPopulatingStories
-import com.hadisatrio.apps.kotlin.journal3.story.fake.FakeStories
 import com.hadisatrio.apps.kotlin.journal3.token.TokenableString
 import com.hadisatrio.libs.kotlin.geography.fake.FakePlace
 import io.kotest.matchers.booleans.shouldBeFalse
@@ -41,8 +40,8 @@ class UpdateDeferringMomentTest {
 
     @BeforeTest
     fun `Inits subjects`() {
-        val stories = SelfPopulatingStories(noOfStories = 1, noOfMoments = 1, origin = FakeStories())
-        original = stories.first().moments.first() as EditableMoment
+        val moments = SelfPopulatingMoments(noOfMoments = 1, origin = FakeMoments())
+        original = moments.first() as EditableMoment
         updateDeferring = UpdateDeferringMoment(original)
     }
 
