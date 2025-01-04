@@ -27,6 +27,7 @@ import com.hadisatrio.apps.kotlin.journal3.datetime.FormattedTimestamp
 import com.hadisatrio.apps.kotlin.journal3.datetime.LiteralTimestamp
 import com.hadisatrio.apps.kotlin.journal3.datetime.Timestamp
 import com.hadisatrio.apps.kotlin.journal3.moment.CountLimitingMoments
+import com.hadisatrio.apps.kotlin.journal3.moment.EditableMoments
 import com.hadisatrio.apps.kotlin.journal3.moment.MergedMemorables
 import com.hadisatrio.apps.kotlin.journal3.moment.OrderRandomizingMoments
 import com.hadisatrio.apps.kotlin.journal3.moment.SentimentRangedMoments
@@ -110,6 +111,10 @@ class RealJournal3Application : Journal3Application() {
             directory = filesDir.absolutePath.toPath() / "content" / "8ea250bc-b6ef-4ab1-812c-3d7d04b8e14a",
             memorables = memorables
         )
+    }
+
+    override val moments: EditableMoments by lazy {
+        story.moments as EditableMoments
     }
 
     override val notableStory: Story by lazy {

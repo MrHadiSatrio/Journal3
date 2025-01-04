@@ -19,8 +19,7 @@ package com.hadisatrio.apps.kotlin.journal3.moment
 
 import com.hadisatrio.apps.kotlin.journal3.event.UnsupportedEvent
 import com.hadisatrio.apps.kotlin.journal3.id.INVALID_UUID
-import com.hadisatrio.apps.kotlin.journal3.story.SelfPopulatingStory
-import com.hadisatrio.apps.kotlin.journal3.story.fake.FakeStory
+import com.hadisatrio.apps.kotlin.journal3.moment.fake.FakeMoments
 import com.hadisatrio.libs.kotlin.foundation.event.CompletionEvent
 import com.hadisatrio.libs.kotlin.foundation.event.RecordedEventSource
 import com.hadisatrio.libs.kotlin.foundation.event.fake.FakeEventSink
@@ -36,8 +35,8 @@ import kotlin.test.Test
 
 class DeleteMomentUseCaseTest {
 
-    private val story = SelfPopulatingStory(1, FakeStory())
-    private val moment = story.moments.first()
+    private val moments = SelfPopulatingMoments(1, FakeMoments())
+    private val moment = moments.first()
     private val presenter = FakePresenter<Modal>()
     private val eventSink = FakeEventSink()
 
@@ -45,7 +44,7 @@ class DeleteMomentUseCaseTest {
     fun `Deletes the moment after the user confirms the request`() {
         DeleteMomentUseCase(
             momentId = moment.id,
-            story = story,
+            moments = moments,
             presenter = presenter,
             eventSource = RecordedEventSource(
                 ModalApprovalEvent("forgettable_deletion_confirmation")
@@ -55,14 +54,14 @@ class DeleteMomentUseCaseTest {
 
         presenter.presentedCount().shouldBe(1)
         presenter.hasPresented { it.kind == "forgettable_deletion_confirmation" }.shouldBeTrue()
-        story.moments.shouldBeEmpty()
+        moments.shouldBeEmpty()
     }
 
     @Test
     fun `Don't delete the moment if the user don't confirm the request`() {
         DeleteMomentUseCase(
             momentId = moment.id,
-            story = story,
+            moments = moments,
             presenter = presenter,
             eventSource = RecordedEventSource(
                 ModalDismissalEvent("forgettable_deletion_confirmation")
@@ -72,7 +71,7 @@ class DeleteMomentUseCaseTest {
 
         presenter.presentedCount().shouldBe(1)
         presenter.hasPresented { it.kind == "forgettable_deletion_confirmation" }.shouldBeTrue()
-        story.moments.shouldNotBeEmpty()
+        moments.shouldNotBeEmpty()
     }
 
     @Test
@@ -83,14 +82,14 @@ class DeleteMomentUseCaseTest {
         ).forEach { event ->
             DeleteMomentUseCase(
                 momentId = INVALID_UUID,
-                story = story,
+                moments = moments,
                 presenter = presenter,
                 eventSource = RecordedEventSource(event),
                 eventSink = eventSink
             )()
 
             presenter.hasPresented { it.kind == "forgettable_not_found_notification" }.shouldBeTrue()
-            story.moments.shouldNotBeEmpty()
+            moments.shouldNotBeEmpty()
         }
     }
 
@@ -98,7 +97,7 @@ class DeleteMomentUseCaseTest {
     fun `Does nothing when given an unsupported event`() {
         DeleteMomentUseCase(
             momentId = INVALID_UUID,
-            story = story,
+            moments = moments,
             presenter = presenter,
             eventSource = RecordedEventSource(
                 ModalApprovalEvent("foo"),

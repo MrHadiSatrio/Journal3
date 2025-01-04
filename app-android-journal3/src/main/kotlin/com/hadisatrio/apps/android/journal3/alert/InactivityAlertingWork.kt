@@ -37,7 +37,7 @@ class InactivityAlertingWork(
         val application = context.journal3Application
         AlertInactivityUseCase(
             threshold = application.inactivityAlertThreshold,
-            story = application.story,
+            moments = application.moments,
             presenter = application.presenterDecor<Modal>().apply(
                 NotificationModalPresenter(
                     context = context,

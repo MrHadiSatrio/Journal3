@@ -20,6 +20,9 @@ package com.hadisatrio.apps.android.journal3
 import androidx.core.content.ContextCompat
 import com.badoo.reaktive.subject.publish.PublishSubject
 import com.hadisatrio.apps.kotlin.journal3.datetime.Timestamp
+import com.hadisatrio.apps.kotlin.journal3.moment.EditableMoments
+import com.hadisatrio.apps.kotlin.journal3.moment.SelfPopulatingMoments
+import com.hadisatrio.apps.kotlin.journal3.moment.fake.FakeMoments
 import com.hadisatrio.apps.kotlin.journal3.sentiment.DumbSentimentAnalyst
 import com.hadisatrio.apps.kotlin.journal3.sentiment.SentimentAnalyst
 import com.hadisatrio.apps.kotlin.journal3.story.NotabilityFilteringStory
@@ -59,6 +62,7 @@ class FakeJournal3Application : Journal3Application() {
     override val speed: Speed by lazy { StaticSpeed(5.0) }
     override val places: Places by lazy { SelfPopulatingPlaces(10, FakePlaces()) }
     override val story: Story by lazy { SelfPopulatingStory(10, FakeStory()) }
+    override val moments: EditableMoments by lazy { SelfPopulatingMoments(10, FakeMoments()) }
     override val notableStory: Story by lazy { NotabilityFilteringStory(notable = true, story) }
     override val reflections: Stories by lazy { FakeStories() }
     override val modalPresenter: Presenter<Modal> by lazy { FakePresenter() }

@@ -18,10 +18,7 @@
 package com.hadisatrio.apps.kotlin.journal3.moment
 
 import com.hadisatrio.apps.kotlin.journal3.datetime.LiteralTimestamp
-import com.hadisatrio.apps.kotlin.journal3.id.INVALID_UUID
-import com.hadisatrio.apps.kotlin.journal3.story.EditableMomentInStory
-import com.hadisatrio.apps.kotlin.journal3.story.Story
-import com.hadisatrio.apps.kotlin.journal3.story.cache.CachingStory
+import com.hadisatrio.apps.kotlin.journal3.moment.cache.CachingMoments
 import com.hadisatrio.libs.kotlin.foundation.UseCase
 import com.hadisatrio.libs.kotlin.geography.Coordinates
 import com.hadisatrio.libs.kotlin.geography.Places
@@ -30,7 +27,7 @@ import kotlinx.datetime.Clock
 import kotlin.time.Duration.Companion.hours
 
 class CaptureAMomentUseCase(
-    private val story: Story,
+    private val moments: EditableMoments,
     private val places: Places,
     private val coordinates: Coordinates,
     private val speed: Speed,
@@ -42,20 +39,20 @@ class CaptureAMomentUseCase(
         val coordinatesIsInaccurate = coordinates.accuracyInMeters > ACCURACY_LIMIT_METER
         if (userIsMoving || coordinatesIsInaccurate) return
 
-        val cachedStory = CachingStory(story)
+        val cached = CachingMoments(moments)
 
         val currentTimestamp = LiteralTimestamp(clock.now())
         val last24h = (currentTimestamp - 24.hours)..currentTimestamp
-        val todaysMoments = TimeRangedMoments(last24h, cachedStory.moments)
+        val todaysMoments = TimeRangedMoments(last24h, cached)
 
         var place = places.first()
-        val vicinityMoments = VicinityMoments(place.coordinates, coordinates.accuracyInMeters, cachedStory.moments)
+        val vicinityMoments = VicinityMoments(place.coordinates, coordinates.accuracyInMeters, cached)
         place = vicinityMoments.firstOrNull()?.place ?: place
 
         val beenHereRecently = todaysMoments.any { it.place.id == place.id }
         if (beenHereRecently) return
 
-        val moment = EditableMomentInStory(INVALID_UUID, story)
+        val moment = moments.new()
         moment.update(currentTimestamp)
         moment.update(isNotable = false)
         moment.update(place)

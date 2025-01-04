@@ -199,7 +199,7 @@ class EditAMomentActivity : AppCompatActivity() {
                         )
                     )
                 ),
-                story = journal3Application.story,
+                moments = journal3Application.moments,
                 places = journal3Application.places,
                 presenter = presenter,
                 modalPresenter = journal3Application.modalPresenter,

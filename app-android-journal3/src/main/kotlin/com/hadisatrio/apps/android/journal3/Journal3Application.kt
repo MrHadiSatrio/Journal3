@@ -23,6 +23,7 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.work.ListenableWorker
 import com.hadisatrio.apps.kotlin.journal3.datetime.Timestamp
+import com.hadisatrio.apps.kotlin.journal3.moment.EditableMoments
 import com.hadisatrio.apps.kotlin.journal3.sentiment.SentimentAnalyst
 import com.hadisatrio.apps.kotlin.journal3.story.Stories
 import com.hadisatrio.apps.kotlin.journal3.story.Story
@@ -46,6 +47,7 @@ abstract class Journal3Application : Application() {
     abstract val speed: Speed
     abstract val places: Places
     abstract val story: Story
+    abstract val moments: EditableMoments
     abstract val notableStory: Story
     abstract val reflections: Stories
     abstract val modalPresenter: Presenter<Modal>
