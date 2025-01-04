@@ -23,8 +23,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.navigation.NavigationBarView
+import com.hadisatrio.apps.android.journal3.story.MomentsListFragment
 import com.hadisatrio.apps.android.journal3.story.ReflectionStoriesListFragment
-import com.hadisatrio.apps.android.journal3.story.ViewStoryFragment
 import com.hadisatrio.libs.android.foundation.lifecycle.LifecycleTriggeredEventSource
 import com.hadisatrio.libs.android.foundation.material.NavigationBarSelectionEventSource
 import com.hadisatrio.libs.android.foundation.widget.ViewClickEventSource
@@ -68,7 +68,7 @@ class RootActivity : AppCompatActivity() {
                             "action",
                             when (itemId) {
                                 R.id.view_reflections_menu_item -> "view_reflections"
-                                R.id.view_moments_menu_item -> "view_story"
+                                R.id.view_moments_menu_item -> "view_moments"
                                 else -> throw IllegalArgumentException("Unknown menu ID of \"$itemId\".")
                             }
                         )
@@ -103,7 +103,7 @@ class RootActivity : AppCompatActivity() {
         pager.adapter = SimpleFragmentPagerAdapter(
             activity = this,
             FragmentFactory { ReflectionStoriesListFragment() },
-            FragmentFactory { ViewStoryFragment() }
+            FragmentFactory { MomentsListFragment() }
         )
     }
 
@@ -111,7 +111,7 @@ class RootActivity : AppCompatActivity() {
         super.onNewIntent(intent)
         val (menuId, pagerItem) = when (intent?.action) {
             "view_reflections" -> R.id.view_reflections_menu_item to 0
-            "view_story" -> R.id.view_moments_menu_item to 1
+            "view_moments" -> R.id.view_moments_menu_item to 1
             else -> return
         }
         if (bottomBar.selectedItemId != menuId) bottomBar.selectedItemId = menuId

@@ -72,7 +72,7 @@ class PositiveReflectionsWidgetProvider : AppWidgetProvider() {
                                 origin = OrderRandomizingMoments(
                                     origin = SentimentRangedMoments(
                                         sentimentRange = PositiveishSentimentRange,
-                                        origin = application.story.moments
+                                        origin = application.notableMoments
                                     )
                                 )
                             )

@@ -58,8 +58,8 @@ class ActivityRoutingEventSinkTest {
     }
 
     @Test(timeout = 5_000)
-    fun `Starts ViewStoryActivity post receiving valid 'action' selection of 'view_story'`() {
-        eventSink.sink(SelectionEvent("action", "view_story"))
+    fun `Starts ViewStoryActivity post receiving valid 'action' selection of 'view_moments'`() {
+        eventSink.sink(SelectionEvent("action", "view_moments"))
 
         val startedActivity = currentActivity.acquire()
         startedActivity.shouldBeInstanceOf<RootActivity>()

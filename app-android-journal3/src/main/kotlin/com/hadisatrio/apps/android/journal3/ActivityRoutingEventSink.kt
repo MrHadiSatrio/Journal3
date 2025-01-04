@@ -38,7 +38,7 @@ class ActivityRoutingEventSink(
         val activity = currentActivity.acquire()
         when (identifier) {
             "view_reflections" -> activity.startViewReflectionsActivity()
-            "view_story" -> activity.startViewStoryActivity()
+            "view_moments" -> activity.startViewMomentsActivity()
             "view_writing_suggestions" -> activity.startViewWritingSuggestionsActivity()
             "add_moment" -> activity.startAddAMomentActivity(event)
             "edit_moment" -> activity.startEditAMomentActivity(event)
@@ -53,9 +53,9 @@ class ActivityRoutingEventSink(
         startActivity(intent)
     }
 
-    private fun Activity.startViewStoryActivity() {
+    private fun Activity.startViewMomentsActivity() {
         val intent = Intent(this, RootActivity::class.java)
-        intent.setAction("view_story")
+        intent.setAction("view_moments")
         startActivity(intent)
     }
 

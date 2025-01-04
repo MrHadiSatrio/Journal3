@@ -33,10 +33,10 @@ import com.hadisatrio.apps.android.journal3.journal3Application
 import com.hadisatrio.apps.kotlin.journal3.event.RefreshRequestEvent
 import com.hadisatrio.apps.kotlin.journal3.moment.ClockRespectingMoment
 import com.hadisatrio.apps.kotlin.journal3.moment.EditAMomentUseCase
+import com.hadisatrio.apps.kotlin.journal3.moment.EditableMomentInMoments
 import com.hadisatrio.apps.kotlin.journal3.moment.Moment
 import com.hadisatrio.apps.kotlin.journal3.moment.SentimentAnalyzingMoment
 import com.hadisatrio.apps.kotlin.journal3.moment.UpdateDeferringMoment
-import com.hadisatrio.apps.kotlin.journal3.story.EditableMomentInStory
 import com.hadisatrio.libs.android.foundation.activity.ActivityFinishingEventSink
 import com.hadisatrio.libs.android.foundation.lifecycle.LifecycleTriggeredEventSource
 import com.hadisatrio.libs.android.foundation.material.SliderFloatPresenter
@@ -192,9 +192,9 @@ class EditAMomentActivity : AppCompatActivity() {
                     origin = ClockRespectingMoment(
                         clock = journal3Application.clock,
                         origin = UpdateDeferringMoment(
-                            origin = EditableMomentInStory(
+                            origin = EditableMomentInMoments(
                                 targetId = intent.getUuidExtra("target_id"),
-                                story = journal3Application.story
+                                moments = journal3Application.moments
                             )
                         )
                     )
