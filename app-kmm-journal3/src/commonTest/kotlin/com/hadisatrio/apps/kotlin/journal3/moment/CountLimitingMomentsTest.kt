@@ -18,8 +18,7 @@
 package com.hadisatrio.apps.kotlin.journal3.moment
 
 import com.benasher44.uuid.Uuid
-import com.hadisatrio.apps.kotlin.journal3.story.SelfPopulatingStories
-import com.hadisatrio.apps.kotlin.journal3.story.fake.FakeStories
+import com.hadisatrio.apps.kotlin.journal3.moment.fake.FakeMoments
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.collections.shouldNotBeEmpty
@@ -29,7 +28,7 @@ import kotlin.test.Test
 
 class CountLimitingMomentsTest {
 
-    private val origin: Moments = SelfPopulatingStories(noOfStories = 1, noOfMoments = 10, FakeStories()).moments
+    private val origin: Moments = SelfPopulatingMoments(noOfMoments = 10, FakeMoments())
     private val moments: CountLimitingMoments = CountLimitingMoments(limit = 3, origin)
     private val originalIds: List<Uuid> = origin.map { it.id }.toList()
     private val truncatedIds: List<Uuid> = moments.map { it.id }.toList()

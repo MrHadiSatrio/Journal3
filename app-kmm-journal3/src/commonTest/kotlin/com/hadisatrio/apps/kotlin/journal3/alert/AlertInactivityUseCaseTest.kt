@@ -19,7 +19,7 @@ package com.hadisatrio.apps.kotlin.journal3.alert
 
 import com.hadisatrio.apps.kotlin.journal3.datetime.LiteralTimestamp
 import com.hadisatrio.apps.kotlin.journal3.event.UnsupportedEvent
-import com.hadisatrio.apps.kotlin.journal3.story.fake.FakeStory
+import com.hadisatrio.apps.kotlin.journal3.moment.fake.FakeMoments
 import com.hadisatrio.libs.kotlin.foundation.event.CancellationEvent
 import com.hadisatrio.libs.kotlin.foundation.event.CompletionEvent
 import com.hadisatrio.libs.kotlin.foundation.event.EventSink
@@ -38,8 +38,8 @@ import kotlin.time.Duration.Companion.hours
 class AlertInactivityUseCaseTest {
 
     private val presenter = mockk<Presenter<Modal>>(relaxed = true)
-    private val story = FakeStory()
-    private val moment = story.new()
+    private val moments = FakeMoments()
+    private val moment = moments.new()
     private val eventSink = mockk<EventSink>(relaxed = true)
 
     @Test
@@ -48,7 +48,7 @@ class AlertInactivityUseCaseTest {
 
         AlertInactivityUseCase(
             threshold = 3.hours,
-            story = story,
+            moments = moments,
             presenter = presenter,
             eventSource = RecordedEventSource(CompletionEvent()),
             eventSink = eventSink
@@ -61,7 +61,7 @@ class AlertInactivityUseCaseTest {
     fun `Presents a modal should no moments have ever been written`() {
         AlertInactivityUseCase(
             threshold = 3.hours,
-            story = story,
+            moments = moments,
             presenter = presenter,
             eventSource = RecordedEventSource(CompletionEvent()),
             eventSink = eventSink
@@ -76,7 +76,7 @@ class AlertInactivityUseCaseTest {
 
         AlertInactivityUseCase(
             threshold = 3.hours,
-            story = story,
+            moments = moments,
             presenter = presenter,
             eventSource = RecordedEventSource(CompletionEvent()),
             eventSink = eventSink
@@ -91,7 +91,7 @@ class AlertInactivityUseCaseTest {
 
         AlertInactivityUseCase(
             threshold = 3.hours,
-            story = story,
+            moments = moments,
             presenter = mockk(relaxed = true),
             eventSource = RecordedEventSource(
                 ModalApprovalEvent("inactivity_alert"),
@@ -106,7 +106,6 @@ class AlertInactivityUseCaseTest {
                     event["name"].shouldBe("Selection Event")
                     event["selection_kind"].shouldBe("action")
                     event["selected_id"].shouldBe("add_moment")
-                    event["story_id"].shouldBe(story.id.toString())
                 }
             )
         }
@@ -119,7 +118,7 @@ class AlertInactivityUseCaseTest {
         listOf(CancellationEvent("user"), CancellationEvent("system")).forEach { event ->
             AlertInactivityUseCase(
                 threshold = 3.hours,
-                story = story,
+                moments = moments,
                 presenter = mockk(relaxed = true),
                 eventSource = RecordedEventSource(event),
                 eventSink = eventSink
@@ -133,7 +132,7 @@ class AlertInactivityUseCaseTest {
 
         AlertInactivityUseCase(
             threshold = 3.hours,
-            story = story,
+            moments = moments,
             presenter = mockk(relaxed = true),
             eventSource = RecordedEventSource(
                 ModalApprovalEvent("foo"),

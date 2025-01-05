@@ -17,7 +17,7 @@
 
 package com.hadisatrio.apps.kotlin.journal3.moment
 
-import com.hadisatrio.apps.kotlin.journal3.story.fake.FakeStory
+import com.hadisatrio.apps.kotlin.journal3.moment.fake.FakeMoments
 import com.hadisatrio.libs.kotlin.geography.Coordinates
 import com.hadisatrio.libs.kotlin.geography.LiteralCoordinates
 import com.hadisatrio.libs.kotlin.geography.Place
@@ -39,7 +39,7 @@ import kotlin.time.Duration.Companion.seconds
 
 class CaptureAMomentUseCaseTest {
 
-    private val story = FakeStory()
+    private val moments = FakeMoments()
     private val gambirStation = FakePlace(coordinates = LiteralCoordinates("-6.1765638,106.8299464"))
     private val gambirBusDepot = FakePlace(coordinates = LiteralCoordinates("-6.1766638,106.8300464"))
     private val places = FakePlaces(gambirStation, gambirBusDepot)
@@ -48,7 +48,7 @@ class CaptureAMomentUseCaseTest {
     private val arbitraryInstant = Instant.fromEpochMilliseconds(1735316550)
     private val clock = mockk<Clock>()
 
-    private val useCase = CaptureAMomentUseCase(story, places, coordinates, speed, clock)
+    private val useCase = CaptureAMomentUseCase(moments, places, coordinates, speed, clock)
 
     @BeforeTest
     fun `Init mocks`() {
@@ -61,8 +61,8 @@ class CaptureAMomentUseCaseTest {
     fun `Captures a non-notable moment about the currently visited place`() {
         useCase()
 
-        story.moments.shouldHaveSize(1)
-        val captured = story.moments.first()
+        moments.shouldHaveSize(1)
+        val captured = moments.first()
         captured.timestamp.value.shouldBeEqual(arbitraryInstant)
         captured.isNotable.shouldBeFalse()
         captured.place.id.shouldBeEqual(places.first().id)
@@ -72,16 +72,16 @@ class CaptureAMomentUseCaseTest {
     fun `Prioritizes a known nearby place whilst capturing`() {
         val placesList = mutableListOf<Place>(gambirStation, gambirBusDepot)
         val places = FakePlaces(placesList)
-        val useCase = CaptureAMomentUseCase(story, places, coordinates, speed, clock)
+        val useCase = CaptureAMomentUseCase(moments, places, coordinates, speed, clock)
 
         useCase() // …captures visit to Gambir Station.
         placesList.removeFirst() // …so that the next execution would pick up the bus depot.
         every { clock.now() } returns arbitraryInstant + 1.days + 1.seconds
         useCase() // …attempts to capture the bus depot.
 
-        story.moments.shouldHaveSize(2)
-        story.moments.distinctBy { it.place.id }.shouldHaveSize(1)
-        story.moments.map { it.place.id }.first().shouldBeEqual(gambirStation.id)
+        moments.shouldHaveSize(2)
+        moments.distinctBy { it.place.id }.shouldHaveSize(1)
+        moments.map { it.place.id }.first().shouldBeEqual(gambirStation.id)
     }
 
     @Test
@@ -90,23 +90,23 @@ class CaptureAMomentUseCaseTest {
         // be captured. Hence sufficient to simulate the scenario we want.
         repeat(10) { useCase() }
 
-        story.moments.shouldHaveSize(1)
+        moments.shouldHaveSize(1)
     }
 
     @Test
     fun `Skips capturing if the place, post correction, is already written for today`() {
         val placesList = mutableListOf<Place>(gambirStation, gambirBusDepot)
         val places = FakePlaces(placesList)
-        val useCase = CaptureAMomentUseCase(story, places, coordinates, speed, clock)
+        val useCase = CaptureAMomentUseCase(moments, places, coordinates, speed, clock)
 
         useCase() // …captures visit to Gambir Station.
         placesList.removeFirst() // …so that the next execution would pick up the bus depot.
         // Unlike the previous test case, we don't advance the time.
         useCase() // …attempts to capture the bus depot.
 
-        story.moments.shouldHaveSize(1)
-        story.moments.distinctBy { it.place.id }.shouldHaveSize(1)
-        story.moments.map { it.place.id }.first().shouldBeEqual(gambirStation.id)
+        moments.shouldHaveSize(1)
+        moments.distinctBy { it.place.id }.shouldHaveSize(1)
+        moments.map { it.place.id }.first().shouldBeEqual(gambirStation.id)
     }
 
     @Test
@@ -115,7 +115,7 @@ class CaptureAMomentUseCaseTest {
 
         useCase()
 
-        story.moments.shouldBeEmpty()
+        moments.shouldBeEmpty()
     }
 
     @Test
@@ -124,6 +124,6 @@ class CaptureAMomentUseCaseTest {
 
         useCase()
 
-        story.moments.shouldBeEmpty()
+        moments.shouldBeEmpty()
     }
 }

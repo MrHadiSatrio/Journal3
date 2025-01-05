@@ -15,29 +15,27 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.hadisatrio.apps.kotlin.journal3.story
+package com.hadisatrio.apps.kotlin.journal3.moment
 
 import com.benasher44.uuid.Uuid
 import com.chrynan.uri.core.Uri
 import com.hadisatrio.apps.kotlin.journal3.datetime.Timestamp
 import com.hadisatrio.apps.kotlin.journal3.id.INVALID_UUID
-import com.hadisatrio.apps.kotlin.journal3.moment.EditableMoment
-import com.hadisatrio.apps.kotlin.journal3.moment.Moment
 import com.hadisatrio.apps.kotlin.journal3.sentiment.Sentiment
 import com.hadisatrio.apps.kotlin.journal3.token.TokenableString
 import com.hadisatrio.libs.kotlin.geography.Place
 
 @Suppress("TooManyFunctions")
-class EditableMomentInStory(
+class EditableMomentInMoments(
     private val targetId: Uuid,
-    private val story: Story
+    private val moments: EditableMoments
 ) : EditableMoment {
 
     private val origin: EditableMoment by lazy {
         if (targetId != INVALID_UUID) {
-            story.moments.find(targetId).first() as EditableMoment
+            moments.find(targetId).first() as EditableMoment
         } else {
-            (story as EditableStory).new()
+            moments.new()
         }
     }
 

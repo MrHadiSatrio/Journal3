@@ -21,9 +21,8 @@ import com.benasher44.uuid.uuid4
 import com.hadisatrio.apps.kotlin.journal3.datetime.LiteralTimestamp
 import com.hadisatrio.apps.kotlin.journal3.moment.MergedMemorables
 import com.hadisatrio.apps.kotlin.journal3.moment.Moment
+import com.hadisatrio.apps.kotlin.journal3.moment.SelfPopulatingMoments
 import com.hadisatrio.apps.kotlin.journal3.sentiment.Sentiment
-import com.hadisatrio.apps.kotlin.journal3.story.SelfPopulatingStories
-import com.hadisatrio.apps.kotlin.journal3.story.filesystem.FilesystemStories
 import com.hadisatrio.apps.kotlin.journal3.token.TokenableString
 import io.kotest.matchers.booleans.shouldBeFalse
 import io.kotest.matchers.booleans.shouldBeTrue
@@ -44,7 +43,7 @@ class FilesystemMomentsTest {
     private val places = FilesystemMemorablePlaces(fileSystem, "content/places".toPath())
     private val people = FilesystemMentionedPeople(fileSystem, "content/people".toPath())
     private val memorables = MergedMemorables(places, people)
-    private val stories = FilesystemStories(fileSystem, "content/stories".toPath(), memorables)
+    private val moments = FilesystemMoments(fileSystem, "content/moments".toPath(), memorables)
 
     @AfterTest
     fun `Closes all file streams`() {
@@ -53,36 +52,32 @@ class FilesystemMomentsTest {
 
     @Test
     fun `Writes new moments to the filesystem`() {
-        val story = stories.new()
-        val moment = story.new()
+        val moment = moments.new()
 
         moment.update(TokenableString("FizzBuzz"))
         moment.update(Sentiment(1.0F))
         moment.update(LiteralTimestamp("2019-07-07T20:00:00+07:00"))
 
-        story.moments.shouldHaveSize(1)
+        moments.shouldHaveSize(1)
         moment.description.shouldBe(TokenableString("FizzBuzz"))
         moment.sentiment.shouldBe(Sentiment(1.0F))
         moment.timestamp.shouldBe(LiteralTimestamp("2019-07-07T20:00:00+07:00"))
-        fileSystem.metadata("content/stories/${story.id}/moments/${moment.id}".toPath()).isRegularFile.shouldBeTrue()
+        fileSystem.metadata("content/moments/${moment.id}".toPath()).isRegularFile.shouldBeTrue()
     }
 
     @Test
     fun `Counts its moments`() {
-        val story = stories.new()
+        repeat(10) { moments.new().update(TokenableString("Foo")) }
 
-        repeat(10) { story.new().update(TokenableString("Foo")) }
-
-        story.moments.shouldHaveSize(10)
+        moments.shouldHaveSize(10)
     }
 
     @Test
     fun `Finds a moment by its ID`() {
-        val stories = SelfPopulatingStories(noOfStories = 1, noOfMoments = 10, stories)
-        val story = stories.first()
-        val moment = story.moments.first()
+        val moments = SelfPopulatingMoments(noOfMoments = 10, origin = moments)
+        val moment = moments.first()
 
-        val found = story.moments.find(moment.id)
+        val found = moments.find(moment.id)
 
         found.shouldHaveSize(1)
         moment.id.shouldBe(found.first().id)
@@ -90,46 +85,42 @@ class FilesystemMomentsTest {
 
     @Test
     fun `Returns empty iterable when asked to find a non-existent moment by ID`() {
-        val stories = SelfPopulatingStories(noOfStories = 1, noOfMoments = 10, stories)
-        val story = stories.first()
-        val found = story.moments.find(uuid4())
+        val moments = SelfPopulatingMoments(noOfMoments = 10, origin = moments)
+        val found = moments.find(uuid4())
 
         found.shouldBeEmpty()
     }
 
     @Test
     fun `Fetches its most recent moment`() {
-        val stories = SelfPopulatingStories(noOfStories = 1, noOfMoments = 10, stories)
-        val story = stories.first()
+        val moments = SelfPopulatingMoments(noOfMoments = 10, origin = moments)
 
-        val mostRecent = story.moments.mostRecent()
+        val mostRecent = moments.mostRecent()
 
-        story.moments.filterNot { it.id == mostRecent.id }.forEach { other ->
+        moments.filterNot { it.id == mostRecent.id }.forEach { other ->
             other.timestamp.compareTo(mostRecent.timestamp).shouldBeLessThan(0)
         }
     }
 
     @Test
     fun `Deletes forgotten moments from the filesystem`() {
-        val story = stories.new()
-        val moment = story.new()
+        val moment = moments.new()
 
         moment.forget()
 
-        fileSystem.exists("content/stories/${story.id}".toPath()).shouldBeTrue()
-        fileSystem.exists("content/stories/${story.id}/moments/${moment.id}".toPath()).shouldBeFalse()
+        fileSystem.exists("content/moments/".toPath()).shouldBeTrue()
+        fileSystem.exists("content/moments/${moment.id}".toPath()).shouldBeFalse()
     }
 
     @Test
     fun `Iterates through moments by descending order of their written dates`() {
-        val story = stories.new()
         repeat(10) {
             val randomInstant = Instant.fromEpochMilliseconds((0..Long.MAX_VALUE).random())
-            story.new().apply { update(LiteralTimestamp(randomInstant)) }
+            moments.new().apply { update(LiteralTimestamp(randomInstant)) }
         }
 
         var previous: Moment? = null
-        story.moments.forEach { current ->
+        moments.forEach { current ->
             if (previous != null) current.compareTo(previous!!).shouldBeLessThanOrEqual(0)
             previous = current
         }

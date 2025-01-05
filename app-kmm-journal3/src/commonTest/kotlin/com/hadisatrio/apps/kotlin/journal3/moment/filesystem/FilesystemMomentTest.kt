@@ -21,7 +21,6 @@ import com.hadisatrio.apps.kotlin.journal3.datetime.LiteralTimestamp
 import com.hadisatrio.apps.kotlin.journal3.datetime.UnixEpoch
 import com.hadisatrio.apps.kotlin.journal3.moment.MergedMemorables
 import com.hadisatrio.apps.kotlin.journal3.sentiment.Sentiment
-import com.hadisatrio.apps.kotlin.journal3.story.filesystem.FilesystemStories
 import com.hadisatrio.apps.kotlin.journal3.token.Token
 import com.hadisatrio.apps.kotlin.journal3.token.TokenableString
 import com.hadisatrio.libs.kotlin.geography.NullIsland
@@ -56,8 +55,7 @@ class FilesystemMomentTest {
     private val sources = FileSystemSources(fileSystem)
     private val attachments = FilesystemMemorableFiles(sources, fileSystem, "content/attachments".toPath())
     private val memorables = MergedMemorables(places, people, attachments)
-    private val stories = FilesystemStories(fileSystem, "content".toPath(), memorables)
-    private val story = stories.new()
+    private val moments = FilesystemMoments(fileSystem, "content/moments".toPath(), memorables)
 
     @AfterTest
     fun `Closes all file streams`() {
@@ -66,7 +64,7 @@ class FilesystemMomentTest {
 
     @Test
     fun `Returns expected default values`() {
-        val moment = story.new()
+        val moment = moments.new()
 
         moment.timestamp.shouldBe(UnixEpoch)
         moment.description.shouldBe(TokenableString(""))
@@ -77,13 +75,13 @@ class FilesystemMomentTest {
 
     @Test
     fun `Writes details updates to the filesystem`() {
-        val moment = story.new()
+        val moment = moments.new()
 
         moment.update(timestamp = LiteralTimestamp(1000))
         moment.update(description = TokenableString("Foo"))
         moment.update(sentiment = Sentiment(0.5F))
 
-        val path = "content/${story.id}/moments/${moment.id}".toPath()
+        val path = "content/moments/${moment.id}".toPath()
         val fileContent = fileSystem.source(path).buffer().use { it.readUtf8() }
         fileContent.shouldContain("Foo")
         fileContent.shouldContain("0.5")
@@ -94,7 +92,7 @@ class FilesystemMomentTest {
 
     @Test
     fun `Writes place updates to the filesystem`() {
-        val moment = story.new()
+        val moment = moments.new()
         val firstPlace = FakePlace()
         val secondPlace = FakePlace()
         val firstPlaceFileContent = {
@@ -132,7 +130,7 @@ class FilesystemMomentTest {
 
     @Test
     fun `Writes mention updates to the filesystem`() {
-        val moment = story.new()
+        val moment = moments.new()
         val person = people.remember(Token(("@nahlito")))
         val personFileContent = {
             val path = "content/people/${person.id}".toPath()
@@ -146,7 +144,7 @@ class FilesystemMomentTest {
 
     @Test
     fun `Write attachment updates to the filesystem`() {
-        val moment = story.new()
+        val moment = moments.new()
         val arbitraryExternalFilePath: Path by lazy {
             ("foo".toPath()).apply {
                 JsonFile(fileSystem, this).put("foo", JsonPrimitive("bar"))
@@ -161,7 +159,7 @@ class FilesystemMomentTest {
 
     @Test
     fun `Tells correctly whether it is new or not`() {
-        val moment = story.new()
+        val moment = moments.new()
         moment.isNewlyCreated().shouldBeTrue()
         moment.update(timestamp = LiteralTimestamp(1000))
         moment.isNewlyCreated().shouldBeFalse()
@@ -169,19 +167,19 @@ class FilesystemMomentTest {
 
     @Test
     fun `Deletes itself from the filesystem`() {
-        val moment = story.new()
+        val moment = moments.new()
 
         moment.forget()
 
-        val path = "content/${story.id}/moments/${moment.id}".toPath()
+        val path = "content/moments/${moment.id}".toPath()
         fileSystem.exists(path).shouldBeFalse()
     }
 
     @Test
     fun `Compares itself to others based on timestamp`() {
-        val self = story.new()
-        val newer = story.new().apply { update(LiteralTimestamp(Instant.DISTANT_FUTURE)) }
-        val older = story.new().apply { update(LiteralTimestamp(Instant.DISTANT_PAST)) }
+        val self = moments.new()
+        val newer = moments.new().apply { update(LiteralTimestamp(Instant.DISTANT_FUTURE)) }
+        val older = moments.new().apply { update(LiteralTimestamp(Instant.DISTANT_PAST)) }
 
         self.compareTo(newer).shouldBeNegative()
         self.compareTo(older).shouldBePositive()

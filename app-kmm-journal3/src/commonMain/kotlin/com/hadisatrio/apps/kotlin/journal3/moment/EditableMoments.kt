@@ -15,23 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.hadisatrio.apps.kotlin.journal3.story
+package com.hadisatrio.apps.kotlin.journal3.moment
 
-import com.hadisatrio.apps.kotlin.journal3.datetime.LiteralTimestamp
-import com.hadisatrio.apps.kotlin.journal3.token.TokenableString
-import kotlinx.datetime.Clock
-
-class SelfPopulatingStory(
-    noOfMoments: Int,
-    origin: EditableStory
-) : EditableStory by origin {
-
-    init {
-        repeat(noOfMoments) { rep ->
-            origin.new().apply {
-                update(TokenableString("This is a moment (#$rep)."))
-                update(LiteralTimestamp(Clock.System.now()))
-            }
-        }
-    }
+interface EditableMoments : Moments {
+    fun new(): EditableMoment
 }

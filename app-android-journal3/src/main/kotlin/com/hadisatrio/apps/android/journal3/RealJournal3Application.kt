@@ -27,7 +27,10 @@ import com.hadisatrio.apps.kotlin.journal3.datetime.FormattedTimestamp
 import com.hadisatrio.apps.kotlin.journal3.datetime.LiteralTimestamp
 import com.hadisatrio.apps.kotlin.journal3.datetime.Timestamp
 import com.hadisatrio.apps.kotlin.journal3.moment.CountLimitingMoments
+import com.hadisatrio.apps.kotlin.journal3.moment.EditableMoments
 import com.hadisatrio.apps.kotlin.journal3.moment.MergedMemorables
+import com.hadisatrio.apps.kotlin.journal3.moment.Moments
+import com.hadisatrio.apps.kotlin.journal3.moment.NotabilityFilteringMoments
 import com.hadisatrio.apps.kotlin.journal3.moment.OrderRandomizingMoments
 import com.hadisatrio.apps.kotlin.journal3.moment.SentimentRangedMoments
 import com.hadisatrio.apps.kotlin.journal3.moment.TimeRangedMoments
@@ -35,6 +38,7 @@ import com.hadisatrio.apps.kotlin.journal3.moment.VicinityMoments
 import com.hadisatrio.apps.kotlin.journal3.moment.filesystem.FilesystemMemorableFiles
 import com.hadisatrio.apps.kotlin.journal3.moment.filesystem.FilesystemMemorablePlaces
 import com.hadisatrio.apps.kotlin.journal3.moment.filesystem.FilesystemMentionedPeople
+import com.hadisatrio.apps.kotlin.journal3.moment.filesystem.FilesystemMoments
 import com.hadisatrio.apps.kotlin.journal3.sentiment.InitDeferringSentimentAnalyst
 import com.hadisatrio.apps.kotlin.journal3.sentiment.NegativeishSentimentRange
 import com.hadisatrio.apps.kotlin.journal3.sentiment.PositiveishSentimentRange
@@ -42,12 +46,9 @@ import com.hadisatrio.apps.kotlin.journal3.sentiment.SentimentAnalyst
 import com.hadisatrio.apps.kotlin.journal3.sentiment.VeryPositiveSentimentRange
 import com.hadisatrio.apps.kotlin.journal3.story.InitDeferringStories
 import com.hadisatrio.apps.kotlin.journal3.story.MomentfulStories
-import com.hadisatrio.apps.kotlin.journal3.story.NotabilityFilteringStory
 import com.hadisatrio.apps.kotlin.journal3.story.Reflection
 import com.hadisatrio.apps.kotlin.journal3.story.Stories
-import com.hadisatrio.apps.kotlin.journal3.story.Story
 import com.hadisatrio.apps.kotlin.journal3.story.fake.FakeStories
-import com.hadisatrio.apps.kotlin.journal3.story.filesystem.FilesystemStory
 import com.hadisatrio.apps.kotlin.journal3.token.TokenableString
 import com.hadisatrio.libs.android.foundation.ExecutorDispatchingUseCase
 import com.hadisatrio.libs.android.foundation.activity.CurrentActivity
@@ -104,16 +105,19 @@ class RealJournal3Application : Journal3Application() {
         )
     }
 
-    override val story: Story by lazy {
-        FilesystemStory(
+    override val moments: EditableMoments by lazy {
+        FilesystemMoments(
             fileSystem = FileSystem.SYSTEM,
-            directory = filesDir.absolutePath.toPath() / "content" / "8ea250bc-b6ef-4ab1-812c-3d7d04b8e14a",
+            path = filesDir.absolutePath.toPath() / "content" / "moments",
             memorables = memorables
         )
     }
 
-    override val notableStory: Story by lazy {
-        NotabilityFilteringStory(notable = true, story)
+    override val notableMoments: Moments by lazy {
+        NotabilityFilteringMoments(
+            notable = true,
+            origin = moments
+        )
     }
 
     private val memorables by lazy {
@@ -150,7 +154,7 @@ class RealJournal3Application : Journal3Application() {
                                 origin = VicinityMoments(
                                     coordinates = coordinates,
                                     distanceLimitInM = 100.0,
-                                    origin = notableStory.moments
+                                    origin = notableMoments
                                 )
                             )
                         )
@@ -167,7 +171,7 @@ class RealJournal3Application : Journal3Application() {
                                     ),
                                     origin = SentimentRangedMoments(
                                         sentimentRange = PositiveishSentimentRange,
-                                        origin = notableStory.moments
+                                        origin = notableMoments
                                     )
                                 )
                             )
@@ -181,7 +185,7 @@ class RealJournal3Application : Journal3Application() {
                             origin = OrderRandomizingMoments(
                                 origin = SentimentRangedMoments(
                                     sentimentRange = VeryPositiveSentimentRange,
-                                    origin = notableStory.moments
+                                    origin = notableMoments
                                 )
                             )
                         )
@@ -194,7 +198,7 @@ class RealJournal3Application : Journal3Application() {
                             origin = OrderRandomizingMoments(
                                 origin = SentimentRangedMoments(
                                     sentimentRange = NegativeishSentimentRange,
-                                    origin = notableStory.moments
+                                    origin = notableMoments
                                 )
                             )
                         )

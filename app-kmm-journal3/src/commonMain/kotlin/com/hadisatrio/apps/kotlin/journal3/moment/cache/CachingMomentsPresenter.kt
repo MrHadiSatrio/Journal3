@@ -15,9 +15,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.hadisatrio.apps.kotlin.journal3.story
+package com.hadisatrio.apps.kotlin.journal3.moment.cache
 
-interface StoryInEdit : EditableStory {
-    fun updatesMade(): Boolean
-    fun commit()
+import com.hadisatrio.apps.kotlin.journal3.moment.Moments
+import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
+
+class CachingMomentsPresenter(
+    private val origin: Presenter<Moments>
+) : Presenter<Moments> {
+
+    override fun present(thing: Moments) {
+        origin.present(CachingMoments(thing))
+    }
 }

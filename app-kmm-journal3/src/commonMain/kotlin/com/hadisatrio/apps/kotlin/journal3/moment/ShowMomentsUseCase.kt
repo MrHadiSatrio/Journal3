@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.hadisatrio.apps.kotlin.journal3.story
+package com.hadisatrio.apps.kotlin.journal3.moment
 
 import com.hadisatrio.apps.kotlin.journal3.event.RefreshRequestEvent
 import com.hadisatrio.libs.kotlin.foundation.EventHandlingUseCase
@@ -26,9 +26,9 @@ import com.hadisatrio.libs.kotlin.foundation.event.EventSource
 import com.hadisatrio.libs.kotlin.foundation.event.SelectionEvent
 import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
 
-class ShowStoryUseCase(
-    private val story: Story,
-    private val presenter: Presenter<Story>,
+class ShowMomentsUseCase(
+    private val moments: Moments,
+    private val presenter: Presenter<Moments>,
     eventSource: EventSource,
     eventSink: EventSink
 ) : EventHandlingUseCase(eventSource, eventSink) {
@@ -38,7 +38,7 @@ class ShowStoryUseCase(
     }
 
     private fun presentState() {
-        presenter.present(story)
+        presenter.present(moments)
     }
 
     override fun handleEvent(event: Event) {
@@ -53,37 +53,25 @@ class ShowStoryUseCase(
         val kind = event.selectionKind
         val identifier = event.selectedIdentifier
         when (kind) {
-            "item_position" -> handleItemPositionSelectionEvent(story, identifier)
-            "action" -> handleActionSelectionEvent(identifier, story)
+            "item_position" -> handleItemPositionSelectionEvent(moments, identifier)
+            "action" -> handleActionSelectionEvent(identifier)
         }
     }
 
-    private fun handleActionSelectionEvent(identifier: String, story: Story) {
-        val actionIdentifier = when (identifier) {
-            "edit" -> "edit_story"
-            "delete" -> "delete_story"
-            "add" -> "add_moment"
-            else -> return
-        }
-        eventSink.sink(
-            SelectionEvent(
-                selectionKind = "action",
-                selectedIdentifier = actionIdentifier,
-                "story_id" to story.id.toString()
-            )
-        )
+    private fun handleActionSelectionEvent(identifier: String) {
+        if (identifier != "add") return
+        val event = SelectionEvent("action", "add_moment")
+        eventSink.sink(event)
     }
 
-    private fun handleItemPositionSelectionEvent(story: Story, identifier: String) {
-        val moment = story.moments.elementAt(identifier.toInt())
-        eventSink.sink(
-            SelectionEvent(
-                selectionKind = "action",
-                selectedIdentifier = "edit_moment",
-                "moment_id" to moment.id.toString(),
-                "story_id" to story.id.toString()
-            )
+    private fun handleItemPositionSelectionEvent(moments: Moments, identifier: String) {
+        val moment = moments.elementAt(identifier.toInt())
+        val event = SelectionEvent(
+            selectionKind = "action",
+            selectedIdentifier = "edit_moment",
+            "moment_id" to moment.id.toString()
         )
+        eventSink.sink(event)
     }
 
     private fun handleCancellation() {

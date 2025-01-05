@@ -17,14 +17,13 @@
 
 package com.hadisatrio.apps.kotlin.journal3.moment
 
-import com.hadisatrio.apps.kotlin.journal3.story.SelfPopulatingStories
-import com.hadisatrio.apps.kotlin.journal3.story.fake.FakeStories
+import com.hadisatrio.apps.kotlin.journal3.moment.fake.FakeMoments
 import io.kotest.matchers.equals.shouldNotBeEqual
 import kotlin.test.Test
 
 class OrderRandomizingMomentsTest {
 
-    private val origin: Moments = SelfPopulatingStories(noOfStories = 1, noOfMoments = 10, FakeStories()).moments
+    private val origin: Moments = SelfPopulatingMoments(noOfMoments = 10, FakeMoments())
     private val moments: OrderRandomizingMoments = OrderRandomizingMoments(origin)
 
     @Test

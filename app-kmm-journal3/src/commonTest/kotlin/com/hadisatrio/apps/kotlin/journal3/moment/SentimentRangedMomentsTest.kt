@@ -17,17 +17,16 @@
 
 package com.hadisatrio.apps.kotlin.journal3.moment
 
+import com.hadisatrio.apps.kotlin.journal3.moment.fake.FakeMoments
 import com.hadisatrio.apps.kotlin.journal3.sentiment.NegativeishSentimentRange
 import com.hadisatrio.apps.kotlin.journal3.sentiment.Sentiment
-import com.hadisatrio.apps.kotlin.journal3.story.SelfPopulatingStories
-import com.hadisatrio.apps.kotlin.journal3.story.fake.FakeStories
 import io.kotest.matchers.booleans.shouldBeTrue
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 
 class SentimentRangedMomentsTest {
 
-    private val origin: Moments = SelfPopulatingStories(noOfStories = 1, noOfMoments = 10, FakeStories()).moments
+    private val origin: Moments = SelfPopulatingMoments(noOfMoments = 10, FakeMoments())
     private val moments: SentimentRangedMoments = SentimentRangedMoments(NegativeishSentimentRange, origin)
 
     @BeforeTest

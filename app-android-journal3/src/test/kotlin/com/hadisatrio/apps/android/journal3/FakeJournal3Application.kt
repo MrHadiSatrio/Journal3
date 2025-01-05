@@ -20,14 +20,15 @@ package com.hadisatrio.apps.android.journal3
 import androidx.core.content.ContextCompat
 import com.badoo.reaktive.subject.publish.PublishSubject
 import com.hadisatrio.apps.kotlin.journal3.datetime.Timestamp
+import com.hadisatrio.apps.kotlin.journal3.moment.EditableMoments
+import com.hadisatrio.apps.kotlin.journal3.moment.Moments
+import com.hadisatrio.apps.kotlin.journal3.moment.NotabilityFilteringMoments
+import com.hadisatrio.apps.kotlin.journal3.moment.SelfPopulatingMoments
+import com.hadisatrio.apps.kotlin.journal3.moment.fake.FakeMoments
 import com.hadisatrio.apps.kotlin.journal3.sentiment.DumbSentimentAnalyst
 import com.hadisatrio.apps.kotlin.journal3.sentiment.SentimentAnalyst
-import com.hadisatrio.apps.kotlin.journal3.story.NotabilityFilteringStory
-import com.hadisatrio.apps.kotlin.journal3.story.SelfPopulatingStory
 import com.hadisatrio.apps.kotlin.journal3.story.Stories
-import com.hadisatrio.apps.kotlin.journal3.story.Story
 import com.hadisatrio.apps.kotlin.journal3.story.fake.FakeStories
-import com.hadisatrio.apps.kotlin.journal3.story.fake.FakeStory
 import com.hadisatrio.libs.android.foundation.activity.CurrentActivity
 import com.hadisatrio.libs.kotlin.foundation.Decor
 import com.hadisatrio.libs.kotlin.foundation.UseCase
@@ -58,8 +59,8 @@ class FakeJournal3Application : Journal3Application() {
     override val coordinates: Coordinates by lazy { LiteralCoordinates("-6.275489,107.050648") }
     override val speed: Speed by lazy { StaticSpeed(5.0) }
     override val places: Places by lazy { SelfPopulatingPlaces(10, FakePlaces()) }
-    override val story: Story by lazy { SelfPopulatingStory(10, FakeStory()) }
-    override val notableStory: Story by lazy { NotabilityFilteringStory(notable = true, story) }
+    override val moments: EditableMoments by lazy { SelfPopulatingMoments(10, FakeMoments()) }
+    override val notableMoments: Moments by lazy { NotabilityFilteringMoments(true, moments) }
     override val reflections: Stories by lazy { FakeStories() }
     override val modalPresenter: Presenter<Modal> by lazy { FakePresenter() }
     override val currentActivity: CurrentActivity by lazy { CurrentActivity(this) }

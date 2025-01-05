@@ -15,17 +15,24 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.hadisatrio.apps.kotlin.journal3.story
+package com.hadisatrio.apps.kotlin.journal3.moment
 
-import com.hadisatrio.apps.kotlin.journal3.moment.Moments
-import com.hadisatrio.apps.kotlin.journal3.moment.NotabilityFilteringMoments
+import com.hadisatrio.apps.kotlin.journal3.datetime.LiteralTimestamp
+import com.hadisatrio.apps.kotlin.journal3.token.TokenableString
+import kotlinx.datetime.Clock
 
-class NotabilityFilteringStory(
-    private val notable: Boolean,
-    private val origin: Story
-) : Story by origin {
+class SelfPopulatingMoments(
+    noOfMoments: Int,
+    private val origin: EditableMoments
+) : EditableMoments by origin {
 
-    override val moments: Moments get() {
-        return NotabilityFilteringMoments(notable, origin.moments)
+    init {
+        repeat(noOfMoments) { rep -> addRandomizedMoment(rep) }
+    }
+
+    private fun addRandomizedMoment(rep: Int) {
+        val moment = new()
+        moment.update(LiteralTimestamp(Clock.System.now()))
+        moment.update(TokenableString("This is a moment (#$rep)."))
     }
 }

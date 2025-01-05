@@ -34,9 +34,10 @@ import com.hadisatrio.apps.android.journal3.moment.MomentItemDiffer
 import com.hadisatrio.apps.android.journal3.sentiment.TextViewColorSentimentPresenter
 import com.hadisatrio.apps.kotlin.journal3.event.RefreshRequestEvent
 import com.hadisatrio.apps.kotlin.journal3.moment.Moment
-import com.hadisatrio.apps.kotlin.journal3.story.ShowStoryUseCase
-import com.hadisatrio.apps.kotlin.journal3.story.Story
-import com.hadisatrio.apps.kotlin.journal3.story.cache.CachingStoryPresenter
+import com.hadisatrio.apps.kotlin.journal3.moment.Moments
+import com.hadisatrio.apps.kotlin.journal3.moment.NotabilityFilteringMoments
+import com.hadisatrio.apps.kotlin.journal3.moment.ShowMomentsUseCase
+import com.hadisatrio.apps.kotlin.journal3.moment.cache.CachingMomentsPresenter
 import com.hadisatrio.libs.android.dimensions.dp
 import com.hadisatrio.libs.android.foundation.activity.ActivityFinishingEventSink
 import com.hadisatrio.libs.android.foundation.lifecycle.LifecycleTriggeredEventSource
@@ -54,9 +55,9 @@ import com.hadisatrio.libs.kotlin.foundation.event.SkippingEventSource
 import com.hadisatrio.libs.kotlin.foundation.presentation.AdaptingPresenter
 import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
 
-class ViewStoryFragment : Fragment() {
+class MomentsListFragment : Fragment() {
 
-    private val presenter: Presenter<Story> by lazy {
+    private val presenter: Presenter<Moments> by lazy {
         val momentsViewFactory = ViewFactory { parent, _ ->
             val inflater = LayoutInflater.from(parent.context)
             val view = inflater.inflate(R.layout.view_moment_horz_card, parent, false)
@@ -67,8 +68,8 @@ class ViewStoryFragment : Fragment() {
             view.setTag(R.id.presenter_view_tag, sentimentPresenter)
             view
         }
-        val momentsPresenter = AdaptingPresenter<Story, Iterable<Moment>>(
-            adapter = { story -> story.moments },
+        val momentsPresenter = AdaptingPresenter<Moments, Iterable<Moment>>(
+            adapter = { moments -> moments },
             origin = ListViewPresenter(
                 recyclerView = requireView().findViewById(R.id.moments_list),
                 orientation = RecyclerView.VERTICAL,
@@ -79,8 +80,8 @@ class ViewStoryFragment : Fragment() {
             )
         )
 
-        journal3Application.presenterDecor<Story>().apply(
-            CachingStoryPresenter(
+        journal3Application.presenterDecor<Moments>().apply(
+            CachingMomentsPresenter(
                 origin = ExecutorDispatchingPresenter(
                     executor = journal3Application.foregroundExecutor,
                     origin = momentsPresenter
@@ -124,8 +125,11 @@ class ViewStoryFragment : Fragment() {
 
     private val useCase: UseCase by lazy {
         journal3Application.useCaseDecor.apply(
-            ShowStoryUseCase(
-                story = journal3Application.notableStory,
+            ShowMomentsUseCase(
+                moments = NotabilityFilteringMoments(
+                    notable = true,
+                    origin = journal3Application.moments
+                ),
                 presenter = presenter,
                 eventSource = eventSource,
                 eventSink = eventSink
@@ -138,7 +142,7 @@ class ViewStoryFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_view_story, container, false)
+        return inflater.inflate(R.layout.fragment_moments_list, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

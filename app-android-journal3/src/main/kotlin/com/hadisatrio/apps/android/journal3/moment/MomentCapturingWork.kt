@@ -38,7 +38,7 @@ class MomentCapturingWork(
             return Result.failure()
         }
         CaptureAMomentUseCase(
-            story = journal3Application.story,
+            moments = journal3Application.moments,
             places = journal3Application.places,
             speed = journal3Application.speed,
             coordinates = journal3Application.coordinates,
