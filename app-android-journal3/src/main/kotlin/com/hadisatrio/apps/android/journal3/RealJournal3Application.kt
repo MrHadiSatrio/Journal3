@@ -58,6 +58,7 @@ import com.hadisatrio.libs.android.foundation.os.SystemLog
 import com.hadisatrio.libs.android.foundation.presentation.ExecutorDispatchingPresenter
 import com.hadisatrio.libs.android.geography.AndroidCoordinates
 import com.hadisatrio.libs.android.geography.PermissionAwareCoordinates
+import com.hadisatrio.libs.android.geography.google.GoogleSdkNearbyPlaces
 import com.hadisatrio.libs.android.io.content.ContentResolverSources
 import com.hadisatrio.libs.kotlin.foundation.Decor
 import com.hadisatrio.libs.kotlin.foundation.UseCase
@@ -72,7 +73,6 @@ import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
 import com.hadisatrio.libs.kotlin.geography.Coordinates
 import com.hadisatrio.libs.kotlin.geography.Places
 import com.hadisatrio.libs.kotlin.geography.Speed
-import com.hadisatrio.libs.kotlin.geography.google.GoogleNearbyPlaces
 import com.hadisatrio.libs.kotlin.io.SchemeWiseSources
 import com.hadisatrio.libs.kotlin.io.filesystem.FileSystemSources
 import com.hadisatrio.libs.kotlin.paraphrase.OpenAiParaphraser
@@ -97,11 +97,11 @@ class RealJournal3Application : Journal3Application() {
     }
 
     override val places: Places by lazy {
-        GoogleNearbyPlaces(
+        GoogleSdkNearbyPlaces(
             coordinates = coordinates,
             limit = 100,
             apiKey = BuildConfig.KEY_GOOGLE_API,
-            httpClient = HttpClient()
+            application = this
         )
     }
 
