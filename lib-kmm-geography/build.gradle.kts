@@ -34,6 +34,7 @@ kotlin {
             dependencies {
                 implementation(libs.assent)
                 implementation(libs.gms.location)
+                implementation(libs.google.places)
             }
         }
         val androidUnitTest by getting {

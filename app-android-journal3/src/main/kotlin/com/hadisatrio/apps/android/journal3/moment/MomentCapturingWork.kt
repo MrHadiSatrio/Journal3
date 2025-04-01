@@ -39,7 +39,7 @@ class MomentCapturingWork(
         }
         CaptureAMomentUseCase(
             moments = journal3Application.moments,
-            places = journal3Application.places,
+            currentPlace = journal3Application.currentPlace,
             speed = journal3Application.speed,
             coordinates = journal3Application.coordinates,
             clock = journal3Application.clock
