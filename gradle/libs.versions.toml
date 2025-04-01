@@ -16,6 +16,8 @@ androidx-test-runner = { module = "androidx.test:runner", version = "1.6.2" }
 
 gms-location = { module = "com.google.android.gms:play-services-location", version = "21.3.0" }
 
+google-places = { module = "com.google.android.libraries.places:places", version = "3.5.0" }
+
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version = "0.6.1" }
 kotlinx-json-okio = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json-okio", version = "1.7.3" }
 
