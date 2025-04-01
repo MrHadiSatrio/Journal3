@@ -41,10 +41,12 @@ import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
 import com.hadisatrio.libs.kotlin.foundation.presentation.fake.FakePresenter
 import com.hadisatrio.libs.kotlin.geography.Coordinates
 import com.hadisatrio.libs.kotlin.geography.LiteralCoordinates
+import com.hadisatrio.libs.kotlin.geography.Place
 import com.hadisatrio.libs.kotlin.geography.Places
 import com.hadisatrio.libs.kotlin.geography.SelfPopulatingPlaces
 import com.hadisatrio.libs.kotlin.geography.Speed
 import com.hadisatrio.libs.kotlin.geography.StaticSpeed
+import com.hadisatrio.libs.kotlin.geography.fake.FakePlace
 import com.hadisatrio.libs.kotlin.geography.fake.FakePlaces
 import com.hadisatrio.libs.kotlin.paraphrase.DumbParaphraser
 import com.hadisatrio.libs.kotlin.paraphrase.Paraphraser
@@ -59,6 +61,7 @@ class FakeJournal3Application : Journal3Application() {
     override val coordinates: Coordinates by lazy { LiteralCoordinates("-6.275489,107.050648") }
     override val speed: Speed by lazy { StaticSpeed(5.0) }
     override val places: Places by lazy { SelfPopulatingPlaces(10, FakePlaces()) }
+    override val currentPlace: Place by lazy { FakePlace() }
     override val moments: EditableMoments by lazy { SelfPopulatingMoments(10, FakeMoments()) }
     override val notableMoments: Moments by lazy { NotabilityFilteringMoments(true, moments) }
     override val reflections: Stories by lazy { FakeStories() }

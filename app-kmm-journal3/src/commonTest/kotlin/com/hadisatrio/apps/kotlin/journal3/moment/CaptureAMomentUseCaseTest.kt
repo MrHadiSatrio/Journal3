@@ -20,10 +20,8 @@ package com.hadisatrio.apps.kotlin.journal3.moment
 import com.hadisatrio.apps.kotlin.journal3.moment.fake.FakeMoments
 import com.hadisatrio.libs.kotlin.geography.Coordinates
 import com.hadisatrio.libs.kotlin.geography.LiteralCoordinates
-import com.hadisatrio.libs.kotlin.geography.Place
 import com.hadisatrio.libs.kotlin.geography.Speed
 import com.hadisatrio.libs.kotlin.geography.fake.FakePlace
-import com.hadisatrio.libs.kotlin.geography.fake.FakePlaces
 import io.kotest.matchers.booleans.shouldBeFalse
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldHaveSize
@@ -42,13 +40,12 @@ class CaptureAMomentUseCaseTest {
     private val moments = FakeMoments()
     private val gambirStation = FakePlace(coordinates = LiteralCoordinates("-6.1765638,106.8299464"))
     private val gambirBusDepot = FakePlace(coordinates = LiteralCoordinates("-6.1766638,106.8300464"))
-    private val places = FakePlaces(gambirStation, gambirBusDepot)
     private val coordinates = mockk<Coordinates>()
     private val speed = mockk<Speed>()
     private val arbitraryInstant = Instant.fromEpochMilliseconds(1735316550)
     private val clock = mockk<Clock>()
 
-    private val useCase = CaptureAMomentUseCase(moments, places, coordinates, speed, clock)
+    private val useCase = CaptureAMomentUseCase(moments, gambirStation, coordinates, speed, clock)
 
     @BeforeTest
     fun `Init mocks`() {
@@ -65,19 +62,14 @@ class CaptureAMomentUseCaseTest {
         val captured = moments.first()
         captured.timestamp.value.shouldBeEqual(arbitraryInstant)
         captured.isNotable.shouldBeFalse()
-        captured.place.id.shouldBeEqual(places.first().id)
+        captured.place.id.shouldBeEqual(gambirStation.id)
     }
 
     @Test
     fun `Prioritizes a known nearby place whilst capturing`() {
-        val placesList = mutableListOf<Place>(gambirStation, gambirBusDepot)
-        val places = FakePlaces(placesList)
-        val useCase = CaptureAMomentUseCase(moments, places, coordinates, speed, clock)
-
-        useCase() // …captures visit to Gambir Station.
-        placesList.removeFirst() // …so that the next execution would pick up the bus depot.
+        CaptureAMomentUseCase(moments, gambirStation, coordinates, speed, clock)()
         every { clock.now() } returns arbitraryInstant + 1.days + 1.seconds
-        useCase() // …attempts to capture the bus depot.
+        CaptureAMomentUseCase(moments, gambirBusDepot, coordinates, speed, clock)()
 
         moments.shouldHaveSize(2)
         moments.distinctBy { it.place.id }.shouldHaveSize(1)
@@ -95,14 +87,8 @@ class CaptureAMomentUseCaseTest {
 
     @Test
     fun `Skips capturing if the place, post correction, is already written for today`() {
-        val placesList = mutableListOf<Place>(gambirStation, gambirBusDepot)
-        val places = FakePlaces(placesList)
-        val useCase = CaptureAMomentUseCase(moments, places, coordinates, speed, clock)
-
-        useCase() // …captures visit to Gambir Station.
-        placesList.removeFirst() // …so that the next execution would pick up the bus depot.
-        // Unlike the previous test case, we don't advance the time.
-        useCase() // …attempts to capture the bus depot.
+        CaptureAMomentUseCase(moments, gambirStation, coordinates, speed, clock)()
+        CaptureAMomentUseCase(moments, gambirBusDepot, coordinates, speed, clock)()
 
         moments.shouldHaveSize(1)
         moments.distinctBy { it.place.id }.shouldHaveSize(1)

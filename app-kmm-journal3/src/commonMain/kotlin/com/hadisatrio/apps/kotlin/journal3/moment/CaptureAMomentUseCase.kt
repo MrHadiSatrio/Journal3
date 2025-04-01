@@ -21,14 +21,14 @@ import com.hadisatrio.apps.kotlin.journal3.datetime.LiteralTimestamp
 import com.hadisatrio.apps.kotlin.journal3.moment.cache.CachingMoments
 import com.hadisatrio.libs.kotlin.foundation.UseCase
 import com.hadisatrio.libs.kotlin.geography.Coordinates
-import com.hadisatrio.libs.kotlin.geography.Places
+import com.hadisatrio.libs.kotlin.geography.Place
 import com.hadisatrio.libs.kotlin.geography.Speed
 import kotlinx.datetime.Clock
 import kotlin.time.Duration.Companion.hours
 
 class CaptureAMomentUseCase(
     private val moments: EditableMoments,
-    private val places: Places,
+    private val currentPlace: Place,
     private val coordinates: Coordinates,
     private val speed: Speed,
     private val clock: Clock
@@ -45,7 +45,7 @@ class CaptureAMomentUseCase(
         val last24h = (currentTimestamp - 24.hours)..currentTimestamp
         val todaysMoments = TimeRangedMoments(last24h, cached)
 
-        var place = places.first()
+        var place = currentPlace
         val vicinityMoments = VicinityMoments(place.coordinates, coordinates.accuracyInMeters, cached)
         place = vicinityMoments.firstOrNull()?.place ?: place
 
