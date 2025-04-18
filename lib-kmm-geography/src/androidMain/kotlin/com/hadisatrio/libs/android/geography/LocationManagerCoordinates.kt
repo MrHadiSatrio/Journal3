@@ -27,14 +27,17 @@ import android.os.Handler
 import android.os.HandlerThread
 import androidx.annotation.RequiresPermission
 import com.hadisatrio.libs.kotlin.geography.Coordinates
+import com.hadisatrio.libs.kotlin.geography.CoordinatesUnavailable
 import com.hadisatrio.libs.kotlin.geography.Speed
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
+import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
 class LocationManagerCoordinates(
     private val manager: LocationManager,
-    private val clock: Clock
+    private val clock: Clock,
+    private val fetchTimeout: Duration = 30.seconds
 ) : Coordinates(), Speed {
 
     constructor(context: Context, clock: Clock) : this(
@@ -86,9 +89,9 @@ class LocationManagerCoordinates(
             // enforces the fetching to happen on a different thread; providing threading control only for
             // the callback.
             handler.post { manager.requestSingleUpdate(provider, callback, null) }
-            thread.join()
+            thread.join(fetchTimeout.inWholeMilliseconds)
         }
 
-        return this.lastDeviceLocation!!
+        return this.lastDeviceLocation ?: throw CoordinatesUnavailable()
     }
 }

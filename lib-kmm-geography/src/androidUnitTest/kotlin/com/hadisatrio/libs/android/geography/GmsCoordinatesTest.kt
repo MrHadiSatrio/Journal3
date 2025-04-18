@@ -23,12 +23,15 @@ import android.os.Build
 import androidx.test.runner.AndroidJUnit4
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.tasks.Tasks
+import com.hadisatrio.libs.kotlin.geography.CoordinatesUnavailable
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.types.shouldBeInstanceOf
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
+import kotlin.Exception
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.time.Duration.Companion.minutes
@@ -80,6 +83,20 @@ class GmsCoordinatesTest {
         thread.join()
 
         speed.shouldBe(gpsLocation.speed)
+    }
+
+    @Test
+    fun `Throws when location is unavailable`() {
+        every { client.getCurrentLocation(any<Int>(), anyNullable()) } returns Tasks.forException(
+            Exception("Something went wrong.")
+        )
+        var caught: Exception? = null
+        val thread = Thread { try { coordinates.latlng } catch (e: Exception) { caught = e } }
+
+        thread.start()
+        thread.join()
+
+        caught.shouldBeInstanceOf<CoordinatesUnavailable>()
     }
 
     @Test

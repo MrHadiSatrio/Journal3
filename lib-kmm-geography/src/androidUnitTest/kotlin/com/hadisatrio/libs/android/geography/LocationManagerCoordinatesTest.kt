@@ -22,8 +22,10 @@ import android.location.Location
 import android.location.LocationManager
 import android.os.Build
 import androidx.test.runner.AndroidJUnit4
+import com.hadisatrio.libs.kotlin.geography.CoordinatesUnavailable
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.types.shouldBeInstanceOf
 import io.mockk.spyk
 import io.mockk.verify
 import org.junit.After
@@ -70,6 +72,17 @@ class LocationManagerCoordinatesTest {
 
         latlng.shouldBe(gpsLocation.latitude to gpsLocation.longitude)
         accuracy.shouldBe(gpsLocation.accuracy)
+    }
+
+    @Test
+    fun `Throws when location is unavailable`() {
+        var caught: Exception? = null
+        val thread = Thread { try { coordinates.latlng } catch (e: Exception) { caught = e } }
+
+        thread.start()
+        thread.join()
+
+        caught.shouldBeInstanceOf<CoordinatesUnavailable>()
     }
 
     @Test(timeout = 10_000)

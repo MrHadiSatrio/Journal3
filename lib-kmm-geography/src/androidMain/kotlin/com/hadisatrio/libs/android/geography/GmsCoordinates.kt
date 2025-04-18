@@ -27,9 +27,11 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import com.google.android.gms.tasks.Tasks
 import com.hadisatrio.libs.kotlin.geography.Coordinates
+import com.hadisatrio.libs.kotlin.geography.CoordinatesUnavailable
 import com.hadisatrio.libs.kotlin.geography.Speed
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
+import java.util.concurrent.ExecutionException
 import kotlin.time.Duration.Companion.minutes
 
 class GmsCoordinates(
@@ -70,11 +72,15 @@ class GmsCoordinates(
             lastFetchInstant == null || currentInstant - lastFetchInstant > 10.minutes
 
         if (updateRequired) {
-            val task = client.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, null)
-            this.lastDeviceLocation = Tasks.await(task)
-            this.lastFetchInstant = clock.now()
+            try {
+                val task = client.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, null)
+                this.lastDeviceLocation = Tasks.await(task)
+                this.lastFetchInstant = clock.now()
+            } catch (e: ExecutionException) {
+                throw CoordinatesUnavailable(e)
+            }
         }
 
-        return this.lastDeviceLocation!!
+        return this.lastDeviceLocation ?: throw CoordinatesUnavailable()
     }
 }
