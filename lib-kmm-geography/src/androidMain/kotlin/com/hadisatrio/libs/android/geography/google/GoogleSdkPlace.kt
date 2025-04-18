@@ -20,6 +20,7 @@ package com.hadisatrio.libs.android.geography.google
 import com.benasher44.uuid.Uuid
 import com.hadisatrio.libs.kotlin.geography.Coordinates
 import com.hadisatrio.libs.kotlin.geography.LiteralCoordinates
+import com.hadisatrio.libs.kotlin.geography.NullIsland
 import com.hadisatrio.libs.kotlin.geography.Place
 import com.google.android.libraries.places.api.model.Place as GooglePlace
 
@@ -34,7 +35,14 @@ class GoogleSdkPlace(private val backing: GooglePlace) : Place {
 
     override val address: String by lazy { backing.address }
 
-    override val coordinates: Coordinates by lazy { LiteralCoordinates(backing.latLng.toString()) }
+    override val coordinates: Coordinates by lazy {
+        val latLng = backing.latLng?.let { it.latitude to it.longitude }
+        if (latLng == null) {
+            NullIsland.coordinates
+        } else {
+            LiteralCoordinates(latLng.first, latLng.second)
+        }
+    }
 
     override fun equals(other: Any?): Boolean {
         if (other !is GoogleSdkPlace) return false
