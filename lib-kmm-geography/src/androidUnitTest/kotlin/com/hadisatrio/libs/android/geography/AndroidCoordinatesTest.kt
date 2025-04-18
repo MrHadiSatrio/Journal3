@@ -22,6 +22,7 @@ import androidx.test.runner.AndroidJUnit4
 import com.google.android.gms.common.GoogleApiAvailabilityLight
 import com.google.android.gms.common.api.CommonStatusCodes.ERROR
 import com.google.android.gms.common.api.CommonStatusCodes.SUCCESS
+import com.hadisatrio.libs.kotlin.geography.ResilientCoordinates
 import io.kotest.matchers.types.shouldBeInstanceOf
 import io.mockk.every
 import io.mockk.mockk
@@ -46,10 +47,10 @@ class AndroidCoordinatesTest {
     }
 
     @Test
-    fun `Delegates to GmsCoordinates whenever Google Play Services is available`() {
+    fun `Delegates to ResilientCoordinates whenever Google Play Services is available`() {
         every { checker.isGooglePlayServicesAvailable(any()) } returns SUCCESS
 
-        coordinates.delegate.shouldBeInstanceOf<GmsCoordinates>()
+        coordinates.delegate.shouldBeInstanceOf<ResilientCoordinates>()
     }
 
     @Test

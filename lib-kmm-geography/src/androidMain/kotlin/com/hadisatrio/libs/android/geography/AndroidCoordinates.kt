@@ -23,6 +23,7 @@ import androidx.annotation.VisibleForTesting.Companion.PRIVATE
 import com.google.android.gms.common.GoogleApiAvailabilityLight
 import com.google.android.gms.common.api.CommonStatusCodes.SUCCESS
 import com.hadisatrio.libs.kotlin.geography.Coordinates
+import com.hadisatrio.libs.kotlin.geography.ResilientCoordinates
 import com.hadisatrio.libs.kotlin.geography.Speed
 import kotlinx.datetime.Clock
 
@@ -37,12 +38,13 @@ class AndroidCoordinates(
 
     @VisibleForTesting(otherwise = PRIVATE)
     internal val delegate: Coordinates by lazy {
+        val locationManagerCoordinates = LocationManagerCoordinates(application, clock)
         val checker = GoogleApiAvailabilityLight.getInstance()
         val gmsAvailable = checker.isGooglePlayServicesAvailable(application) == SUCCESS
         if (gmsAvailable) {
-            GmsCoordinates(application, clock)
+            ResilientCoordinates(GmsCoordinates(application, clock), locationManagerCoordinates)
         } else {
-            LocationManagerCoordinates(application, clock)
+            locationManagerCoordinates
         }
     }
 }
