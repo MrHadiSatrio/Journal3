@@ -17,6 +17,16 @@
 
 package com.hadisatrio.libs.kotlin.collection
 
+/**
+ * An [Iterable] that routes exceptions thrown during `hasNext()` to a handler
+ * instead of propagating them to the caller.
+ *
+ * When an exception is caught the iterator reports `false` for `hasNext()`, ending
+ * iteration gracefully.
+ *
+ * @param handler Receives any exception thrown by the underlying iterator's `hasNext()`.
+ * @param origin The wrapped iterable.
+ */
 class ExceptionCatchingIterable<T>(
     private val handler: (Exception) -> Unit,
     private val origin: Iterable<T>

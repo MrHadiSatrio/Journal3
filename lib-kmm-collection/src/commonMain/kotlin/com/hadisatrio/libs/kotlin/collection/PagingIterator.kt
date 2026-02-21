@@ -17,6 +17,13 @@
 
 package com.hadisatrio.libs.kotlin.collection
 
+/**
+ * An [Iterator] that fetches items from a paged [Source], loading one page at a time
+ * and requesting the next page only when the current one is exhausted.
+ *
+ * @param remote Paged source of items.
+ * @param pageSize Number of items to request per page.
+ */
 class PagingIterator<T>(
     private val remote: Source<T>,
     private val pageSize: Int = 20
@@ -51,12 +58,27 @@ class PagingIterator<T>(
         return currentItems.isNotEmpty()
     }
 
+    /**
+     * A supplier of pages of items for a [PagingIterator].
+     */
     fun interface Source<T> {
+        /**
+         * Returns a page of items starting at the given page index.
+         *
+         * @param page Zero-based page index.
+         * @param pageSize Maximum number of items to return.
+         */
         fun obtain(page: Int, pageSize: Int): Page<T>
     }
 
+    /**
+     * A single page of results from a [Source].
+     */
     interface Page<T> {
+        /** Items contained in this page. */
         val items: List<T>
+
+        /** `true` if further pages are available after this one. */
         val hasNext: Boolean
     }
 }
