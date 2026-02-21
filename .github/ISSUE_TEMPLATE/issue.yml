@@ -1,0 +1,42 @@
+name: Issue
+description: Report a bug or suggest an enhancement
+body:
+  - type: dropdown
+    id: type
+    attributes:
+      label: What type of issue is this?
+      options:
+        - Bug
+        - Enhancement
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: What's going on?
+      placeholder: |
+        For bugs: "The app crashes when I tap the edit button on a moment."
+        For enhancements: "It would be useful to filter stories by date range."
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: How to reproduce?
+      description: Steps to reproduce for bugs; leave blank for enhancements.
+      placeholder: |
+        1. Open the app
+        2. Navigate to a story
+        3. Tap on a moment
+        4. Tap the edit button
+        5. Observe the crash
+    validations:
+      required: false
+  - type: input
+    id: area
+    attributes:
+      label: Which part of the project is affected?
+      placeholder: "e.g., app-kmm-journal3, lib-kmm-geography"
+    validations:
+      required: false
+
