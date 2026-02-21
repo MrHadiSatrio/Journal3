@@ -27,6 +27,15 @@ import com.hadisatrio.libs.kotlin.foundation.event.EventSource
 import com.hadisatrio.libs.kotlin.foundation.event.SelectionEvent
 import kotlin.math.abs
 
+/**
+ * An [EventSource] that emits a [SelectionEvent] of kind "item_position" when the user
+ * taps an item in a [RecyclerView].
+ *
+ * Distinguishes taps from scrolls using a 50 px movement threshold; touch gestures that
+ * exceed this threshold are not treated as item selections.
+ *
+ * @param recyclerView The [RecyclerView] to observe.
+ */
 class RecyclerViewItemSelectionEventSource(
     private val recyclerView: RecyclerView
 ) : EventSource {

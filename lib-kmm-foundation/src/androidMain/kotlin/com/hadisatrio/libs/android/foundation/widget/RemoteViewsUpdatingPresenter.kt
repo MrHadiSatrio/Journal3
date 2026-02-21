@@ -21,6 +21,15 @@ import android.appwidget.AppWidgetManager
 import android.widget.RemoteViews
 import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
 
+/**
+ * A [Presenter] that delegates to [origin], then pushes the updated [RemoteViews] to the
+ * given app widget via [AppWidgetManager].
+ *
+ * @param widgetId ID of the app widget to update.
+ * @param widgetManager Manager used to push the updated [RemoteViews].
+ * @param remoteViews The [RemoteViews] that [origin] mutates and that will be pushed.
+ * @param origin The delegate presenter.
+ */
 class RemoteViewsUpdatingPresenter<T>(
     private val widgetId: Int,
     private val widgetManager: AppWidgetManager,

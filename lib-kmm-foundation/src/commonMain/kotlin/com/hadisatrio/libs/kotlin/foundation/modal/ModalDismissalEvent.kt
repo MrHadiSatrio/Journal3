@@ -19,6 +19,11 @@ package com.hadisatrio.libs.kotlin.foundation.modal
 
 import com.hadisatrio.libs.kotlin.foundation.event.Event
 
+/**
+ * An [Event] signalling that the user dismissed a modal of kind [modalKind].
+ *
+ * @param modalKind Kind of the modal that was dismissed.
+ */
 class ModalDismissalEvent(
     val modalKind: String
 ) : Event() {

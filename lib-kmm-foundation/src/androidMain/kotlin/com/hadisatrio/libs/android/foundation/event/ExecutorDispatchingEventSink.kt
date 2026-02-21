@@ -21,6 +21,12 @@ import com.hadisatrio.libs.kotlin.foundation.event.Event
 import com.hadisatrio.libs.kotlin.foundation.event.EventSink
 import java.util.concurrent.Executor
 
+/**
+ * An [EventSink] that dispatches each [sink] call to an [Executor].
+ *
+ * @param executor Executor on which [origin.sink] is called.
+ * @param origin The delegate [EventSink].
+ */
 class ExecutorDispatchingEventSink(
     private val executor: Executor,
     private val origin: EventSink

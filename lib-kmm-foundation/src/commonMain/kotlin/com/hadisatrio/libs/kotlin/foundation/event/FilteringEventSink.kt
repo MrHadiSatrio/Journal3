@@ -17,6 +17,12 @@
 
 package com.hadisatrio.libs.kotlin.foundation.event
 
+/**
+ * An [EventSink] that forwards events to [origin] only when [predicate] returns `true`.
+ *
+ * @param predicate Condition that each event must satisfy to be forwarded.
+ * @param origin Sink that receives matching events.
+ */
 class FilteringEventSink(
     private val predicate: Predicate<Event>,
     private val origin: EventSink

@@ -17,6 +17,11 @@
 
 package com.hadisatrio.libs.kotlin.foundation.presentation
 
+/**
+ * A [Presenter] that fans out each presentation to all registered [Presenter]s.
+ *
+ * @param presenters Presenters that receive each value in iteration order.
+ */
 class Presenters<T>(
     private val presenters: Iterable<Presenter<T>>
 ) : Presenter<T> {

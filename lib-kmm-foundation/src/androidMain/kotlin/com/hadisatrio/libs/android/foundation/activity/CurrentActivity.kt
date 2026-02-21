@@ -22,6 +22,15 @@ import android.app.Application
 import android.os.Bundle
 import java.util.concurrent.atomic.AtomicReference
 
+/**
+ * A reference to the currently resumed [Activity] of the given [Application].
+ *
+ * Keeps track on basis of [Application.ActivityLifecycleCallbacks]; updating
+ * a queryable internal reference whenever a new [Activity] completes its
+ * `onResume()` callback. 
+ *
+ * @param application Application whose activity lifecycle is observed.
+ */
 class CurrentActivity(
     application: Application
 ) {
@@ -32,6 +41,11 @@ class CurrentActivity(
         application.registerActivityLifecycleCallbacks(ActivityLifecycleCallback(activityRef))
     }
 
+    /**
+     * Returns the currently resumed [Activity], blocking the calling thread until one is available.
+     *
+     * @return The currently resumed [Activity].
+     */
     fun acquire(): Activity {
         var activity: Activity? = null
         while (activity == null) activity = activityRef.get()

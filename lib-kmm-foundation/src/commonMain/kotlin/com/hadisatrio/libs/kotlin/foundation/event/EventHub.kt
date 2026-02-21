@@ -20,6 +20,12 @@ package com.hadisatrio.libs.kotlin.foundation.event
 import com.badoo.reaktive.observable.Observable
 import com.badoo.reaktive.subject.Subject
 
+/**
+ * A bidirectional event bridge: accepts events as an [EventSink] and exposes them
+ * as an [EventSource] via the given [Subject].
+ *
+ * @param subject Reaktive Subject used as the underlying event channel.
+ */
 class EventHub(
     private val subject: Subject<Event>
 ) : EventSource, EventSink {

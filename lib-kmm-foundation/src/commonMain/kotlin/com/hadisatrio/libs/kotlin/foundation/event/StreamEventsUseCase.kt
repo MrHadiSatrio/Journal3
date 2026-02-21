@@ -22,6 +22,13 @@ import com.badoo.reaktive.observable.subscribe
 import com.badoo.reaktive.observable.takeUntil
 import com.hadisatrio.libs.kotlin.foundation.UseCase
 
+/**
+ * A [UseCase] that forwards all events from [eventSource] to [eventSink] until a
+ * [CompletionEvent] or [CancellationEvent] arrives.
+ *
+ * @param eventSource Source of events to forward.
+ * @param eventSink Sink that receives each event.
+ */
 class StreamEventsUseCase(
     private val eventSource: EventSource,
     private val eventSink: EventSink

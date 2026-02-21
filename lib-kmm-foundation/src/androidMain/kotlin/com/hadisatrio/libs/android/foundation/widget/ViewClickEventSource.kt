@@ -25,6 +25,12 @@ import com.hadisatrio.libs.kotlin.foundation.event.Event
 import com.hadisatrio.libs.kotlin.foundation.event.EventSource
 import reactivecircus.flowbinding.android.view.clicks
 
+/**
+ * An [EventSource] that emits an event from [eventFactory] on each click of [view].
+ *
+ * @param view The [View] to observe.
+ * @param eventFactory Factory invoked to create the emitted event on each click.
+ */
 class ViewClickEventSource(
     private val view: View,
     private val eventFactory: Event.Factory

@@ -20,6 +20,13 @@ package com.hadisatrio.libs.android.foundation.widget
 import android.widget.TextView
 import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
 
+/**
+ * A [Presenter] that sets the text of a [TextView].
+ *
+ * The text is only updated if it differs from the current value, avoiding redundant redraws.
+ *
+ * @param textView The [TextView] to update.
+ */
 class TextViewStringPresenter(
     private val textView: TextView
 ) : Presenter<String> {

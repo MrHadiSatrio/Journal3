@@ -20,6 +20,12 @@ package com.hadisatrio.libs.android.foundation.presentation
 import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
 import java.util.concurrent.Executor
 
+/**
+ * A [Presenter] that dispatches each [present] call to an [Executor].
+ *
+ * @param executor Executor on which [origin.present] is called.
+ * @param origin The delegate [Presenter].
+ */
 class ExecutorDispatchingPresenter<T>(
     private val executor: Executor,
     private val origin: Presenter<T>

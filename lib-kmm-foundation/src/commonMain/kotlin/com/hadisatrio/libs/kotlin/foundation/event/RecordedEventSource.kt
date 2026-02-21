@@ -20,6 +20,11 @@ package com.hadisatrio.libs.kotlin.foundation.event
 import com.badoo.reaktive.observable.Observable
 import com.badoo.reaktive.observable.asObservable
 
+/**
+ * An [EventSource] that replays a fixed list of [Event]s as an observable sequence.
+ *
+ * @param events The events to emit, in order.
+ */
 class RecordedEventSource(
     private val events: List<Event>
 ) : EventSource {

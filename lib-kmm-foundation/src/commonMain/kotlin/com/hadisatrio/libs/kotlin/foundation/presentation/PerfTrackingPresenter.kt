@@ -21,6 +21,14 @@ import com.hadisatrio.libs.kotlin.foundation.event.EventSink
 import com.hadisatrio.libs.kotlin.foundation.event.PerfSensitiveEvent
 import kotlinx.datetime.Clock
 
+/**
+ * A [Presenter] that measures the duration of each [present] call and emits a
+ * [PerfSensitiveEvent] to [eventSink].
+ *
+ * @param clock Clock used to record start and end timestamps.
+ * @param eventSink Sink that receives the timing event after each presentation.
+ * @param origin The delegate presenter whose [present] call is measured.
+ */
 class PerfTrackingPresenter<T>(
     private val clock: Clock,
     private val eventSink: EventSink,

@@ -19,6 +19,15 @@ package com.hadisatrio.libs.android.foundation.widget.recyclerview
 
 import android.view.View
 
+/**
+ * Binds an item of type [T] to a [View].
+ */
 fun interface ViewRenderer<T> {
+    /**
+     * Binds [item] to [view].
+     *
+     * @param view The view to populate.
+     * @param item The data item to bind.
+     */
     fun render(view: View, item: T)
 }

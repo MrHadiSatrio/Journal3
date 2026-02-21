@@ -17,6 +17,11 @@
 
 package com.hadisatrio.libs.kotlin.foundation.event
 
+/**
+ * An [EventSink] that fans out each event to every registered [EventSink].
+ *
+ * @param sinks Sinks that receive each event in iteration order.
+ */
 class EventSinks(
     private val sinks: Iterable<EventSink>
 ) : EventSink {

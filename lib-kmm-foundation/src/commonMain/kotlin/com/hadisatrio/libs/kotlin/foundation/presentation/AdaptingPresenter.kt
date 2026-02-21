@@ -17,6 +17,12 @@
 
 package com.hadisatrio.libs.kotlin.foundation.presentation
 
+/**
+ * A [Presenter] that converts its input through an [Adapter] before delegating to another [Presenter].
+ *
+ * @param origin The delegate presenter that receives the converted value.
+ * @param adapter Converts the incoming value from [I] to [O].
+ */
 class AdaptingPresenter<I, O>(
     private val origin: Presenter<O>,
     private val adapter: Adapter<I, O>

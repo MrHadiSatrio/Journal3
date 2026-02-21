@@ -25,6 +25,20 @@ import java.util.concurrent.Executors
 import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.math.max
 
+/**
+ * A [Presenter] that populates a [RecyclerView] with a lazily-loaded list, fetching
+ * more items as the user scrolls toward the end of the list.
+ *
+ * Items are loaded on [backgroundExecutor] in pages of 20. Diff computation is also
+ * performed off the main thread.
+ *
+ * @param recyclerView The [RecyclerView] to populate.
+ * @param orientation Layout orientation; defaults to [RecyclerView.VERTICAL].
+ * @param viewFactory Creates item views; defaults to [NaiveViewFactory].
+ * @param viewRenderer Binds items to views; defaults to [NaiveViewRenderer].
+ * @param differ Computes item differences; defaults to [NaiveItemDiffer].
+ * @param backgroundExecutor Executor for item loading and diff computation.
+ */
 class ListViewPresenter<T : Any>(
     private val recyclerView: RecyclerView,
     private val orientation: Int = RecyclerView.VERTICAL,

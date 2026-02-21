@@ -27,6 +27,15 @@ import com.hadisatrio.libs.kotlin.foundation.event.EventSink
 import com.hadisatrio.libs.kotlin.foundation.presentation.Adapter
 import java.io.Serializable
 
+/**
+ * An [EventSink] that converts each incoming [Event] to a key-value map via [adapter] and
+ * sets it as the activity's result with [Activity.RESULT_OK].
+ *
+ * Does nothing if the adapter produces an empty map.
+ *
+ * @param activity The activity whose result is set.
+ * @param adapter Converts an [Event] to a map of result extras.
+ */
 class ActivityResultSettingEventSink(
     private val activity: Activity,
     private val adapter: Adapter<Event, Map<String, Any>>

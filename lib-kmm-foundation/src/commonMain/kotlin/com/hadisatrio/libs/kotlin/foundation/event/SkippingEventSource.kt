@@ -20,6 +20,12 @@ package com.hadisatrio.libs.kotlin.foundation.event
 import com.badoo.reaktive.observable.Observable
 import com.badoo.reaktive.observable.skip
 
+/**
+ * An [EventSource] that skips the first [count] events from an upstream source.
+ *
+ * @param count Number of leading events to discard.
+ * @param origin The upstream [EventSource].
+ */
 class SkippingEventSource(
     private val count: Number,
     private val origin: EventSource

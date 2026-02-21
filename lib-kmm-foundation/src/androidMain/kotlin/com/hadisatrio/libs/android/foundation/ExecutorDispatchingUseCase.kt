@@ -20,6 +20,12 @@ package com.hadisatrio.libs.android.foundation
 import com.hadisatrio.libs.kotlin.foundation.UseCase
 import java.util.concurrent.Executor
 
+/**
+ * A [UseCase] that dispatches the invocation of another [UseCase] to an [Executor].
+ *
+ * @param executor Executor that runs [origin].
+ * @param origin The [UseCase] to invoke on [executor].
+ */
 class ExecutorDispatchingUseCase(
     private val executor: Executor,
     private val origin: UseCase

@@ -17,7 +17,15 @@
 
 package com.hadisatrio.libs.kotlin.foundation.event
 
+/**
+ * A consumer of incoming [Event]s.
+ */
 fun interface EventSink {
 
+    /**
+     * Processes the given [event].
+     *
+     * @param event The event to process.
+     */
     fun sink(event: Event)
 }

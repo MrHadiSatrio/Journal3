@@ -25,6 +25,13 @@ import com.hadisatrio.libs.kotlin.foundation.event.EventSink
 import com.hadisatrio.libs.kotlin.foundation.modal.Modal
 import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
 
+/**
+ * A [Presenter] that shows an [AlertDialog] for the given [Modal], routing button
+ * clicks through the modal's positive and negative event factories to [eventSink].
+ *
+ * @param currentActivity Provides the [Activity] context used to build the dialog.
+ * @param eventSink Receives the event produced by whichever button is clicked.
+ */
 class AlertDialogModalPresenter(
     private val currentActivity: CurrentActivity,
     private val eventSink: EventSink

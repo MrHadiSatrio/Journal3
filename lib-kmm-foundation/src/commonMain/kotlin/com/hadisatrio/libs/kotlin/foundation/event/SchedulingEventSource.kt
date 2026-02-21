@@ -22,6 +22,13 @@ import com.badoo.reaktive.observable.observeOn
 import com.badoo.reaktive.observable.subscribeOn
 import com.badoo.reaktive.scheduler.Scheduler
 
+/**
+ * An [EventSource] that controls the subscription and observation schedulers of an upstream source.
+ *
+ * @param subscriptionScheduler Scheduler on which subscription to [origin] is established.
+ * @param observationScheduler Scheduler on which events emitted by [origin] are observed.
+ * @param origin The upstream [EventSource] to schedule.
+ */
 class SchedulingEventSource(
     private val subscriptionScheduler: Scheduler,
     private val observationScheduler: Scheduler,

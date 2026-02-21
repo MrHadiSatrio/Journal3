@@ -17,6 +17,9 @@
 
 package com.hadisatrio.libs.kotlin.foundation
 
+/**
+ * A single invokable unit of behavior.
+ */
 fun interface UseCase {
     operator fun invoke()
 }
