@@ -17,6 +17,10 @@
 
 package com.hadisatrio.libs.kotlin.geography
 
+/**
+ * A movement rate in meters per second.
+ */
 interface Speed {
+    /** Speed in meters per second. */
     val value: Double
 }

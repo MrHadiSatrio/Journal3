@@ -33,6 +33,16 @@ import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import kotlin.time.Duration.Companion.seconds
 
+/**
+ * A [Place] that always reflects the most likely current location as determined by the Google
+ * Places SDK.
+ *
+ * Refreshes the underlying place at most once every 10 seconds. Requires ACCESS_FINE_LOCATION
+ * and ACCESS_COARSE_LOCATION permissions.
+ *
+ * @param client Places client used to query the current place.
+ * @param clock Clock used to throttle place refresh intervals.
+ */
 @SuppressLint(
     "MissingPermission"
     /* We are expecting the client to handle permissions as expressed on the annotated

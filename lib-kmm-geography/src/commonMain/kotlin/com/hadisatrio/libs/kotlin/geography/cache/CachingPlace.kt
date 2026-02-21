@@ -21,6 +21,18 @@ import com.benasher44.uuid.Uuid
 import com.hadisatrio.libs.kotlin.geography.Coordinates
 import com.hadisatrio.libs.kotlin.geography.Place
 
+/**
+ * A [Place] that captures another [Place]'s properties at construction time,
+ * isolating callers from subsequent changes to [origin].
+ *
+ * All [Place] operations not overridden here delegate to [origin].
+ *
+ * @param id Cached place ID.
+ * @param name Cached place name.
+ * @param address Cached place address.
+ * @param coordinates Cached place coordinates.
+ * @param origin The underlying place that other operations delegate to.
+ */
 class CachingPlace(
     override val id: Uuid,
     override val name: String,

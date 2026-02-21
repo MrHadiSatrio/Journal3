@@ -20,6 +20,9 @@ package com.hadisatrio.libs.kotlin.geography
 import com.benasher44.uuid.Uuid
 import com.benasher44.uuid.uuidFrom
 
+/**
+ * The canonical "no-place" [Place] at coordinates (0.0, 0.0), useful as a null-safe default.
+ */
 object NullIsland : Place {
 
     override val id: Uuid = uuidFrom("00000000-0000-0000-0000-000000000000")

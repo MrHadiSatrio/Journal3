@@ -17,6 +17,14 @@
 
 package com.hadisatrio.libs.kotlin.geography.time
 
+/**
+ * A timed pause measured in milliseconds.
+ */
 fun interface Delay {
+    /**
+     * Blocks the calling thread for [millis] milliseconds.
+     *
+     * @param millis Duration to pause in milliseconds.
+     */
     operator fun invoke(millis: Long)
 }

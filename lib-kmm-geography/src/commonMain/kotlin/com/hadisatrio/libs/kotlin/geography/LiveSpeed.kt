@@ -19,6 +19,15 @@ package com.hadisatrio.libs.kotlin.geography
 
 import com.hadisatrio.libs.kotlin.geography.time.Delay
 
+/**
+ * A [Speed] derived by sampling [coordinates] twice one second apart and computing
+ * the distance covered.
+ *
+ * Accessing [value] blocks the calling thread for approximately one second.
+ *
+ * @param coordinates The [Coordinates] source to sample.
+ * @param delay Mechanism used to wait between the two samples.
+ */
 class LiveSpeed(
     private val coordinates: Coordinates,
     private val delay: Delay

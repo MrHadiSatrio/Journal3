@@ -19,8 +19,30 @@ package com.hadisatrio.libs.kotlin.geography
 
 import com.benasher44.uuid.Uuid
 
+/**
+ * A collection of [Place]s supporting creation and lookup by [Uuid] or name.
+ */
 interface Places : Iterable<Place> {
+    /**
+     * Creates and persists a new [Place] in this collection.
+     *
+     * @return The newly created [Place].
+     */
     fun new(): Place
+
+    /**
+     * Returns all [Place]s matching [id].
+     *
+     * @param id The unique identifier to search for.
+     * @return Matching places, or an empty iterable if none found.
+     */
     fun findPlace(id: Uuid): Iterable<Place>
+
+    /**
+     * Returns all [Place]s whose name matches [name].
+     *
+     * @param name The name to search for.
+     * @return Matching places, or an empty iterable if none found.
+     */
     fun findPlace(name: String): Iterable<Place>
 }

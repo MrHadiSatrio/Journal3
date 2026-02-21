@@ -21,6 +21,11 @@ import com.hadisatrio.libs.android.geography.time.ThreadSleep
 import com.hadisatrio.libs.kotlin.geography.Coordinates
 import com.hadisatrio.libs.kotlin.geography.LiveSpeed
 
+/**
+ * Creates a [LiveSpeed] backed by the platform [ThreadSleep] delay.
+ *
+ * @param coordinates Location source used to sample speed.
+ */
 @Suppress("FunctionNaming")
 fun Speed(coordinates: Coordinates): LiveSpeed {
     return LiveSpeed(coordinates, ThreadSleep)

@@ -27,6 +27,17 @@ import com.hadisatrio.libs.kotlin.geography.Coordinates
 import java.util.concurrent.LinkedBlockingQueue
 import java.util.concurrent.TimeUnit
 
+/**
+ * A [Coordinates] decorator that requests ACCESS_FINE_LOCATION before delegating to [origin].
+ *
+ * If the permission is not already granted, blocks the calling thread while the user responds to
+ * the permission dialog on the foreground activity. Throws [SecurityException] if the permission
+ * is denied.
+ *
+ * @param application Application context used to check existing permission state.
+ * @param currentActivity Activity source used to show the permission dialog when needed.
+ * @param origin The wrapped coordinates, accessed only after permission is confirmed.
+ */
 class PermissionAwareCoordinates(
     private val application: Application,
     private val currentActivity: CurrentActivity,

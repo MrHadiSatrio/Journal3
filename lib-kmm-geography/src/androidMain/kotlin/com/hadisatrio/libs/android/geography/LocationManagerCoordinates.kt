@@ -32,6 +32,16 @@ import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import kotlin.time.Duration.Companion.seconds
 
+/**
+ * [Coordinates] and [Speed] backed by the Android [LocationManager].
+ *
+ * Refreshes the underlying location at most once every 10 seconds via a blocking single-update
+ * request. Requires ACCESS_FINE_LOCATION and ACCESS_COARSE_LOCATION permissions. Throws
+ * [IllegalStateException] if no location providers are available.
+ *
+ * @param manager System location manager used to request location updates.
+ * @param clock Clock used to throttle location refresh intervals.
+ */
 class LocationManagerCoordinates(
     private val manager: LocationManager,
     private val clock: Clock

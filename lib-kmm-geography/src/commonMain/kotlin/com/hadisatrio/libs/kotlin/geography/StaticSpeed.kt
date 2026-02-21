@@ -17,5 +17,10 @@
 
 package com.hadisatrio.libs.kotlin.geography
 
+/**
+ * A fixed [Speed] value.
+ *
+ * @param value Speed in meters per second.
+ */
 @JvmInline
 value class StaticSpeed(override val value: Double) : Speed

@@ -33,6 +33,18 @@ import com.hadisatrio.libs.kotlin.geography.Places
 import kotlinx.coroutines.runBlocking
 import com.google.android.libraries.places.api.Places as GooglePlaces
 
+/**
+ * A read-only [Places] collection backed by the Google Places SDK, returning places within
+ * 100 metres of [coordinates].
+ *
+ * [findPlace] by ID searches only previously fetched results; the first call to [iterator]
+ * performs a network request.
+ *
+ * @param coordinates Centre point around which to search for places.
+ * @param limit Maximum number of places to return per request.
+ * @param client Places client used to perform SDK calls.
+ * @throws [UnsupportedOperationException] when [new] is called.
+ */
 class GoogleSdkNearbyPlaces(
     private val coordinates: Coordinates,
     private val limit: Int,
