@@ -26,6 +26,14 @@ import okio.FileNotFoundException
 import okio.Source
 import okio.source
 
+/**
+ * A [Sources] backed by Android's [ContentResolver].
+ *
+ * Accepts only `content://` URIs. Throws [IllegalArgumentException] for any other scheme and
+ * [okio.FileNotFoundException] if the content resolver returns no stream for the given URI.
+ *
+ * @param contentResolver Content resolver used to open input streams.
+ */
 class ContentResolverSources(
     private val contentResolver: ContentResolver
 ) : Sources {

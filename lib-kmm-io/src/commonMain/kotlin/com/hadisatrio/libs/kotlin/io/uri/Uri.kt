@@ -21,6 +21,11 @@ import com.chrynan.uri.core.Uri
 import okio.Path
 import okio.Path.Companion.toPath
 
+/**
+ * Converts this `file://` [Uri] to an Okio [Path].
+ *
+ * @throws [IllegalArgumentException] if the URI scheme is not "file".
+ */
 fun Uri.toPath(): Path {
     require(this.scheme == "file") { "Expected scheme to be 'file' but was '$scheme'." }
     return this.path.toPath()
