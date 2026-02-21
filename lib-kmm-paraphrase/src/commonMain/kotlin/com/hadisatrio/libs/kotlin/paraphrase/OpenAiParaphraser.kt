@@ -39,6 +39,16 @@ import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import okio.IOException
 
+/**
+ * A [Paraphraser] backed by the OpenAI Chat Completions API using the `gpt-3.5-turbo` model.
+ *
+ * Blocks the calling thread until the API responds. Throws [okio.IOException] when the HTTP
+ * response status is not successful.
+ *
+ * @param prompt System prompt sent to the model before the user text.
+ * @param apiKey OpenAI API key used for bearer authentication.
+ * @param httpClient Ktor [HttpClient] used to perform the HTTP request.
+ */
 class OpenAiParaphraser(
     private val prompt: String,
     private val apiKey: String,

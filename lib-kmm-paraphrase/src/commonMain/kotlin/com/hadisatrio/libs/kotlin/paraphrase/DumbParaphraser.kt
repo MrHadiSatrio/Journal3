@@ -17,6 +17,9 @@
 
 package com.hadisatrio.libs.kotlin.paraphrase
 
+/**
+ * A no-op [Paraphraser] that returns the input text unchanged.
+ */
 object DumbParaphraser : Paraphraser {
 
     override fun paraphrase(text: String): String {
