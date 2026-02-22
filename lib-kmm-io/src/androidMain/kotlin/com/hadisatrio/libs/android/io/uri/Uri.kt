@@ -21,8 +21,6 @@ import com.chrynan.uri.core.Uri
 
 /**
  * Converts this cross-platform [Uri] to an [android.net.Uri].
- *
- * @return The equivalent [android.net.Uri].
  */
 fun Uri.toAndroidUri(): android.net.Uri {
     return android.net.Uri.parse(uriString)
