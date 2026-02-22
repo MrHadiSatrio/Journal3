@@ -29,7 +29,6 @@ interface ItemDiffer<T> {
      *
      * @param oldItem The item from the previous list.
      * @param newItem The item from the new list.
-     * @return `true` if both items represent the same entity.
      */
     fun areItemsTheSame(oldItem: T, newItem: T): Boolean
 
@@ -39,7 +38,6 @@ interface ItemDiffer<T> {
      *
      * @param oldItem The item from the previous list.
      * @param newItem The item from the new list.
-     * @return `true` if the visible contents are identical.
      */
     fun areContentsTheSame(oldItem: T, newItem: T): Boolean
 }

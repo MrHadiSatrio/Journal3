@@ -53,8 +53,6 @@ class NotificationModalPresenter(
     fun interface NotificationBuilderFactory {
         /**
          * Returns a fully configured [NotificationCompat.Builder].
-         *
-         * @return The notification builder.
          */
         fun create(): NotificationCompat.Builder
     }

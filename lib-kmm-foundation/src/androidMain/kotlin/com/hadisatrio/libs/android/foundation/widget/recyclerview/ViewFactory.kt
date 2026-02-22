@@ -29,7 +29,6 @@ fun interface ViewFactory {
      *
      * @param parent The [ViewGroup] that will contain the new view.
      * @param viewType Integer discriminator used to select the view type.
-     * @return The newly created [View].
      */
     fun create(parent: ViewGroup, viewType: Int): View
 }
