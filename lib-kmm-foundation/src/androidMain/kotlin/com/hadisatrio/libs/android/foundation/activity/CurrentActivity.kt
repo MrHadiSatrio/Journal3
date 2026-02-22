@@ -27,7 +27,7 @@ import java.util.concurrent.atomic.AtomicReference
  *
  * Keeps track on basis of [Application.ActivityLifecycleCallbacks]; updating
  * a queryable internal reference whenever a new [Activity] completes its
- * `onResume()` callback. 
+ * `onResume()` callback.
  *
  * @param application Application whose activity lifecycle is observed.
  */

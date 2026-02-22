@@ -18,7 +18,7 @@
 package com.hadisatrio.libs.android.foundation.widget.recyclerview
 
 /**
- * Determines whether two items represent the same entity and whether their visible contents differ.
+ * A comparator that determines whether two items represent the same entity and whether their visible contents differ.
  *
  * Used by [RecyclerViewPresenter] and [ListViewPresenter] for efficient diff computation.
  */

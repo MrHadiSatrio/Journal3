@@ -48,7 +48,7 @@ class NotificationModalPresenter(
     }
 
     /**
-     * Creates a [NotificationCompat.Builder] configured for a specific [Modal].
+     * A factory for [NotificationCompat.Builder]s configured for a specific [Modal].
      */
     fun interface NotificationBuilderFactory {
         /**

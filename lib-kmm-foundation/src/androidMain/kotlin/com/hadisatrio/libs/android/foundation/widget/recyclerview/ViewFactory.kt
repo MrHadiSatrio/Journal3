@@ -21,7 +21,7 @@ import android.view.View
 import android.view.ViewGroup
 
 /**
- * Creates a [View] for a given [ViewGroup] and view type.
+ * A factory for [View]s within a [ViewGroup].
  */
 fun interface ViewFactory {
     /**

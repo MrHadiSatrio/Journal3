@@ -20,7 +20,7 @@ package com.hadisatrio.libs.android.foundation.widget.recyclerview
 import android.view.View
 
 /**
- * Binds an item of type [T] to a [View].
+ * A binder that populates a [View] with an item of type [T].
  */
 fun interface ViewRenderer<T> {
     /**
