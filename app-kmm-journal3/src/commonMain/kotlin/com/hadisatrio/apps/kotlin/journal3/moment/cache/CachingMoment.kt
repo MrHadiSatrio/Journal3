@@ -26,6 +26,10 @@ import com.hadisatrio.apps.kotlin.journal3.token.TokenableString
 import com.hadisatrio.libs.kotlin.geography.Place
 import com.hadisatrio.libs.kotlin.geography.cache.CachingPlace
 
+/**
+ * A [Moment] decorator that eagerly copies all property values from [origin] into fields,
+ * shielding callers from repeated or costly underlying reads.
+ */
 @Suppress("LongParameterList")
 class CachingMoment(
     override val id: Uuid,

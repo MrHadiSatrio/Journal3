@@ -20,6 +20,10 @@ package com.hadisatrio.apps.kotlin.journal3.moment.cache
 import com.hadisatrio.apps.kotlin.journal3.moment.Moment
 import com.hadisatrio.apps.kotlin.journal3.moment.Moments
 
+/**
+ * A [Moments] decorator that wraps each iterated moment with a [CachingMoment] and
+ * pre-computes the count, reducing repeat reads from the underlying collection.
+ */
 class CachingMoments private constructor(
     private val count: Int,
     private val origin: Moments
