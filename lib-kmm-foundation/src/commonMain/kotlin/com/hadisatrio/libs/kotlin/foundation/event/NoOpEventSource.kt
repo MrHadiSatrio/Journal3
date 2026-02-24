@@ -20,6 +20,9 @@ package com.hadisatrio.libs.kotlin.foundation.event
 import com.badoo.reaktive.observable.Observable
 import com.badoo.reaktive.observable.observableOf
 
+/**
+ * An [EventSource] that immediately emits a single [CompletionEvent] and completes.
+ */
 object NoOpEventSource : EventSource {
 
     override fun events(): Observable<Event> {

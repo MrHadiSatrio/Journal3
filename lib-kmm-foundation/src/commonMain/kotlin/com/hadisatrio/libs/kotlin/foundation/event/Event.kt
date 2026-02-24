@@ -17,14 +17,28 @@
 
 package com.hadisatrio.libs.kotlin.foundation.event
 
+/**
+ * The base type for every domain event circulating in the system.
+ *
+ * Provides a human-readable [name] derived from the concrete class name and a structured
+ * key-value description via [describe], suitable for logging and analytics.
+ */
 abstract class Event {
 
     val name: String by lazy { this::class.simpleName!!.splitWordCaseApart() }
 
+    /**
+     * Returns a map describing this event, including its [name] and any subclass-specific fields.
+     */
     fun describe(): Map<String, String> {
         return mapOf("name" to name) + describeInternally()
     }
 
+    /**
+     * Returns the value mapped to [key] in [describe], or `null` if absent.
+     *
+     * @param key Key to look up in the event description.
+     */
     operator fun get(key: String): String? {
         return describe()[key]
     }
@@ -35,11 +49,22 @@ abstract class Event {
         return this.split(WORD_CASE_SPLITTER_REGEX).joinToString(" ").trim()
     }
 
+    /**
+     * A no-argument factory for [Event]s.
+     */
     fun interface Factory {
         fun create(): Event
     }
 
+    /**
+     * A single-argument factory for [Event]s.
+     */
     fun interface ArgumentedFactory<T> {
+        /**
+         * Creates an event using [argument].
+         *
+         * @param argument Input used to construct the event.
+         */
         fun create(argument: T): Event
     }
 

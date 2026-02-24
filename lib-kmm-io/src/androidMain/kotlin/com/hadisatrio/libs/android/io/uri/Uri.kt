@@ -19,6 +19,9 @@ package com.hadisatrio.libs.android.io.uri
 
 import com.chrynan.uri.core.Uri
 
+/**
+ * Converts this cross-platform [Uri] to an [android.net.Uri].
+ */
 fun Uri.toAndroidUri(): android.net.Uri {
     return android.net.Uri.parse(uriString)
 }

@@ -17,6 +17,13 @@
 
 package com.hadisatrio.libs.kotlin.geography
 
+/**
+ * A [Places] that eagerly creates a fixed number of new entries in the underlying store
+ * during construction.
+ *
+ * @param noOfPlaces Number of new places to create.
+ * @param origin The underlying [Places] store.
+ */
 class SelfPopulatingPlaces(
     noOfPlaces: Int,
     private val origin: Places

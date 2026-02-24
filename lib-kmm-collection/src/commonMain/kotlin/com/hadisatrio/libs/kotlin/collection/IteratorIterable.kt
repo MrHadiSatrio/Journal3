@@ -17,6 +17,14 @@
 
 package com.hadisatrio.libs.kotlin.collection
 
+/**
+ * An [Iterable] backed by a factory function that produces a new [Iterator] on each call.
+ *
+ * Useful when the same logical sequence must be traversed multiple times, with each traversal
+ * starting from a fresh iterator.
+ *
+ * @param iteratorFactory Factory invoked on each call to [iterator].
+ */
 class IteratorIterable<T>(private val iteratorFactory: () -> Iterator<T>) : Iterable<T> {
     override fun iterator(): Iterator<T> = iteratorFactory()
 }

@@ -20,6 +20,15 @@ package com.hadisatrio.libs.android.foundation.widget.recyclerview
 import android.view.View
 import android.view.ViewGroup
 
+/**
+ * A factory for [View]s within a [ViewGroup].
+ */
 fun interface ViewFactory {
+    /**
+     * Creates and returns a new [View] for [parent].
+     *
+     * @param parent The [ViewGroup] that will contain the new view.
+     * @param viewType Integer discriminator used to select the view type.
+     */
     fun create(parent: ViewGroup, viewType: Int): View
 }

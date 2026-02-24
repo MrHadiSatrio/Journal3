@@ -27,6 +27,11 @@ import com.hadisatrio.libs.kotlin.foundation.event.CancellationEvent
 import com.hadisatrio.libs.kotlin.foundation.event.Event
 import com.hadisatrio.libs.kotlin.foundation.event.EventSource
 
+/**
+ * An [EventSource] that emits a [CancellationEvent] with reason "user" on each back-button press.
+ *
+ * @param dispatcher The dispatcher used to register the back-press callback.
+ */
 class BackButtonCancellationEventSource(
     private val dispatcher: OnBackPressedDispatcher
 ) : EventSource {

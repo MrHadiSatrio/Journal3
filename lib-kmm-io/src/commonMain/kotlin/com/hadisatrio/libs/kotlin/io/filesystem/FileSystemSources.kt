@@ -23,6 +23,13 @@ import com.hadisatrio.libs.kotlin.io.uri.toPath
 import okio.FileSystem
 import okio.Source
 
+/**
+ * A [Sources] backed by an Okio [FileSystem] that opens files at the path derived from the URI.
+ *
+ * Only `file://` URIs are supported; URI-to-path conversion is handled by [Uri.toPath].
+ *
+ * @param fileSystem File system used to open the source.
+ */
 class FileSystemSources(
     private val fileSystem: FileSystem
 ) : Sources {

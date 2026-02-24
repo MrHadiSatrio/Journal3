@@ -17,6 +17,15 @@
 
 package com.hadisatrio.libs.kotlin.geography
 
+/**
+ * A [Coordinates] constructed from explicit latitude and longitude values.
+ *
+ * Also accepts a "lat,lng" string via the secondary constructor. Throws [IllegalArgumentException]
+ * if [latitude] is outside −90..90 or [longitude] is outside −180..180.
+ *
+ * @param latitude Latitude in decimal degrees.
+ * @param longitude Longitude in decimal degrees.
+ */
 class LiteralCoordinates(
     private val latitude: Double,
     private val longitude: Double

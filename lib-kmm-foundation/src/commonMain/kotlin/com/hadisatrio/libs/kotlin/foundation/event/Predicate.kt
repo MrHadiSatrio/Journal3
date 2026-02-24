@@ -17,6 +17,14 @@
 
 package com.hadisatrio.libs.kotlin.foundation.event
 
+/**
+ * A condition over values of type [T].
+ */
 fun interface Predicate<T> {
+    /**
+     * Returns `true` if [thing] satisfies this predicate.
+     *
+     * @param thing The value to test.
+     */
     fun applicable(thing: T): Boolean
 }

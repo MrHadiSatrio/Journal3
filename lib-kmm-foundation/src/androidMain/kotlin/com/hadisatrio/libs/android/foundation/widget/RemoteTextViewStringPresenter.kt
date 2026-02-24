@@ -20,6 +20,12 @@ package com.hadisatrio.libs.android.foundation.widget
 import android.widget.RemoteViews
 import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
 
+/**
+ * A [Presenter] that sets the text of a [RemoteViews] text view identified by [textViewId].
+ *
+ * @param remoteViews The [RemoteViews] containing the target text view.
+ * @param textViewId Resource ID of the text view within [remoteViews].
+ */
 class RemoteTextViewStringPresenter(
     private val remoteViews: RemoteViews,
     private val textViewId: Int

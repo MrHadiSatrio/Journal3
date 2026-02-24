@@ -24,11 +24,18 @@ import kotlin.math.pow
 import kotlin.math.sin
 import kotlin.math.sqrt
 
+/**
+ * A great-circle distance in meters between two [Coordinates], computed via the Haversine formula.
+ *
+ * @param one The starting coordinates.
+ * @param other The ending coordinates.
+ */
 class Distance(
     private val one: Coordinates,
     private val other: Coordinates
 ) : Comparable<Distance> {
 
+    /** Distance in meters. */
     val value: Double by lazy {
         val oneLatLng = one.latlng
         val otherLatLng = other.latlng

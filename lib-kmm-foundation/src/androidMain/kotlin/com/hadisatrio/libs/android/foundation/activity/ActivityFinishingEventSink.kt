@@ -23,6 +23,15 @@ import com.hadisatrio.libs.kotlin.foundation.event.Event
 import com.hadisatrio.libs.kotlin.foundation.event.EventSink
 import com.hadisatrio.libs.kotlin.foundation.event.Predicate
 
+/**
+ * An [EventSink] that calls [Activity.finish] when a [CompletionEvent] is received or
+ * when [additionalPredicate] matches.
+ *
+ * Does nothing if the activity is already finishing or changing configurations.
+ *
+ * @param activity The activity to finish.
+ * @param additionalPredicate Optional extra condition that also triggers finishing.
+ */
 class ActivityFinishingEventSink(
     private val activity: Activity,
     private val additionalPredicate: Predicate<Event> = Predicate { false }

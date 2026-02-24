@@ -20,6 +20,11 @@ package com.hadisatrio.libs.kotlin.foundation.event
 import com.badoo.reaktive.observable.Observable
 import com.badoo.reaktive.observable.merge
 
+/**
+ * An [EventSource] that merges multiple [EventSource]s into a single stream.
+ *
+ * @param sources Sources whose event streams are merged.
+ */
 class EventSources(
     private val sources: Iterable<EventSource>
 ) : EventSource {

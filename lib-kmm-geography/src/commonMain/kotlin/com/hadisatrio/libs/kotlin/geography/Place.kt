@@ -19,16 +19,29 @@ package com.hadisatrio.libs.kotlin.geography
 
 import com.benasher44.uuid.Uuid
 
+/**
+ * A named, addressable geographic location with a stable [id] and [coordinates].
+ */
 interface Place {
     val id: Uuid
     val name: String
     val address: String
     val coordinates: Coordinates
 
+    /**
+     * Returns the [Distance] between this place and [other].
+     *
+     * @param other The other place.
+     */
     fun distanceTo(other: Place): Distance {
         return distanceTo(other.coordinates)
     }
 
+    /**
+     * Returns the [Distance] between this place and the given [coordinates].
+     *
+     * @param coordinates The target coordinates.
+     */
     fun distanceTo(coordinates: Coordinates): Distance {
         return this.coordinates.distanceTo(coordinates)
     }

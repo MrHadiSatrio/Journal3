@@ -21,6 +21,13 @@ import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import kotlin.time.Duration
 
+/**
+ * An [Event] recording a timestamped performance marker for a tagged operation.
+ *
+ * When constructed with a non-null [start], [describe] includes the elapsed duration in ms.
+ *
+ * @param tag Label identifying the measured operation.
+ */
 class PerfSensitiveEvent internal constructor(
     private val tag: String,
     private val clock: Clock = Clock.System,

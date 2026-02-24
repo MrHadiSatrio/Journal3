@@ -17,6 +17,9 @@
 
 package com.hadisatrio.libs.kotlin.foundation.event
 
+/**
+ * An [Event] signalling the successful completion of an operation.
+ */
 class CompletionEvent : Event() {
 
     override fun describeInternally(): Map<String, String> {

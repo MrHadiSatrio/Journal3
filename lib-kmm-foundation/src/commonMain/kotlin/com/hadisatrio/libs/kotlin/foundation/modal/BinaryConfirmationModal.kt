@@ -19,6 +19,12 @@ package com.hadisatrio.libs.kotlin.foundation.modal
 
 import com.hadisatrio.libs.kotlin.foundation.event.Event
 
+/**
+ * A [Modal] pre-wired to emit [ModalApprovalEvent] on confirmation and [ModalDismissalEvent]
+ * on dismissal.
+ *
+ * @param kind A label identifying the purpose of this modal (e.g. "delete_confirmation").
+ */
 class BinaryConfirmationModal(kind: String) : Modal(
     kind = kind,
     positiveEventFactory = Event.Factory { ModalApprovalEvent(kind) },

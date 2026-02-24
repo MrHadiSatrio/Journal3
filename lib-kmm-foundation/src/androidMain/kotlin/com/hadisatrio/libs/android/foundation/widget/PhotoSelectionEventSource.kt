@@ -31,6 +31,16 @@ import com.hadisatrio.libs.kotlin.foundation.event.Event
 import com.hadisatrio.libs.kotlin.foundation.event.EventSource
 import com.hadisatrio.libs.kotlin.foundation.event.SelectionEvent
 
+/**
+ * An [EventSource] that opens the system photo picker when [triggerView] is clicked, then
+ * emits a [SelectionEvent] of kind "attachments" with a comma-separated list of selected
+ * image URIs. Persistent URI permissions are taken for each selected URI.
+ *
+ * @param triggerView View whose click opens the picker.
+ * @param activity Activity used to register the [PickMultipleVisualMedia] launcher.
+ * @param registry Activity result registry; defaults to the activity's own registry.
+ * @param contentResolver Resolver used to take persistable URI permissions.
+ */
 class PhotoSelectionEventSource internal constructor(
     triggerView: View,
     activity: ComponentActivity,

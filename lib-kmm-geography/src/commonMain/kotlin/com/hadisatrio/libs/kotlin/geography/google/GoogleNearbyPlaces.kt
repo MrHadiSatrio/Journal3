@@ -27,6 +27,19 @@ import com.hadisatrio.libs.kotlin.geography.Places
 import io.ktor.client.HttpClient
 import kotlinx.coroutines.runBlocking
 
+/**
+ * A read-only [Places] collection backed by the Google Places REST API v1, returning places
+ * within 100 metres of [coordinates].
+ *
+ * [findPlace] by ID searches only previously fetched results; iteration performs network
+ * requests. [limit] is clamped to 1..20.
+ *
+ * @param coordinates Centre point around which to search for places.
+ * @param limit Maximum number of places to return per request.
+ * @param apiKey Google Places API key.
+ * @param httpClient Ktor HTTP client used to perform API calls.
+ * @throws [UnsupportedOperationException] when [new] is called.
+ */
 class GoogleNearbyPlaces(
     private val coordinates: Coordinates,
     private val limit: Int,

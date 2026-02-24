@@ -22,6 +22,16 @@ import androidx.recyclerview.widget.RecyclerView
 import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
 import java.util.concurrent.atomic.AtomicBoolean
 
+/**
+ * A [Presenter] that populates a [RecyclerView] with all items from the presented
+ * [Iterable] at once.
+ *
+ * @param recyclerView The [RecyclerView] to populate.
+ * @param layoutManager Layout manager; defaults to a vertical [LinearLayoutManager].
+ * @param viewFactory Creates item views; defaults to [NaiveViewFactory].
+ * @param viewRenderer Binds items to views; defaults to [NaiveViewRenderer].
+ * @param differ Computes item differences; defaults to [NaiveItemDiffer].
+ */
 class RecyclerViewPresenter<T : Any>(
     private val recyclerView: RecyclerView,
     private val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(recyclerView.context),

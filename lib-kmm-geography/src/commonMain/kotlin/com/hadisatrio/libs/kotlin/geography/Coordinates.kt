@@ -17,11 +17,25 @@
 
 package com.hadisatrio.libs.kotlin.geography
 
+/**
+ * A geographic position expressed as a latitude/longitude pair with an accuracy estimate.
+ *
+ * Two [Coordinates] instances are equal if their string representations are equal
+ * (i.e. their latitude and longitude values match).
+ */
 abstract class Coordinates {
 
+    /** Latitude and longitude as a [Pair]. */
     abstract val latlng: Pair<Double, Double>
+
+    /** Estimated accuracy of this position in meters. */
     abstract val accuracyInMeters: Float
 
+    /**
+     * Returns the [Distance] between this position and [other].
+     *
+     * @param other The target coordinates.
+     */
     fun distanceTo(other: Coordinates): Distance {
         return Distance(this, other)
     }

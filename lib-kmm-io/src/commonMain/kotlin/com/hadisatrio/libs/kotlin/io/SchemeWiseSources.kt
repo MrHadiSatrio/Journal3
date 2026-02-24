@@ -20,6 +20,12 @@ package com.hadisatrio.libs.kotlin.io
 import com.chrynan.uri.core.Uri
 import okio.Source
 
+/**
+ * A [Sources] that routes [open] calls to scheme-specific [Sources] implementations.
+ *
+ * @param sources Map from URI scheme (e.g. "file", "content") to the [Sources] handling it.
+ * @throws [IllegalArgumentException] if no implementation is registered for the URI's scheme.
+ */
 class SchemeWiseSources(
     private val sources: Map<String, Sources>
 ) : Sources {

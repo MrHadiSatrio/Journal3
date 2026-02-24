@@ -17,6 +17,13 @@
 
 package com.hadisatrio.libs.kotlin.foundation.event
 
+/**
+ * An [Event] signalling that something identifiable has been selected.
+ *
+ * @param selectionKind Category of the selection (e.g. "action", "item_position", "attachments").
+ * @param selectedIdentifier Identifier of the selected item.
+ * @param additionalEntries Optional extra key-value pairs included in [describe].
+ */
 class SelectionEvent(
     val selectionKind: String,
     val selectedIdentifier: String,

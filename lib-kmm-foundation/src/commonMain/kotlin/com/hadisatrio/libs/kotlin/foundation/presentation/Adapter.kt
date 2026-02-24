@@ -17,6 +17,14 @@
 
 package com.hadisatrio.libs.kotlin.foundation.presentation
 
+/**
+ * A converter from input type [I] to output type [O].
+ */
 fun interface Adapter<I, O> {
+    /**
+     * Converts [thing] from [I] to [O].
+     *
+     * @param thing The value to convert.
+     */
     fun adapt(thing: I): O
 }

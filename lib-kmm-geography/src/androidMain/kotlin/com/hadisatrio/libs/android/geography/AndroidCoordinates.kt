@@ -26,6 +26,13 @@ import com.hadisatrio.libs.kotlin.geography.Coordinates
 import com.hadisatrio.libs.kotlin.geography.Speed
 import kotlinx.datetime.Clock
 
+/**
+ * [Coordinates] and [Speed] that delegate to [GmsCoordinates] when Google Play Services is
+ * available, falling back to [LocationManagerCoordinates] otherwise.
+ *
+ * @param application Application context used to check Play Services availability.
+ * @param clock Clock used by the selected delegate for location refresh throttling.
+ */
 class AndroidCoordinates(
     private val application: Application,
     private val clock: Clock

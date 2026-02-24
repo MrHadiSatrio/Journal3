@@ -28,6 +28,16 @@ import com.badoo.reaktive.observable.observable
 import com.hadisatrio.libs.kotlin.foundation.event.Event
 import com.hadisatrio.libs.kotlin.foundation.event.EventSource
 
+/**
+ * An [EventSource] that emits an event from [eventFactory] each time a specific
+ * [Lifecycle.Event] fires on [lifecycleOwner].
+ *
+ * Observer registration and removal are posted to the main looper.
+ *
+ * @param lifecycleOwner Owner whose lifecycle is observed.
+ * @param lifecycleEvent The lifecycle event that triggers emission.
+ * @param eventFactory Factory invoked to create the emitted event.
+ */
 class LifecycleTriggeredEventSource(
     private val lifecycleOwner: LifecycleOwner,
     private val lifecycleEvent: Lifecycle.Event,

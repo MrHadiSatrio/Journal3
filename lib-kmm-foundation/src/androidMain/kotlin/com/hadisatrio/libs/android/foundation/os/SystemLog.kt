@@ -22,6 +22,13 @@ import com.hadisatrio.libs.kotlin.foundation.event.Event
 import com.hadisatrio.libs.kotlin.foundation.event.EventSink
 import com.hadisatrio.libs.kotlin.foundation.event.ExceptionalEvent
 
+/**
+ * An [EventSink] that writes each event's description to Android's Logcat.
+ *
+ * [ExceptionalEvent]s are logged at error level; all others at debug level.
+ *
+ * @param logTag Tag used for all log messages.
+ */
 class SystemLog(
     private val logTag: String
 ) : EventSink {

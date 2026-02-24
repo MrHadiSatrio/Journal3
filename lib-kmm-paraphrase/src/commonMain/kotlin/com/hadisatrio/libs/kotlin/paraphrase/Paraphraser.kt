@@ -17,6 +17,15 @@
 
 package com.hadisatrio.libs.kotlin.paraphrase
 
+/**
+ * A text rewriter that returns a paraphrased version of the input.
+ */
 fun interface Paraphraser {
+    /**
+     * Returns a rewritten version of [text].
+     *
+     * @param text The original text to rewrite.
+     * @return The rewritten text.
+     */
     fun paraphrase(text: String): String
 }

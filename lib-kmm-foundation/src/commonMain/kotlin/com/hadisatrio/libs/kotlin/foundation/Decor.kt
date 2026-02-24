@@ -17,6 +17,14 @@
 
 package com.hadisatrio.libs.kotlin.foundation
 
+/**
+ * A type-preserving decorator for values of type [T].
+ */
 fun interface Decor<T> {
+    /**
+     * Returns a decorated version of [thing].
+     *
+     * @param thing The value to decorate.
+     */
     fun apply(thing: T): T
 }

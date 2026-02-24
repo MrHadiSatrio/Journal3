@@ -24,6 +24,16 @@ import com.badoo.reaktive.scheduler.computationScheduler
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 
+/**
+ * An [EventSource] that suppresses rapid-fire emissions from an upstream [EventSource],
+ * forwarding an event only once the stream has been idle for [timeoutMillis].
+ *
+ * The no-argument constructor uses a 300 ms timeout on the computation scheduler.
+ *
+ * @param timeoutMillis Idle duration required before an event is forwarded.
+ * @param scheduler Scheduler used for the debounce timer.
+ * @param origin The upstream [EventSource] to debounce.
+ */
 class DebouncingEventSource(
     private val timeoutMillis: Duration,
     private val scheduler: Scheduler,

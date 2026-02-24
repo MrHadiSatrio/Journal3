@@ -32,6 +32,18 @@ import com.hadisatrio.libs.kotlin.foundation.event.SelectionEvent
 import java.io.File
 import java.util.concurrent.atomic.AtomicReference
 
+/**
+ * An [EventSource] that launches the camera when [triggerView] is clicked, then emits a
+ * [SelectionEvent] of kind "attachments" with the captured photo's URI if the picture was taken.
+ *
+ * The photo is stored as a temporary file under [tempDirectory] via [FileProvider]. If the
+ * user cancels without taking a picture, no event is emitted.
+ *
+ * @param triggerView View whose click triggers the camera.
+ * @param activity Activity used to register the [TakePicture] activity result launcher.
+ * @param registry Activity result registry; defaults to the activity's own registry.
+ * @param tempDirectory Directory for temporary photo files; defaults to `cacheDir/camera`.
+ */
 class PhotoCaptureEventSource internal constructor(
     private val triggerView: View,
     private val activity: ComponentActivity,

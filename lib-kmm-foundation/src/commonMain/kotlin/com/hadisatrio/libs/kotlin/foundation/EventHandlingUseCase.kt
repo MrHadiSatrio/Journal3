@@ -27,6 +27,16 @@ import com.hadisatrio.libs.kotlin.foundation.event.Event
 import com.hadisatrio.libs.kotlin.foundation.event.EventSink
 import com.hadisatrio.libs.kotlin.foundation.event.EventSource
 
+/**
+ * Base class for use cases driven by an [EventSource].
+ *
+ * Subclasses implement [invokeInternal] for any startup work and [handleEvent] to react to
+ * each incoming [Event]. Every event is forwarded to [eventSink] before being dispatched to
+ * [handleEvent]. The use case terminates automatically when a [CompletionEvent] is received.
+ *
+ * @param eventSource Source of events this use case will react to.
+ * @param eventSink Sink that receives every event observed by this use case.
+ */
 abstract class EventHandlingUseCase(
     protected val eventSource: EventSource,
     protected val eventSink: EventSink
@@ -39,6 +49,7 @@ abstract class EventHandlingUseCase(
         observeEvents()
     }
 
+    /** Performs any startup work before event observation begins. */
     abstract fun invokeInternal()
 
     private fun observeEvents() {
@@ -53,8 +64,14 @@ abstract class EventHandlingUseCase(
         // might need to do some ceremonies when we are completing.
     }
 
+    /**
+     * Handles the given [event] received from [eventSource].
+     *
+     * @param event The incoming event to handle.
+     */
     abstract fun handleEvent(event: Event)
 
+    /** Signals that this use case has completed, triggering teardown. */
     protected fun complete() {
         completionEvents.onNext(CompletionEvent())
     }

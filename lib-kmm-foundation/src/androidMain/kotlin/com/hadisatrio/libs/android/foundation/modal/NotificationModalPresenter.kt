@@ -26,6 +26,15 @@ import com.hadisatrio.libs.kotlin.foundation.modal.Modal
 import com.hadisatrio.libs.kotlin.foundation.presentation.Adapter
 import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
 
+/**
+ * A [Presenter] that posts a system notification for the given [Modal].
+ *
+ * Requires the `POST_NOTIFICATIONS` permission. The notification ID is derived from the
+ * hash code of [Modal.kind].
+ *
+ * @param context Context used to obtain the [NotificationManagerCompat].
+ * @param contentAdapter Converts a [Modal] into a [NotificationBuilderFactory].
+ */
 class NotificationModalPresenter(
     private val context: Context,
     private val contentAdapter: Adapter<Modal, NotificationBuilderFactory>
@@ -38,7 +47,13 @@ class NotificationModalPresenter(
         manager.notify(thing.kind.hashCode(), builder.build())
     }
 
+    /**
+     * A factory for [NotificationCompat.Builder]s configured for a specific [Modal].
+     */
     fun interface NotificationBuilderFactory {
+        /**
+         * Returns a fully configured [NotificationCompat.Builder].
+         */
         fun create(): NotificationCompat.Builder
     }
 }

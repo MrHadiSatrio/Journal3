@@ -32,6 +32,15 @@ import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import kotlin.time.Duration.Companion.minutes
 
+/**
+ * [Coordinates] and [Speed] backed by the Fused Location Provider (Google Play Services).
+ *
+ * Refreshes the underlying location at most once every 10 minutes. Requires
+ * ACCESS_FINE_LOCATION and ACCESS_COARSE_LOCATION permissions.
+ *
+ * @param client Fused location provider client used to obtain the device location.
+ * @param clock Clock used to throttle location refresh intervals.
+ */
 class GmsCoordinates(
     private val client: FusedLocationProviderClient,
     private val clock: Clock

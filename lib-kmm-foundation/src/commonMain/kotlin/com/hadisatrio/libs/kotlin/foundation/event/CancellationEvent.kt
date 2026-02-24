@@ -17,6 +17,13 @@
 
 package com.hadisatrio.libs.kotlin.foundation.event
 
+/**
+ * An [Event] signalling that an operation was cancelled.
+ *
+ * Construction fails with [IllegalArgumentException] if [reason] is not "user" or "system".
+ *
+ * @param reason Who initiated the cancellation: "user" for user-initiated, "system" for system-initiated.
+ */
 class CancellationEvent(
     val reason: String
 ) : Event() {

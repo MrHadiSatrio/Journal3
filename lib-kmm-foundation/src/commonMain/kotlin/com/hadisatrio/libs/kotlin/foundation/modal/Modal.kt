@@ -19,6 +19,14 @@ package com.hadisatrio.libs.kotlin.foundation.modal
 
 import com.hadisatrio.libs.kotlin.foundation.event.Event
 
+/**
+ * A UI interaction prompt identified by [kind] with separate event factories for the
+ * positive and negative outcomes.
+ *
+ * @param kind A label identifying the purpose of this modal (e.g. "delete_confirmation").
+ * @param positiveEventFactory Creates the event emitted when the user accepts.
+ * @param negativeEventFactory Creates the event emitted when the user declines.
+ */
 open class Modal(
     val kind: String,
     val positiveEventFactory: Event.Factory,

@@ -27,6 +27,13 @@ import com.hadisatrio.libs.kotlin.foundation.event.EventSource
 import com.hadisatrio.libs.kotlin.foundation.event.TextInputEvent
 import reactivecircus.flowbinding.android.widget.textChanges
 
+/**
+ * An [EventSource] that emits a [TextInputEvent] with [inputKind] on each text change in
+ * an [EditText]. The initial value is skipped and only subsequent user changes are emitted.
+ *
+ * @param editText The [EditText] to observe.
+ * @param inputKind Kind label propagated to each emitted [TextInputEvent].
+ */
 class EditTextInputEventSource(
     private val editText: EditText,
     private val inputKind: String

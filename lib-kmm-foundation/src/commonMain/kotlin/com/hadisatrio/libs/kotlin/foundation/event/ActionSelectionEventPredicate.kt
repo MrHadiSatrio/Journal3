@@ -17,6 +17,12 @@
 
 package com.hadisatrio.libs.kotlin.foundation.event
 
+/**
+ * A [Predicate] that matches [SelectionEvent]s of kind "action" whose
+ * [SelectionEvent.selectedIdentifier] is in the given set.
+ *
+ * @param identifiers Set of action identifiers to match against.
+ */
 class ActionSelectionEventPredicate(
     private val identifiers: Set<String>
 ) : Predicate<Event> {

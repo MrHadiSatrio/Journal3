@@ -20,6 +20,14 @@ package com.hadisatrio.libs.kotlin.io
 import com.chrynan.uri.core.Uri
 import okio.Source
 
+/**
+ * A collection of Okio [Source]s.
+ */
 fun interface Sources {
+    /**
+     * Opens and returns a readable [Source] for [uri].
+     *
+     * @param uri URI identifying the resource to open.
+     */
     fun open(uri: Uri): Source
 }

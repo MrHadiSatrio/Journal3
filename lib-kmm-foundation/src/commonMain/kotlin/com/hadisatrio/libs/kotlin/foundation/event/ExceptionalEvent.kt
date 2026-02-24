@@ -17,6 +17,11 @@
 
 package com.hadisatrio.libs.kotlin.foundation.event
 
+/**
+ * An [Event] wrapping an [Exception] for event-driven error propagation.
+ *
+ * @param exception The exception to propagate.
+ */
 class ExceptionalEvent(
     val exception: Exception
 ) : Event() {

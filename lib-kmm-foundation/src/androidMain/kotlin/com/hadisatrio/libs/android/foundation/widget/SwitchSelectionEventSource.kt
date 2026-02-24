@@ -25,6 +25,14 @@ import com.hadisatrio.libs.kotlin.foundation.event.Event
 import com.hadisatrio.libs.kotlin.foundation.event.EventSource
 import reactivecircus.flowbinding.android.widget.checkedChanges
 
+/**
+ * An [EventSource] that emits from [onEventFactory] when a [SwitchCompat] is toggled on
+ * and from [offEventFactory] when it is toggled off.
+ *
+ * @param switch The switch widget to observe.
+ * @param offEventFactory Factory invoked when the switch is toggled off.
+ * @param onEventFactory Factory invoked when the switch is toggled on.
+ */
 class SwitchSelectionEventSource(
     private val switch: SwitchCompat,
     private val offEventFactory: Event.Factory,

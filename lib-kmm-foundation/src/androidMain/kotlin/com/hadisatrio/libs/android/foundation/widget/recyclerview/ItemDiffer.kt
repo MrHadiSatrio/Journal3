@@ -17,7 +17,27 @@
 
 package com.hadisatrio.libs.android.foundation.widget.recyclerview
 
+/**
+ * A comparator that determines whether two items represent the same entity and whether their visible contents differ.
+ *
+ * Used by [RecyclerViewPresenter] and [ListViewPresenter] for efficient diff computation.
+ */
 interface ItemDiffer<T> {
+    /**
+     * Returns `true` if [oldItem] and [newItem] represent the same logical entity
+     * (typically same ID), regardless of content.
+     *
+     * @param oldItem The item from the previous list.
+     * @param newItem The item from the new list.
+     */
     fun areItemsTheSame(oldItem: T, newItem: T): Boolean
+
+    /**
+     * Returns `true` if [oldItem] and [newItem] have identical visible contents.
+     * Only called when [areItemsTheSame] returns `true`.
+     *
+     * @param oldItem The item from the previous list.
+     * @param newItem The item from the new list.
+     */
     fun areContentsTheSame(oldItem: T, newItem: T): Boolean
 }

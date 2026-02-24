@@ -23,6 +23,12 @@ import com.hadisatrio.libs.kotlin.geography.LiteralCoordinates
 import com.hadisatrio.libs.kotlin.geography.Place
 import com.google.android.libraries.places.api.model.Place as GooglePlace
 
+/**
+ * A [Place] backed by a [com.google.android.libraries.places.api.model.Place] from the Google
+ * Places SDK.
+ *
+ * @param backing The underlying Google SDK place object.
+ */
 class GoogleSdkPlace(private val backing: GooglePlace) : Place {
 
     override val id: Uuid by lazy {

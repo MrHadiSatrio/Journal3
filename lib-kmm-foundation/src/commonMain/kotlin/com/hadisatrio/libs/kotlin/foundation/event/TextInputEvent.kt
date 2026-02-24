@@ -17,6 +17,12 @@
 
 package com.hadisatrio.libs.kotlin.foundation.event
 
+/**
+ * An [Event] carrying a text value entered by the user or system.
+ *
+ * @param inputKind Identifies the field that produced the input (e.g. "title", "body").
+ * @param inputValue The text that was entered.
+ */
 class TextInputEvent(
     val inputKind: String,
     val inputValue: String

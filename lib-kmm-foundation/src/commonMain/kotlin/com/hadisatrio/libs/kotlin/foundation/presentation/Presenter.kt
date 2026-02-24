@@ -17,6 +17,14 @@
 
 package com.hadisatrio.libs.kotlin.foundation.presentation
 
+/**
+ * A renderer of values to a given medium.
+ */
 fun interface Presenter<T> {
+    /**
+     * Renders [thing].
+     *
+     * @param thing The value to render.
+     */
     fun present(thing: T)
 }

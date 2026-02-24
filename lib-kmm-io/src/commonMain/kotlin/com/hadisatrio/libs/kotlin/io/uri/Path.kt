@@ -21,6 +21,9 @@ import com.chrynan.uri.core.Uri
 import com.chrynan.uri.core.fromParts
 import okio.Path
 
+/**
+ * Converts this Okio [Path] to a `file://` [Uri].
+ */
 fun Path.toUri(): Uri {
     return Uri.fromParts(
         scheme = "file",

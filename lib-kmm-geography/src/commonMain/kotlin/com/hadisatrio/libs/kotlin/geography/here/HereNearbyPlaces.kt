@@ -27,6 +27,19 @@ import com.hadisatrio.libs.kotlin.geography.Places
 import io.ktor.client.HttpClient
 import kotlinx.coroutines.runBlocking
 
+/**
+ * A read-only [Places] collection backed by the HERE Browse API, returning places within
+ * 100 metres of [coordinates].
+ *
+ * Throws [UnsupportedOperationException] when [new] is called. [findPlace] by ID searches
+ * only previously fetched results; iteration performs network requests. [limit] is clamped to
+ * 1..100.
+ *
+ * @param coordinates Centre point around which to search for places.
+ * @param limit Maximum number of places to return per request.
+ * @param apiKey HERE Maps API key.
+ * @param httpClient Ktor HTTP client used to perform API calls.
+ */
 class HereNearbyPlaces(
     private val coordinates: Coordinates,
     private val limit: Int,

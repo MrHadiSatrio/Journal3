@@ -19,6 +19,12 @@ package com.hadisatrio.libs.kotlin.foundation.event
 
 import com.badoo.reaktive.observable.Observable
 
+/**
+ * A stream of [Event]s exposed as a Reaktive [Observable].
+ */
 fun interface EventSource {
+    /**
+     * Returns an [Observable] that emits events produced by this source.
+     */
     fun events(): Observable<Event>
 }
