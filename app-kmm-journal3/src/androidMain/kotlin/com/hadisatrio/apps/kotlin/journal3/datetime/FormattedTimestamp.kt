@@ -23,11 +23,19 @@ import java.util.Date
 import java.util.Locale
 import java.util.TimeZone
 
+/**
+ * A [Timestamp] decorator whose [toString] returns the underlying instant
+ * formatted by a [DateFormat].
+ */
 class FormattedTimestamp(
     private val formatter: DateFormat,
     private val origin: Timestamp
 ) : Timestamp by origin {
 
+    /**
+     * Constructs a [FormattedTimestamp] using a [SimpleDateFormat] built from
+     * [format], [locale], and [timeZone].
+     */
     constructor(
         locale: Locale,
         timeZone: TimeZone,
@@ -35,6 +43,9 @@ class FormattedTimestamp(
         origin: Timestamp
     ) : this(SimpleDateFormat(format, locale).apply { this.timeZone = timeZone }, origin)
 
+    /**
+     * Constructs a [FormattedTimestamp] using the device's default locale and time zone.
+     */
     constructor(
         format: String,
         origin: Timestamp
