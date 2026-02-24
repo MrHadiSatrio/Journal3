@@ -19,6 +19,9 @@ package com.hadisatrio.apps.kotlin.journal3.moment
 
 import com.benasher44.uuid.Uuid
 
+/**
+ * A [Moments] view that surfaces at most [limit] entries from an underlying collection.
+ */
 class CountLimitingMoments(
     private val limit: Int,
     private val origin: Moments

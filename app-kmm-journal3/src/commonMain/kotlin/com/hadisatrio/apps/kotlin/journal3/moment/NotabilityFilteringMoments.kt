@@ -19,6 +19,10 @@ package com.hadisatrio.apps.kotlin.journal3.moment
 
 import com.benasher44.uuid.Uuid
 
+/**
+ * A [Moments] view that filters the underlying collection to only those moments
+ * whose [Moment.isNotable] flag matches [notable].
+ */
 class NotabilityFilteringMoments(
     private val notable: Boolean,
     private val origin: Moments

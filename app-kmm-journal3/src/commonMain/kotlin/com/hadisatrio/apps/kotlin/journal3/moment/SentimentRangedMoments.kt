@@ -20,6 +20,10 @@ package com.hadisatrio.apps.kotlin.journal3.moment
 import com.benasher44.uuid.Uuid
 import com.hadisatrio.apps.kotlin.journal3.sentiment.Sentiment
 
+/**
+ * A [Moments] view that filters the underlying collection to only those moments
+ * whose [Moment.sentiment] falls within [sentimentRange].
+ */
 class SentimentRangedMoments(
     private val sentimentRange: ClosedRange<Sentiment>,
     private val origin: Moments

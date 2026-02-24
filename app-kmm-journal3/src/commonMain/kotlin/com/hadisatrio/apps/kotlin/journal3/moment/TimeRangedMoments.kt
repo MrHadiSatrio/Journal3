@@ -20,6 +20,10 @@ package com.hadisatrio.apps.kotlin.journal3.moment
 import com.benasher44.uuid.Uuid
 import com.hadisatrio.apps.kotlin.journal3.datetime.Timestamp
 
+/**
+ * A [Moments] view that filters the underlying collection to only those moments
+ * whose [Moment.timestamp] falls within [timeRange].
+ */
 class TimeRangedMoments(
     private val timeRange: ClosedRange<Timestamp>,
     private val origin: Moments
