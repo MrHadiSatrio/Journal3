@@ -30,6 +30,10 @@ import kotlinx.serialization.json.jsonArray
 import okio.FileSystem
 import okio.Path
 
+/**
+ * A [MemorablePlace] backed by a JSON file on the filesystem, persisting place details
+ * and moment associations between sessions.
+ */
 class FilesystemMemorablePlace(
     private val file: JsonFile
 ) : MemorablePlace {

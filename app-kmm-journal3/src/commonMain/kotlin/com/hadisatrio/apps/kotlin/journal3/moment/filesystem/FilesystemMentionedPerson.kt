@@ -29,6 +29,10 @@ import kotlinx.serialization.json.jsonArray
 import okio.FileSystem
 import okio.Path
 
+/**
+ * A [MentionedPerson] backed by a JSON file on the filesystem, persisting the person's
+ * slug, name, and moment associations between sessions.
+ */
 class FilesystemMentionedPerson(
     private val file: JsonFile
 ) : MentionedPerson {

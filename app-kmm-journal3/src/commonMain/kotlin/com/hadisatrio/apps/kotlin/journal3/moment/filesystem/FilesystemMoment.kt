@@ -38,6 +38,10 @@ import kotlinx.serialization.json.jsonPrimitive
 import okio.FileSystem
 import okio.Path
 
+/**
+ * An [EditableMoment] that persists all fields directly to a JSON file on the filesystem.
+ * Field updates are written immediately; [commit] is a no-op.
+ */
 @Suppress("TooManyFunctions")
 class FilesystemMoment(
     private val file: JsonFile,
