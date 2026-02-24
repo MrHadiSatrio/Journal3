@@ -20,6 +20,10 @@ package com.hadisatrio.apps.kotlin.journal3.moment
 import com.hadisatrio.apps.kotlin.journal3.token.TokenableString
 import com.hadisatrio.libs.kotlin.paraphrase.Paraphraser
 
+/**
+ * An [EditableMoment] decorator that rewrites the description through a [Paraphraser]
+ * before delegating to the underlying [commit].
+ */
 class DescriptionParaphrasingMoment(
     private val paraphraser: Paraphraser,
     private val origin: EditableMoment

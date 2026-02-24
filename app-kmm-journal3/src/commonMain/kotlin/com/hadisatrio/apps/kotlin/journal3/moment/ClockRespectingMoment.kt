@@ -21,6 +21,10 @@ import com.hadisatrio.apps.kotlin.journal3.datetime.LiteralTimestamp
 import com.hadisatrio.apps.kotlin.journal3.datetime.Timestamp
 import kotlinx.datetime.Clock
 
+/**
+ * An [EditableMoment] decorator that auto-populates [timestamp] from the system clock
+ * the first time it is read on a newly created, unedited moment.
+ */
 class ClockRespectingMoment(
     private val clock: Clock,
     private val origin: EditableMoment
