@@ -19,6 +19,9 @@ package com.hadisatrio.apps.kotlin.journal3.event
 
 import com.hadisatrio.libs.kotlin.foundation.event.Event
 
+/**
+ * An [Event] signalling that a consumer should reload its data from the source of truth.
+ */
 class RefreshRequestEvent(
     private val reason: String
 ) : Event() {

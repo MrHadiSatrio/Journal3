@@ -19,6 +19,9 @@ package com.hadisatrio.apps.kotlin.journal3.moment
 
 import com.benasher44.uuid.Uuid
 
+/**
+ * A [Moments] that combines multiple [Moments] collections into a single unified view.
+ */
 class MergedMoments(private val moments: Iterable<Moments>) : Moments {
 
     constructor(vararg moments: Moments) : this(moments.toList())

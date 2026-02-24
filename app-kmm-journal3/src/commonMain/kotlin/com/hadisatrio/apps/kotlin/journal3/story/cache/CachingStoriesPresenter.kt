@@ -20,6 +20,10 @@ package com.hadisatrio.apps.kotlin.journal3.story.cache
 import com.hadisatrio.apps.kotlin.journal3.story.Stories
 import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
 
+/**
+ * A [Presenter] decorator that wraps the presented [Stories] in a [CachingStories]
+ * before forwarding to the underlying presenter.
+ */
 class CachingStoriesPresenter(
     private val origin: Presenter<Stories>
 ) : Presenter<Stories> {

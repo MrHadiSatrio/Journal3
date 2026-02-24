@@ -23,6 +23,10 @@ import com.hadisatrio.apps.kotlin.journal3.sentiment.Sentiment
 import com.hadisatrio.apps.kotlin.journal3.token.TokenableString
 import com.hadisatrio.libs.kotlin.geography.Place
 
+/**
+ * An [EditableMoment] decorator that holds all field updates in memory and writes them
+ * to the underlying moment only when [commit] is called.
+ */
 class UpdateDeferringMoment(
     private val origin: EditableMoment
 ) : EditableMoment by origin {

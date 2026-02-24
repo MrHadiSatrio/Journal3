@@ -21,6 +21,10 @@ import com.hadisatrio.apps.kotlin.journal3.datetime.LiteralTimestamp
 import com.hadisatrio.apps.kotlin.journal3.token.TokenableString
 import kotlinx.datetime.Clock
 
+/**
+ * A [Stories] decorator that pre-populates the underlying repository with [noOfStories]
+ * placeholder stories, each containing [noOfMoments] placeholder moments, on construction.
+ */
 class SelfPopulatingStories(
     private val noOfStories: Int,
     private val noOfMoments: Int,

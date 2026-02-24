@@ -19,11 +19,17 @@ package com.hadisatrio.apps.kotlin.journal3.token
 
 import kotlin.jvm.JvmInline
 
+/**
+ * A string wrapper that can parse embedded [Token]s from its content.
+ */
 @JvmInline
 value class TokenableString(
     private val value: String
 ) {
 
+    /**
+     * Returns all [Token]s embedded in this string, identified by '@' or '#' prefixes.
+     */
     fun tokens(): Set<Token> {
         return Regex("(?<=\\s|^)([#|@][\\w_-]+)")
             .findAll(value)

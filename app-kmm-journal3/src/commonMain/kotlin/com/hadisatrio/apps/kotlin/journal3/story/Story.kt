@@ -21,9 +21,14 @@ import com.benasher44.uuid.Uuid
 import com.hadisatrio.apps.kotlin.journal3.moment.Moments
 import com.hadisatrio.apps.kotlin.journal3.token.TokenableString
 
+/**
+ * A named narrative that groups a set of related [Moments] under a shared title and synopsis.
+ */
 interface Story : Comparable<Story> {
     val id: Uuid
     val title: String
     val synopsis: TokenableString
+
+    /** The collection of moments belonging to this story. */
     val moments: Moments
 }

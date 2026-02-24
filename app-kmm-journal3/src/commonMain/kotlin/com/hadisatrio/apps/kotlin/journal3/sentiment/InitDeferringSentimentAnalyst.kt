@@ -17,6 +17,10 @@
 
 package com.hadisatrio.apps.kotlin.journal3.sentiment
 
+/**
+ * A [SentimentAnalyst] decorator that delays instantiation of the underlying analyst
+ * until its first use.
+ */
 class InitDeferringSentimentAnalyst(
     private val provider: () -> SentimentAnalyst
 ) : SentimentAnalyst {

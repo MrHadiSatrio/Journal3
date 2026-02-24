@@ -19,12 +19,21 @@ package com.hadisatrio.apps.kotlin.journal3.datetime
 
 import kotlinx.datetime.Instant
 
+/**
+ * A [Timestamp] backed directly by a kotlinx [Instant] value.
+ */
 data class LiteralTimestamp(
     override val value: Instant
 ) : Timestamp {
 
+    /**
+     * Constructs a [LiteralTimestamp] by parsing an ISO-8601 string.
+     */
     constructor(iso8601: String) : this(Instant.parse(iso8601))
 
+    /**
+     * Constructs a [LiteralTimestamp] from milliseconds since the Unix epoch.
+     */
     constructor(epochMilliseconds: Long) : this(Instant.fromEpochMilliseconds(epochMilliseconds))
 
     override fun toString(): String {

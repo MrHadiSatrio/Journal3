@@ -17,6 +17,13 @@
 
 package com.hadisatrio.apps.kotlin.journal3.token
 
+/**
+ * A single-word tag prefixed with '@' (person) or '#' (topic), extractable
+ * from free-form journal text.
+ *
+ * @throws IllegalArgumentException if [raw] is blank, contains spaces, or does
+ *   not start with a recognised prefix character ('@' or '#').
+ */
 class Token(raw: String) {
 
     private val value: String = raw

@@ -25,6 +25,10 @@ import com.hadisatrio.apps.kotlin.journal3.sentiment.Sentiment
 import com.hadisatrio.apps.kotlin.journal3.token.TokenableString
 import com.hadisatrio.libs.kotlin.geography.Place
 
+/**
+ * A journal entry capturing a specific point in time, described by location,
+ * sentiment, free-form text, and optional media attachments.
+ */
 interface Moment : Comparable<Moment>, Forgettable {
     val id: Uuid
     val timestamp: Timestamp
@@ -32,5 +36,7 @@ interface Moment : Comparable<Moment>, Forgettable {
     val sentiment: Sentiment
     val place: Place
     val attachments: Iterable<Uri>
+
+    /** Whether this moment is flagged as particularly worth remembering. */
     val isNotable: Boolean
 }

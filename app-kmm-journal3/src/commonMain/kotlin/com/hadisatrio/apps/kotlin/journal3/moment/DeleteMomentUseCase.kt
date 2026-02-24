@@ -25,6 +25,10 @@ import com.hadisatrio.libs.kotlin.foundation.event.EventSource
 import com.hadisatrio.libs.kotlin.foundation.modal.Modal
 import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
 
+/**
+ * A [UseCase] that presents a confirmation dialog and deletes the moment identified
+ * by [momentId] upon user approval.
+ */
 class DeleteMomentUseCase(
     private val momentId: Uuid,
     private val moments: Moments,

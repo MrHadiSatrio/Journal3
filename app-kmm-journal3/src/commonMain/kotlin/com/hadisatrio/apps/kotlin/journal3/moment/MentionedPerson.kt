@@ -19,9 +19,16 @@ package com.hadisatrio.apps.kotlin.journal3.moment
 
 import com.hadisatrio.apps.kotlin.journal3.token.Token
 
+/**
+ * A [Memorable] representing a person mentioned in a moment's text via their '@' [slug].
+ */
 interface MentionedPerson : Memorable {
+    /** The '@'-prefixed token used to reference this person in journal text. */
     val slug: Token
     val name: String
 
+    /**
+     * Updates the display name of this person.
+     */
     fun update(name: String)
 }

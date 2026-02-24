@@ -19,6 +19,11 @@ package com.hadisatrio.apps.kotlin.journal3.datetime
 
 import kotlinx.datetime.Instant
 
+/**
+ * A [Timestamp] representing the Unix epoch (1970-01-01T00:00:00Z).
+ *
+ * Useful as a sentinel "no timestamp" value.
+ */
 object UnixEpoch : Timestamp {
 
     override val value: Instant = Instant.fromEpochMilliseconds(0)

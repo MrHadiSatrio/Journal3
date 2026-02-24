@@ -17,6 +17,13 @@
 
 package com.hadisatrio.apps.kotlin.journal3.moment
 
+/**
+ * A [Moments] collection that supports creating new [EditableMoment]s.
+ */
 interface EditableMoments : Moments {
+
+    /**
+     * Creates and returns a new, empty [EditableMoment] backed by this collection.
+     */
     fun new(): EditableMoment
 }

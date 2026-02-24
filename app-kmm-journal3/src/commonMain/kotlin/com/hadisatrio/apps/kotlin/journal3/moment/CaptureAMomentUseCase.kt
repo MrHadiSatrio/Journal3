@@ -26,6 +26,10 @@ import com.hadisatrio.libs.kotlin.geography.Speed
 import kotlinx.datetime.Clock
 import kotlin.time.Duration.Companion.hours
 
+/**
+ * A [UseCase] that silently logs a new moment at the current location when the device
+ * is stationary, coordinates are accurate, and no moment has been recorded nearby today.
+ */
 class CaptureAMomentUseCase(
     private val moments: EditableMoments,
     private val currentPlace: Place,

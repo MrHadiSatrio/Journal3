@@ -21,6 +21,10 @@ import com.hadisatrio.apps.kotlin.journal3.datetime.LiteralTimestamp
 import com.hadisatrio.apps.kotlin.journal3.token.TokenableString
 import kotlinx.datetime.Clock
 
+/**
+ * An [EditableMoments] decorator that pre-populates the underlying collection with
+ * [noOfMoments] placeholder moments on construction.
+ */
 class SelfPopulatingMoments(
     noOfMoments: Int,
     private val origin: EditableMoments

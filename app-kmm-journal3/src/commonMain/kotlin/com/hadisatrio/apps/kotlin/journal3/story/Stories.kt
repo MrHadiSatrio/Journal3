@@ -21,20 +21,46 @@ import com.benasher44.uuid.Uuid
 import com.hadisatrio.apps.kotlin.journal3.moment.Moment
 import com.hadisatrio.apps.kotlin.journal3.moment.Moments
 
+/**
+ * A repository of [Story] objects that also provides unified cross-story [Moment] access.
+ */
 interface Stories : Iterable<Story> {
+
+    /** A unified view of all moments across every story in this repository. */
     val moments: Moments
 
+    /**
+     * Creates and returns a new, empty [EditableStory] backed by this repository.
+     */
     fun new(): EditableStory
 
+    /**
+     * Returns `true` if a story with the given [id] exists in this repository.
+     */
     fun containsStory(id: Uuid): Boolean
 
+    /**
+     * Returns all stories whose id matches [id].
+     */
     fun findStory(id: Uuid): Iterable<Story>
 
+    /**
+     * Returns `true` if any story in this repository contains at least one moment.
+     */
     fun hasMoments(): Boolean
 
+    /**
+     * Returns `true` if a moment with the given [id] exists across all stories.
+     */
     fun containsMoment(id: Uuid): Boolean
 
+    /**
+     * Returns all moments whose id matches [id] across all stories.
+     */
     fun findMoment(id: Uuid): Iterable<Moment>
 
+    /**
+     * Returns the most recently timestamped moment across all stories.
+     */
     fun mostRecentMoment(): Moment
 }

@@ -32,6 +32,10 @@ import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
 import kotlinx.datetime.Clock
 import kotlin.time.Duration
 
+/**
+ * A [UseCase] that prompts the user to log a new moment when no entry has been
+ * recorded within the configured inactivity [threshold].
+ */
 class AlertInactivityUseCase(
     private val threshold: Duration,
     private val moments: Moments,

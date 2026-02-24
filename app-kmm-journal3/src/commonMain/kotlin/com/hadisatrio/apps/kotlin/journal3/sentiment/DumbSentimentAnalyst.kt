@@ -17,6 +17,9 @@
 
 package com.hadisatrio.apps.kotlin.journal3.sentiment
 
+/**
+ * A [SentimentAnalyst] that uses a fixed keyword list and ignores any training data.
+ */
 object DumbSentimentAnalyst : SentimentAnalyst {
 
     private val positiveWords: Set<String> = setOf(
