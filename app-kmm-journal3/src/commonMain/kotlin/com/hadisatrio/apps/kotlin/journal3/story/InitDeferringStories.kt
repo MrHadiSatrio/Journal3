@@ -21,6 +21,10 @@ import com.benasher44.uuid.Uuid
 import com.hadisatrio.apps.kotlin.journal3.moment.Moment
 import com.hadisatrio.apps.kotlin.journal3.moment.Moments
 
+/**
+ * A [Stories] decorator that delays instantiation of the underlying repository
+ * until its first use.
+ */
 class InitDeferringStories(
     private val provider: () -> Stories
 ) : Stories {

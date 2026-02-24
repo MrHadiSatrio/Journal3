@@ -21,6 +21,10 @@ import com.benasher44.uuid.Uuid
 import com.hadisatrio.apps.kotlin.journal3.moment.Moments
 import com.hadisatrio.apps.kotlin.journal3.token.TokenableString
 
+/**
+ * A [Story] whose [id] is derived deterministically from its [title], intended for
+ * synthetic or computed groupings of moments rather than user-created narratives.
+ */
 class Reflection(
     override val title: String,
     override val synopsis: TokenableString,
