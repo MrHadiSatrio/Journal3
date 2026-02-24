@@ -27,6 +27,12 @@ import com.hadisatrio.libs.kotlin.foundation.modal.ModalApprovalEvent
 import com.hadisatrio.libs.kotlin.foundation.modal.ModalDismissalEvent
 import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
 
+/**
+ * A base [UseCase] that presents a confirmation dialog before deleting a [Forgettable].
+ *
+ * Subclasses supply the target [Forgettable] via [forgettable]; the base class handles
+ * the confirmation modal and calls [Forgettable.forget] upon user approval.
+ */
 abstract class DeleteForgettableUseCase(
     private val presenter: Presenter<Modal>,
     eventSource: EventSource,
@@ -37,6 +43,9 @@ abstract class DeleteForgettableUseCase(
         present()
     }
 
+    /**
+     * Returns the [Forgettable] to be deleted, or `null` if it cannot be found.
+     */
     abstract fun forgettable(): Forgettable?
 
     private fun present() {
