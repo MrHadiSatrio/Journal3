@@ -20,18 +20,30 @@ package com.hadisatrio.apps.kotlin.journal3.datetime
 import kotlinx.datetime.Instant
 import kotlin.time.Duration
 
+/**
+ * A point in time with calendar arithmetic and formatting capabilities.
+ */
 interface Timestamp : Comparable<Timestamp> {
 
     val value: Instant
 
+    /**
+     * Returns the number of milliseconds since the Unix epoch.
+     */
     fun toEpochMilliseconds(): Long {
         return value.toEpochMilliseconds()
     }
 
+    /**
+     * Returns the signed [Duration] between this timestamp and [other].
+     */
     fun difference(other: Timestamp): Duration {
         return this.value - other.value
     }
 
+    /**
+     * Returns a new [Timestamp] shifted earlier by [duration].
+     */
     operator fun minus(duration: Duration): Timestamp {
         return LiteralTimestamp(value - duration)
     }
