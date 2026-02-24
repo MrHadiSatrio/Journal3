@@ -19,8 +19,24 @@ package com.hadisatrio.apps.kotlin.journal3.moment
 
 import com.benasher44.uuid.Uuid
 
+/**
+ * A collection of [Memorable] resources that can be queried by moment association.
+ */
 interface Memorables : Iterable<Memorable> {
+
+    /**
+     * Records [thing] as a [Memorable] linked to the moment identified by [momentId],
+     * creating the internal representation if necessary.
+     */
     fun relate(momentId: Uuid, thing: Any)
+
+    /**
+     * Returns all [Memorable]s whose id matches [id].
+     */
     fun find(id: Uuid): Iterable<Memorable>
+
+    /**
+     * Returns all [Memorable]s associated with the moment identified by [momentId].
+     */
     fun relevantTo(momentId: Uuid): Iterable<Memorable>
 }

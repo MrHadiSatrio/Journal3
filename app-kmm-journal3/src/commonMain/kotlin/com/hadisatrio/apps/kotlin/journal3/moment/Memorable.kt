@@ -19,9 +19,24 @@ package com.hadisatrio.apps.kotlin.journal3.moment
 
 import com.benasher44.uuid.Uuid
 
+/**
+ * A linkable resource that can be associated with one or more [Moment]s.
+ */
 interface Memorable {
     val id: Uuid
+
+    /**
+     * Associates this resource with the moment identified by [momentId].
+     */
     fun link(momentId: Uuid)
+
+    /**
+     * Removes the association between this resource and the moment identified by [momentId].
+     */
     fun unlink(momentId: Uuid)
+
+    /**
+     * Returns `true` if this resource is associated with the moment identified by [momentId].
+     */
     fun relevantTo(momentId: Uuid): Boolean
 }
