@@ -22,6 +22,17 @@ import okio.Path
 import okio.buffer
 import okio.use
 
+/**
+ * A Markdown file with YAML-like frontmatter persisted on an Okio [FileSystem].
+ *
+ * Metadata is stored as flat `key: value` pairs between `---` delimiters; the
+ * Markdown prose lives in the body after the closing delimiter. Each [put] or
+ * [updateBody] re-reads the file, applies the change in memory, and writes the
+ * entire file back atomically — the same atomicity guarantee as [JsonFile][com.hadisatrio.libs.kotlin.json.JsonFile].
+ *
+ * @param fileSystem File system used for reading and writing.
+ * @param path Path to the backing `.md` file.
+ */
 class FrontmatterFile(
     private val fileSystem: FileSystem,
     private val path: Path
@@ -29,6 +40,16 @@ class FrontmatterFile(
 
     val name: String get() = path.name
 
+    /**
+     * Writes [value] under [key] in the frontmatter, replacing any previous value.
+     *
+     * Keys are stripped of ASCII control characters (except tab) before being stored;
+     * colons and newline characters are rejected outright.
+     *
+     * @param key Frontmatter key. Must not contain `:`, `\n`, or `\r`.
+     * @param value Frontmatter value. Must not contain `\n` or `\r`.
+     * @throws IllegalArgumentException if [key] contains `:`, `\n`, or `\r`, or if [value] contains `\n` or `\r`.
+     */
     fun put(key: String, value: String) {
         require(!key.contains(':')) { "Key must not contain ':'" }
         require(!key.contains('\n') && !key.contains('\r')) { "Key must not contain newline characters" }
@@ -40,26 +61,52 @@ class FrontmatterFile(
         write(parsed)
     }
 
+    /**
+     * Returns the frontmatter value stored under [key], or `null` if the key is absent
+     * or the file does not yet exist.
+     *
+     * @param key Key to look up.
+     */
     fun get(key: String): String? {
         if (!fileSystem.exists(path)) return null
         return read().frontmatter[key]
     }
 
+    /**
+     * Returns the Markdown body — the content after the closing `---` delimiter.
+     *
+     * Returns an empty string if the file does not yet exist.
+     */
     fun body(): String {
         if (!fileSystem.exists(path)) return ""
         return read().body
     }
 
+    /**
+     * Replaces the Markdown body with [content], preserving all frontmatter.
+     *
+     * ASCII control characters (except tab and newline) are stripped from [content]
+     * before it is written; newlines are preserved so multi-paragraph descriptions
+     * round-trip correctly.
+     *
+     * @param content New body text.
+     */
     fun updateBody(content: String) {
         val sanitized = content.stripControlCharsExceptTabAndNewline()
         val parsed = read()
         write(ParsedFile(parsed.frontmatter, sanitized))
     }
 
+    /**
+     * Returns `true` if the backing file exists on the file system.
+     */
     fun exists(): Boolean {
         return fileSystem.exists(path)
     }
 
+    /**
+     * Deletes the backing file. Does nothing if the file does not exist.
+     */
     fun delete() {
         fileSystem.delete(path = path, mustExist = false)
     }
