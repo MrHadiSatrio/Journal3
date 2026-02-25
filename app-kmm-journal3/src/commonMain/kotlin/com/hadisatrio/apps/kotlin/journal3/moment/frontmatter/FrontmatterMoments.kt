@@ -46,7 +46,7 @@ class FrontmatterMoments(
     }
 
     override fun find(id: Uuid): Iterable<Moment> {
-        val candidatePath = path / "${id}.md"
+        val candidatePath = path / "$id.md"
         return if (fileSystem.exists(candidatePath)) {
             listOf(FrontmatterMoment(fileSystem, candidatePath, memorables))
         } else {

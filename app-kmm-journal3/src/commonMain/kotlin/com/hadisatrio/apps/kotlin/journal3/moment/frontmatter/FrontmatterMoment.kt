@@ -79,7 +79,7 @@ class FrontmatterMoment(
 
     constructor(fileSystem: FileSystem, parentDirectory: Path, id: Uuid, memorables: Memorables) : this(
         fileSystem = fileSystem,
-        path = parentDirectory / "${id}.md",
+        path = parentDirectory / "$id.md",
         memorables = memorables
     )
 

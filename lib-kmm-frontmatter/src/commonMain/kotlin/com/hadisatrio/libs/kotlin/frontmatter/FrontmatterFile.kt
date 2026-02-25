@@ -137,12 +137,8 @@ class FrontmatterFile(
         val frontmatter = LinkedHashMap<String, String>()
 
         val lines = content.split('\n')
-        if (lines.isEmpty() || lines[0] != "---") {
-            return ParsedFile(frontmatter, content)
-        }
-
         val closingLineIndex = lines.drop(1).indexOfFirst { it == "---" }
-        if (closingLineIndex < 0) {
+        if (lines.isEmpty() || lines[0] != "---" || closingLineIndex < 0) {
             return ParsedFile(frontmatter, content)
         }
         val actualClosingIndex = closingLineIndex + 1
@@ -167,16 +163,19 @@ class FrontmatterFile(
     )
 }
 
+private const val C0_LAST = 0x1F
+private const val DEL = 0x7F
+
 private fun String.stripControlCharsExceptTab(): String {
     return filter { c ->
         val code = c.code
-        !(code in 0x00..0x1F && c != '\t') && code != 0x7F
+        !(code in 0x00..C0_LAST && c != '\t') && code != DEL
     }
 }
 
 private fun String.stripControlCharsExceptTabAndNewline(): String {
     return filter { c ->
         val code = c.code
-        !(code in 0x00..0x1F && c != '\t' && c != '\n') && code != 0x7F
+        !(code in 0x00..C0_LAST && c != '\t' && c != '\n') && code != DEL
     }
 }
