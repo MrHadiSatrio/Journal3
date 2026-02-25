@@ -30,8 +30,13 @@ class FrontmatterFile(
     val name: String get() = path.name
 
     fun put(key: String, value: String) {
+        require(!key.contains(':')) { "Key must not contain ':'" }
+        require(!key.contains('\n') && !key.contains('\r')) { "Key must not contain newline characters" }
+        require(!value.contains('\n') && !value.contains('\r')) { "Value must not contain newline characters" }
+        val sanitizedKey = key.stripControlCharsExceptTab()
+        val sanitizedValue = value.stripControlCharsExceptTab()
         val parsed = read()
-        parsed.frontmatter[key] = value
+        parsed.frontmatter[sanitizedKey] = sanitizedValue
         write(parsed)
     }
 
@@ -46,8 +51,9 @@ class FrontmatterFile(
     }
 
     fun updateBody(content: String) {
+        val sanitized = content.stripControlCharsExceptTabAndNewline()
         val parsed = read()
-        write(ParsedFile(parsed.frontmatter, content))
+        write(ParsedFile(parsed.frontmatter, sanitized))
     }
 
     fun exists(): Boolean {
@@ -112,4 +118,18 @@ class FrontmatterFile(
         val frontmatter: LinkedHashMap<String, String>,
         val body: String
     )
+}
+
+private fun String.stripControlCharsExceptTab(): String {
+    return filter { c ->
+        val code = c.code
+        !(code in 0x00..0x1F && c != '\t') && code != 0x7F
+    }
+}
+
+private fun String.stripControlCharsExceptTabAndNewline(): String {
+    return filter { c ->
+        val code = c.code
+        !(code in 0x00..0x1F && c != '\t' && c != '\n') && code != 0x7F
+    }
 }

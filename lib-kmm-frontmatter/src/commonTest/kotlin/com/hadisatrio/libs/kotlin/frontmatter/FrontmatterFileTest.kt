@@ -139,4 +139,49 @@ class FrontmatterFileTest {
         frontmatterFile.delete()
         fileSystem.exists(path).shouldBeFalse()
     }
+
+    @Test
+    fun `Rejects keys containing colons`() {
+        shouldThrow<IllegalArgumentException> {
+            frontmatterFile.put("bad:key", "value")
+        }
+    }
+
+    @Test
+    fun `Rejects keys containing newlines`() {
+        shouldThrow<IllegalArgumentException> {
+            frontmatterFile.put("bad\nkey", "value")
+        }
+        shouldThrow<IllegalArgumentException> {
+            frontmatterFile.put("bad\rkey", "value")
+        }
+    }
+
+    @Test
+    fun `Rejects values containing newlines`() {
+        shouldThrow<IllegalArgumentException> {
+            frontmatterFile.put("key", "bad\nvalue")
+        }
+        shouldThrow<IllegalArgumentException> {
+            frontmatterFile.put("key", "bad\rvalue")
+        }
+    }
+
+    @Test
+    fun `Strips control characters from keys and values`() {
+        frontmatterFile.put("key\u0008", "\u007Fvalue\u0001")
+
+        frontmatterFile.get("key").shouldBe("value")
+    }
+
+    @Test
+    fun `Strips control characters from body except tab and newline`() {
+        frontmatterFile.updateBody("good\u0001bad\tkeep\nnewline\u007Fbad")
+
+        frontmatterFile.body().shouldContain("good")
+        frontmatterFile.body().shouldNotContain("\u0001")
+        frontmatterFile.body().shouldContain("\t")
+        frontmatterFile.body().shouldContain("\n")
+        frontmatterFile.body().shouldNotContain("\u007F")
+    }
 }
