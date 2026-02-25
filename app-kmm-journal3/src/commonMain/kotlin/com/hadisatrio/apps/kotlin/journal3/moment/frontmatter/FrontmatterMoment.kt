@@ -35,6 +35,12 @@ import com.hadisatrio.libs.kotlin.geography.Place
 import okio.FileSystem
 import okio.Path
 
+/**
+ * An [EditableMoment] that persists metadata in YAML-like frontmatter and the description
+ * as the Markdown body of a [FrontmatterFile] on the filesystem.
+ *
+ * Field updates are written immediately; [commit] is a no-op.
+ */
 @Suppress("TooManyFunctions")
 class FrontmatterMoment(
     private val file: FrontmatterFile,
