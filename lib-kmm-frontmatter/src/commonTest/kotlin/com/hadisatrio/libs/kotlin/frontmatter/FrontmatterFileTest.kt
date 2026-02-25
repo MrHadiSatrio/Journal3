@@ -123,4 +123,20 @@ class FrontmatterFileTest {
 
         frontmatterFile.body().shouldBe(multiParagraph)
     }
+
+    @Test
+    fun `Tells correctly whether or not it exists`() {
+        frontmatterFile.exists().shouldBeFalse()
+        frontmatterFile.put("sentiment", "0.85")
+        frontmatterFile.exists().shouldBeTrue()
+    }
+
+    @Test
+    fun `Deletes itself from the filesystem`() {
+        frontmatterFile.put("sentiment", "0.85")
+
+        fileSystem.exists(path).shouldBeTrue()
+        frontmatterFile.delete()
+        fileSystem.exists(path).shouldBeFalse()
+    }
 }
