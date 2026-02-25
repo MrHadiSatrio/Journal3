@@ -85,4 +85,42 @@ class FrontmatterFileTest {
         frontmatterFile.get("sentiment").shouldBe("0.85")
         frontmatterFile.get("is_notable").shouldBe("true")
     }
+
+    @Test
+    fun `Round-trips markdown body via updateBody and body`() {
+        frontmatterFile.updateBody("Had a great day!")
+
+        frontmatterFile.body().shouldBe("Had a great day!")
+    }
+
+    @Test
+    fun `Returns empty string for body when file does not exist`() {
+        frontmatterFile.body().shouldBe("")
+    }
+
+    @Test
+    fun `Preserves frontmatter when updating body`() {
+        frontmatterFile.put("sentiment", "0.85")
+        frontmatterFile.updateBody("Great day!")
+
+        frontmatterFile.get("sentiment").shouldBe("0.85")
+        frontmatterFile.body().shouldBe("Great day!")
+    }
+
+    @Test
+    fun `Preserves body when updating frontmatter`() {
+        frontmatterFile.updateBody("Great day!")
+        frontmatterFile.put("sentiment", "0.85")
+
+        frontmatterFile.body().shouldBe("Great day!")
+        frontmatterFile.get("sentiment").shouldBe("0.85")
+    }
+
+    @Test
+    fun `Preserves newlines in body (multi-paragraph descriptions)`() {
+        val multiParagraph = "First paragraph.\n\nSecond paragraph."
+        frontmatterFile.updateBody(multiParagraph)
+
+        frontmatterFile.body().shouldBe(multiParagraph)
+    }
 }

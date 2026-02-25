@@ -82,22 +82,22 @@ class FrontmatterFile(
 
     private fun parse(content: String): ParsedFile {
         val frontmatter = LinkedHashMap<String, String>()
-        var body = ""
 
-        if (!content.startsWith("---\n")) {
+        val lines = content.split('\n')
+        if (lines.isEmpty() || lines[0] != "---") {
             return ParsedFile(frontmatter, content)
         }
 
-        val rest = content.removePrefix("---\n")
-        val closingIndex = rest.indexOf("\n---\n")
-        if (closingIndex < 0) {
+        val closingLineIndex = lines.drop(1).indexOfFirst { it == "---" }
+        if (closingLineIndex < 0) {
             return ParsedFile(frontmatter, content)
         }
+        val actualClosingIndex = closingLineIndex + 1
 
-        val frontmatterBlock = rest.substring(0, closingIndex)
-        body = rest.substring(closingIndex + "\n---\n".length)
+        val frontmatterLines = lines.subList(1, actualClosingIndex)
+        val bodyLines = lines.drop(actualClosingIndex + 1)
 
-        for (line in frontmatterBlock.lines()) {
+        for (line in frontmatterLines) {
             val colonIndex = line.indexOf(':')
             if (colonIndex < 0) continue
             val k = line.substring(0, colonIndex).trim()
@@ -105,7 +105,7 @@ class FrontmatterFile(
             frontmatter[k] = v
         }
 
-        return ParsedFile(frontmatter, body)
+        return ParsedFile(frontmatter, bodyLines.joinToString("\n"))
     }
 
     private data class ParsedFile(
