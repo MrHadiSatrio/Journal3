@@ -46,4 +46,43 @@ class FrontmatterFileTest {
     fun `Returns the underlying file name as its name`() {
         frontmatterFile.name.shouldBe("foo.md")
     }
+
+    @Test
+    fun `Round-trips frontmatter key-value pairs via put and get`() {
+        frontmatterFile.put("sentiment", "0.85")
+        frontmatterFile.put("is_notable", "true")
+
+        frontmatterFile.get("sentiment").shouldBe("0.85")
+        frontmatterFile.get("is_notable").shouldBe("true")
+    }
+
+    @Test
+    fun `Returns null for non-existent key`() {
+        frontmatterFile.get("missing").shouldBeNull()
+    }
+
+    @Test
+    fun `Handles colons in values (ISO-8601 timestamps)`() {
+        frontmatterFile.put("timestamp", "2024-02-25T15:30:00Z")
+
+        frontmatterFile.get("timestamp").shouldBe("2024-02-25T15:30:00Z")
+    }
+
+    @Test
+    fun `Writes frontmatter delimiters and key-value lines to file`() {
+        frontmatterFile.put("sentiment", "0.85")
+
+        val fileContent = fileSystem.source(path).buffer().use { it.readUtf8() }
+        fileContent.shouldContain("---")
+        fileContent.shouldContain("sentiment: 0.85")
+    }
+
+    @Test
+    fun `Preserves existing frontmatter when adding another key`() {
+        frontmatterFile.put("sentiment", "0.85")
+        frontmatterFile.put("is_notable", "true")
+
+        frontmatterFile.get("sentiment").shouldBe("0.85")
+        frontmatterFile.get("is_notable").shouldBe("true")
+    }
 }
