@@ -15,6 +15,7 @@ kotlin {
             dependencies {
                 api(project(":lib-kmm-foundation"))
                 api(project(":lib-kmm-io"))
+                api(project(":lib-kmm-frontmatter"))
                 api(project(":lib-kmm-json"))
                 api(project(":lib-kmm-geography"))
                 api(project(":lib-kmm-paraphrase"))
