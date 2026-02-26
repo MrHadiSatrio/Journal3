@@ -20,6 +20,10 @@ package com.hadisatrio.apps.kotlin.journal3.story.cache
 import com.hadisatrio.apps.kotlin.journal3.story.Stories
 import com.hadisatrio.apps.kotlin.journal3.story.Story
 
+/**
+ * A [Stories] decorator that wraps each iterated story with a [CachingStory],
+ * reducing repeat reads from the underlying collection.
+ */
 class CachingStories(
     private val origin: Stories
 ) : Stories by origin {

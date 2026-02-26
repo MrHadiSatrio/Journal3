@@ -21,9 +21,28 @@ import com.hadisatrio.apps.kotlin.journal3.forgettable.Forgettable
 import com.hadisatrio.apps.kotlin.journal3.moment.EditableMoment
 import com.hadisatrio.apps.kotlin.journal3.token.TokenableString
 
+/**
+ * A [Story] whose title, synopsis, and moments can be mutated.
+ */
 interface EditableStory : Story, Forgettable {
+
+    /**
+     * Returns `true` if this story was just created and has not yet been persisted.
+     */
     fun isNewlyCreated(): Boolean
+
+    /**
+     * Updates the title of this story.
+     */
     fun update(title: String)
+
+    /**
+     * Updates the synopsis of this story.
+     */
     fun update(synopsis: TokenableString)
+
+    /**
+     * Creates and returns a new [EditableMoment] belonging to this story.
+     */
     fun new(): EditableMoment
 }

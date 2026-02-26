@@ -25,6 +25,10 @@ import com.hadisatrio.apps.kotlin.journal3.sentiment.Sentiment
 import com.hadisatrio.apps.kotlin.journal3.token.TokenableString
 import com.hadisatrio.libs.kotlin.geography.Place
 
+/**
+ * An [EditableMoment] that lazily resolves its target from an [EditableMoments] collection,
+ * creating a new moment when [targetId] equals [INVALID_UUID].
+ */
 @Suppress("TooManyFunctions")
 class EditableMomentInMoments(
     private val targetId: Uuid,

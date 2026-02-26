@@ -19,6 +19,9 @@ package com.hadisatrio.apps.kotlin.journal3.moment
 
 import kotlin.random.Random
 
+/**
+ * A [Moments] decorator that returns moments in a randomized order on each iteration.
+ */
 class OrderRandomizingMoments(
     private val random: Random,
     private val origin: Moments

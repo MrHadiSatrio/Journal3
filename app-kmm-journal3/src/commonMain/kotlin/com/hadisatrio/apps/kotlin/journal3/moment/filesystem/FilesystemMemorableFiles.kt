@@ -27,6 +27,10 @@ import okio.FileSystem
 import okio.Path
 import okio.buffer
 
+/**
+ * A [Memorables] that persists media file attachments in a directory on the filesystem,
+ * deduplicating files by content hash.
+ */
 class FilesystemMemorableFiles(
     private val sources: Sources,
     private val fileSystem: FileSystem,

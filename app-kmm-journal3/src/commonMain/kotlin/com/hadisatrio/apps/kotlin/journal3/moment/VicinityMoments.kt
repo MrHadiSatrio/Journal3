@@ -21,6 +21,12 @@ import com.benasher44.uuid.Uuid
 import com.hadisatrio.libs.kotlin.geography.Coordinates
 import com.hadisatrio.libs.kotlin.geography.NullIsland
 
+/**
+ * A [Moments] view that filters the underlying collection to only those moments
+ * recorded at a place within [distanceLimitInM] metres of [coordinates].
+ *
+ * Moments with no real place (i.e. [NullIsland]) are always excluded.
+ */
 class VicinityMoments(
     private val coordinates: Coordinates,
     private val distanceLimitInM: Double,

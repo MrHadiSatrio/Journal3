@@ -26,6 +26,10 @@ import com.hadisatrio.apps.kotlin.journal3.moment.Moment
 import okio.FileSystem
 import okio.Path
 
+/**
+ * An [EditableMoments] that stores each moment as a JSON file within a directory,
+ * iterating them in descending chronological order.
+ */
 class FilesystemMoments(
     private val fileSystem: FileSystem,
     private val path: Path,

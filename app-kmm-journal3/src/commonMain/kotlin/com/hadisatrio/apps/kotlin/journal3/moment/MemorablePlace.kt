@@ -20,12 +20,31 @@ package com.hadisatrio.apps.kotlin.journal3.moment
 import com.hadisatrio.libs.kotlin.geography.Coordinates
 import com.hadisatrio.libs.kotlin.geography.Place
 
+/**
+ * A [Place] that is also [Memorable] and whose details can be updated after creation.
+ */
 interface MemorablePlace : Place, Memorable {
 
+    /** A human-readable label displayed in the UI for this place. */
     val label: String
 
+    /**
+     * Updates the display [label] of this place.
+     */
     fun updateLabel(label: String)
+
+    /**
+     * Updates the proper name of this place.
+     */
     fun updateName(name: String)
+
+    /**
+     * Updates the street address of this place.
+     */
     fun updateAddress(address: String)
+
+    /**
+     * Updates the geographic [coordinates] of this place.
+     */
     fun update(coordinates: Coordinates)
 }

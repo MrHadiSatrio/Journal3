@@ -19,36 +19,43 @@
 
 package com.hadisatrio.apps.kotlin.journal3.sentiment
 
+/** A [ClosedRange] covering very positive sentiment scores (0.81–1.0). */
 object VeryPositiveSentimentRange : ClosedRange<Sentiment> {
     override val endInclusive: Sentiment = Sentiment(1.0F)
     override val start: Sentiment = Sentiment(0.81F)
 }
 
+/** A [ClosedRange] covering positive sentiment scores (0.56–0.80). */
 object PositiveSentimentRange : ClosedRange<Sentiment> {
     override val endInclusive: Sentiment = Sentiment(0.80F)
     override val start: Sentiment = Sentiment(0.56F)
 }
 
+/** A [ClosedRange] covering neutral sentiment scores (0.45–0.55). */
 object NeutralSentimentRange : ClosedRange<Sentiment> {
     override val endInclusive: Sentiment = Sentiment(0.55F)
     override val start: Sentiment = Sentiment(0.45F)
 }
 
+/** A [ClosedRange] covering negative sentiment scores (0.20–0.44). */
 object NegativeSentimentRange : ClosedRange<Sentiment> {
     override val endInclusive: Sentiment = Sentiment(0.44F)
     override val start: Sentiment = Sentiment(0.20F)
 }
 
+/** A [ClosedRange] covering very negative sentiment scores (0.0–0.19). */
 object VeryNegativeSentimentRange : ClosedRange<Sentiment> {
     override val endInclusive: Sentiment = Sentiment(0.19F)
     override val start: Sentiment = Sentiment(0.0F)
 }
 
+/** A [ClosedRange] covering broadly positive sentiment scores (0.61–1.0). */
 object PositiveishSentimentRange : ClosedRange<Sentiment> {
     override val endInclusive: Sentiment = Sentiment(1.0F)
     override val start: Sentiment = Sentiment(0.61F)
 }
 
+/** A [ClosedRange] covering broadly negative sentiment scores (0.0–0.39). */
 object NegativeishSentimentRange : ClosedRange<Sentiment> {
     override val endInclusive: Sentiment = Sentiment(0.39F)
     override val start: Sentiment = Sentiment(0.0F)

@@ -26,6 +26,10 @@ import com.hadisatrio.libs.kotlin.foundation.event.EventSource
 import com.hadisatrio.libs.kotlin.foundation.event.SelectionEvent
 import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
 
+/**
+ * A [UseCase] that presents a [Stories] collection and routes item-selection events
+ * to the appropriate downstream handlers.
+ */
 class ShowStoriesUseCase(
     private val stories: Stories,
     private val presenter: Presenter<Stories>,

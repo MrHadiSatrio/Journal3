@@ -17,6 +17,13 @@
 
 package com.hadisatrio.apps.kotlin.journal3.token
 
+/**
+ * An analyst that extracts [Token]s from free-form text.
+ */
 fun interface TokenAnalyst {
+
+    /**
+     * Returns all [Token]s found in [string].
+     */
     fun analyze(string: String): Set<Token>
 }

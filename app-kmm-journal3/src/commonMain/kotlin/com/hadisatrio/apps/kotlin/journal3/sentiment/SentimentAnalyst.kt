@@ -17,7 +17,18 @@
 
 package com.hadisatrio.apps.kotlin.journal3.sentiment
 
+/**
+ * An analyst that scores text with a [Sentiment] value.
+ */
 interface SentimentAnalyst {
+
+    /**
+     * Supplies known word-to-sentiment [relationships] to improve analysis accuracy.
+     */
     fun train(relationships: Map<String, Sentiment>)
+
+    /**
+     * Returns a [Sentiment] score for the given [string].
+     */
     fun analyze(string: String): Sentiment
 }

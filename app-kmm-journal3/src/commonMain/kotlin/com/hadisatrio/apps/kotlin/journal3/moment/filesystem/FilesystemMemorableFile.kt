@@ -30,6 +30,10 @@ import kotlinx.serialization.json.jsonArray
 import okio.FileSystem
 import okio.Path
 
+/**
+ * A [MemorableFile] backed by a file on the filesystem, tracking moment associations
+ * in a sibling JSON attributes file.
+ */
 class FilesystemMemorableFile(
     private val fileSystem: FileSystem,
     private val path: Path

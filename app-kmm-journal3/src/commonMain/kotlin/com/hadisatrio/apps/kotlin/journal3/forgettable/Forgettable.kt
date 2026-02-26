@@ -17,6 +17,13 @@
 
 package com.hadisatrio.apps.kotlin.journal3.forgettable
 
+/**
+ * A resource that can be permanently deleted on demand.
+ */
 fun interface Forgettable {
+
+    /**
+     * Permanently deletes this resource. The operation is irreversible.
+     */
     fun forget()
 }

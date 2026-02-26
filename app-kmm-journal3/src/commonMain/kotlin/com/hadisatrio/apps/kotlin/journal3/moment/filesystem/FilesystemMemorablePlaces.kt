@@ -26,6 +26,10 @@ import com.hadisatrio.libs.kotlin.geography.Place
 import okio.FileSystem
 import okio.Path
 
+/**
+ * A [Memorables] that persists geographic places in a directory on the filesystem,
+ * associating each place with the moments that occurred there.
+ */
 class FilesystemMemorablePlaces(
     private val fileSystem: FileSystem,
     private val path: Path

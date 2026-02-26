@@ -23,6 +23,10 @@ import com.hadisatrio.apps.kotlin.journal3.moment.cache.CachingMoments
 import com.hadisatrio.apps.kotlin.journal3.story.Story
 import com.hadisatrio.apps.kotlin.journal3.token.TokenableString
 
+/**
+ * A [Story] decorator that eagerly copies all property values from [origin] into fields,
+ * shielding callers from repeated or costly underlying reads.
+ */
 class CachingStory(
     override val id: Uuid,
     override val title: String,

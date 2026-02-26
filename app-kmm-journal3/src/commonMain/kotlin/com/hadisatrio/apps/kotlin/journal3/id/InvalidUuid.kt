@@ -19,4 +19,5 @@ package com.hadisatrio.apps.kotlin.journal3.id
 
 import com.benasher44.uuid.uuidFrom
 
+/** A sentinel UUID (all-zeros) representing an absent or unresolved identifier. */
 val INVALID_UUID = uuidFrom("00000000-0000-0000-0000-000000000000")

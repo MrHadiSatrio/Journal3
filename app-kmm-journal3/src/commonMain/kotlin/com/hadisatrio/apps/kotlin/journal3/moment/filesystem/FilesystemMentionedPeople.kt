@@ -27,6 +27,10 @@ import com.hadisatrio.apps.kotlin.journal3.token.TokenableString
 import okio.FileSystem
 import okio.Path
 
+/**
+ * A [Memorables] that persists mentioned people in a directory on the filesystem,
+ * keying records by '@'-prefixed slug tokens extracted from moment descriptions.
+ */
 class FilesystemMentionedPeople(
     private val fileSystem: FileSystem,
     private val path: Path

@@ -34,6 +34,10 @@ import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
 import com.hadisatrio.libs.kotlin.geography.Place
 import com.hadisatrio.libs.kotlin.geography.Places
 
+/**
+ * A [UseCase] that presents a searchable list of [Place]s and sinks a selection event
+ * once the user picks one.
+ */
 class SelectAPlaceUseCase(
     private val places: Places,
     private val presenter: Presenter<Iterable<Place>>,

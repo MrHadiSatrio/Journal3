@@ -19,11 +19,23 @@ package com.hadisatrio.apps.kotlin.journal3.moment
 
 import com.benasher44.uuid.Uuid
 
+/**
+ * A queryable, iterable collection of [Moment]s.
+ */
 interface Moments : Iterable<Moment> {
 
+    /**
+     * Returns the total number of moments in this collection.
+     */
     fun count(): Int
 
+    /**
+     * Returns all moments whose [Moment.id] matches [id].
+     */
     fun find(id: Uuid): Iterable<Moment>
 
+    /**
+     * Returns the moment with the latest [Moment.timestamp] in this collection.
+     */
     fun mostRecent(): Moment
 }

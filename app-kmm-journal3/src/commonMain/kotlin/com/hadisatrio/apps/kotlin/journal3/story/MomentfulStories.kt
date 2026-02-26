@@ -17,6 +17,9 @@
 
 package com.hadisatrio.apps.kotlin.journal3.story
 
+/**
+ * A [Stories] decorator that filters out stories containing no moments during iteration.
+ */
 class MomentfulStories(
     private val origin: Stories
 ) : Stories by origin {

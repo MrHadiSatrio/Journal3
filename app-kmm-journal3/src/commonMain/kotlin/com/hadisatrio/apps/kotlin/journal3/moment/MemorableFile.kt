@@ -19,6 +19,9 @@ package com.hadisatrio.apps.kotlin.journal3.moment
 
 import com.chrynan.uri.core.Uri
 
+/**
+ * A [Memorable] representing a media file attached to a moment, identified by its [Uri].
+ */
 interface MemorableFile : Memorable {
     val uri: Uri
 }

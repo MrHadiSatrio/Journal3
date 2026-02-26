@@ -39,6 +39,11 @@ import com.hadisatrio.libs.kotlin.foundation.presentation.Presenter
 import com.hadisatrio.libs.kotlin.geography.Places
 import com.hadisatrio.libs.kotlin.paraphrase.Paraphraser
 
+/**
+ * A [UseCase] that presents a [Moment] for editing and persists changes on user confirmation.
+ *
+ * If the target moment is newly created and the user cancels, it is discarded automatically.
+ */
 @Suppress(
     "LongParameterList",
     "TooManyFunctions"

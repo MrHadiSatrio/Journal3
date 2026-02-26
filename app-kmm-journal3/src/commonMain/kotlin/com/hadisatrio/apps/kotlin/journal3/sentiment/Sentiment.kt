@@ -19,11 +19,22 @@ package com.hadisatrio.apps.kotlin.journal3.sentiment
 
 import kotlin.jvm.JvmInline
 
+/**
+ * A normalized emotional score between 0.0 (very negative) and 1.0 (very positive).
+ *
+ * @throws IllegalArgumentException if [value] is outside the range [0.0, 1.0].
+ */
 @JvmInline
 value class Sentiment(val value: Float) : Comparable<Sentiment> {
 
+    /**
+     * Constructs a [Sentiment] by parsing [value] as a float.
+     */
     constructor(value: String) : this(value.toFloat())
 
+    /**
+     * Constructs a [Sentiment] whose score is the mean of all scores in [others].
+     */
     constructor(others: Iterable<Sentiment>) : this(others.map { it.value }.average().toFloat())
 
     init {

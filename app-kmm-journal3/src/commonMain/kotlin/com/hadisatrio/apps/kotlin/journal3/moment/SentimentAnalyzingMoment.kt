@@ -21,6 +21,10 @@ import com.hadisatrio.apps.kotlin.journal3.sentiment.Sentiment
 import com.hadisatrio.apps.kotlin.journal3.sentiment.SentimentAnalyst
 import com.hadisatrio.apps.kotlin.journal3.token.TokenableString
 
+/**
+ * An [EditableMoment] decorator that derives [Moment.sentiment] automatically from the
+ * description text and trains the [SentimentAnalyst] when the user explicitly overrides it.
+ */
 class SentimentAnalyzingMoment(
     private val analyst: SentimentAnalyst,
     private val origin: EditableMoment
