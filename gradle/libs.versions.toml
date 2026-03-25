@@ -11,7 +11,7 @@ androidx-fragment = { module = "androidx.fragment:fragment-ktx", version = "1.8.
 androidx-recyclerview = { module = "androidx.recyclerview:recyclerview", version = "1.3.2" }
 androidx-viewpager2 = { module = "androidx.viewpager2:viewpager2", version = "1.1.0" }
 androidx-startup = { module = "androidx.startup:startup-runtime", version = "1.2.0" }
-androidx-workmanager = { module = "androidx.work:work-runtime-ktx", version = "2.9.0" }
+androidx-workmanager = { module = "androidx.work:work-runtime-ktx", version = "2.11.2" }
 androidx-test-runner = { module = "androidx.test:runner", version = "1.6.2" }
 
 gms-location = { module = "com.google.android.gms:play-services-location", version = "21.3.0" }
