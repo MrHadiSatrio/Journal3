@@ -19,7 +19,7 @@ gms-location = { module = "com.google.android.gms:play-services-location", versi
 google-places = { module = "com.google.android.libraries.places:places", version = "3.5.0" }
 
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version = "0.6.1" }
-kotlinx-json-okio = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json-okio", version = "1.7.3" }
+kotlinx-json-okio = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json-okio", version = "1.11.0" }
 
 reactive-extensions = { module = "com.badoo.reaktive:reaktive", version.ref = "reactive-extensions" }
 reactive-extensions-coroutine = { module = "com.badoo.reaktive:coroutines-interop", version.ref = "reactive-extensions" }
