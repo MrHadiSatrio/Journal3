@@ -19,7 +19,7 @@ plugins {
 allprojects {
     configurations.all {
         resolutionStrategy {
-            force("org.xerial:sqlite-jdbc:3.47.2.0")
+            force("org.xerial:sqlite-jdbc:3.53.4.0")
         }
     }
 }
